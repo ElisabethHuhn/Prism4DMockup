@@ -1,0 +1,729 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorScreenBackground"
+    android:orientation="vertical"
+    >
+    <!-- This layout is for creating a new project -->
+    <!--  -->
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+
+        >
+
+        <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
+        <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
+        <!-- with layout_weight = 1, distribute width/height between views equally -->
+        <!-- with gravity = center, center text within button                   -->
+        <!-- with layout_gravity=start, place button on left of the row         -->
+        <!-- with background, set button color to gray, grayer, grayest         -->
+        <!-- with paddingStart, set some space between this button and the next -->
+
+        <!-- Container for entire screen -->
+        <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="top|center_vertical"
+            android:shrinkColumns="*"
+            android:stretchColumns="*"
+
+            >
+
+            <!-- Row 1: Distance Units -->
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/distanceUnitsLabel"
+                    android:text="@string/distance_units_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/distanceUnitsInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 2: Decimal Display -->
+            <TableRow
+                android:id="@+id/tableRow2"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/decimalDisplayLabel"
+                    android:text="@string/decimal_display_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/decimalDisplayInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow>
+
+            <!-- Row 3: Angle Units -->
+            <TableRow
+                android:id="@+id/tableRow3"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/angleUnitsLabel"
+                    android:text="@string/angle_units_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/angleUnitsInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 4: Angle Display -->
+            <TableRow
+                android:id="@+id/tableRow4"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/angleDisplayLabel"
+                    android:text="@string/angle_display_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/angleDisplayInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 5: Grid Direction -->
+            <TableRow
+                android:id="@+id/tableRow5"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/gridDirectionLabel"
+                    android:text="@string/grid_direction_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/gridDirectionInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 6: Scale Factor -->
+            <TableRow
+                android:id="@+id/tableRow6"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/scaleFactorLabel"
+                    android:text="@string/scale_factor_settings_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/scaleFactorInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="number"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow>
+
+
+            <!-- Row 7: Sea Level -->
+            <TableRow
+                android:id="@+id/tableRow7"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/seaLevelLabel"
+                    android:text="@string/sea_level_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/seaLevelInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 8: Refraction -->
+            <TableRow
+                android:id="@+id/tableRow8"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/refractionLabel"
+                    android:text="@string/refraction_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/refractionInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow>
+
+            <!-- Row 9: Datum -->
+            <TableRow
+                android:id="@+id/tableRow9"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/datumLabel"
+                    android:text="@string/datum_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/datumInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 10: Projection -->
+            <TableRow
+                android:id="@+id/tableRow10"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/projectionLabel"
+                    android:text="@string/projection_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/projectionInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 11: Zone -->
+            <TableRow
+                android:id="@+id/tableRow11"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/zoneLabel"
+                    android:text="@string/zone_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/zoneInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 12: Coordinate Display -->
+            <TableRow
+                android:id="@+id/tableRow12"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/coordinateDisplayLabel"
+                    android:text="@string/coordinate_display_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/coordinateDisplayInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow>
+
+
+            <!-- Row 13: Geoid Model -->
+            <TableRow
+                android:id="@+id/tableRow13"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/geoidModelLabel"
+                    android:text="@string/geod_model_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/geoidModelInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 14: Starting Point ID -->
+            <TableRow
+                android:id="@+id/tableRow14"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <TextView
+                    android:id="@+id/startingPointIDLabel"
+                    android:text="@string/starting_point_id_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/startingPointIDInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow>
+
+            <!-- Row 15: Alphanumeric -->
+            <TableRow
+                android:id="@+id/tableRow15"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/alphanumericLabel"
+                    android:text="@string/alphanumeric_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/alphanumericInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 16: Feature Codes -->
+            <TableRow
+                android:id="@+id/tableRow16"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/featureCodesLabel"
+                    android:text="@string/feature_codes_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/featureCodesInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 17: Feature Codes Control File -->
+            <TableRow
+                android:id="@+id/tableRow17"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/fcControlFileLabel"
+                    android:text="@string/feature_codes_control_file_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/fcControlFileInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 18: Feature Codes Time Stamp -->
+            <TableRow
+                android:id="@+id/tableRow18"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/fcTimeStampLabel"
+                    android:text="@string/feature_codes_time_stamp_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/fcTimeStampInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 19: Reset Defaults Button -->
+            <TableRow
+                android:id="@+id/tableRow19"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/resetDefaultsButton"
+                    android:text="@string/reset_defaults_button_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="center_horizontal"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    />
+
+            </TableRow>
+
+        </TableLayout>
+
+
+
+    </ScrollView>
+
+    <!-- The Footer will be as standard as possible -->
+    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+
+
+</LinearLayout>
+

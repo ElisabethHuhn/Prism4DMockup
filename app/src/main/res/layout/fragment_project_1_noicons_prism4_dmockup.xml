@@ -1,0 +1,226 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorScreenBackground"
+    android:orientation="vertical"
+    >
+    <!-- This layout is for The top level projects screen with
+         the 9 button matrix plus footer -->
+    <!-- The only difference between portrait and landscape
+         is the scroll view weight:
+         for landscape 2.5, portrait 5 -->
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+        >
+
+        <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
+        <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
+        <!-- with layout_weight = 1, distribute width/height between views equally -->
+        <!-- with gravity = center, center text within button                   -->
+        <!-- with layout_gravity=start, place button on left of the row         -->
+        <!-- with background, set button color to gray, grayer, grayest         -->
+        <!-- with paddingStart, set some space between this button and the next -->
+
+
+
+        <TableLayout
+                xmlns:android="http://schemas.android.com/apk/res/android"
+                android:background="@color/colorWhite"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="top|center_vertical"
+                android:shrinkColumns="*"
+                android:stretchColumns="*"
+            >
+
+            <!-- Row 1 with 3 columns for buttons - - >
+            <!- Create Open Copy  -->
+            <TableRow
+                android:id="@+id/tableRow1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+
+                >
+
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/createButton"
+                    android:text="@string/create_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="start"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/openButton"
+                    android:text="@string/open_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/copyButton"
+                    android:text="@string/copy_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+
+                    />
+
+            </TableRow>
+
+            <!-- Row 2 with 3 columns for buttons - - >
+            <!- Edit Delete Control   -->
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/editButton"
+                    android:text="@string/edit_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="start"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/deleteButton"
+                    android:text="@string/delete_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/controlButton"
+                    android:text="@string/control_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+
+                    />
+            </TableRow>
+
+            <!-- Row 3 with 3 columns for buttons - - >
+            <!- List Points    Feature Codes     Exchange   -->
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:paddingTop="10dp">
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/listPointsButton"
+                    android:text="@string/list_points_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="start"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/featureCodesButton"
+                    android:text="@string/feature_codes_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+
+                    />
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/exchangeButton"
+                    android:text="@string/exchange_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
+                    android:gravity="center"
+                    android:layout_gravity="end"
+
+                    />
+            </TableRow>
+
+        </TableLayout>
+
+
+    </ScrollView>
+
+    <!-- The Footer will be as standard as possible -->
+    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+    
+
+</LinearLayout>
+

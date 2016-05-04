@@ -1,0 +1,448 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorScreenBackground"
+    android:orientation="vertical"
+    >
+    <!-- This layout is for a coordinate conversion between lat/long & UTM -->
+    <!--  -->
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+
+        >
+
+        <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
+        <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
+        <!-- with layout_weight = 1, distribute width/height between views equally -->
+        <!-- with gravity = center, center text within button                   -->
+        <!-- with layout_gravity=start, place button on left of the row         -->
+        <!-- with background, set button color to gray, grayer, grayest         -->
+        <!-- with paddingStart, set some space between this button and the next -->
+
+        <!-- Container for entire screen -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:layout_gravity="center_vertical">
+
+            <!-- Latitude Block -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+
+                android:paddingBottom="20dp"
+                >
+
+                <!-- Latitude Prompt -->
+                <TextView
+                    android:id="@+id/latitudePrompt"
+                    android:text="@string/latitude_prompt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="end"
+
+                    android:paddingBottom="5dp"
+
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <!-- Latitude Label and input field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_gravity="center_horizontal"
+                    >
+                    <TextView
+                        android:id="@+id/latitudeLabel"
+                        android:text="@string/latitude_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@+id/latitudeInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="numberDecimal|numberSigned"
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorPureRed"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+
+            <!-- Longitude Block -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                >
+
+                <!-- Longitude Prompt -->
+                <TextView
+                    android:id="@+id/longitudePrompt"
+                    android:text="@string/longitude_prompt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+
+                    android:paddingBottom="5dp"
+
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <!-- Longitude Label and input field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <TextView
+                        android:id="@+id/longitudeLabel"
+                        android:text="@string/longitude_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@+id/longitudeInput"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="numberDecimal|numberSigned"
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorPureRed"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+            </LinearLayout>
+
+
+            <!-- Conversion Button, Clear Form Button -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:paddingTop="20dp"
+                >
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/convertButton"
+                    android:text="@string/convert_button_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    />
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/clearFormButton"
+                    android:text="@string/clear_form_button_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="16dp"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    />
+
+
+            </LinearLayout>
+
+            <!-- UTM Block -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:layout_gravity="center_vertical"
+                android:paddingTop="20dp"
+                android:paddingBottom="20dp"
+                >
+
+                <!-- UTM Integer (meter accuracy) Prompt -->
+                <TextView
+                    android:id="@+id/utmIntegerPrompt"
+                    android:text="@string/utm_integer_output_prompt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+
+                    android:paddingBottom="5dp"
+
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <!-- UTM Integer Label and output field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:paddingBottom="20dp"
+                    >
+                    <TextView
+                        android:id="@+id/utmIntegerLabel"
+                        android:text="@string/utm_integer_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <TextView
+                        android:id="@+id/utmIntgerOutput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+
+
+                <!-- UTM Stack Overflow Prompt -->
+                <TextView
+                    android:id="@+id/utmSOPrompt"
+                    android:text="@string/utm_so_output_prompt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+
+                    android:paddingBottom="5dp"
+
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <!-- UTM Stack Overflow Label and output field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <TextView
+                        android:id="@+id/utmSOLabel"
+                        android:text="@string/utm_so_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <TextView
+                        android:id="@+id/utmSOOutput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+                <!-- UTM Nanometer Prompt -->
+                <TextView
+                    android:id="@+id/utmNmPrompt"
+                    android:text="@string/utm_nanometer_output_prompt"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+                    android:layout_gravity="center_horizontal"
+                    android:gravity="center"
+
+                    android:paddingBottom="5dp"
+
+                    android:textColor="@color/colorWhite"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <!-- UTM Rewritten from scratch Label and output field -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <TextView
+                        android:id="@+id/utmNmLabel"
+                        android:text="@string/utm_nm_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <TextView
+                        android:id="@+id/utmNmOutput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+                <!-- break out the fields -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <!-- zone -->
+                    <TextView
+                        android:id="@+id/utm_zone"
+                        android:text="@string/utm_zone_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- hemisphere -->
+                    <TextView
+                        android:id="@+id/utm_hemisphere"
+                        android:text="@string/utm_hemisphere_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- LatBand -->
+                    <TextView
+                        android:id="@+id/utm_latband"
+                        android:text="@string/utm_latband_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- Easting -->
+                    <TextView
+                        android:id="@+id/utm_easting"
+                        android:text="@string/utm_easting_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- Northing -->
+                    <TextView
+                        android:id="@+id/utm_northing"
+                        android:text="@string/utm_northing_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="1"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+
+                </LinearLayout>
+
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+
+    </ScrollView>
+
+    <!-- The Footer will be as standard as possible -->
+    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+
+
+</LinearLayout>
+

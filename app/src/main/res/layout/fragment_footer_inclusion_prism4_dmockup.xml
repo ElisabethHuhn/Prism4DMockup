@@ -1,0 +1,218 @@
+
+
+
+    <!-- The Footer will be as standard as possible -->
+    <!-- Three top level footer areas: Esc/info table/Enter -->
+    <LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        android:layout_gravity="bottom"
+        android:orientation="horizontal"
+  >
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/escButton"
+            android:text="@string/esc_button_label"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+
+            android:gravity="center"
+            android:layout_gravity="start|bottom"
+
+            android:background="@color/colorGrayest"
+            android:textColor="@color/colorGray"
+            android:enabled="false"
+            />
+
+
+        <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+
+            android:gravity="center"
+            android:layout_gravity="center_horizontal|bottom"
+            android:layout_weight="5"
+
+            android:shrinkColumns="0,1"
+            android:stretchColumns="0,1"
+            android:background="@color/colorGray"
+            >
+
+            <!-- Row 1 with single column for filename -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:layout_gravity="top"
+                android:layout_weight="1"
+                android:gravity="top|center|center_horizontal">
+
+                <TextView
+                    android:id="@+id/currentFilenameField"
+                    android:text="@string/filename_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:gravity="center"
+                    android:layout_gravity="center_horizontal"
+                    android:layout_weight="1"
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorWhite"
+                    />
+
+            </TableRow >
+
+            <!-- Row 2 with 2 columns for Model, S/N -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:gravity="center|center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/modelField"
+                    android:text="@string/model_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:gravity="center"
+
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+
+                    android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/snField"
+                    android:text="@string/sn_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:gravity="center"
+
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    android:layout_weight="1" />
+            </TableRow>
+
+            <!-- Row 3 with 2 columns for Tracking, Mode -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+                <TextView
+                    android:id="@+id/trackingField"
+                    android:text="@string/tracking_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    />
+                <TextView
+                    android:id="@+id/modeField"
+                    android:text="@string/mode_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    />
+            </TableRow>
+
+            <!-- Row 4 with 5 columns for H, V -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_gravity="center_vertical"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/horizField"
+                    android:text="@string/horiz_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="@color/colorGray"
+                    android:textColor="@color/colorTextBlack"
+                    />
+                <TextView
+                    android:id="@+id/vertField"
+                    android:text="@string/vert_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="@color/colorGrayest"
+                    android:textColor="@color/colorTextBlack"
+                    />
+            </TableRow>
+
+            <!-- Row 5 with 2 columns for RMS, and PDOP -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/rmsField"
+                    android:text="@string/rms_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="#cac9c9"
+                    android:textColor="#000000"
+                    />
+                <TextView
+                    android:id="@+id/pdopField"
+                    android:text="@string/pdop_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="#dcdcdc"
+                    android:textColor="#000000"
+                    />
+            </TableRow>
+
+        </TableLayout>
+
+        <Button
+            style="?android:attr/buttonBarButtonStyle"
+            android:id="@+id/enterButton"
+            android:text="@string/enter_button_label"
+
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:layout_gravity="end|bottom"
+
+            android:background="@color/colorGrayest"
+            android:textColor="@color/colorGray"
+            android:enabled="false"
+
+            />
+
+    </LinearLayout>
+
+
+
+
+
