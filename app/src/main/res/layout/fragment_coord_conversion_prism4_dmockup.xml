@@ -28,7 +28,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_gravity="center_vertical">
+            >
 
             <!-- Latitude Block -->
             <LinearLayout
@@ -74,6 +74,8 @@
                         />
                     <EditText
                         android:id="@+id/latitudeInput"
+                        android:hint="@string/type_decimal_degrees_label"
+                        android:layout_gravity="center_horizontal"
 
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -82,7 +84,81 @@
                         android:inputType="numberDecimal|numberSigned"
                         android:layout_marginEnd="16dp"
 
-                        android:textColor="@color/colorPureRed"
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+                <!-- break out degrees/minutes/seconds -->
+                <!-- into separate fields -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <!-- blank label to make fields line up on screen -->
+                    <TextView
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <!-- degrees -->
+                    <EditText
+                        android:id="@+id/latDegreesInput"
+                        android:hint="@string/type_degrees_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:inputType="numberDecimal|numberSigned"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- minutes -->
+                    <EditText
+                        android:id="@+id/latMinutesInput"
+                        android:hint="@string/type_minutes_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:inputType="numberDecimal|numberSigned"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- seconds -->
+                    <EditText
+                        android:id="@+id/latSecondsInput"
+                        android:hint="@string/type_seconds_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:inputType="numberDecimal|numberSigned"
+
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+
+                        android:textColor="@color/colorTextBlack"
                         android:background="@color/colorWhite"
                         />
 
@@ -137,6 +213,8 @@
                         />
                     <EditText
                         android:id="@+id/longitudeInput"
+                        android:hint="@string/type_decimal_degrees_label"
+                        android:layout_gravity="center_horizontal"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="75"
@@ -144,13 +222,82 @@
                         android:inputType="numberDecimal|numberSigned"
                         android:layout_marginEnd="16dp"
 
-                        android:textColor="@color/colorPureRed"
+                        android:textColor="@color/colorTextBlack"
                         android:background="@color/colorWhite"
                         />
 
                 </LinearLayout>
-            </LinearLayout>
 
+                <!-- break out degrees/minutes/seconds -->
+                <!-- into separate fields -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+                    <!-- blank label to make fields line up on screen -->
+                    <TextView
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <!-- degrees -->
+                    <EditText
+                        android:id="@+id/longDegreesInput"
+                        android:hint="@string/type_degrees_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- minutes -->
+                    <EditText
+                        android:id="@+id/longMinutesInput"
+                        android:hint="@string/type_minutes_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- seconds -->
+                    <EditText
+                        android:id="@+id/longSecondsInput"
+                        android:hint="@string/type_seconds_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="center"
+
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+                </LinearLayout>
+
+            </LinearLayout>
 
             <!-- Conversion Button, Clear Form Button -->
             <LinearLayout
@@ -159,6 +306,18 @@
                 android:orientation="horizontal"
                 android:paddingTop="20dp"
                 >
+                <!-- blank label to make fields line up on screen -->
+                <TextView
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="35"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <!-- Conversion Button -->
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
                     android:id="@+id/convertButton"
@@ -167,7 +326,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center|center_vertical"
                     android:layout_gravity="start"
-                    android:layout_weight="1"
+                    android:layout_weight="37.5"
 
                     android:layout_marginStart="16dp"
                     android:layout_marginEnd="8dp"
@@ -175,6 +334,7 @@
                     android:background="@color/colorGray"
                     android:textColor="@color/colorTextBlack"
                     />
+                <!-- Clear Form Button -->
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
                     android:id="@+id/clearFormButton"
@@ -183,7 +343,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center|center_vertical"
                     android:layout_gravity="end"
-                    android:layout_weight="1"
+                    android:layout_weight="37.5"
 
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
@@ -205,6 +365,7 @@
                 android:paddingBottom="20dp"
                 >
 
+                <!-- IBM UTM Source Code  -->
                 <!-- UTM Integer (meter accuracy) Prompt -->
                 <TextView
                     android:id="@+id/utmIntegerPrompt"
@@ -253,8 +414,8 @@
                 </LinearLayout>
 
 
-
-                <!-- UTM Stack Overflow Prompt -->
+                <!-- UTM Stack Overflow  -->
+                <!-- Prompt -->
                 <TextView
                     android:id="@+id/utmSOPrompt"
                     android:text="@string/utm_so_output_prompt"
@@ -301,7 +462,9 @@
 
                 </LinearLayout>
 
-                <!-- UTM Nanometer Prompt -->
+
+                <!-- UTM Rewritten from scratch  -->
+                <!--  Prompt -->
                 <TextView
                     android:id="@+id/utmNmPrompt"
                     android:text="@string/utm_nanometer_output_prompt"
@@ -315,7 +478,7 @@
                     android:textColor="@color/colorWhite"
                     android:background="@color/colorScreenBackground"
                     />
-                <!-- UTM Rewritten from scratch Label and output field -->
+                <!--  Label and output field -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -347,22 +510,32 @@
                         />
 
                 </LinearLayout>
-
-                <!-- break out the fields -->
+                <!-- break out the fields individually -->
+                <!-- Zone Hemisphere Latband -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
 
                     >
+                    <!-- blank label to make fields line up on screen -->
+                    <TextView
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
                     <!-- zone -->
                     <TextView
                         android:id="@+id/utm_zone"
-                        android:text="@string/utm_zone_label"
+                        android:hint="@string/utm_zone_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="25"
 
                         android:layout_margin="6dp"
 
@@ -372,12 +545,11 @@
                     <!-- hemisphere -->
                     <TextView
                         android:id="@+id/utm_hemisphere"
-                        android:text="@string/utm_hemisphere_label"
+                        android:hint="@string/utm_hemisphere_label"
 
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="25"
 
                         android:layout_margin="6dp"
 
@@ -387,26 +559,49 @@
                     <!-- LatBand -->
                     <TextView
                         android:id="@+id/utm_latband"
-                        android:text="@string/utm_latband_label"
+                        android:hint="@string/utm_latband_label"
 
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="25"
 
-                        android:layout_margin="6dp"
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
 
                         android:textColor="@color/colorTextBlack"
                         android:background="@color/colorWhite"
                         />
+
+
+                </LinearLayout>
+                <!-- Easting Northing -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+
+                    >
+
+                    <!-- blank label to make fields line up on screen -->
+                    <TextView
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25.0"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
                     <!-- Easting -->
                     <TextView
                         android:id="@+id/utm_easting"
-                        android:text="@string/utm_easting_label"
+                        android:hint="@string/utm_easting_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="37.5"
+
 
                         android:layout_margin="6dp"
 
@@ -416,14 +611,17 @@
                     <!-- Northing -->
                     <TextView
                         android:id="@+id/utm_northing"
-                        android:text="@string/utm_northing_label"
+                        android:hint="@string/utm_northing_label"
 
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
-                        android:layout_weight="1"
-                        android:gravity="center"
+                        android:layout_weight="37.5"
 
-                        android:layout_margin="6dp"
+
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+
 
                         android:textColor="@color/colorTextBlack"
                         android:background="@color/colorWhite"

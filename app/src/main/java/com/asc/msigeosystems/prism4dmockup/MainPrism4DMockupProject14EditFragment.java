@@ -94,8 +94,8 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
         mProjectIDInput = (EditText) v.findViewById(R.id.projectIDInput);
 
         //Project Date
-        mProjectDateLabel = (TextView) v.findViewById(R.id.projectDateLabel);
-        mProjectDateInput = (EditText) v.findViewById(R.id.projectDateInput);
+        mProjectDateLabel = (TextView) v.findViewById(R.id.projectCreationDateLabel);
+        mProjectDateInput = (EditText) v.findViewById(R.id.projectCreationDateInput);
 
         //Project Description
         mProjectDescLabel = (TextView)v.findViewById(R.id.projectDescLabel);

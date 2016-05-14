@@ -1,0 +1,35 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorScreenBackground"
+    android:orientation="vertical"
+    >
+    <!-- This layout is for creating a new project -->
+    <!--  -->
+    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="5"
+
+        >
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/projectsList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            >
+
+        </android.support.v7.widget.RecyclerView>
+
+
+
+    </ScrollView>
+
+    <!-- The Footer will be as standard as possible -->
+    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+
+
+</LinearLayout>
+

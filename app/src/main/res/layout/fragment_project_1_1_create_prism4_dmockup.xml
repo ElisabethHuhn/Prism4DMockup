@@ -34,9 +34,31 @@
             android:stretchColumns="*"
 
             >
-            <!-- Row 1: Project Name -->
+            <!-- Row 1: Project Screen Label -->
             <TableRow
-                android:id="@+id/tableRow1"
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/projectScreenLabel"
+                    android:text="@string/project_screen_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+
+                    android:gravity="center_horizontal"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+            </TableRow>
+
+            <!-- Row 2: Project Name -->
+            <TableRow
+
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -70,11 +92,9 @@
 
             </TableRow>
 
-            <!-- Row 2:  -->
-
             <!-- Row 3: Project ID -->
             <TableRow
-                android:id="@+id/tableRow3"
+
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -110,14 +130,14 @@
 
             <!-- Row 4: Project Creation Date -->
             <TableRow
-                android:id="@+id/tableRow4"
+
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/projectDateLabel"
+                    android:id="@+id/projectCreationDateLabel"
                     android:text="@string/project_creation_date_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -128,7 +148,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/projectDateInput"
+                    android:id="@+id/projectCreationDateInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -144,9 +164,45 @@
 
             </TableRow>
 
-            <!-- Row 5: Project Description -->
+            <!-- Row 5: Project Last Modified Date -->
             <TableRow
-                android:id="@+id/tableRow5"
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/projectModifiedDateLabel"
+                    android:text="@string/project_last_modified_date_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <EditText
+                    android:id="@+id/projectModifiedDateInput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorPureRed"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row 6: Project Description -->
+            <TableRow
+
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -186,33 +242,16 @@
 
             </TableRow>
 
-            <!-- Row 6: View Existing Projects, Settings Button -->
+            <!-- Row 7: View Existing Projects, Settings Button -->
             <TableRow
-                android:id="@+id/tableRow6"
+
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="10dp"
                 >
 
-                <Button
-                    style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/projectViewExistingButton"
-                    android:text="@string/project_view_existing_label"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:gravity="center|center_vertical"
-                    android:layout_gravity="start"
-                    android:layout_weight="1"
-
-                    android:layout_marginStart="16dp"
-                    android:layout_marginEnd="8dp"
-
-                    android:background="@color/colorGrayer"
-                    android:textColor="@color/colorTextBlack"
-                    />
-
+                <!-- View Project Settings -->
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
                     android:id="@+id/projectViewSettingsButton"
@@ -226,6 +265,25 @@
 
                     android:layout_marginStart="8dp"
                     android:layout_marginEnd="16dp"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    />
+
+                <!-- View Existing Projects -->
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/projectViewExistingButton"
+                    android:text="@string/project_view_existing_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="16dp"
+                    android:layout_marginEnd="8dp"
 
                     android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"

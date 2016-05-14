@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:focusable="true"
+    android:clickable="true"
+
+    android:paddingLeft="@dimen/fragment_horizontal_margin"
+    android:paddingRight="@dimen/fragment_horizontal_margin"
+    android:paddingTop="@dimen/interum_vertical_margin"
+    android:paddingBottom="@dimen/interum_vertical_margin"
+
+    android:background="?android:attr/selectableItemBackground"
+    >
+
+    <!-- ID -->
+    <TextView
+        android:id="@+id/projectRowIDInput"
+        android:textColor="@color/colorTextBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        />
+
+    <!-- Name -->
+    <TextView
+        android:id="@+id/projectRowNameLabel"
+        android:textColor="@color/colorTextBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        />
+
+    <!-- Date Last Modified -->
+    <TextView
+        android:id="@+id/projectRowLastModified"
+        android:textColor="@color/colorTextBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        />
+
+    <!-- Size -->
+    <TextView
+        android:id="@+id/projectRowSize"
+        android:textColor="@color/colorTextBlack"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray"
+        />
+
+</LinearLayout>

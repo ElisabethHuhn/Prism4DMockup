@@ -95,10 +95,10 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
         mOpenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.open_button_label,
-                        Toast.LENGTH_SHORT).show();
+                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToProject12OpenScreen();
+                }
 
             }
         });
@@ -111,27 +111,33 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.copy_button_label,
-                        Toast.LENGTH_SHORT).show();
+                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                if (myActivity != null){
+                    myActivity.switchToProject13CopyScreen();
+                }
 
             }
         });
 
         //Edit Button
         mEditButton = (Button) v.findViewById(R.id.row2Button1);
-        mEditButton.setText(R.string.edit_button_label);
+        //edit is disabled, so disable the button.
+        mEditButton.setEnabled(false);
+        mEditButton.setText(R.string.setting_unused_button_label);
         mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_project, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
+                ///Use open, not Edit
+                Toast.makeText(getActivity(),
+                        R.string.project_no_edit,
+                        Toast.LENGTH_SHORT).show();
+/***
                 MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToProject14EditScreen();
                 }
-
+***/
             }
         });
 
@@ -143,10 +149,10 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                ///for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.delete_button_label,
-                        Toast.LENGTH_SHORT).show();
+                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                if (myActivity != null){
+                    myActivity.switchToProject15DeleteScreen();
+                }
 
             }
         });
@@ -219,8 +225,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
 
         //FOOTER WIDGETS
 
-        //  unlike the home screen
-        //  Esc and Enter buttons are enabled on the collect screen
+        //  Esc and Enter buttons are enabled on the project screen
 
         //Esc Button
         mEscButton = (Button) v.findViewById(R.id.escButton);

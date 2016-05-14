@@ -25,17 +25,17 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
 
     //Matrix Buttons
-    private Button mUnitsButton;
-    private Button mFormatsButton;
-    private Button mTolerancesButton;
+    private Button mGlobalButton;
+    private Button mProjectButton;
+    private Button m3Button;
 
-    private Button mDatumsButton;
-    private Button mProjectionsButton;
-    private Button mGeoidModelButton;
+    private Button m4Button;
+    private Button m5Button;
+    private Button m6Button;
 
-    private Button mGeneralButton;
-    private Button mLocalizationsButton;
-    private Button mSurveyStylesButton;
+    private Button m7Button;
+    private Button m8Button;
+    private Button m9Button;
 
 
     //footer
@@ -74,18 +74,18 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //Wire up the UI widgets so they can handle events later
 
-        //Units Button
-        mUnitsButton = (Button) v.findViewById(R.id.row1Button1);
-        mUnitsButton.setText(R.string.setting_units_button_label);
+        //Global Button for global settings
+        mGlobalButton = (Button) v.findViewById(R.id.row1Button1);
+        mGlobalButton.setText(R.string.setting_global_button_label);
         //the order of images here is left, top, right, bottom
-        mUnitsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mUnitsButton.setOnClickListener(new View.OnClickListener() {
+        mGlobalButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mGlobalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.setting_units_button_label,
-                        Toast.LENGTH_SHORT).show();
+                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToSettings11GlobalScreen();
+                }
 
             }
         });
@@ -93,129 +93,136 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
 
 
-        //Formats Button
-        mFormatsButton = (Button) v.findViewById(R.id.row1Button2);
-        mFormatsButton.setText(R.string.setting_formats_button_label);
+        //Project Button
+        mProjectButton = (Button) v.findViewById(R.id.row1Button2);
+        mProjectButton.setText(R.string.setting_project_defaults_button_label);
         //the order of images here is left, top, right, bottom
-        mFormatsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mFormatsButton.setOnClickListener(new View.OnClickListener() {
+        mProjectButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToSettings12ProjectDefaultsScreen();
+                }
+
+            }
+        });
+
+
+        //3 Button
+        m3Button = (Button) v.findViewById(R.id.row3Button3);
+        m3Button.setText(R.string.setting_unused_button_label);
+        m3Button.setEnabled(false);
+        m3Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m3Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                ///for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.setting_unused_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //4 Button
+        m4Button = (Button) v.findViewById(R.id.row1Button3);
+        m4Button.setText(R.string.setting_unused_button_label);
+        m4Button.setEnabled(false);
+        m4Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m4Button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_formats_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-
-        //Tolerances Button
-        mTolerancesButton = (Button) v.findViewById(R.id.row3Button3);
-        mTolerancesButton.setText(R.string.setting_tolerances_button_label);
-        mTolerancesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mTolerancesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                ///for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.setting_tolerances_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Datums Button
-        mDatumsButton = (Button) v.findViewById(R.id.row1Button3);
-        mDatumsButton.setText(R.string.setting_datums_button_label);
-        mDatumsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mDatumsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.setting_datums_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //Projections Button
-        mProjectionsButton = (Button) v.findViewById(R.id.row2Button1);
-        mProjectionsButton.setText(R.string.setting_projections_button_label);
-        mProjectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mProjectionsButton.setOnClickListener(new View.OnClickListener() {
+        //5 Button
+        m5Button = (Button) v.findViewById(R.id.row2Button1);
+        m5Button.setText(R.string.setting_unused_button_label);
+        m5Button.setEnabled(false);
+        m5Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m5Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_projections_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Geoid Models Button
-        mGeoidModelButton = (Button) v.findViewById(R.id.row2Button2);
-        mGeoidModelButton.setText(R.string.setting_geoid_models_button_label);
-        mGeoidModelButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mGeoidModelButton.setOnClickListener(new View.OnClickListener() {
+        //6 Button
+        m6Button = (Button) v.findViewById(R.id.row2Button2);
+        m6Button.setText(R.string.setting_unused_button_label);
+        m6Button.setEnabled(false);
+        m6Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m6Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_geoid_models_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //General Button
-        mGeneralButton = (Button) v.findViewById(R.id.row2Button3);
-        mGeneralButton.setText(R.string.setting_general_button_label);
-        mGeneralButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mGeneralButton.setOnClickListener(new View.OnClickListener() {
+        //7 Button
+        m7Button = (Button) v.findViewById(R.id.row2Button3);
+        m7Button.setText(R.string.setting_unused_button_label);
+        m7Button.setEnabled(false);
+        m7Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m7Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_general_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Localizations Button
-        mLocalizationsButton = (Button) v.findViewById(R.id.row3Button1);
-        mLocalizationsButton.setText(R.string.setting_localizations_button_label);
-        mLocalizationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mLocalizationsButton.setOnClickListener(new View.OnClickListener() {
+        //8 Button
+        m8Button = (Button) v.findViewById(R.id.row3Button1);
+        m8Button.setText(R.string.setting_unused_button_label);
+        m8Button.setEnabled(false);
+        m8Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m8Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_localizations_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Survey Styles Button
-        mSurveyStylesButton = (Button) v.findViewById(R.id.row3Button2);
-        mSurveyStylesButton.setText(R.string.setting_survey_styles_button_label);
-        mSurveyStylesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
-        mSurveyStylesButton.setOnClickListener(new View.OnClickListener() {
+        //9 Button
+        m9Button = (Button) v.findViewById(R.id.row3Button2);
+        m9Button.setText(R.string.setting_unused_button_label);
+        m9Button.setEnabled(false);
+        m9Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        m9Button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_survey_styles_button_label,
+                        R.string.setting_unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
