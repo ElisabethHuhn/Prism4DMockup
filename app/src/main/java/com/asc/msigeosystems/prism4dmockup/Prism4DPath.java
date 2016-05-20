@@ -6,10 +6,11 @@ package com.asc.msigeosystems.prism4dmockup;
  * mainenance we are on:
  * Create, Open. Copy or Delete
  */
-public class Prism4DMockupPath {
+public class Prism4DPath {
 
     //Tags for fragment arguments
-    public static String sPathTag     = "PATH";
+    public static final String sProjectPathTag = "PROJECT_PATH";
+    public static final String sPointPathTag   = "POINT_PATH";
 
     //Literals defining the possible paths to be taken
     public static final String sOpenTag   = "OPEN";
@@ -21,7 +22,7 @@ public class Prism4DMockupPath {
     private CharSequence mPath;
 
     //constructor
-    public Prism4DMockupPath(CharSequence path) {
+    public Prism4DPath(CharSequence path) {
         this.mPath = path;
     }
 

@@ -5,9 +5,9 @@ import java.util.Date;
 /**
  * Created by elisabethhuhn on 5/7/2016.
  */
-public class Prism4DMockupProject {
+public class Prism4DProject {
 
-    private static int sNextID = 1008;
+    private static int sNextProjectID = 1008;
 
     // Project Data
     private CharSequence mName;
@@ -15,9 +15,13 @@ public class Prism4DMockupProject {
     private Date         mDateCreated;
     private Date         mLastModified;
     private CharSequence mDescription;
-    //Settings are linked to the project with an attribute on the settings
+    //Settings are linked to the project with an attribute on the project settings
     //which is the project ID the settings belong to
     //private Prism4DMockupProjectSettings mSettings;
+
+
+
+    private int mNextPointID = 10001;
 
 
     //Tags for fragment arguments
@@ -28,24 +32,33 @@ public class Prism4DMockupProject {
     public static final String sProjectMaintTag  = "PROJECT_MAINTAINED";
     public static final String sProjectDescTag   = "PROJECT_DESCRIPTION";
 
-    public static int    sProjectDefaultsID   = -1;
-    public static String sProjectDefaultName  = "Project Defaults";
-    public static String sProjectDefaultsDesc =
+    public static final int    sProjectDefaultsID   = -1;
+    public static final String sProjectDefaultName  = "Project Defaults";
+    public static final String sProjectDefaultsDesc =
             "This project represents the defaults that all other projects start with";
 
-    public static int    sProjectNewID   = -2;
-    public static String sProjectNewName = "Create Project";
-    public static String sProjectNewDesc = "";
+    public static final int    sProjectNewID   = -2;
+    public static final String sProjectNewName = "Create Project";
+    public static final String sProjectNewDesc = "";
 
 
+    //
     //Setters and Getters
+    //
 
     //this should be good enough for the Mockup,
     //but we must do MUCH better for the real thing
-    public static int getsNextID(){
-        sNextID = sNextID + 1;
-        return sNextID;
+    public static int getNextProjectID(){
+        sNextProjectID = sNextProjectID + 1;
+        return sNextProjectID;
     }
+    //same comment for the next point ID
+    //Good enough for the mockup, but must do better for the real thing
+    public int getNextPointID() {
+        mNextPointID = mNextPointID + 1;
+        return mNextPointID;
+    }
+
 
     public CharSequence getProjectName() {  return mName;    }
     public void setProjectName(CharSequence mName) {
@@ -80,7 +93,7 @@ public class Prism4DMockupProject {
     /*
      *  Note this constructor does NOT have description
      */
-    public Prism4DMockupProject(CharSequence projectName, int projectID) {
+    public Prism4DProject(CharSequence projectName, int projectID) {
         this.mName = projectName;
         this.mID = projectID;
 

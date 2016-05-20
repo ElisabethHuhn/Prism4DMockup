@@ -16,7 +16,7 @@ import android.widget.Toast;
  * when the user is making point measurements in the field
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DMockupProject14EditFragment extends Fragment {
+public class MainPrism4DProject14EditFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -68,7 +68,7 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupProject14EditFragment() {
+    public MainPrism4DProject14EditFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -78,7 +78,7 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_project_1_1_create_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_project_1_n_maintain_prism4_dmockup, container, false);
 
 
         //Wire up the UI widgets so they can handle events later
@@ -111,9 +111,9 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
-                    myActivity.switchToProjectSettingsScreen();
+                    //myActivity.switchToProjectSettingsScreen();
                 }
             }
         });
@@ -146,7 +146,7 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
                         R.string.no_save,
                         Toast.LENGTH_SHORT).show();
 
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToPopBackstack();
                 }
@@ -167,7 +167,7 @@ public class MainPrism4DMockupProject14EditFragment extends Fragment {
                         R.string.project_stored,
                         Toast.LENGTH_SHORT).show();
 
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToPopBackstack();
                 }

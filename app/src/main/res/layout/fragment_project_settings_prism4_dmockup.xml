@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    tools:context=".MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
@@ -35,9 +35,88 @@
 
             >
 
-            <!-- Row 1: Distance Units -->
+            <!-- Row  Project Label -->
             <TableRow
-                android:id="@+id/tableRow1"
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/projectLabel"
+                    android:text="@string/distance_units_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="wrap_content"
+
+                    android:gravity="center_horizontal"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+            </TableRow>
+
+            <!-- Row Project ID, Name -->
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/projectIDLabel"
+                    android:text="@string/distance_units_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <TextView
+                    android:id="@+id/projectIDOutput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <TextView
+                    android:id="@+id/projectNameLabel"
+                    android:text="@string/distance_units_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <TextView
+                    android:id="@+id/projectNameOutput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:inputType="text"
+                    android:layout_marginEnd="16dp"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row Distance Units -->
+            <TableRow
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -71,9 +150,8 @@
 
             </TableRow>
 
-            <!-- Row 2: Decimal Display -->
+            <!-- Row  Decimal Display -->
             <TableRow
-                android:id="@+id/tableRow2"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -108,9 +186,8 @@
 
             </TableRow>
 
-            <!-- Row 3: Angle Units -->
+            <!-- Row : Angle Units -->
             <TableRow
-                android:id="@+id/tableRow3"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -144,9 +221,8 @@
 
             </TableRow>
 
-            <!-- Row 4: Angle Display -->
+            <!-- Row : Angle Display -->
             <TableRow
-                android:id="@+id/tableRow4"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -180,9 +256,8 @@
 
             </TableRow>
 
-            <!-- Row 5: Grid Direction -->
+            <!-- Row : Grid Direction -->
             <TableRow
-                android:id="@+id/tableRow5"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -216,9 +291,8 @@
 
             </TableRow>
 
-            <!-- Row 6: Scale Factor -->
+            <!-- Row : Scale Factor -->
             <TableRow
-                android:id="@+id/tableRow6"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -253,10 +327,8 @@
 
             </TableRow>
 
-
-            <!-- Row 7: Sea Level -->
+            <!-- Row : Sea Level -->
             <TableRow
-                android:id="@+id/tableRow7"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -290,9 +362,8 @@
 
             </TableRow>
 
-            <!-- Row 8: Refraction -->
+            <!-- Row : Refraction -->
             <TableRow
-                android:id="@+id/tableRow8"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -327,9 +398,8 @@
 
             </TableRow>
 
-            <!-- Row 9: Datum -->
+            <!-- Row : Datum -->
             <TableRow
-                android:id="@+id/tableRow9"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -363,9 +433,8 @@
 
             </TableRow>
 
-            <!-- Row 10: Projection -->
+            <!-- Row : Projection -->
             <TableRow
-                android:id="@+id/tableRow10"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -399,9 +468,8 @@
 
             </TableRow>
 
-            <!-- Row 11: Zone -->
+            <!-- Row : Zone -->
             <TableRow
-                android:id="@+id/tableRow11"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -435,9 +503,8 @@
 
             </TableRow>
 
-            <!-- Row 12: Coordinate Display -->
+            <!-- Row : Coordinate Display -->
             <TableRow
-                android:id="@+id/tableRow12"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -472,10 +539,8 @@
 
             </TableRow>
 
-
-            <!-- Row 13: Geoid Model -->
+            <!-- Row : Geoid Model -->
             <TableRow
-                android:id="@+id/tableRow13"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -509,10 +574,8 @@
 
             </TableRow>
 
-            <!-- Row 14: Starting Point ID -->
+            <!-- Row : Starting Point ID -->
             <TableRow
-                android:id="@+id/tableRow14"
-                android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="10dp"
@@ -546,9 +609,8 @@
 
             </TableRow>
 
-            <!-- Row 15: Alphanumeric -->
+            <!-- Row : Alphanumeric -->
             <TableRow
-                android:id="@+id/tableRow15"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -582,9 +644,8 @@
 
             </TableRow>
 
-            <!-- Row 16: Feature Codes -->
+            <!-- Row : Feature Codes -->
             <TableRow
-                android:id="@+id/tableRow16"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -618,9 +679,8 @@
 
             </TableRow>
 
-            <!-- Row 17: Feature Codes Control File -->
+            <!-- Row : Feature Codes Control File -->
             <TableRow
-                android:id="@+id/tableRow17"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -654,9 +714,8 @@
 
             </TableRow>
 
-            <!-- Row 18: Feature Codes Time Stamp -->
+            <!-- Row : Feature Codes Time Stamp -->
             <TableRow
-                android:id="@+id/tableRow18"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -690,9 +749,8 @@
 
             </TableRow>
 
-            <!-- Row 19: Reset Defaults Button -->
+            <!-- Row : Reset Defaults Button -->
             <TableRow
-                android:id="@+id/tableRow19"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -706,8 +764,7 @@
                     android:text="@string/reset_defaults_button_label"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:gravity="center|center_vertical"
-                    android:layout_gravity="center_horizontal"
+
 
                     android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"

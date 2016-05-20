@@ -96,7 +96,7 @@ public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
 
                 //Switch the fragment to the collect without maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToCollect11PointsScreen();
                 }
@@ -232,7 +232,7 @@ public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 //Switch the fragment to the previous fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToPopBackstack();
                     //have to pop regular collect screen off the stack too
@@ -256,7 +256,7 @@ public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 //Switch the fragment to the previous fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToPopBackstack();
                     //have to pop regular collect off stack too

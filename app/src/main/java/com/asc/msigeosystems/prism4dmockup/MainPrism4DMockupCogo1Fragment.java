@@ -208,7 +208,7 @@ public class MainPrism4DMockupCogo1Fragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToConvertScreen();
                 }

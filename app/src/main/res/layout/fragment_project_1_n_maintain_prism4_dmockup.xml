@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    tools:context=".MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
@@ -36,17 +36,15 @@
             >
             <!-- Row 1: Project Screen Label -->
             <TableRow
-
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
-                android:layout_gravity="center_horizontal"
                 android:paddingTop="10dp"
                 >
                 <TextView
                     android:id="@+id/projectScreenLabel"
                     android:text="@string/project_screen_label"
                     android:layout_height="wrap_content"
-                    android:layout_width="0dp"
+                    android:layout_width="wrap_content"
 
                     android:gravity="center_horizontal"
 
@@ -83,6 +81,7 @@
                     android:layout_weight="75"
 
                     android:inputType="text"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorPureRed"
@@ -119,6 +118,7 @@
                     android:layout_weight="75"
 
                     android:inputType="text"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorPureRed"
@@ -191,6 +191,7 @@
                     android:layout_weight="75"
 
                     android:inputType="text"
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorPureRed"
@@ -233,6 +234,7 @@
                     android:gravity="top|left"
                     android:scrollbars="horizontal"
 
+                    android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorPureRed"
@@ -260,11 +262,11 @@
                     android:layout_height="wrap_content"
 
                     android:gravity="center|center_vertical"
-                    android:layout_gravity="end"
+                    android:layout_gravity="start"
                     android:layout_weight="1"
 
                     android:layout_marginStart="8dp"
-                    android:layout_marginEnd="16dp"
+                    android:layout_marginEnd="4dp"
 
                     android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
@@ -279,15 +281,68 @@
                     android:layout_height="wrap_content"
 
                     android:gravity="center|center_vertical"
-                    android:layout_gravity="start"
+                    android:layout_gravity="end"
                     android:layout_weight="1"
 
-                    android:layout_marginStart="16dp"
+                    android:layout_marginStart="4dp"
                     android:layout_marginEnd="8dp"
 
                     android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
                     />
+
+
+            </TableRow>
+
+            <!-- Row 8: View Points, Save Changes Button -->
+            <TableRow
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+
+
+                <!-- View Points -->
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/projectMaintainPointsButton"
+                    android:text="@string/point_maintain_points_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="start"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="4dp"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    />
+
+                <!-- Save Changes -->
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/projectSaveChangesButton"
+                    android:text="@string/save_changes_button_label"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:gravity="center|center_vertical"
+                    android:layout_gravity="end"
+                    android:layout_weight="1"
+
+                    android:layout_marginStart="4dp"
+                    android:layout_marginEnd="8dp"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                    />
+
+
 
             </TableRow>
 

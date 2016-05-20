@@ -167,7 +167,7 @@
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
                     android:id="@+id/listPointsButton"
-                    android:text="@string/list_points_button_label"
+                    android:text="@string/maintain_points_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"

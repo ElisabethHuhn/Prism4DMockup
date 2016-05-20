@@ -18,38 +18,44 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The List Project Fragment is the UI
- * when the user can see the projects residing on this handset
- * Created by elisabethhuhn on 5/15/2016.
+ * The List Points Fragment is the UI
+ * for the user to see points of a given project
+ * Created by elisabethhuhn on 5/8/2016.
  */
-public class MainPrism4DMockupListProjectsFragment extends Fragment {
+public class MainPrism4DMockupListPointsFragment extends Fragment {
 
-    private static final String TAG = "LIST_PROJECTS_FRAGMENT";
+    private static final String TAG = "LIST_POINTS_FRAGMENT";
     /**
      * Create variables for all the widgets
      *  although in the mockup, most will be statically defined in the xml
      */
 
-    private List<Prism4DProject> mProjectList ;
+    private List<Prism4DPoint> mPointList = new ArrayList<>();
+    private List<Prism4DPoint> mProjectPointList = new ArrayList<>();
     private RecyclerView mRecyclerView;
-    private Prism4DProjectAdapter mAdapter;
+    private Prism4DPointAdapter mAdapter;
 
 
 
+    private int          mProjectID;
+    private CharSequence mProjectName;
 
-    private String mProjectName;
-    private String mProjectID;
-    private Date   mProjectDate;
-    private String mProjectDescription;
+    private int          mPointID;
+    private double       mPointEasting;
+    private double       mPointNorthing;
+    private double       mPointElevation;
+    private CharSequence mPointDescription;
+    private CharSequence mNotes;
 
-    private Prism4DProject mSelectedProject;
-    private int                  mSelectedPosition;
+    private Prism4DPoint mSelectedPoint;
+    private int                mSelectedPosition;
 
-    private CharSequence         mProjectPath;
+    private CharSequence       mProjectPath;
+    private CharSequence       mPointPath;
 
 
 
@@ -73,25 +79,30 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
     //footer right button
     private Button mEnterButton;
 
-    public MainPrism4DMockupListProjectsFragment newInstance(
-            Prism4DPath projectPath){
+    public MainPrism4DMockupListPointsFragment newInstance(
+            Prism4DProject project,
+            Prism4DPath projectPath,
+            Prism4DPath pointPath){
 
         Bundle args = new Bundle();
 
         //It will be some work to make all of the data model serializable
-        //so for now, just pass the project values
+        //so for now, just pass the point values
         //For now, the only thing to pass is the path type itself
-        args.putCharSequence(Prism4DPath.sProjectPathTag,   projectPath.getPath());
+        args.putInt         (Prism4DProject.sProjectIDTag,   project.getProjectID());
+        args.putCharSequence(Prism4DProject.sProjectNameTag, project.getProjectName());
+        args.putCharSequence(Prism4DPath.sProjectPathTag,    projectPath.getPath());
+        args.putCharSequence(Prism4DPath.sPointPathTag,      pointPath.getPath());
 
-        MainPrism4DMockupListProjectsFragment fragment =
-                new MainPrism4DMockupListProjectsFragment();
+        MainPrism4DMockupListPointsFragment fragment =
+                new MainPrism4DMockupListPointsFragment();
 
         fragment.setArguments(args);
         return fragment;
     }
 
     //Constructor
-    public MainPrism4DMockupListProjectsFragment() {
+    public MainPrism4DMockupListPointsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -101,8 +112,11 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
+        mProjectID = getArguments().getInt(Prism4DProject.sProjectIDTag);
+        mProjectName = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
 
+        mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
+        mPointPath = getArguments().getCharSequence(Prism4DPath.sPointPathTag);
 
         //This would be the place to do anything unique to a given path
 
@@ -131,33 +145,31 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
          */
         //1) Inflate the layout for this fragment
         View v = inflater.inflate
-                (R.layout.fragment_project_list_prism4_dmockup, container, false);
+                (R.layout.fragment_point_list_prism4_dmockup, container, false);
         v.setTag(TAG);
 
-        //Even though this is a mockup, use the real recycler view to assure
-        //that I understand it for the real project
-
         //2) find and remember the RecyclerView
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.projectsList);
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.pointsList);
 
 
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
+        // The RecyclerView.LayoutManager defines how elements are laid out.
         //3) create and assign a layout manager to the recycler view
         RecyclerView.LayoutManager mLayoutManager  = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        //4) read data in from the database and tell the adapter about it
-        //prepareProjectDataset();
+        //4) create some dummy data and tell the adapter about it
+        //preparePointDataset();
+        //      get our singleton holder
+        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+        //      then go get our list of points
+        //mPointList = pointsContainer.getPoints();
 
-        //      make sure our singleton list holder exists first
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
-        //      then go get our list of projects
-        mProjectList = projectList.getProjects();
+        //filter out points not in this project
+        mPointList = pointsContainer.getProjectPointsList(mProjectID);
+
 
         //5) Use the data to Create and set the Adapter
-        mAdapter = new Prism4DProjectAdapter(mProjectList);
+        mAdapter = new Prism4DPointAdapter(mPointList);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -177,29 +189,29 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
                     @Override
                     public void onClick(View view, int position) {
                         mSelectedPosition = position;
-                        mSelectedProject = mProjectList.get(position);
+                        mSelectedPoint = mPointList.get(position);
                         Toast.makeText(getActivity().getApplicationContext(),
-                                mSelectedProject.getProjectName() + " is selected!",
+                                String.valueOf(mSelectedPoint.getPointID()) + " is selected!",
                                 Toast.LENGTH_SHORT).show();
 
-                        if (mProjectPath.equals(Prism4DPath.sDeleteTag)) {
+                        //also enable the Enter button according to path
+                        if (mPointPath.equals(Prism4DPath.sDeleteTag)) {
                             mEnterButton.setText(R.string.delete_button_label);
-                        } else if (mProjectPath.equals(Prism4DPath.sOpenTag)) {
+                        } else if (mPointPath.equals(Prism4DPath.sOpenTag)) {
                             mEnterButton.setText(R.string.open_button_label);
-                        } else if (mProjectPath.equals(Prism4DPath.sCopyTag)) {
+                        } else if (mPointPath.equals(Prism4DPath.sCopyTag)) {
                             mEnterButton.setText(R.string.copy_button_label);
                         } else {
                             //this is really an error, so todo should throw exception
                             mEnterButton.setText(R.string.enter_button_label);
                         }
-                        //also enable the Enter button
                         mEnterButton.setEnabled(true);
                         mEnterButton.setTextColor(Color.BLACK);
                     }
 
                     @Override
                     public void onLongClick(View view, int position) {
-
+                        //for now, ignore the long click
                     }
                 }));
 
@@ -217,9 +229,10 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
             @Override
             public void onClick(View v){
 
+                //On escape, pop all the way back to the top project matrix
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
-                    myActivity.popToProject1Screen();
+                    myActivity.popToProjectUpdateScreen();
                 }
 
             }
@@ -228,50 +241,48 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
 
         //Enter Button
         mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        //The Enter button is enabled with the first project selection
+        //The Enter button is enabled with the first point selection
         mEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
-                //Project has to have been selected to do anything here
+                //Point has to have been selected to do anything here
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
-                    if (mSelectedProject != null) {
+                    if (mSelectedPoint != null) {
 
                         //We'll need to pass the path forward
-                        Prism4DPath copiedProjectPath = new Prism4DPath(mProjectPath);
 
-                        if (mProjectPath.equals(Prism4DPath.sOpenTag)){
+                        if (mPointPath.equals(Prism4DPath.sOpenTag)){
 
-                            //if the path is open, open the selected project
-                            myActivity.switchToProject14UpdateScreen(
-                                    mSelectedProject,
-                                    copiedProjectPath);
+                            //if the path is open, open the selected point
+                            myActivity.switchToMaintainPointScreen(
+                                    new Prism4DPath(mProjectPath),
+                                    mSelectedPoint,
+                                    new Prism4DPath(mPointPath));
 
-                        }else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
+                        }else if (mPointPath.equals(Prism4DPath.sCopyTag)){
 
-                            //if the path is copy, create a new project
-                            // with the selected projects details
-                            Prism4DProject copiedProject = new Prism4DProject(
-                                    mSelectedProject.getProjectName(),
-                                    Prism4DProject.getNextProjectID()  );
-                            copiedProject.setProjectDescription(
-                                    mSelectedProject.getProjectDescription());
+                            //if the path is copy,
+                            // create a new point with the selected points details
+                            // but it has to be in the same project as this one
+                            Prism4DProject ourProject =
+                                    getOurProject(mSelectedPoint.getProjectID());
 
-                            //copy the points from the selected project
-                            // to the newly created project
-                            Prism4DPointsContainer pointsContainer =
-                                    Prism4DPointsContainer.getInstance();
-                            pointsContainer.copyProjectPoints(
-                                    mSelectedProject.getProjectID(),
-                                    copiedProject.getProjectID());
+                            Prism4DPoint newPoint = new Prism4DPoint(ourProject);
+                            newPoint.setPointEasting    (mSelectedPoint.getPointEasting());
+                            newPoint.setPointNorthing   (mSelectedPoint.getPointNorthing());
+                            newPoint.setPointElevation  (mSelectedPoint.getPointElevation());
+                            newPoint.setPointDescription(mSelectedPoint.getPointDescription());
+                            newPoint.setPointNotes      (mSelectedPoint.getPointNotes());
 
-                            //then switch to project update with that new project
-                            myActivity.switchToProject14UpdateScreen(
-                                    copiedProject,
-                                    copiedProjectPath);
+                            //then switch to point update with that new point
+                            myActivity.switchToMaintainPointScreen(
+                                    new Prism4DPath(mProjectPath),
+                                    mSelectedPoint,
+                                    new Prism4DPath(mPointPath));
 
-                        }else if (mProjectPath.equals(Prism4DPath.sDeleteTag)){
+                        }else if (mPointPath.equals(Prism4DPath.sDeleteTag)){
 
                             //ask the user if they are sure they want to proceed.
                             areYouSureDelete();
@@ -289,9 +300,10 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
 
 
                     } else {
+                        //user hasn't selected anything yet
                         //for now, just put up a toast that nothing has been pressed yet
                         Toast.makeText(getActivity(),
-                                R.string.project_no_selection,
+                                R.string.point_no_selection,
                                 Toast.LENGTH_LONG).show();
                     }
                 }
@@ -311,17 +323,21 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
 
-                        Prism4DProjectAdapter myAdapter = (Prism4DProjectAdapter) mRecyclerView.getAdapter();
+                        CharSequence message =
+                                        "Point " +
+                                        String.valueOf(mSelectedPoint.getPointID()) +
+                                        " is deleted";
+
+                        Prism4DPointAdapter myAdapter =
+                                (Prism4DPointAdapter) mRecyclerView.getAdapter();
+
                         myAdapter.removeItem(mSelectedPosition);
 
-                        CharSequence message =
-                                "Project " + mSelectedProject.getProjectName() + " is deleted";
                         Toast.makeText(getActivity(),
                                 message,
                                 Toast.LENGTH_SHORT).show();
 
-                        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                        myActivity.popToProject1Screen();
+                        //delete the point and return to list points
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -338,39 +354,16 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
 
 
 
-    //Mock up some projects for now
-    private void prepareProjectDataset(){
-        //no use doing anything if the Adapter is not created yet
 
-
-/***
-        Prism4DProject project = new Prism4DProject("Cambridge Subdivision", 1001);
-        projectList.add(project);
-
-        project = new Prism4DProject("Jones Creek",   1002);
-        projectList.add(project);
-
-        project = new Prism4DProject("Hampton South", 1003);
-        projectList.add(project);
-
-        project = new Prism4DProject("Johns Creek",   1004);
-        projectList.add(project);
-
-        project = new Prism4DProject("Macon Airport", 1005);
-        projectList.add(project);
-
-        project = new Prism4DProject("MSI Demo",      1006);
-        projectList.add(project);
-
-        project = new Prism4DProject("Roswell",       1007);
-        projectList.add(project);
-
-***/
-
+    Prism4DProject getOurProject(int projectID){
+        //ultimately, this needs to look up in the DB
+        return new Prism4DProject(
+          getResources().getString(R.string.dummy_project_name),
+          mProjectID );
     }
 
+
     //Add some code to improve the recycler view
-    //Here is the interface for event handlers for Click and LongClick
     public interface ClickListener {
         void onClick(View view, int position);
 
@@ -380,11 +373,11 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private MainPrism4DMockupListProjectsFragment.ClickListener clickListener;
+        private MainPrism4DMockupListPointsFragment.ClickListener clickListener;
 
         public RecyclerTouchListener(Context context,
                                      final RecyclerView recyclerView,
-                                     final MainPrism4DMockupListProjectsFragment.ClickListener
+                                     final MainPrism4DMockupListPointsFragment.ClickListener
                                              clickListener) {
 
             this.clickListener = clickListener;

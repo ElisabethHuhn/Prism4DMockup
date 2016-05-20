@@ -14,7 +14,7 @@ import android.widget.Toast;
  * when the user is creating / making changes to the project definition
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DMockupProject1Fragment extends Fragment {
+public class MainPrism4DProject1Fragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -55,7 +55,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupProject1Fragment() {
+    public MainPrism4DProject1Fragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -80,7 +80,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
             public void onClick(View v) {
                 //Switch the fragment to the collect with maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToProject11CreateScreen();
                 }
@@ -95,7 +95,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
         mOpenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToProject12OpenScreen();
                 }
@@ -111,7 +111,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToProject13CopyScreen();
                 }
@@ -123,8 +123,8 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
         mEditButton = (Button) v.findViewById(R.id.row2Button1);
         //edit is disabled, so disable the button.
         mEditButton.setEnabled(false);
-        mEditButton.setText(R.string.setting_unused_button_label);
-        mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_project, 0, 0);
+        mEditButton.setText(R.string.unused_button_label);
+        //mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_project, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -133,7 +133,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
                         R.string.project_no_edit,
                         Toast.LENGTH_SHORT).show();
 /***
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToProject14EditScreen();
                 }
@@ -149,7 +149,7 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToProject15DeleteScreen();
                 }
@@ -173,19 +173,23 @@ public class MainPrism4DMockupProject1Fragment extends Fragment {
             }
         });
 
-        //List Points Button
+        //Maintain Points Button
         mListPointsButton = (Button) v.findViewById(R.id.row3Button1);
-        mListPointsButton.setText(R.string.list_points_button_label);
+        mListPointsButton.setText(R.string.maintain_points_button_label);
         mListPointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_project, 0, 0);
         mListPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-
-                ///for now, just put up a toast that the button was pressed
+/***
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null){
+                    myActivity.switchToMaintainPoints1Screen();
+                }
+***/
+                ///for now, tell the user to go to maintain project screen
                 Toast.makeText(getActivity(),
-                        R.string.list_points_button_label,
-                        Toast.LENGTH_SHORT).show();
-
+                        "Maintain points from project screen. Go open the project of interest",
+                        Toast.LENGTH_LONG).show();
             }
         });
 

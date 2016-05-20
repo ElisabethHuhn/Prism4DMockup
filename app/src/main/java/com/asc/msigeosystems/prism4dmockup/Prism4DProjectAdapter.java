@@ -11,9 +11,9 @@ import java.util.List;
 /**
  * Created by elisabethhuhn on 5/8/2016.
  */
-public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHolder> {
+public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAdapter.MyViewHolder> {
 
-    private List<Prism4DMockupProject> mProjectList;
+    private List<Prism4DProject> mProjectList;
 
     //implement the ViewHolder as an inner class
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -22,16 +22,16 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
         public MyViewHolder(View v) {
             super(v);
 
-            projectName         = (TextView) v.findViewById(R.id.projectRowNameLabel);
-            projectID           = (TextView) v.findViewById(R.id.projectRowIDInput);
+            projectName         = (TextView) v.findViewById(R.id.projectRowName);
+            projectID           = (TextView) v.findViewById(R.id.projectRowID);
             projectLastModified = (TextView) v.findViewById(R.id.projectRowLastModified);
             projectSize         = (TextView) v.findViewById(R.id.projectRowSize);
         }
 
     } //end inner class MyViewHolder
 
-    //Constructor for ProjectAdapter
-    public ProjectAdapter(List<Prism4DMockupProject> projectList){
+    //Constructor for Prism4DProjectAdapter
+    public Prism4DProjectAdapter(List<Prism4DProject> projectList){
         this.mProjectList = projectList;
     }
 
@@ -43,22 +43,30 @@ public class ProjectAdapter extends RecyclerView.Adapter<ProjectAdapter.MyViewHo
 
     }
 
+    public void removeItem(int position) {
+        mProjectList.remove(position);
+        notifyItemRemoved(position);
+    }
+
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position){
         if (mProjectList != null ) {
-            Prism4DMockupProject project = mProjectList.get(position);
+            Prism4DProject project = mProjectList.get(position);
+
+            Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+            int numberPoints = pointsContainer.getSize(project.getProjectID());
 
             holder.projectName.setText(project.getProjectName());
             holder.projectID.setText(String.valueOf(project.getProjectID()));
             holder.projectLastModified.setText(project.getProjectLastModified().toString());
-            //todo size of project yet to be determined
-            holder.projectSize.setText("TBD");
+            //number of points in this project
+            holder.projectSize.setText(String.valueOf(numberPoints));
         } else {
             holder.projectName.setText("No projects defined");
             holder.projectID.setText("");
             holder.projectLastModified.setText("");
-            //todo size of project yet to be determined
-            holder.projectSize.setText("TBD");
+
+            holder.projectSize.setText("0");
         }
 
     }

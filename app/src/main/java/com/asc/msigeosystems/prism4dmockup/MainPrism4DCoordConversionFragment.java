@@ -19,7 +19,7 @@ import java.math.RoundingMode;
  * when the user is making point measurements in the field
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DMockupCoordConversionFragment extends Fragment {
+public class MainPrism4DCoordConversionFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -102,7 +102,7 @@ public class MainPrism4DMockupCoordConversionFragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupCoordConversionFragment() {
+    public MainPrism4DCoordConversionFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }

@@ -82,6 +82,7 @@
                         android:layout_weight="75"
 
                         android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
                         android:layout_marginEnd="16dp"
 
                         android:textColor="@color/colorTextBlack"
@@ -119,6 +120,7 @@
                         android:gravity="center"
 
                         android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
 
                         android:layout_margin="6dp"
 
@@ -136,6 +138,7 @@
                         android:gravity="center"
 
                         android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
 
                         android:layout_margin="6dp"
 
@@ -153,6 +156,7 @@
                         android:gravity="center"
 
                         android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
 
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="6dp"
@@ -220,6 +224,7 @@
                         android:layout_weight="75"
 
                         android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
                         android:layout_marginEnd="16dp"
 
                         android:textColor="@color/colorTextBlack"
@@ -256,6 +261,8 @@
                         android:layout_weight="25"
                         android:gravity="center"
 
+                        android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
                         android:layout_margin="6dp"
 
                         android:textColor="@color/colorTextBlack"
@@ -271,6 +278,8 @@
                         android:layout_weight="25"
                         android:gravity="center"
 
+                        android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
                         android:layout_margin="6dp"
 
                         android:textColor="@color/colorTextBlack"
@@ -285,6 +294,9 @@
                         android:layout_width="0dp"
                         android:layout_weight="25"
                         android:gravity="center"
+
+                        android:inputType="numberDecimal|numberSigned"
+                        android:imeOptions="flagNoExtractUi"
 
                         android:layout_marginStart="6dp"
                         android:layout_marginTop="6dp"

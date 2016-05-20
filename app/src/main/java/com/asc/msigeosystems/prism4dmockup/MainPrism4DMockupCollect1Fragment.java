@@ -82,7 +82,7 @@ public class MainPrism4DMockupCollect1Fragment extends Fragment {
             public void onClick(View v) {
                 //Switch the fragment to the collect with maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToCollect11PointsScreen();
                 }

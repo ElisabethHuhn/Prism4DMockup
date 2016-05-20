@@ -16,7 +16,7 @@ import android.widget.Toast;
  * local settings which are not covered here
  * Created by elisabethhuhn on 5/1/2016.
  */
-public class MainPrism4DMockupSettings1Fragment extends Fragment {
+public class MainPrism4DSettings1Fragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -59,7 +59,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupSettings1Fragment() {
+    public MainPrism4DSettings1Fragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -82,7 +82,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
         mGlobalButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToSettings11GlobalScreen();
                 }
@@ -101,7 +101,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
         mProjectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPrism4DMockupActivity myActivity = (MainPrism4DMockupActivity) getActivity();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToSettings12ProjectDefaultsScreen();
                 }
@@ -112,7 +112,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //3 Button
         m3Button = (Button) v.findViewById(R.id.row3Button3);
-        m3Button.setText(R.string.setting_unused_button_label);
+        m3Button.setText(R.string.unused_button_label);
         m3Button.setEnabled(false);
         m3Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m3Button.setOnClickListener(new View.OnClickListener() {
@@ -121,7 +121,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -129,7 +129,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //4 Button
         m4Button = (Button) v.findViewById(R.id.row1Button3);
-        m4Button.setText(R.string.setting_unused_button_label);
+        m4Button.setText(R.string.unused_button_label);
         m4Button.setEnabled(false);
         m4Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m4Button.setOnClickListener(new View.OnClickListener() {
@@ -137,7 +137,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
             public void onClick(View v){
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -145,7 +145,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //5 Button
         m5Button = (Button) v.findViewById(R.id.row2Button1);
-        m5Button.setText(R.string.setting_unused_button_label);
+        m5Button.setText(R.string.unused_button_label);
         m5Button.setEnabled(false);
         m5Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m5Button.setOnClickListener(new View.OnClickListener() {
@@ -154,7 +154,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -162,7 +162,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //6 Button
         m6Button = (Button) v.findViewById(R.id.row2Button2);
-        m6Button.setText(R.string.setting_unused_button_label);
+        m6Button.setText(R.string.unused_button_label);
         m6Button.setEnabled(false);
         m6Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m6Button.setOnClickListener(new View.OnClickListener() {
@@ -171,7 +171,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -179,7 +179,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //7 Button
         m7Button = (Button) v.findViewById(R.id.row2Button3);
-        m7Button.setText(R.string.setting_unused_button_label);
+        m7Button.setText(R.string.unused_button_label);
         m7Button.setEnabled(false);
         m7Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m7Button.setOnClickListener(new View.OnClickListener() {
@@ -188,7 +188,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -196,7 +196,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //8 Button
         m8Button = (Button) v.findViewById(R.id.row3Button1);
-        m8Button.setText(R.string.setting_unused_button_label);
+        m8Button.setText(R.string.unused_button_label);
         m8Button.setEnabled(false);
         m8Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m8Button.setOnClickListener(new View.OnClickListener() {
@@ -205,7 +205,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -213,7 +213,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
         //9 Button
         m9Button = (Button) v.findViewById(R.id.row3Button2);
-        m9Button.setText(R.string.setting_unused_button_label);
+        m9Button.setText(R.string.unused_button_label);
         m9Button.setEnabled(false);
         m9Button.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
         m9Button.setOnClickListener(new View.OnClickListener() {
@@ -222,7 +222,7 @@ public class MainPrism4DMockupSettings1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.setting_unused_button_label,
+                        R.string.unused_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
