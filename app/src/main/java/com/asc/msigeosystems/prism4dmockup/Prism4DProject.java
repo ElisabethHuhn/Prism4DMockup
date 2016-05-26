@@ -17,7 +17,7 @@ public class Prism4DProject {
     private CharSequence mDescription;
     //Settings are linked to the project with an attribute on the project settings
     //which is the project ID the settings belong to
-    //private Prism4DMockupProjectSettings mSettings;
+    //private Prism4DProjectSettings mSettings;
 
 
 

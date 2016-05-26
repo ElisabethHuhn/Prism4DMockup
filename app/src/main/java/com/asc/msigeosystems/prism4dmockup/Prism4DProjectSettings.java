@@ -3,7 +3,7 @@ package com.asc.msigeosystems.prism4dmockup;
 /**
  * Created by elisabethhuhn on 5/7/2016.
  */
-public class Prism4DMockupProjectSettings {
+public class Prism4DProjectSettings {
 
 
     //If Project ID = -1, these are the global defaults for Project Settings
@@ -192,7 +192,7 @@ public class Prism4DMockupProjectSettings {
      */
 
     //this creates a new instance with values defined by global defaults
-    public Prism4DMockupProjectSettings() {
+    public Prism4DProjectSettings() {
         setDefaults();
     }
 

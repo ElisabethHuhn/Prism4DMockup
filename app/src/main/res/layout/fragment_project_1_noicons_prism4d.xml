@@ -6,13 +6,15 @@
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
     >
-    <!-- This layout is for a top level selection screen with the 9 button page matrix plus footer -->
-    <!-- This is a generic screen, specific text and images will be added programmatically   -->
-
+    <!-- This layout is for The top level projects screen with
+         the 9 button matrix plus footer -->
+    <!-- The only difference between portrait and landscape
+         is the scroll view weight:
+         for landscape 2.5, portrait 5 -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="2.5"
+        android:layout_weight="5"
         >
 
         <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
@@ -33,14 +35,12 @@
                 android:layout_gravity="top|center_vertical"
                 android:shrinkColumns="*"
                 android:stretchColumns="*"
-
             >
 
-
-
             <!-- Row 1 with 3 columns for buttons - - >
-            <!- row1Button1 row1Button2 row1Button3  -->
+            <!- Create Open Copy  -->
             <TableRow
+                android:id="@+id/tableRow1"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -51,50 +51,56 @@
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row1Button1"
+                    android:id="@+id/createButton"
+                    android:text="@string/create_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGray"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="start"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row1Button2"
+                    android:id="@+id/openButton"
+                    android:text="@string/open_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="center_horizontal"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row1Button3"
+                    android:id="@+id/copyButton"
+                    android:text="@string/copy_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayest"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="end"
+
                     />
 
             </TableRow>
 
             <!-- Row 2 with 3 columns for buttons - - >
-            <!-  row2Button1 row2Button2 row2Button3  -->
+            <!- Edit Delete Control   -->
             <TableRow
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -104,50 +110,55 @@
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row2Button1"
+                    android:id="@+id/editButton"
+                    android:text="@string/edit_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGray"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="start"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row2Button2"
-                    android:text="@string/maps_button_label"
+                    android:id="@+id/deleteButton"
+                    android:text="@string/delete_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="center_horizontal"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row2Button3"
+                    android:id="@+id/controlButton"
+                    android:text="@string/control_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayest"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="end"
+
                     />
             </TableRow>
 
             <!-- Row 3 with 3 columns for buttons - - >
-            <!- row2Button1 row2Button2 row2Button3   -->
+            <!- List Points    Feature Codes     Exchange   -->
             <TableRow
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -155,54 +166,60 @@
                 android:paddingTop="10dp">
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row3Button1"
+                    android:id="@+id/listPointsButton"
+                    android:text="@string/maintain_points_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGray"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="start"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row3Button2"
+                    android:id="@+id/featureCodesButton"
+                    android:text="@string/feature_codes_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="center_horizontal"
+
                     />
 
                 <Button
                     style="?android:attr/buttonBarButtonStyle"
-                    android:id="@+id/row3Button3"
+                    android:id="@+id/exchangeButton"
+                    android:text="@string/exchange_button_label"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:background="@color/colorWhite"
+                    android:background="@color/colorGrayest"
                     android:textColor="@color/colorTextBlack"
                     android:paddingStart="5dp"
                     android:paddingEnd="5dp"
                     android:gravity="center"
                     android:layout_gravity="end"
+
                     />
             </TableRow>
 
-            </TableLayout>
+        </TableLayout>
 
 
     </ScrollView>
 
     <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
     
 
 </LinearLayout>

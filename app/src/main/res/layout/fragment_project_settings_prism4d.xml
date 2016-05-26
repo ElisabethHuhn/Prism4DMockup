@@ -35,7 +35,7 @@
 
             >
 
-            <!-- Row  Project Label -->
+            <!-- Row  Project ID Label -->
             <TableRow
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
@@ -43,10 +43,23 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/projectLabel"
-                    android:text="@string/distance_units_label"
+                    android:id="@+id/projectIDLabel"
+
                     android:layout_height="wrap_content"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <TextView
+                    android:id="@+id/projectIDOutput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
 
                     android:gravity="center_horizontal"
 
@@ -56,40 +69,17 @@
 
             </TableRow>
 
-            <!-- Row Project ID, Name -->
+            <!-- Row Project  Name -->
             <TableRow
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
                 android:paddingTop="10dp"
                 >
-                <TextView
-                    android:id="@+id/projectIDLabel"
-                    android:text="@string/distance_units_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
 
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <TextView
-                    android:id="@+id/projectIDOutput"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="75"
-
-                    android:inputType="text"
-                    android:layout_marginEnd="16dp"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
                 <TextView
                     android:id="@+id/projectNameLabel"
-                    android:text="@string/distance_units_label"
+
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"
@@ -104,9 +94,6 @@
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="75"
-
-                    android:inputType="text"
-                    android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorTextBlack"
                     android:background="@color/colorScreenBackground"
@@ -143,7 +130,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -180,7 +167,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -214,7 +201,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -249,7 +236,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -284,7 +271,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -321,7 +308,7 @@
                     android:inputType="number"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -355,7 +342,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -392,7 +379,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -426,7 +413,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -461,7 +448,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -496,7 +483,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -533,7 +520,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -567,7 +554,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -603,7 +590,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -637,7 +624,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -672,7 +659,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -707,7 +694,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -742,7 +729,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -779,7 +766,7 @@
     </ScrollView>
 
     <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
 
 
 </LinearLayout>

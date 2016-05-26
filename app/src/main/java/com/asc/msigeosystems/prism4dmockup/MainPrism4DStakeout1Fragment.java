@@ -10,11 +10,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 /**
- * The Configurations Fragment is the top level selection UI
+ * The Stakeout Fragment is the top level selection UI
  * for stakeout functions
- * Created by elisabethhuhn on 5/1/2016.
+ * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
+public class MainPrism4DStakeout1Fragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -23,16 +23,16 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
 
 
     //Matrix Buttons
-    private Button mEquipmentButton;
-    private Button mCommunicationsButton;
-    private Button mCorrectionsButton;
+    private Button mPointsButton;
+    private Button mLinesButton;
+    private Button mArcButton;
 
-    private Button mPeripheralsButton;
-    private Button mCalibrationsButton;
-    private Button mLogRawDataButton;
+    private Button mOffsetsButton;
+    private Button mGPSBaseStnButton;
+    private Button mTotalStnButton;
 
-    private Button mUtilitiesButton;
-    private Button mGeneralButton;
+    private Button mReportButton;
+    private Button mGalleryButton;
     private Button mNotesButton;
 
 
@@ -57,7 +57,7 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupConfigurations1Fragment() {
+    public MainPrism4DStakeout1Fragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -67,22 +67,22 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later
 
-        //Equipment Button
-        mEquipmentButton = (Button) v.findViewById(R.id.row1Button1);
-        mEquipmentButton.setText(R.string.config_equipment_button_label);
+        //Stake Points Button
+        mPointsButton = (Button) v.findViewById(R.id.row1Button1);
+        mPointsButton.setText(R.string.stakeout_points_button_label);
         //the order of images here is left, top, right, bottom
-        mEquipmentButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mEquipmentButton.setOnClickListener(new View.OnClickListener() {
+        mPointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_equipment_button_label,
+                        R.string.stakeout_points_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -91,12 +91,12 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
 
 
 
-        //Communications Button
-        mCommunicationsButton = (Button) v.findViewById(R.id.row1Button2);
-        mCommunicationsButton.setText(R.string.stakeout_lines_button_label);
+        //Measure Lines Button
+        mLinesButton = (Button) v.findViewById(R.id.row1Button2);
+        mLinesButton.setText(R.string.stakeout_lines_button_label);
         //the order of images here is left, top, right, bottom
-        mCommunicationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mCommunicationsButton.setOnClickListener(new View.OnClickListener() {
+        mLinesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mLinesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //for now, just put up a toast that the button was pressed
@@ -108,90 +108,90 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
         });
 
 
-        //Corrections Button
-        mCorrectionsButton = (Button) v.findViewById(R.id.row3Button3);
-        mCorrectionsButton.setText(R.string.config_corrections_label);
-        mCorrectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mCorrectionsButton.setOnClickListener(new View.OnClickListener() {
+        //Arcs Button
+        mArcButton = (Button) v.findViewById(R.id.row3Button3);
+        mArcButton.setText(R.string.stakeout_arcs_button_label);
+        mArcButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mArcButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_corrections_label,
+                        R.string.stakeout_arcs_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Peripherals Button
-        mPeripheralsButton = (Button) v.findViewById(R.id.row1Button3);
-        mPeripheralsButton.setText(R.string.config_peripherals_button_label);
-        mPeripheralsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mPeripheralsButton.setOnClickListener(new View.OnClickListener() {
+        //Offset Button
+        mOffsetsButton = (Button) v.findViewById(R.id.row1Button3);
+        mOffsetsButton.setText(R.string.stakeout_offset_button_label);
+        mOffsetsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mOffsetsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_peripherals_button_label,
+                        R.string.stakeout_offset_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Calibrations Button
-        mCalibrationsButton = (Button) v.findViewById(R.id.row2Button1);
-        mCalibrationsButton.setText(R.string.config_calibrations_button_label);
-        mCalibrationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mCalibrationsButton.setOnClickListener(new View.OnClickListener() {
+        //GPS Base Setup Button
+        mGPSBaseStnButton = (Button) v.findViewById(R.id.row2Button1);
+        mGPSBaseStnButton.setText(R.string.gps_base_station_button_label);
+        mGPSBaseStnButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mGPSBaseStnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_calibrations_button_label,
+                        R.string.gps_base_station_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Log Raw Data Button
-        mLogRawDataButton = (Button) v.findViewById(R.id.row2Button2);
-        mLogRawDataButton.setText(R.string.config_log_raw_button_label);
-        mLogRawDataButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mLogRawDataButton.setOnClickListener(new View.OnClickListener() {
+        //Total Station Setup Button
+        mTotalStnButton = (Button) v.findViewById(R.id.row2Button2);
+        mTotalStnButton.setText(R.string.total_station_button_label);
+        mTotalStnButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mTotalStnButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_log_raw_button_label,
+                        R.string.total_station_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //Utilities Button
-        mUtilitiesButton = (Button) v.findViewById(R.id.row2Button3);
-        mUtilitiesButton.setText(R.string.config_utilities_button_label);
-        mUtilitiesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mUtilitiesButton.setOnClickListener(new View.OnClickListener() {
+        //Stakeout Report Button
+        mReportButton = (Button) v.findViewById(R.id.row2Button3);
+        mReportButton.setText(R.string.stakeout_report_button_label);
+        mReportButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.config_utilities_button_label,
+                        R.string.stakeout_report_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
         });
 
-        //General Button
-        mGeneralButton = (Button) v.findViewById(R.id.row3Button1);
-        mGeneralButton.setText(R.string.gallery_button_label);
-        mGeneralButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
-        mGeneralButton.setOnClickListener(new View.OnClickListener() {
+        //Gallery Button
+        mGalleryButton = (Button) v.findViewById(R.id.row3Button1);
+        mGalleryButton.setText(R.string.gallery_button_label);
+        mGalleryButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
+        mGalleryButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
@@ -206,7 +206,7 @@ public class MainPrism4DMockupConfigurations1Fragment extends Fragment {
         //Notes Button
         mNotesButton = (Button) v.findViewById(R.id.row3Button2);
         mNotesButton.setText(R.string.notes_button_label);
-        mNotesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_config, 0, 0);
+        mNotesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_stakeout, 0, 0);
         mNotesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){

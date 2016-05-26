@@ -26,7 +26,7 @@ import java.util.List;
  * when the user can see the projects residing on this handset
  * Created by elisabethhuhn on 5/15/2016.
  */
-public class MainPrism4DMockupListProjectsFragment extends Fragment {
+public class MainPrism4DListProjectsFragment extends Fragment {
 
     private static final String TAG = "LIST_PROJECTS_FRAGMENT";
     /**
@@ -47,9 +47,10 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
     private String mProjectDescription;
 
     private Prism4DProject mSelectedProject;
-    private int                  mSelectedPosition;
+    private Prism4DProject mLastSelectedProject;
+    private int            mSelectedPosition;
 
-    private CharSequence         mProjectPath;
+    private CharSequence   mProjectPath;
 
 
 
@@ -73,7 +74,7 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
     //footer right button
     private Button mEnterButton;
 
-    public MainPrism4DMockupListProjectsFragment newInstance(
+    public MainPrism4DListProjectsFragment newInstance(
             Prism4DPath projectPath){
 
         Bundle args = new Bundle();
@@ -83,15 +84,15 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
         //For now, the only thing to pass is the path type itself
         args.putCharSequence(Prism4DPath.sProjectPathTag,   projectPath.getPath());
 
-        MainPrism4DMockupListProjectsFragment fragment =
-                new MainPrism4DMockupListProjectsFragment();
+        MainPrism4DListProjectsFragment fragment =
+                new MainPrism4DListProjectsFragment();
 
         fragment.setArguments(args);
         return fragment;
     }
 
     //Constructor
-    public MainPrism4DMockupListProjectsFragment() {
+    public MainPrism4DListProjectsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -131,7 +132,7 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
          */
         //1) Inflate the layout for this fragment
         View v = inflater.inflate
-                (R.layout.fragment_project_list_prism4_dmockup, container, false);
+                (R.layout.fragment_project_list_prism4d, container, false);
         v.setTag(TAG);
 
         //Even though this is a mockup, use the real recycler view to assure
@@ -176,6 +177,7 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
 
                     @Override
                     public void onClick(View view, int position) {
+                       //todo need to update selection visually
                         mSelectedPosition = position;
                         mSelectedProject = mProjectList.get(position);
                         Toast.makeText(getActivity().getApplicationContext(),
@@ -380,11 +382,11 @@ public class MainPrism4DMockupListProjectsFragment extends Fragment {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private MainPrism4DMockupListProjectsFragment.ClickListener clickListener;
+        private MainPrism4DListProjectsFragment.ClickListener clickListener;
 
         public RecyclerTouchListener(Context context,
                                      final RecyclerView recyclerView,
-                                     final MainPrism4DMockupListProjectsFragment.ClickListener
+                                     final MainPrism4DListProjectsFragment.ClickListener
                                              clickListener) {
 
             this.clickListener = clickListener;

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
@@ -14,14 +14,6 @@
         android:layout_weight="5"
 
         >
-
-        <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
-        <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
-        <!-- with layout_weight = 1, distribute width/height between views equally -->
-        <!-- with gravity = center, center text within button                   -->
-        <!-- with layout_gravity=start, place button on left of the row         -->
-        <!-- with background, set button color to gray, grayer, grayest         -->
-        <!-- with paddingStart, set some space between this button and the next -->
 
         <!-- Container for entire screen -->
         <LinearLayout
@@ -490,13 +482,15 @@
                     android:textColor="@color/colorWhite"
                     android:background="@color/colorScreenBackground"
                     />
-                <!--  Label and output field -->
+                <!-- break out the fields individually -->
+                <!-- Zone Hemisphere Latband -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal"
 
                     >
+                    <!-- label -->
                     <TextView
                         android:id="@+id/utmNmLabel"
                         android:text="@string/utm_nm_label"
@@ -508,39 +502,7 @@
                         android:textColor="@color/colorTextBlack"
                         android:background="@color/colorScreenBackground"
                         />
-                    <TextView
-                        android:id="@+id/utmNmOutput"
 
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:layout_weight="75"
-
-                        android:layout_marginEnd="16dp"
-
-                        android:textColor="@color/colorTextBlack"
-                        android:background="@color/colorWhite"
-                        />
-
-                </LinearLayout>
-                <!-- break out the fields individually -->
-                <!-- Zone Hemisphere Latband -->
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal"
-
-                    >
-                    <!-- blank label to make fields line up on screen -->
-                    <TextView
-
-                        android:layout_height="wrap_content"
-                        android:layout_width="0dp"
-                        android:layout_weight="25"
-                        android:gravity="end"
-
-                        android:textColor="@color/colorTextBlack"
-                        android:background="@color/colorScreenBackground"
-                        />
                     <!-- zone -->
                     <TextView
                         android:id="@+id/utm_zone"
@@ -651,7 +613,7 @@
     </ScrollView>
 
     <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
 
 
 </LinearLayout>

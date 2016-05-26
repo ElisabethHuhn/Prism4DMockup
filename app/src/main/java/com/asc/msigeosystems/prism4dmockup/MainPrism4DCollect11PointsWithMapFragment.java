@@ -16,7 +16,7 @@ import android.widget.Toast;
  * when the user is making point measurements in the field
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
+public class MainPrism4DCollect11PointsWithMapFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -69,7 +69,7 @@ public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupCollect11PointsWithMapFragment() {
+    public MainPrism4DCollect11PointsWithMapFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -79,7 +79,7 @@ public class MainPrism4DMockupCollect11PointsWithMapFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_collect_11_points_map_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_collect_11_points_map_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later

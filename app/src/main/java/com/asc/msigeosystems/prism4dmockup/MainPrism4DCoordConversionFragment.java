@@ -11,9 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
-
 /**
  * The Collect Fragment is the UI
  * when the user is making point measurements in the field
@@ -42,7 +39,6 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
     private TextView mUtmLabel;
     private TextView mUtmIntegerOutput;
-    private TextView mUtmNmOutput;
     private TextView mUtmSOOutput;
 
     private TextView mUtmNmZoneOutput;
@@ -71,6 +67,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     private String mSecondString;
 
 
+    private Prism4DWSG84Coordinate mWSG84Coordinate;
     private int    mZone;
     private char   mLatBand;
     private double mEasting;
@@ -112,7 +109,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_coord_conversion_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_coord_conversion_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later
@@ -135,7 +132,6 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
         //UTM
         mUtmIntegerOutput = (TextView) v.findViewById(R.id.utmIntgerOutput);
-        mUtmNmOutput =      (TextView) v.findViewById(R.id.utmNmOutput);
         mUtmSOOutput =      (TextView) v.findViewById(R.id.utmSOOutput);
 
         mUtmNmZoneOutput       =  (TextView) v.findViewById(R.id.utm_zone);
@@ -202,47 +198,72 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         return v;
     }
 
+    private boolean convertInputs() {
+        mWSG84Coordinate = new Prism4DWSG84Coordinate(mLatDigDegInput.getText(),
+                                                      mLongDigDegInput.getText());
+        if (!mWSG84Coordinate.isValidCoordinate()) {
+            mWSG84Coordinate = new Prism4DWSG84Coordinate(
+                    mLatDegInput.getText(),
+                    mLatMinInput.getText(),
+                    mLatSecInput.getText(),
+                    mLongDegInput.getText(),
+                    mLongMinInput.getText(),
+                    mLongSecInput.getText());
+            if (!mWSG84Coordinate.isValidCoordinate()){
+                Toast.makeText(getActivity(),
+                        R.string.coordinate_try_again,
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+        }
+        //display the coordinate values in the UI
+        mLatDigDegInput.setText(String.valueOf(mWSG84Coordinate.getLatitude()));
+        mLatDegInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeDegree()));
+        mLatMinInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeMinute()));
+        mLatSecInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeSecond()));
+
+        mLongDigDegInput.setText(String.valueOf(mWSG84Coordinate.getLongitude()));
+        mLongDegInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeDegree()));
+        mLongMinInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeMinute()));
+        mLongSecInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeSecond()));
+
+        setLatColor();
+        setLongColor();
+
+        return true;
+
+    }
+
     private void performConversion() {
 
 
         /*
-         * Need to determine which input format was used
-         * and whether the value input is valid
+         * Compare three conversion routines:
+         * 1) IBM
+         * 2) Stack Overflow
+         * 3) Prism4D developed from scratch, based on Karney (2010)
          *
-         * Use the prompt string to determine whether a value
-         * has been input into any given field
          *
-         * "Legal ranges: latitude [-90,90], longitude [-180,180).");
          *
          */
 
-        boolean inputsValid = convertLatitude() ;
-        if (inputsValid){
-            inputsValid = convertLongitude();
-        }else{
-            //if latitude was out of range, can't sully the flag
-            //if longitude is OK
-            convertLongitude();
-        }
+        //"Legal ranges: latitude [-90,90], longitude [-180,180).");
+        boolean inputsValid = convertInputs() ;
 
         //only attempt the conversions if the inputs are valid
-        if (inputsValid) {
+         if (inputsValid) {
 
             //The IBM code:
             try {
                 //an actual conversion
-                CoordinateConversion coordinateConversion =
-                                            new CoordinateConversion();
+                IBMCoordinateConversion coordinateConversion =
+                                            new IBMCoordinateConversion();
 
                 //integer precision (meter)
                 String utmStringCoordinates =
-                        coordinateConversion.latLon2UTM(mLatitude, mLongitude);
+                        coordinateConversion.latLon2UTM(mWSG84Coordinate.getLatitude(),
+                                                        mWSG84Coordinate.getLongitude());
                 mUtmIntegerOutput.setText(utmStringCoordinates);
-
-                //double precision (sub-meter?,
-                // these are wrong but included for comparison)
-                //mUtmDoubleOutput.setHint(coordinateConversion.latLon2PreciseUTM(mLatitude, mLongitude));
-
 
             } catch (IllegalArgumentException exc) {
                 //input parameters were not within range
@@ -255,221 +276,50 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         if (inputsValid) {
             //The stack overflow conversion code:
 
-            //create a new WGS84 object from the Lat / Long coordinates
-            WGS84 latlong = new WGS84(mLatitude, mLongitude);
+            try {
+                //create a new WGS84 object from the Lat / Long coordinates
+                WGS84 latlong = new WGS84(mWSG84Coordinate.getLatitude(),
+                                          mWSG84Coordinate.getLongitude());
 
-            //Now convert the coordinates into UTM
-            //There is not very robust exception handling in this class
-            UTM utmCoordinates = new UTM(latlong);
+                //Now convert the coordinates into UTM
+                //There is not very robust exception handling in this class
+                UTM utmCoordinates = new UTM(latlong);
 
-            mUtmSOOutput.setText(utmCoordinates.toString());
-
-            //And do it again for the nanometer accuracy conversion based on Kearny (2010)
-            Prism4DUTM prism4DUTMCoordinates = new Prism4DUTM(latlong);
-            mUtmNmOutput.setText(prism4DUTMCoordinates.toString());
-
-            //Also output the result in separate fields
-            mUtmNmZoneOutput.setText(prism4DUTMCoordinates.getZone());
-            mUtmNmHemisphereOutput.setText(prism4DUTMCoordinates.getHemisphere());
-            mUtmNmLatBandOutput.setText(prism4DUTMCoordinates.getLatBand());
-            mUtmNmEastingOutput.setText(prism4DUTMCoordinates.getEasting());
-            mUtmNmNorthingOutput.setText(prism4DUTMCoordinates.getNorthing());
-
-        }
-
-    }
-
-    private boolean convertLatitude() {
-
-        boolean inputsValid = true;
-
-        try {
-            //
-            //lat must be larger than -80 and smaller than 84 as
-            // UTM does not span the entire globe
-            mLatString = mLatDigDegInput.getText().toString();
-
-            //determine which input field was used: DD or DMS
-            if (mLatString.isEmpty()  ){
-                //value isn't in the decimal degrees field
-                //check in the separate fields
-                mDegreeString = mLatDegInput.getText().toString();
-                mMinuteString = mLatMinInput.getText().toString();
-                mSecondString = mLatSecInput.getText().toString();
-                if (mDegreeString.isEmpty() ){
-                    mDegreeString = "0";
-                }
-                if (mMinuteString.isEmpty() ){
-                    mMinuteString = "0";
-                }
-                if (mSecondString.isEmpty() ){
-                    mSecondString = "0.0";
-                }
-
-                mDegree = Double.parseDouble(mDegreeString);
-                mMinute = Double.parseDouble(mMinuteString);
-                mSecond = Double.parseDouble(mSecondString);
-                mLatitude = mDegree + (mMinute/60) + (mSecond/(60*60));
-                //show the user the value we are actually converting
-                mLatString = "0.0";
-                mLatDigDegInput.setText(String.valueOf(mLatitude));
-                mLatDegInput   .setText(String.valueOf((int) mDegree));
-                mLatMinInput   .setText(String.valueOf((int) mMinute));
-                mLatSecInput   .setText(String.valueOf(mSecond));
-                setLatColor();
-
-            } else {
-                mLatitude = Double.parseDouble(mLatString);
-
-                if (mLatitude >= -90.0 || mLatitude < 90.0) {
-
-                    //While here, show the DMS of the DD
-                    //but only if the latitude is a valid one
-
-                    //strip out the decimal parts of mLatitude
-                    int intDegree = (int) mLatitude;
-                    mDegree = (double) intDegree;
-
-                    //remainder will have decimal minutes and seconds
-                    double remainder = mLatitude - mDegree;
-
-                    //integer part is minutes, decimal part is seconds
-                    mMinute = remainder * 60;
-                    int intMinute = (int) mMinute; //pure minutes
-                    //save the minutes in double in case we need it later
-                    mMinute = intMinute;
-
-                    //decimal part is seconds
-                    mSecond = remainder - (mMinute / 60);
-                    mSecond = mSecond * 60 * 60;
-
-                    //truncate to a reasonable number of decimal digits
-                    BigDecimal bd = new BigDecimal(mSecond).setScale(5, RoundingMode.HALF_UP);
-                    mSecond = bd.doubleValue();
-
-                    //Show the user the DMS value
-                    mLatDegInput.setText(String.valueOf(intDegree));
-                    mLatMinInput.setText(String.valueOf(intMinute));
-                    mLatSecInput.setText(Double.toString(mSecond));
-                    setLatColor();
-                }
-            }
-
-
-            //Don't trust the conversion routines to do the checking
-            // or to throw IllegalArgumentException  if not in proper format
-            //lat must be larger than -80 and smaller than 84 as
-            // UTM does not span the entire globe
-            //
-            if (mLatitude <= -80.0 || mLatitude >= 84.0){
+                mUtmSOOutput.setText(utmCoordinates.toString());
+            } catch (IllegalArgumentException exc) {
+                //input parameters were not within range
                 mLatDigDegInput.setText(R.string.input_wrong_range_error);
-                inputsValid = false;
-            }
-
-        } catch (NumberFormatException e) {
-            // lat did not contain a valid double
-            mLatDigDegInput.setText(R.string.input_double_format_error_string);
-            inputsValid = false;
-
-        }
-
-        return inputsValid;
-
-    }
-
-    private boolean convertLongitude() {
-
-        boolean inputsValid = true;
-
-        try {
-            //longitude must be >= -180.0 and <180.0
-            mLongString = mLongDigDegInput.getText().toString();
-
-            /***************************/
-            //User may input either DD or DMS
-            //convert between the two
-            //determine which input field was used: DD or DMS
-            if (mLongString.isEmpty()) {
-                //value isn't in the decimal degrees field
-                //check in the separate fields
-                mDegreeString = mLongDegInput.getText().toString();
-                mMinuteString = mLongMinInput.getText().toString();
-                mSecondString = mLongSecInput.getText().toString();
-                if (mDegreeString.isEmpty()) {
-                    mDegreeString = "0.0";
-                }
-                if (mMinuteString.isEmpty()) {
-                    mMinuteString = "0.0";
-                }
-                if (mSecondString.isEmpty()) {
-                    mSecondString = "0.0";
-                }
-
-                mDegree = Double.parseDouble(mDegreeString);
-                mMinute = Double.parseDouble(mMinuteString);
-                mSecond = Double.parseDouble(mSecondString);
-                mLongitude = mDegree + (mMinute / 60) + (mSecond / (60 * 60));
-                //show the user the value we are actually converting
-                mLongString = "0.0";
-                mLongDigDegInput.setText(String.valueOf(mLongitude));
-                mLongDegInput.setText(String.valueOf((int) mDegree));
-                mLongMinInput.setText(String.valueOf((int) mMinute));
-                mLongSecInput.setText(String.valueOf(mSecond));
-                setLongColor();
-
-            } else {
-                mLongitude = Double.parseDouble(mLongString);
-
-                if (mLongitude >= -180.0 || mLongitude > 180.0) {
-
-                    //While here, show the DMS of the DD
-                    int intDegree = (int) mLongitude; //strip out the decimal parts of mLongitude
-                    mDegree = (double) intDegree;
-
-                    //remainder will have decimal minutes and seconds
-                    double remainder = mLongitude - mDegree;
-
-                    //integer part is minutes, decimal part is seconds
-                    mMinute = remainder * 60;
-                    int intMinute = (int) mMinute; //pure minutes
-                    //save the minutes in double in case we need it later
-                    mMinute = intMinute;
-
-                    //decimal part is seconds
-                    mSecond = remainder - (mMinute / 60);
-                    mSecond = mSecond * 60 * 60;
-
-                    //truncate to a reasonable number of decimal digits
-                    BigDecimal bd = new BigDecimal(mSecond).setScale(5, RoundingMode.HALF_UP);
-                    mSecond = bd.doubleValue();
-
-                    //Show the user the DMS value
-                    mLongDegInput.setText(String.valueOf(intDegree));
-                    mLongMinInput.setText(String.valueOf(intMinute));
-                    mLongSecInput.setText(Double.toString(mSecond));
-                    setLongColor();
-                }
-            }
-/******************************/
-
-
-            mLongitude = Double.parseDouble(mLongString);
-
-            //Don't trust the conversion routines to do the checking
-            // or to throw IllegalArgumentException  if not in proper format
-            if (mLongitude < -180.0 || mLongitude >= 180.0) {
                 mLongDigDegInput.setText(R.string.input_wrong_range_error);
                 inputsValid = false;
             }
+        }
+        if (inputsValid){
+            //Create the UTM coordinate based on the WSG coordinate from the user
+            // The Prism4D conversion
+            // algorithm based on Kearny (2010)
+            // supposed nanometer accuracy
 
-        } catch (NumberFormatException e) {
-            // long did not contain a valid double
-            mLongDigDegInput.setText(R.string.input_double_format_error_string);
-            inputsValid = false;
+            try{
+                Prism4DUTM utmCoordinate = new Prism4DUTM(mWSG84Coordinate);
+
+                //Also output the result in separate fields
+                mUtmNmZoneOutput.setText(utmCoordinate.getZone());
+                mUtmNmHemisphereOutput.setText(utmCoordinate.getHemisphere());
+                mUtmNmLatBandOutput.setText(utmCoordinate.getLatBand());
+                mUtmNmEastingOutput.setText(utmCoordinate.getEasting());
+                mUtmNmNorthingOutput.setText(utmCoordinate.getNorthing());
+            } catch (IllegalArgumentException exc) {
+                //input parameters were not within range
+                mLatDigDegInput.setText(R.string.input_wrong_range_error);
+                mLongDigDegInput.setText(R.string.input_wrong_range_error);
+                inputsValid = false;
+            }
         }
 
-        return inputsValid;
     }
+
+
+
 
     private void clearForm() {
 
@@ -484,7 +334,6 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         mLongSecInput.setText("");
 
         mUtmIntegerOutput.setText("");
-        mUtmNmOutput.setText("");
         mUtmSOOutput.     setText("");
 
         mUtmNmZoneOutput.setText(R.string.utm_zone_label);
@@ -498,7 +347,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     }
 
     private void setLatColor(){
-        if (mLatitude >= 0.0) {
+        if (mWSG84Coordinate.getLatitude() >= 0.0) {
             setLatColorPos();
 
         } else {
@@ -507,7 +356,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     }
 
     private void setLongColor(){
-        if (mLongitude >= 0.0) {
+        if (mWSG84Coordinate.getLongitude() >= 0.0) {
             setLongColorPos();
 
         } else {

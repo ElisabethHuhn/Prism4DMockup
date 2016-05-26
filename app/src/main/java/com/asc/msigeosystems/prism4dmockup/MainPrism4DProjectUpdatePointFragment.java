@@ -145,7 +145,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
         //Inflate the layout for this fragment
         View v = inflater.inflate(
-                R.layout.fragment_project_1_6_maintain_point_prism4_dmockup,
+                R.layout.fragment_project_1_6_maintain_point_prism4d,
                 container,
                 false);
 
@@ -163,7 +163,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointProjectIDInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointProjectID = Integer.valueOf(mPointProjectIDInput.getText().toString());
+
                 setPointChanged();
                 return false;
             }
@@ -177,7 +177,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointIDInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointID = Integer.valueOf(mPointIDInput.getText().toString());
+
                 setPointChanged();
                 return false;
             }
@@ -190,7 +190,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointEastingInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               mPointEasting = Double.valueOf(mPointEastingInput.getText().toString());
+
                setPointChanged();
                 return false;
             }
@@ -202,7 +202,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointNorthingInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointNorthing = Double.valueOf(mPointNorthingInput.getText().toString());
+
                 setPointChanged();
                 return false;
             }
@@ -214,7 +214,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointElevationInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointElevation = Double.valueOf(mPointElevationInput.getText().toString());
+
                 setPointChanged();
                 return false;
             }
@@ -226,7 +226,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointDescInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointDescription = mPointDescInput.getText().toString();
+
                 setPointChanged();
                 return false;
             }
@@ -239,7 +239,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mPointNotesInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                mPointNotes = mPointNotesInput.getText().toString();
+
                 setPointChanged();
                 return false;
             }
@@ -393,6 +393,7 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
     private Prism4DPoint saveChanges() {
         //get any existing point from the singleton
         Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+
         Prism4DPoint newPoint;
 
         if (mPointPath.equals(Prism4DPath.sCreateTag)){
@@ -427,6 +428,26 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
             return null;
         }
+
+        if (newPoint == null){
+            //we must be creating it for the first time
+
+            //first we need the project
+            Prism4DProjectsContainer projectsContainer = Prism4DProjectsContainer.getInstance();
+            Prism4DProject project = projectsContainer.getProject(mPointProjectID);
+
+            //so now make the new point
+            newPoint = new Prism4DPoint(project);
+            //and store it off in the singleton repository
+            pointsContainer.add(newPoint);
+        }
+
+        //update the point with values from this screen
+        newPoint.setPointEasting(Double.valueOf(mPointEastingInput.getText().toString()));
+        newPoint.setPointNorthing(Double.valueOf(mPointNorthingInput.getText().toString()));
+        newPoint.setPointElevation(Double.valueOf(mPointElevationInput.getText().toString()));
+        newPoint.setPointDescription(mPointDescInput.getText().toString());
+        newPoint.setPointNotes(mPointNotesInput.getText().toString());
 
         return newPoint;
 
@@ -624,9 +645,21 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
     private void setPointChanged(){
         mPointChanged = true;
         //enable the enter button as the default is NOT enabled/grayed out
-        mEnterButton.setText(R.string.enter_to_save_button_label);
+        if (mPointPath.equals(Prism4DPath.sCopyTag)){
+            mEnterButton.setText(R.string.enter_to_copy_button_label);
+
+        } else if (mPointPath.equals(Prism4DPath.sCreateTag)){
+            mEnterButton.setText(R.string.enter_to_create_button_label);
+        } else {
+            mEnterButton.setText(R.string.enter_to_save_button_label);
+        }
+
         mEnterButton.setEnabled(true);
         mEnterButton.setTextColor(Color.BLACK);
+
+        //enable the save changes button too
+        mPointSaveChangesButton.setEnabled(true);
+        mPointSaveChangesButton.setTextColor(Color.BLACK);
     }
 
     private void setPointSaved(){
@@ -635,6 +668,10 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         mEnterButton.setText(R.string.enter_to_save_button_label);
         mEnterButton.setEnabled(false);
         mEnterButton.setTextColor(Color.GRAY);
+
+        //enable the save changes button too
+        mPointSaveChangesButton.setEnabled(false);
+        mPointSaveChangesButton.setTextColor(Color.GRAY);
     }
 
 

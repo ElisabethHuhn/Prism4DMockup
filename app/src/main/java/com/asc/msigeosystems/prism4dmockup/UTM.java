@@ -99,6 +99,57 @@ public class UTM
     }
 
     private void fromWGS84(double latitude, double longitude) {
+        zone= (int) Math.floor(longitude/6+31);
+        if (latitude<-72)
+            letter='C';
+        else if (latitude<-64)
+            letter='D';
+        else if (latitude<-56)
+            letter='E';
+        else if (latitude<-48)
+            letter='F';
+        else if (latitude<-40)
+            letter='G';
+        else if (latitude<-32)
+            letter='H';
+        else if (latitude<-24)
+            letter='J';
+        else if (latitude<-16)
+            letter='K';
+        else if (latitude<-8)
+            letter='L';
+        else if (latitude<0)
+            letter='M';
+        else if (latitude<8)
+            letter='N';
+        else if (latitude<16)
+            letter='P';
+        else if (latitude<24)
+            letter='Q';
+        else if (latitude<32)
+            letter='R';
+        else if (latitude<40)
+            letter='S';
+        else if (latitude<48)
+            letter='T';
+        else if (latitude<56)
+            letter='U';
+        else if (latitude<64)
+            letter='V';
+        else if (latitude<72)
+            letter='W';
+        else
+            letter='X';
+        easting=0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180))/(1-Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180)))*0.9996*6399593.62/Math.pow((1+Math.pow(0.0820944379, 2)*Math.pow(Math.cos(latitude*Math.PI/180), 2)), 0.5)*(1+ Math.pow(0.0820944379,2)/2*Math.pow((0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180))/(1-Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180)))),2)*Math.pow(Math.cos(latitude*Math.PI/180),2)/3)+500000;
+        easting=Math.round(easting*100)*0.01;
+        northing = (Math.atan(Math.tan(latitude*Math.PI/180)/Math.cos((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))-latitude*Math.PI/180)*0.9996*6399593.625/Math.sqrt(1+0.006739496742*Math.pow(Math.cos(latitude*Math.PI/180),2))*(1+0.006739496742/2*Math.pow(0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))/(1-Math.cos(latitude*Math.PI/180)*Math.sin((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))),2)*Math.pow(Math.cos(latitude*Math.PI/180),2))+0.9996*6399593.625*(latitude*Math.PI/180-0.005054622556*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+4.258201531e-05*(3*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2))/4-1.674057895e-07*(5*(3*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2))/4+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2)*Math.pow(Math.cos(latitude*Math.PI/180),2))/3);
+        if (letter<'M')
+            northing = northing + 10000000;
+        northing=Math.round(northing*100)*0.01;
+    }
+
+
+    private void fromWGS84Old(double latitude, double longitude) {
 
         zone = (int) Math.floor(longitude/6+31);
 
@@ -145,12 +196,14 @@ public class UTM
 
         //easting  = getEasting (latitude, longitude, zone);
        // northing = getNorthing(latitude, longitude, zone );
-        easting=0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180))/(1-Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180)))*0.9996*6399593.62/Math.pow((1+Math.pow(0.0820944379, 2)*Math.pow(Math.cos(latitude*Math.PI/180), 2)), 0.5)*(1+ Math.pow(0.0820944379,2)/2*Math.pow((0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180))/(1-Math.cos(latitude*Math.PI/180)*Math.sin(longitude*Math.PI/180-(6*zone-183)*Math.PI/180)))),2)*Math.pow(Math.cos(latitude*Math.PI/180),2)/3)+500000;
-        easting=Math.round(easting*100)*0.01;
-        northing = (Math.atan(Math.tan(latitude*Math.PI/180)/Math.cos((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))-latitude*Math.PI/180)*0.9996*6399593.625/Math.sqrt(1+0.006739496742*Math.pow(Math.cos(latitude*Math.PI/180),2))*(1+0.006739496742/2*Math.pow(0.5*Math.log((1+Math.cos(latitude*Math.PI/180)*Math.sin((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))/(1-Math.cos(latitude*Math.PI/180)*Math.sin((longitude*Math.PI/180-(6*zone -183)*Math.PI/180)))),2)*Math.pow(Math.cos(latitude*Math.PI/180),2))+0.9996*6399593.625*(latitude*Math.PI/180-0.005054622556*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+4.258201531e-05*(3*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2))/4-1.674057895e-07*(5*(3*(latitude*Math.PI/180+Math.sin(2*latitude*Math.PI/180)/2)+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2))/4+Math.sin(2*latitude*Math.PI/180)*Math.pow(Math.cos(latitude*Math.PI/180),2)*Math.pow(Math.cos(latitude*Math.PI/180),2))/3);
+        easting=0.5*Math.log((1.+Math.cos(latitude*Math.PI/180.)*Math.sin(longitude*Math.PI/180.-(6.*zone-183.)*Math.PI/180.))/(1.-Math.cos(latitude*Math.PI/180.)*Math.sin(longitude*Math.PI/180.-(6.*zone-183.)*Math.PI/180.)))*0.9996*6399593.62/Math.pow((1.+Math.pow(0.0820944379, 2.)*Math.pow(Math.cos(latitude*Math.PI/180.), 2.)), 0.5)*(1+ Math.pow(0.0820944379,2.)/2.*Math.pow((0.5*Math.log((1.+Math.cos(latitude*Math.PI/180.)*Math.sin(longitude*Math.PI/180.-(6.*zone-183.)*Math.PI/180.))/(1.-Math.cos(latitude*Math.PI/180.)*Math.sin(longitude*Math.PI/180.-(6.*zone-183.)*Math.PI/180.)))),2.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.)/3.)+500000.;
+        easting=Math.round(easting*100.)*0.01;
+        northing = (Math.atan(Math.tan(latitude*Math.PI/180.)/Math.cos((longitude*Math.PI/180.-(6.*zone -183.)*Math.PI/180.)))-latitude*Math.PI/180.)*0.9996*6399593.625/Math.sqrt(1.+0.006739496742*Math.pow(Math.cos(latitude*Math.PI/180.),2.))*(1.+0.006739496742/2.*Math.pow(0.5*Math.log((1.+Math.cos(latitude*Math.PI/180.)*Math.sin((longitude*Math.PI/180.-(6.*zone -183.)*Math.PI/180.)))/(1.-Math.cos(latitude*Math.PI/180.)*Math.sin((longitude*Math.PI/180.-(6.*zone -183.)*Math.PI/180.)))),2.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.))+0.9996*6399593.625*(latitude*Math.PI/180.-0.005054622556*(latitude*Math.PI/180.+Math.sin(2.*latitude*Math.PI/180.)/2.)+4.258201531e-05*(3.*(latitude*Math.PI/180.+Math.sin(2.*latitude*Math.PI/180.)/2.)+Math.sin(2.*latitude*Math.PI/180.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.))/4.-1.674057895e-07*(5.*(3.*(latitude*Math.PI/180.+Math.sin(2.*latitude*Math.PI/180.)/2.)+Math.sin(2.*latitude*Math.PI/180.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.))/4.+Math.sin(2.*latitude*Math.PI/180.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.)*Math.pow(Math.cos(latitude*Math.PI/180.),2.))/3.);
         if (letter<'M')
-            northing = northing + 10000000;
-        northing=Math.round(northing*100)*0.01;
+            northing = northing + 10000000.;
+        northing=Math.round(northing*100.)*0.01;
+
+        double temp = getNewEasting(latitude, longitude);
 
     }
 
@@ -158,19 +211,19 @@ public class UTM
 
         double retEasting;
 
-        double latRad                 = latitude*Math.PI/180;
+        double latRad                 = latitude*Math.PI/180.;
         double cosLatRad              = Math.cos(latRad);
-        double pow2cosLatRad          = Math.pow(cosLatRad, 2);
-        double longMinusZoneRad       = longitude*Math.PI/180-(6*eastZone-183)*Math.PI/180;
+        double pow2cosLatRad          = Math.pow(cosLatRad, 2.);
+        double longMinusZoneRad       = longitude*Math.PI/180.-(6.*eastZone-183.)*Math.PI/180.;
 
         double sinLongRad             = Math.sin(longMinusZoneRad);
 
         double cosLatRad_X_sinLongRad = cosLatRad * sinLongRad ;
 
-        double onePlusOverOneMinus  = (1 + cosLatRad_X_sinLongRad ) / (1 - cosLatRad_X_sinLongRad);
+        double onePlusOverOneMinus  = (1. + cosLatRad_X_sinLongRad ) / (1. - cosLatRad_X_sinLongRad);
 
 
-        double K1 = Math.pow(0.0820944379, 2);
+        double K1 = Math.pow(0.0820944379, 2.);
 
         //northing constant has decimal .625
         double K2 = 6399593.62;//NOTE this is different from the northing constant
@@ -178,16 +231,16 @@ public class UTM
         double K8 = 0.9996;
 
         double term1 = 0.5 * Math.log( onePlusOverOneMinus );
-        double term2 = Math.pow( (1 + K1 * pow2cosLatRad ), 0.5);
+        double term2 = Math.pow( (1. + K1 * pow2cosLatRad ), 0.5);
 
 
 
 
         retEasting = term1 * K8 * (K2 / term2) *
-                (1 + K1 / 2 * Math.pow(term1,2) * pow2cosLatRad / 3) +
-                500000;
+                (1. + K1 / 2. * Math.pow(term1,2.) * pow2cosLatRad / 3.) +
+                500000.;
 
-        retEasting= Math.round(retEasting*100)*0.01;
+        retEasting= Math.round(retEasting*100.)*0.01;
 
         return retEasting;
     }
@@ -196,17 +249,17 @@ public class UTM
 
         double retNorthing;
 
-        double latRad                 = latitude*Math.PI/180;
+        double latRad                 = latitude*Math.PI/180.;
         double cosLatRad              = Math.cos(latRad);
-        double pow2cosLatRad          = Math.pow(cosLatRad, 2);
-        double sinLatRad              = Math.sin(2 * latRad);
-        double longMinusZoneRad       = longitude*Math.PI/180-(6*nZone -183)*Math.PI/180;
+        double pow2cosLatRad          = Math.pow(cosLatRad, 2.);
+        double sinLatRad              = Math.sin(2. * latRad);
+        double longMinusZoneRad       = longitude*Math.PI/180.-(6.*nZone -183.)*Math.PI/180.;
 
         double sinLongRad             = Math.sin(longMinusZoneRad);
 
         double cosLatRad_X_sinLongRad = cosLatRad * sinLongRad ;
 
-        double onePlusOverOneMinus    = (1 + cosLatRad_X_sinLongRad ) / (1 - cosLatRad_X_sinLongRad );
+        double onePlusOverOneMinus    = (1. + cosLatRad_X_sinLongRad ) / (1. - cosLatRad_X_sinLongRad );
 
 
         double K2 = 6399593.625;
@@ -220,23 +273,84 @@ public class UTM
 
         double term1 = (Math.atan(Math.tan( latRad ) / Math.cos( longMinusZoneRad )) - latRad );
         double term2 = (sinLatRad * pow2cosLatRad * pow2cosLatRad);
-        double term4 = ( latRad + sinLatRad / 2);
+        double term4 = ( latRad + sinLatRad / 2.);
         double term3 = (term4 + sinLatRad * pow2cosLatRad );
 
-        double term5 = (latRad - K7 * term4 + K5 * 3 * term3 / 4 - K6 * (5 * 3 * term3 / 4 + term2 ) / 3);
-        double term6 = (1 + K3 / 2 * Math.pow(0.5 * Math.log(onePlusOverOneMinus),2) * pow2cosLatRad);
-        double term7 = Math.sqrt( 1 + K3 * pow2cosLatRad );
+        double term5 = (latRad - K7 * term4 + K5 * 3. * term3 / 4. - K6 * (5. * 3. * term3 / 4. + term2 ) / 3.);
+        double term6 = (1. + K3 / 2. * Math.pow(0.5 * Math.log(onePlusOverOneMinus),2.) * pow2cosLatRad);
+        double term7 = Math.sqrt( 1. + K3 * pow2cosLatRad );
 
 
         retNorthing = term1 * K8 * K2 / term7 * term6 + K8 * K2 * term5;
 
         if (letter<'M')
-            retNorthing = retNorthing + 10000000;
+            retNorthing = retNorthing + 10000000.;
 
-        retNorthing = Math.round(retNorthing *100) * 0.01;
+        retNorthing = Math.round(retNorthing *100.) * 0.01;
 
 
         return retNorthing;
+    }
+    private double getNewEasting(double latitude, double longitude) {
+
+        double falseEasting = 500000.;
+        double K2 = 6399593.62;
+
+        double literal1 = 0.0820944379;
+        double lit1SqrPlus1 = 1+Math.pow(literal1,2);
+        double K8 = 0.9996;
+
+        double literal23 = K8*K2;
+        double literal4 = 0.006739496742;
+        double literal5 = 0.005054622556;
+        double literal6 = 4.258201531e-05;
+        double literal7 = 1.674057895e-07;
+
+
+        double latRad = latitude*Math.PI/180.;
+        double longRad = longitude*Math.PI/180.-(6.*zone-183.)*Math.PI/180.;
+
+        double cosLat = Math.cos(latRad);
+        double sin2Lat = Math.sin(2.*latRad);
+        double tanLat = Math.tan(latRad);
+        double cosLatSqr = Math.pow(cosLat, 2.);
+        double latPlusSinLat = (latRad+sin2Lat/2.);
+
+
+        double sinLong = Math.sin(longRad);
+        double cosLong = Math.cos(longRad);
+
+        double arcSomething = 0.5*Math.log((1+cosLat*sinLong)/(1.-cosLat*sinLong));
+        double arcSomethingSqr = Math.pow(arcSomething,2.);
+
+        double arcSomethingElse = Math.pow(0.5*Math.log((1.+cosLat*sinLong)/(1.-cosLat*sinLong)),2.);
+
+
+        double sqrtCosLat = Math.pow((lit1SqrPlus1*cosLatSqr), 0.5);
+
+        //easting=arcSomething * literal23/sqrtCosLat * lit1SqrPlus1/2 * arcSomethingSqr * cosLatSqr/3;
+
+        easting=arcSomething *
+                K8 *
+                K2/Math.pow((1+Math.pow(0.0820944379,2)*Math.pow(cosLat,2.)), 0.5) *
+                (1. +
+                        Math.pow(0.0820944379,2.)/2. *
+                        Math.pow((arcSomething),2.) *
+                        Math.pow(cosLat,2.)/3.)         +
+                500000.;
+
+        easting = easting + falseEasting;
+
+
+        easting=Math.round(easting*100.)*0.01;
+
+        northing = (Math.atan(tanLat/cosLong)-latRad)*literal23/Math.sqrt(1.+literal4*cosLatSqr)*(1.+literal4/2.*arcSomethingSqr*cosLatSqr)+literal23*(latRad-literal5*(latPlusSinLat)+literal6*(3.*(latPlusSinLat)+sin2Lat*cosLatSqr)/4.-literal7*(5.*(3.*(latPlusSinLat)+sin2Lat*cosLatSqr)/4.+sin2Lat*cosLatSqr*cosLatSqr)/3.);
+        if (letter<'M')
+            northing = northing + 10000000.;
+        northing=Math.round(northing*100.)*0.01;
+
+        return easting;
+
     }
     }
 

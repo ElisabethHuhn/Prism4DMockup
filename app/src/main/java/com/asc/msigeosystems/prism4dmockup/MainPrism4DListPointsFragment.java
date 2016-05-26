@@ -26,7 +26,7 @@ import java.util.List;
  * for the user to see points of a given project
  * Created by elisabethhuhn on 5/8/2016.
  */
-public class MainPrism4DMockupListPointsFragment extends Fragment {
+public class MainPrism4DListPointsFragment extends Fragment {
 
     private static final String TAG = "LIST_POINTS_FRAGMENT";
     /**
@@ -52,10 +52,10 @@ public class MainPrism4DMockupListPointsFragment extends Fragment {
     private CharSequence mNotes;
 
     private Prism4DPoint mSelectedPoint;
-    private int                mSelectedPosition;
+    private int          mSelectedPosition;
 
-    private CharSequence       mProjectPath;
-    private CharSequence       mPointPath;
+    private CharSequence mProjectPath;
+    private CharSequence mPointPath;
 
 
 
@@ -79,7 +79,7 @@ public class MainPrism4DMockupListPointsFragment extends Fragment {
     //footer right button
     private Button mEnterButton;
 
-    public MainPrism4DMockupListPointsFragment newInstance(
+    public MainPrism4DListPointsFragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath,
             Prism4DPath pointPath){
@@ -94,15 +94,15 @@ public class MainPrism4DMockupListPointsFragment extends Fragment {
         args.putCharSequence(Prism4DPath.sProjectPathTag,    projectPath.getPath());
         args.putCharSequence(Prism4DPath.sPointPathTag,      pointPath.getPath());
 
-        MainPrism4DMockupListPointsFragment fragment =
-                new MainPrism4DMockupListPointsFragment();
+        MainPrism4DListPointsFragment fragment =
+                new MainPrism4DListPointsFragment();
 
         fragment.setArguments(args);
         return fragment;
     }
 
     //Constructor
-    public MainPrism4DMockupListPointsFragment() {
+    public MainPrism4DListPointsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -145,7 +145,7 @@ public class MainPrism4DMockupListPointsFragment extends Fragment {
          */
         //1) Inflate the layout for this fragment
         View v = inflater.inflate
-                (R.layout.fragment_point_list_prism4_dmockup, container, false);
+                (R.layout.fragment_point_list_prism4d, container, false);
         v.setTag(TAG);
 
         //2) find and remember the RecyclerView
@@ -373,11 +373,11 @@ public class MainPrism4DMockupListPointsFragment extends Fragment {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private MainPrism4DMockupListPointsFragment.ClickListener clickListener;
+        private MainPrism4DListPointsFragment.ClickListener clickListener;
 
         public RecyclerTouchListener(Context context,
                                      final RecyclerView recyclerView,
-                                     final MainPrism4DMockupListPointsFragment.ClickListener
+                                     final MainPrism4DListPointsFragment.ClickListener
                                              clickListener) {
 
             this.clickListener = clickListener;

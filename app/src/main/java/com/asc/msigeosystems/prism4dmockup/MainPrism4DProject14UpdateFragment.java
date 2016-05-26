@@ -139,7 +139,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
         //Inflate the layout for this fragment
         View v = inflater.inflate(
-                R.layout.fragment_project_1_n_maintain_prism4_dmockup,
+                R.layout.fragment_project_1_n_maintain_prism4d,
                 container,
                 false);
 
@@ -529,6 +529,14 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
     private void setProjectChanged(){
         mProjectChanged = true;
         //enable the enter button as the default is NOT enabled/grayed out
+        if (mProjectPath.equals(Prism4DPath.sCopyTag)){
+            mEnterButton.setText(R.string.enter_to_copy_button_label);
+
+        } else if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            mEnterButton.setText(R.string.enter_to_create_button_label);
+        } else {
+            mEnterButton.setText(R.string.enter_to_save_button_label);
+        }
         mEnterButton.setText(R.string.enter_to_save_button_label);
         mEnterButton.setEnabled(true);
         mEnterButton.setTextColor(Color.BLACK);

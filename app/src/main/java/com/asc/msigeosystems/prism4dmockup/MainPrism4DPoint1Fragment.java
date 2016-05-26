@@ -25,7 +25,7 @@ public class MainPrism4DPoint1Fragment extends Fragment {
 
     //Matrix Buttons
     private Button mCreateButton;
-    private Button mOpenButton;
+    private Button mListPoints;
     private Button mCopyButton;
     private Button mEditButton;
     private Button mDeleteButton;
@@ -139,17 +139,17 @@ public class MainPrism4DPoint1Fragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later
 
               //List Point Button
-        mOpenButton = (Button) v.findViewById(R.id.row1Button1);
-        mOpenButton.setText(R.string.list_points_button_label);
+        mListPoints = (Button) v.findViewById(R.id.row1Button1);
+        mListPoints.setText(R.string.list_points_button_label);
         //the order of images here is left, top, right, bottom
-        mOpenButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_color_folders, 0, 0);
-        mOpenButton.setOnClickListener(new View.OnClickListener() {
+        mListPoints.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_color_folders, 0, 0);
+        mListPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();

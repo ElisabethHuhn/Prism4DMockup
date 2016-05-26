@@ -16,7 +16,7 @@ import android.widget.Toast;
  * local settings which are not covered here
  * Created by elisabethhuhn on 5/1/2016.
  */
-public class MainPrism4DMockupSettings11GlobalFragment extends Fragment {
+public class MainPrism4DSettings11GlobalFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -59,7 +59,7 @@ public class MainPrism4DMockupSettings11GlobalFragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupSettings11GlobalFragment() {
+    public MainPrism4DSettings11GlobalFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -69,7 +69,7 @@ public class MainPrism4DMockupSettings11GlobalFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later

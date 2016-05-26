@@ -3,17 +3,17 @@ package com.asc.msigeosystems.prism4dmockup;
 /**
  * Created by elisabethhuhn on 5/7/2016.
  */
-public class Prism4DMockupGlobalSettings {
+public class Prism4DGlobalSettings {
 
-    private Prism4DMockupProjectSettings globalProjectSettings;
-
-
+    private Prism4DProjectSettings globalProjectSettings;
 
 
-    private static Prism4DMockupGlobalSettings ourInstance = new Prism4DMockupGlobalSettings();
 
 
-    public static Prism4DMockupGlobalSettings getInstance() {
+    private static Prism4DGlobalSettings ourInstance = new Prism4DGlobalSettings();
+
+
+    public static Prism4DGlobalSettings getInstance() {
         return ourInstance;
     }
 
@@ -25,7 +25,7 @@ public class Prism4DMockupGlobalSettings {
      * Constructor
      *
      */
-    private Prism4DMockupGlobalSettings() {
+    private Prism4DGlobalSettings() {
         //Set the defaults for project settings to those supplied by the company
         globalProjectSettings.setDefaults();
     }

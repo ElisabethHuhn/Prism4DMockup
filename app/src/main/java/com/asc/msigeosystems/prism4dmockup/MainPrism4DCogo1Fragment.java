@@ -14,7 +14,7 @@ import android.widget.Toast;
  * when the user is 
  * Created by elisabethhuhn on 5/132016.
  */
-public class MainPrism4DMockupCogo1Fragment extends Fragment {
+public class MainPrism4DCogo1Fragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -57,7 +57,7 @@ public class MainPrism4DMockupCogo1Fragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DMockupCogo1Fragment() {
+    public MainPrism4DCogo1Fragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -67,7 +67,7 @@ public class MainPrism4DMockupCogo1Fragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_top_matrix_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later

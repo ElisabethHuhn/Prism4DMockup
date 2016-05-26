@@ -124,7 +124,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -160,7 +160,7 @@
                     android:inputType="text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -197,7 +197,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -234,7 +234,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -277,7 +277,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -320,7 +320,7 @@
                     android:imeOptions="flagNoExtractUi"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorPureRed"
+                    android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -382,7 +382,7 @@
     </ScrollView>
 
     <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4_dmockup"/>
+    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
 
 
 </LinearLayout>

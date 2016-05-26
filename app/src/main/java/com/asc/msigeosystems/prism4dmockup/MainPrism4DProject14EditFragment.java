@@ -78,7 +78,7 @@ public class MainPrism4DProject14EditFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_project_1_n_maintain_prism4_dmockup, container, false);
+        View v = inflater.inflate(R.layout.fragment_project_1_n_maintain_prism4d, container, false);
 
 
         //Wire up the UI widgets so they can handle events later
