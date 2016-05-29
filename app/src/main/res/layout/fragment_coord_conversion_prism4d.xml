@@ -549,7 +549,7 @@
 
 
                 </LinearLayout>
-                <!-- Easting Northing -->
+                <!-- Easting Northing Meters -->
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -559,7 +559,7 @@
 
                     <!-- blank label to make fields line up on screen -->
                     <TextView
-
+                        android:text="@string/utm_meters"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="25.0"
@@ -570,7 +570,7 @@
                         />
                     <!-- Easting -->
                     <TextView
-                        android:id="@+id/utm_easting"
+                        android:id="@+id/utm_easting_meters"
                         android:hint="@string/utm_easting_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -584,7 +584,60 @@
                         />
                     <!-- Northing -->
                     <TextView
-                        android:id="@+id/utm_northing"
+                        android:id="@+id/utm_northing_meters"
+                        android:hint="@string/utm_northing_label"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="37.5"
+
+
+                        android:layout_marginStart="6dp"
+                        android:layout_marginTop="6dp"
+                        android:layout_marginEnd="16dp"
+
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+
+
+                </LinearLayout>
+                <!-- Easting Northing Feet -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    >
+
+                    <!-- blank label to make fields line up on screen -->
+                    <TextView
+                        android:text="@string/utm_feet"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25.0"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <!-- Easting -->
+                    <TextView
+                        android:id="@+id/utm_easting_feet"
+                        android:hint="@string/utm_easting_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="37.5"
+
+
+                        android:layout_margin="6dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorWhite"
+                        />
+                    <!-- Northing -->
+                    <TextView
+                        android:id="@+id/utm_northing_feet"
                         android:hint="@string/utm_northing_label"
 
                         android:layout_height="wrap_content"

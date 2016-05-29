@@ -1,11 +1,13 @@
 package com.asc.msigeosystems.prism4dmockup;
 
+import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -14,6 +16,7 @@ import java.util.List;
 public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAdapter.MyViewHolder> {
 
     private List<Prism4DProject> mProjectList;
+    private Context mContext;
 
     //implement the ViewHolder as an inner class
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -37,6 +40,9 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+        //save context for date formatting later
+        mContext = parent.getContext();
+
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.data_project_list_row, parent,  false);
         return new MyViewHolder(itemView);
@@ -58,9 +64,11 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
 
             holder.projectName.setText(project.getProjectName());
             holder.projectID.setText(String.valueOf(project.getProjectID()));
-            holder.projectLastModified.setText(project.getProjectLastModified().toString());
+            holder.projectLastModified.setText(
+                    DateFormat.getDateInstance().format(project.getProjectLastModified()));
             //number of points in this project
             holder.projectSize.setText(String.valueOf(numberPoints));
+
         } else {
             holder.projectName.setText("No projects defined");
             holder.projectID.setText("");

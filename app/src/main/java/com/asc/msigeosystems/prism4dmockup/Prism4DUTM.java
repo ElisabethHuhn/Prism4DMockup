@@ -23,18 +23,21 @@ public class Prism4DUTM {
      * I know this isn't standard, but it works for me today 5/1/2016
      * @return
      */
-    public String getEasting()     { return String.valueOf(mEasting);  }
-    public String getNorthing()    { return String.valueOf(mNorthing); }
-    public String getZone()        { return String.valueOf(mZone);     }
-    public String getLatBand()     { return String.valueOf(mLatBand);  }
-    public String getHemisphere()  { return String.valueOf(mHemisphere); }
-    public String getDatum()       { return String.valueOf(mDatum);    }
-    public String getConvergence() { return String.valueOf(mConvergence); }
-    public String getScale()       { return String.valueOf(mScale);    }
+
+    public double getEasting()     { return mEasting;  }
+    public double getNorthing()    { return mNorthing; }
+    public int    getZone()        { return mZone;     }
+    public char   getLatBand()     { return mLatBand;  }
+    public char   getHemisphere()  { return mHemisphere; }
+    public CharSequence getDatum() { return mDatum;    }
+    public double getConvergence() { return mConvergence; }
+    public double getScale()       { return mScale;    }
 
     public String toString() {
         return String.format("%s %c %c %s %s", mZone, mHemisphere, mLatBand, mEasting, mNorthing);
     }
+
+
 
     public Prism4DUTM(Prism4DWSG84Coordinate coordinate) {
         convertWGStoUTM(coordinate.getLatitude(), coordinate.getLongitude());
@@ -92,7 +95,7 @@ public class Prism4DUTM {
         }
 
         //Legal range of the longitude is -180 to +180
-        if ((longi <-80.) || (longi > 180.)){
+        if ((longi <-180.) || (longi > 180.)){
             throw new IllegalArgumentException();
         }
 

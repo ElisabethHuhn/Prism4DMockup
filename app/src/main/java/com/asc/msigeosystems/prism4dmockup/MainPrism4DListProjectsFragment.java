@@ -2,7 +2,6 @@ package com.asc.msigeosystems.prism4dmockup;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.Date;
@@ -54,25 +51,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
     public MainPrism4DListProjectsFragment newInstance(
             Prism4DPath projectPath){
@@ -103,7 +82,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
-
 
         //This would be the place to do anything unique to a given path
 
@@ -177,26 +155,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
                     @Override
                     public void onClick(View view, int position) {
-                       //todo need to update selection visually
-                        mSelectedPosition = position;
-                        mSelectedProject = mProjectList.get(position);
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                mSelectedProject.getProjectName() + " is selected!",
-                                Toast.LENGTH_SHORT).show();
-
-                        if (mProjectPath.equals(Prism4DPath.sDeleteTag)) {
-                            mEnterButton.setText(R.string.delete_button_label);
-                        } else if (mProjectPath.equals(Prism4DPath.sOpenTag)) {
-                            mEnterButton.setText(R.string.open_button_label);
-                        } else if (mProjectPath.equals(Prism4DPath.sCopyTag)) {
-                            mEnterButton.setText(R.string.copy_button_label);
-                        } else {
-                            //this is really an error, so todo should throw exception
-                            mEnterButton.setText(R.string.enter_button_label);
-                        }
-                        //also enable the Enter button
-                        mEnterButton.setEnabled(true);
-                        mEnterButton.setTextColor(Color.BLACK);
+                       onSelect(position);
                     }
 
                     @Override
@@ -207,102 +166,85 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
 
 
-        //FOOTER WIDGETS
-
-
-        //Esc Button
-        mEscButton = (Button) v.findViewById(R.id.escButton);
-
-        mEscButton.setEnabled(true);
-        mEscButton.setTextColor(Color.BLACK);
-        mEscButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.popToProject1Screen();
-                }
-
-            }
-        });
-
-
-        //Enter Button
-        mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        //The Enter button is enabled with the first project selection
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                //Project has to have been selected to do anything here
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    if (mSelectedProject != null) {
-
-                        //We'll need to pass the path forward
-                        Prism4DPath copiedProjectPath = new Prism4DPath(mProjectPath);
-
-                        if (mProjectPath.equals(Prism4DPath.sOpenTag)){
-
-                            //if the path is open, open the selected project
-                            myActivity.switchToProject14UpdateScreen(
-                                    mSelectedProject,
-                                    copiedProjectPath);
-
-                        }else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
-
-                            //if the path is copy, create a new project
-                            // with the selected projects details
-                            Prism4DProject copiedProject = new Prism4DProject(
-                                    mSelectedProject.getProjectName(),
-                                    Prism4DProject.getNextProjectID()  );
-                            copiedProject.setProjectDescription(
-                                    mSelectedProject.getProjectDescription());
-
-                            //copy the points from the selected project
-                            // to the newly created project
-                            Prism4DPointsContainer pointsContainer =
-                                    Prism4DPointsContainer.getInstance();
-                            pointsContainer.copyProjectPoints(
-                                    mSelectedProject.getProjectID(),
-                                    copiedProject.getProjectID());
-
-                            //then switch to project update with that new project
-                            myActivity.switchToProject14UpdateScreen(
-                                    copiedProject,
-                                    copiedProjectPath);
-
-                        }else if (mProjectPath.equals(Prism4DPath.sDeleteTag)){
-
-                            //ask the user if they are sure they want to proceed.
-                            areYouSureDelete();
-                        }else {
-
-                            //todo need to throw an unrecognized path exception
-                            Toast.makeText(getActivity(),
-                                    R.string.unrecognized_path_encountered,
-                                    Toast.LENGTH_SHORT).show();
-
-                            //for now, go home
-                            myActivity.switchToHomeScreen();
-
-                        }
-
-
-                    } else {
-                        //for now, just put up a toast that nothing has been pressed yet
-                        Toast.makeText(getActivity(),
-                                R.string.project_no_selection,
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
-
-            }
-        });
+        //No FOOTER on this screen
 
         return v;
     }
+
+
+    //executed when a project is selected
+    private void onSelect(int position){
+        //todo need to update selection visually
+        mSelectedPosition = position;
+        mSelectedProject = mProjectList.get(position);
+
+        Toast.makeText(getActivity().getApplicationContext(),
+                mSelectedProject.getProjectName() + " is selected!",
+                Toast.LENGTH_SHORT).show();
+
+        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+        if (myActivity != null){
+            if (mSelectedProject != null) {
+
+                //We'll need to pass the path forward
+                Prism4DPath copiedProjectPath = new Prism4DPath(mProjectPath);
+
+                if (mProjectPath.equals(Prism4DPath.sOpenTag)){
+
+                    //if the path is open, open the selected project
+                    myActivity.switchToProject14UpdateScreen(
+                            mSelectedProject,
+                            copiedProjectPath);
+
+                }else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
+
+                    //if the path is copy, create a new project
+                    // with the selected projects details
+                    Prism4DProject copiedProject = new Prism4DProject(
+                            mSelectedProject.getProjectName(),
+                            Prism4DProject.getNextProjectID()  );
+                    copiedProject.setProjectDescription(
+                            mSelectedProject.getProjectDescription());
+
+                    //copy the points from the selected project
+                    // to the newly created project
+                    Prism4DPointsContainer pointsContainer =
+                            Prism4DPointsContainer.getInstance();
+                    pointsContainer.copyProjectPoints(
+                            mSelectedProject.getProjectID(),
+                            copiedProject.getProjectID());
+
+                    //then switch to project update with that new project
+                    myActivity.switchToProject14UpdateScreen(
+                            copiedProject,
+                            copiedProjectPath);
+
+                }else if (mProjectPath.equals(Prism4DPath.sDeleteTag)){
+
+                    //ask the user if they are sure they want to proceed.
+                    areYouSureDelete();
+                }else {
+
+                    //todo need to throw an unrecognized path exception
+                    Toast.makeText(getActivity(),
+                            R.string.unrecognized_path_encountered,
+                            Toast.LENGTH_SHORT).show();
+
+                    //for now, go home
+                    myActivity.switchToHomeScreen();
+
+                }
+
+
+            } else {
+                //for now, just put up a toast that nothing has been pressed yet
+                Toast.makeText(getActivity(),
+                        R.string.project_no_selection,
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+    }
+
 
     //Build and display the alert dialog
     private void areYouSureDelete(){

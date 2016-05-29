@@ -11,6 +11,9 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+
 /**
  * The Collect Fragment is the UI
  * when the user is making point measurements in the field
@@ -43,8 +46,10 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
     private TextView mUtmNmZoneOutput;
     private TextView mUtmNmLatBandOutput;
-    private TextView mUtmNmEastingOutput;
-    private TextView mUtmNmNorthingOutput;
+    private TextView mUtmNmEastingMOutput;
+    private TextView mUtmNmNorthingMOutput;
+    private TextView mUtmNmEastingFOutput;
+    private TextView mUtmNmNorthingFOutput;
     private TextView mUtmNmHemisphereOutput;
    // private TextView mUtmNmConvergenceOutput;
    // private TextView mUtmNmScaleOutput;
@@ -54,25 +59,8 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     private Button mClearButton;
 
 
-    private double mLatitude; //This is always in digital degrees regardless of input type
-    private double mLongitude;
-    private double mDegree;
-    private double mMinute;
-    private double mSecond;
-
-    private String mLatString;
-    private String mLongString;
-    private String mDegreeString;
-    private String mMinuteString;
-    private String mSecondString;
-
-
     private Prism4DWSG84Coordinate mWSG84Coordinate;
-    private int    mZone;
-    private char   mLatBand;
-    private double mEasting;
-    private double mNorthing;
-    private char   mHemisphere;
+
     private double mConvergence;
     private double mScale;
 
@@ -137,8 +125,10 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         mUtmNmZoneOutput       =  (TextView) v.findViewById(R.id.utm_zone);
         mUtmNmLatBandOutput    =  (TextView) v.findViewById(R.id.utm_latband);
         mUtmNmHemisphereOutput =  (TextView) v.findViewById(R.id.utm_hemisphere);
-        mUtmNmEastingOutput    =  (TextView) v.findViewById(R.id.utm_easting);
-        mUtmNmNorthingOutput   =  (TextView) v.findViewById(R.id.utm_northing);
+        mUtmNmEastingMOutput   =  (TextView) v.findViewById(R.id.utm_easting_meters);
+        mUtmNmNorthingMOutput  =  (TextView) v.findViewById(R.id.utm_northing_meters);
+        mUtmNmEastingFOutput   =  (TextView) v.findViewById(R.id.utm_easting_feet);
+        mUtmNmNorthingFOutput  =  (TextView) v.findViewById(R.id.utm_northing_feet);
 
 
 
@@ -303,11 +293,25 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
                 Prism4DUTM utmCoordinate = new Prism4DUTM(mWSG84Coordinate);
 
                 //Also output the result in separate fields
-                mUtmNmZoneOutput.setText(utmCoordinate.getZone());
-                mUtmNmHemisphereOutput.setText(utmCoordinate.getHemisphere());
-                mUtmNmLatBandOutput.setText(utmCoordinate.getLatBand());
-                mUtmNmEastingOutput.setText(utmCoordinate.getEasting());
-                mUtmNmNorthingOutput.setText(utmCoordinate.getNorthing());
+                mUtmNmZoneOutput.setText(String.valueOf(utmCoordinate.getZone()));
+                mUtmNmHemisphereOutput.setText(String.valueOf(utmCoordinate.getHemisphere()));
+                mUtmNmLatBandOutput.setText(String.valueOf(utmCoordinate.getLatBand()));
+                mUtmNmEastingMOutput.setText(String.valueOf(utmCoordinate.getEasting()));
+                mUtmNmNorthingMOutput.setText(String.valueOf(utmCoordinate.getNorthing()));
+
+                //convert meters to feet
+                double temp =   Prism4DWSG84Coordinate.convertMetersToFeet(utmCoordinate.getEasting());
+                //and round to a reasonable precision
+                BigDecimal bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
+                temp = bdTemp.doubleValue();
+                mUtmNmEastingFOutput.setText(String.valueOf(temp));
+
+                temp = Prism4DWSG84Coordinate.convertMetersToFeet(utmCoordinate.getNorthing());
+                bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
+                temp = bdTemp.doubleValue();
+
+                mUtmNmNorthingFOutput.setText(String.valueOf(temp ));
+
             } catch (IllegalArgumentException exc) {
                 //input parameters were not within range
                 mLatDigDegInput.setText(R.string.input_wrong_range_error);
@@ -336,12 +340,13 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         mUtmIntegerOutput.setText("");
         mUtmSOOutput.     setText("");
 
-        mUtmNmZoneOutput.setText(R.string.utm_zone_label);
-        mUtmNmLatBandOutput.setText(R.string.utm_latband_label);
+        mUtmNmZoneOutput.      setText(R.string.utm_zone_label);
+        mUtmNmLatBandOutput.   setText(R.string.utm_latband_label);
         mUtmNmHemisphereOutput.setText(R.string.utm_hemisphere_label);
-        mUtmNmEastingOutput.setText(R.string.utm_easting_label);
-        mUtmNmNorthingOutput.setText(R.string.utm_northing_label);
-
+        mUtmNmEastingMOutput.  setText(R.string.utm_easting_label);
+        mUtmNmNorthingMOutput. setText(R.string.utm_northing_label);
+        mUtmNmEastingFOutput.  setText(R.string.utm_easting_label);
+        mUtmNmNorthingFOutput. setText(R.string.utm_northing_label);
         setLatColorPos();
         setLongColorPos();
     }

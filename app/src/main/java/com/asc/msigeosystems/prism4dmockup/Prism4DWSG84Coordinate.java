@@ -6,6 +6,8 @@ import java.math.RoundingMode;
 /**
  * Created by elisabethhuhn on 5/23/2016.
  */
+
+
 public class Prism4DWSG84Coordinate {
     //This class holds raw coordinates and is responsible for swapping DD to DMS format
 
@@ -26,6 +28,11 @@ public class Prism4DWSG84Coordinate {
 
     private boolean mValidCoordinate = true;
 
+    /********
+     *
+     * Setters and Getters
+     *
+     **********/
 
     public double getLatitude() {
         return mLatitude;
@@ -63,6 +70,24 @@ public class Prism4DWSG84Coordinate {
         return mValidCoordinate;
     }
 
+    /********
+     *
+     * Static functions
+     *
+     **********/
+
+    public static double convertMetersToFeet(double meters) {
+        //function converts Feet to Meters.
+        double toFeet = meters;
+        toFeet = meters * 3.280833333;  // official conversion rate of Meters to Feet
+        return toFeet;
+    }
+
+    /********
+     *
+     * Constructors
+     *
+     **********/
 
 
     public Prism4DWSG84Coordinate(double latitude, double longitude) {

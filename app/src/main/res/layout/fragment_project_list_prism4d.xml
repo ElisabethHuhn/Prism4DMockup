@@ -1,12 +1,73 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    tools:context="com.asc.msigeosystems.prism4dmockup.MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
     >
-    <!-- This layout is for creating a new project -->
+    <!-- Title line for the list of projects -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <!-- ID -->
+        <TextView
+            android:text="@string/project_id_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Name -->
+        <TextView
+            android:text="@string/project_name_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Date last maintained -->
+        <TextView
+            android:text="@string/project_last_modified_date_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Size = number of points -->
+        <TextView
+            android:text="@string/project_row_size_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+    </LinearLayout>
     <!--  -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
@@ -19,6 +80,8 @@
             android:id="@+id/projectsList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:orientation="vertical"
+
             >
 
         </android.support.v7.widget.RecyclerView>
@@ -27,8 +90,6 @@
 
     </ScrollView>
 
-    <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
 
 
 </LinearLayout>

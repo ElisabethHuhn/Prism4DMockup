@@ -10,8 +10,8 @@
 
     android:paddingLeft="@dimen/fragment_horizontal_margin"
     android:paddingRight="@dimen/fragment_horizontal_margin"
-    android:paddingTop="@dimen/interum_vertical"
-    android:paddingBottom="@dimen/interum_vertical"
+    android:paddingTop="@dimen/interum_vertical_margin"
+    android:paddingBottom="@dimen/interum_vertical_margin"
 
     android:background="?android:attr/selectableItemBackground"
     >
@@ -23,8 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="1"
-
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="3dp"
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
@@ -37,8 +36,7 @@
         android:layout_height="wrap_content"
         android:layout_width="0dp"
         android:layout_weight="5"
-
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="3dp"
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
@@ -50,9 +48,8 @@
 
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="5"
-
-        android:layout_marginEnd="8dp"
+        android:layout_weight="7"
+        android:layout_marginEnd="3dp"
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
@@ -64,12 +61,14 @@
 
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="2"
-
-        android:layout_marginEnd="8dp"
+        android:layout_weight="1"
+        android:layout_marginEnd="3dp"
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
         />
+
+
+
 
 </LinearLayout>
