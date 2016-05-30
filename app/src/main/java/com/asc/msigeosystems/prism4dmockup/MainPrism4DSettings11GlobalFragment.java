@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 /**
@@ -38,25 +37,7 @@ public class MainPrism4DSettings11GlobalFragment extends Fragment {
     private Button mSurveyStylesButton;
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
 
     public MainPrism4DSettings11GlobalFragment() {

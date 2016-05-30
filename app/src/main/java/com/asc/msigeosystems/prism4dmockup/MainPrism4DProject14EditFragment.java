@@ -1,6 +1,5 @@
 package com.asc.msigeosystems.prism4dmockup;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -47,25 +46,7 @@ public class MainPrism4DProject14EditFragment extends Fragment {
 
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
 
     public MainPrism4DProject14EditFragment() {
@@ -133,46 +114,6 @@ public class MainPrism4DProject14EditFragment extends Fragment {
         //FOOTER WIDGETS
 
 
-        //Esc Button
-        mEscButton = (Button) v.findViewById(R.id.escButton);
-        //have to set the color and enable the button as the default is NOT enabled/grayed out
-        mEscButton.setEnabled(true);
-        mEscButton.setTextColor(Color.BLACK);
-        mEscButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.no_save,
-                        Toast.LENGTH_SHORT).show();
-
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToPopBackstack();
-                }
-
-            }
-        });
-
-        //Enter Button
-        mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        //have to set the color and enable the button as the default is NOT enabled/grayed out
-        mEnterButton.setEnabled(true);
-        mEnterButton.setTextColor(Color.BLACK);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.project_stored,
-                        Toast.LENGTH_SHORT).show();
-
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToPopBackstack();
-                }
-            }
-        });
 
         return v;
     }

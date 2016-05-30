@@ -63,25 +63,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
     public static MainPrism4DProject14UpdateFragment newInstance(
             Prism4DProject project,
@@ -333,54 +315,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
 
-        //FOOTER WIDGETS
 
-
-        //Esc Button
-        mEscButton = (Button) v.findViewById(R.id.escButton);
-        //have to set the color and enable the button as the default is NOT enabled/grayed out
-        mEscButton.setEnabled(true);
-        mEscButton.setTextColor(Color.BLACK);
-        mEscButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                if (mProjectChanged){
-                    areYouSureEsc();
-
-                } else {
-                    Toast.makeText(getActivity(),
-                            R.string.no_save,
-                            Toast.LENGTH_SHORT).show();
-
-                    MainPrism4DActivity myActivity =
-                            (MainPrism4DActivity) getActivity();
-                    if (myActivity != null) {
-                        myActivity.popToProject1Screen();
-                    }
-                }
-
-            }
-        });
-
-        //Enter Button
-        mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        //button is enabled once something changes
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                //The project must have been changed for this button to work
-                if (mProjectChanged) {
-                    saveChanges();
-
-                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                    if (myActivity != null) {
-                        myActivity.popToProject1Screen();
-                    }
-                }
-            }
-        });
 
         return v;
     }
@@ -529,6 +464,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
     private void setProjectChanged(){
         mProjectChanged = true;
         //enable the enter button as the default is NOT enabled/grayed out
+        /*****
         if (mProjectPath.equals(Prism4DPath.sCopyTag)){
             mEnterButton.setText(R.string.enter_to_copy_button_label);
 
@@ -540,7 +476,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         mEnterButton.setText(R.string.enter_to_save_button_label);
         mEnterButton.setEnabled(true);
         mEnterButton.setTextColor(Color.BLACK);
-
+*****/
         //enable the save changes button
         mProjectSaveChangesButton.setEnabled(true);
         mProjectSaveChangesButton.setTextColor(Color.BLACK);
@@ -550,8 +486,8 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         mProjectChanged = false;
         //enable the enter button as the default is NOT enabled/grayed out
         //mEnterButton.setText(R.string.enter_to_save_button_label);
-        mEnterButton.setEnabled(false);
-        mEnterButton.setTextColor(Color.GRAY);
+        //mEnterButton.setEnabled(false);
+        //mEnterButton.setTextColor(Color.GRAY);
 
         mProjectSaveChangesButton.setEnabled(false);
         mProjectSaveChangesButton.setTextColor(Color.GRAY);

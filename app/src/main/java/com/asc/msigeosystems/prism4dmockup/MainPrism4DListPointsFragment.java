@@ -2,7 +2,6 @@ package com.asc.msigeosystems.prism4dmockup;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -14,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -59,25 +56,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
     public MainPrism4DListPointsFragment newInstance(
             Prism4DProject project,
@@ -203,36 +182,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
         //FOOTER WIDGETS
 
 
-        //Esc Button
-        mEscButton = (Button) v.findViewById(R.id.escButton);
 
-        mEscButton.setEnabled(true);
-        mEscButton.setTextColor(Color.BLACK);
-        mEscButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                //On escape, pop all the way back to the top project matrix
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.popToProjectUpdateScreen();
-                }
-
-            }
-        });
-
-
-        //Enter Button
-        mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        //The Enter button is enabled with the first point selection
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-
-                onEnter();
-
-            }
-        });
 
         return v;
     }
@@ -293,23 +243,9 @@ public class MainPrism4DListPointsFragment extends Fragment {
                 String.valueOf(mSelectedPoint.getPointID()) + " is selected!",
                 Toast.LENGTH_SHORT).show();
 
-        if (true){
-            onEnter();
-        } else {
-            //also enable the Enter button according to path
-            if (mPointPath.equals(Prism4DPath.sDeleteTag)) {
-                mEnterButton.setText(R.string.delete_button_label);
-            } else if (mPointPath.equals(Prism4DPath.sOpenTag)) {
-                mEnterButton.setText(R.string.open_button_label);
-            } else if (mPointPath.equals(Prism4DPath.sCopyTag)) {
-                mEnterButton.setText(R.string.copy_button_label);
-            } else {
-                //this is really an error, so todo should throw exception
-                mEnterButton.setText(R.string.enter_button_label);
-            }
-            mEnterButton.setEnabled(true);
-            mEnterButton.setTextColor(Color.BLACK);
-        }
+
+        onEnter();
+
     }
 
     //executed when enter is selected

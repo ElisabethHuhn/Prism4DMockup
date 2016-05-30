@@ -25,9 +25,7 @@ public class MainPrism4DHomeFragment extends Fragment {
     private Button mSettingsButton;
     private Button mHelpButton;
 
-    //footer
-    private Button mEscButton;
-    private Button mEnterButton;
+
 
 
     public MainPrism4DHomeFragment() {

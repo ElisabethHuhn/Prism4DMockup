@@ -66,25 +66,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
 
 
-    //footer
-    //footer left button
-    private Button mEscButton;
-    //footer row 1
-    private TextView mCurrentFilenameField;
-    //footer row 2
-    private TextView mModelField;
-    private TextView mSnField;
-    //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
-    private TextView mHorizField;
-    private TextView mVertField;
-    //footer row 5
-    private TextView mRmsField;
-    private TextView mPdopField;
-    //footer right button
-    private Button mEnterButton;
+
 
 
     public MainPrism4DCoordConversionFragment() {
@@ -156,34 +138,9 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
             }
         });
 
-        //FOOTER WIDGETS
 
 
-        //Esc Button
-        mEscButton = (Button) v.findViewById(R.id.escButton);
-        mEscButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.esc_button_label,
-                        Toast.LENGTH_SHORT).show();
 
-            }
-        });
-
-        //Enter Button
-        mEnterButton = (Button) v.findViewById(R.id.enterButton);
-        mEnterButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.enter_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
 
         return v;
     }
