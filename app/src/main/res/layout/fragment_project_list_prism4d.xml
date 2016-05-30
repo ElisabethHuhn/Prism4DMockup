@@ -68,7 +68,8 @@
             android:background="@color/colorScreenBackground"
             />
     </LinearLayout>
-    <!--  -->
+
+    <!-- Recycler view containing the list of projects -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -90,7 +91,6 @@
 
     </ScrollView>
 
-
-
+    <!-- No Footer on the Projects list page -->
 </LinearLayout>
 

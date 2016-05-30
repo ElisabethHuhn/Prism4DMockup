@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+
+    android:focusable="true"
+    android:clickable="true"
+
+    android:paddingLeft="@dimen/fragment_horizontal_margin"
+    android:paddingRight="@dimen/fragment_horizontal_margin"
+    android:paddingTop="@dimen/interum_vertical_margin"
+    android:paddingBottom="@dimen/interum_vertical_margin"
+
+    android:background="?android:attr/selectableItemBackground"
+    >
+
+    <!-- Project ID -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowProjectIDLabel"
+            android:text="@string/point_row_project_id_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowProjectID"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+    <!-- Point ID -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowPointIDLabel"
+            android:text="@string/point_row_point_id_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowPointID"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+    <!-- Easting -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowEastingLabel"
+            android:text="@string/point_row_easting_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowEasting"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+    <!-- Northing -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowNorthingLabel"
+            android:text="@string/point_row_northing_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowNorthing"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+    <!-- Elevation -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowElevationLabel"
+            android:text="@string/point_row_elevation_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowElevation"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+    <!-- Description -->
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        >
+
+        <TextView
+            android:id="@+id/pointRowDescriptionLabel"
+            android:text="@string/point_row_description_label"
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="25"
+            android:gravity="end"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+        <TextView
+            android:id="@+id/pointRowDescription"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="75"
+            android:layout_marginEnd="16dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorWhite"
+            />
+
+    </LinearLayout>
+
+
+</LinearLayout>

@@ -113,9 +113,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 (R.layout.fragment_project_list_prism4d, container, false);
         v.setTag(TAG);
 
-        //Even though this is a mockup, use the real recycler view to assure
-        //that I understand it for the real project
-
         //2) find and remember the RecyclerView
         mRecyclerView = (RecyclerView) v.findViewById(R.id.projectsList);
 
@@ -128,12 +125,13 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //4) read data in from the database and tell the adapter about it
-        //prepareProjectDataset();
+        //   this is now done in the projects container singleton
 
-        //      make sure our singleton list holder exists first
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
+
+        //      get the singleton list container
+        Prism4DProjectsContainer projectContainer = Prism4DProjectsContainer.getInstance();
         //      then go get our list of projects
-        mProjectList = projectList.getProjects();
+        mProjectList = projectContainer.getProjects();
 
         //5) Use the data to Create and set the Adapter
         mAdapter = new Prism4DProjectAdapter(mProjectList);
@@ -280,38 +278,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 .show();
     }
 
-
-
-    //Mock up some projects for now
-    private void prepareProjectDataset(){
-        //no use doing anything if the Adapter is not created yet
-
-
-/***
-        Prism4DProject project = new Prism4DProject("Cambridge Subdivision", 1001);
-        projectList.add(project);
-
-        project = new Prism4DProject("Jones Creek",   1002);
-        projectList.add(project);
-
-        project = new Prism4DProject("Hampton South", 1003);
-        projectList.add(project);
-
-        project = new Prism4DProject("Johns Creek",   1004);
-        projectList.add(project);
-
-        project = new Prism4DProject("Macon Airport", 1005);
-        projectList.add(project);
-
-        project = new Prism4DProject("MSI Demo",      1006);
-        projectList.add(project);
-
-        project = new Prism4DProject("Roswell",       1007);
-        projectList.add(project);
-
-***/
-
-    }
 
     //Add some code to improve the recycler view
     //Here is the interface for event handlers for Click and LongClick

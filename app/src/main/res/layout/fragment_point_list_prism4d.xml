@@ -6,8 +6,100 @@
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
     >
-    <!-- Point -->
-    <!--  -->
+
+    <!-- Title line for the list of points -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        >
+        <!-- Project ID -->
+        <TextView
+            android:text="@string/point_row_project_id_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Point ID -->
+        <TextView
+            android:text="@string/point_row_point_id_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="2"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Easting -->
+        <TextView
+            android:text="@string/point_row_easting_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Northing -->
+        <TextView
+            android:text="@string/point_row_northing_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Elevation -->
+        <TextView
+            android:text="@string/point_row_elevation_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="5"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+        <!-- Descr -->
+        <TextView
+            android:text="@string/point_row_description_label"
+
+            android:layout_height="wrap_content"
+            android:layout_width="0dp"
+            android:layout_weight="8"
+
+            android:layout_marginEnd="8dp"
+
+            android:textColor="@color/colorTextBlack"
+            android:background="@color/colorScreenBackground"
+            />
+
+    </LinearLayout>
+
+    <!-- Recycler View of the points -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -27,8 +119,9 @@
 
     </ScrollView>
 
-    <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
+
+    <!-- The Footer will be just the buttons -->
+    <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
 
 
 </LinearLayout>

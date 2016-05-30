@@ -1,0 +1,489 @@
+<resources>
+    <string name="app_name">Prism4DMockup</string>
+
+    <!-- ORDER of screens is: -->
+    <!-- Menu     -->
+    <!-- Home     -->
+    <!-- Project  -->
+    <!-- Collect  -->
+    <!-- Stakeout -->
+    <!-- Cogo     -->
+    <!-- Maps     -->
+    <!-- Skyplot  -->
+    <!-- Config   -->
+    <!-- Settings -->
+    <!-- Help     -->
+    <!-- Conversions -->
+    <!-- Footer   -->
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Main Home Screen Strings -->
+    <!-- Menu Items -->
+    <string name="action_home">Home</string>
+    <string name="action_project">Project</string>
+    <string name="action_collect">Collect</string>
+    <string name="action_stakeout">Stakeout</string>
+    <string name="action_cogo">COGO</string>
+    <string name="action_maps">Maps</string>
+    <string name="action_skyplots">Skyplots</string>
+    <string name="action_config">Config</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_help">Help</string>
+    <string name="action_convert">Convert</string>
+
+
+    <!-- Project Subtitles -->
+    <string name="subtitle_maintain_project">Maintain Project</string>
+    <string name="subtitle_maintain_point">Maintain Point</string>
+    <string name="subtitle_create_project">Create Project</string>
+    <string name="subtitle_create_point">Create Point</string>
+    <string name="subtitle_copy_point">Copy Point</string>
+    <string name="subtitle_open_point">Open Point</string>
+    <string name="subtitle_delete_point">Delete Point</string>
+    <string name="subtitle_project_settings">Project Settings</string>
+    <string name="subtitle_unknown_error">Unknown Error</string>
+    <string name="subtitle_convert_to_utm">Convert to UTM</string>
+
+    //Collect menu items
+    <string name="action_measure_points">Measure Points</string>
+    <string name="action_open">Open</string>
+
+    //Settings Menu items
+    <string name="action_global_settings">Global_Settings</string>
+    <string name="action_project_default_settings">Project_Defaults</string>
+
+    //misc
+    <string name="action_delete">Delete</string>
+
+    //Exception Strings
+    <string name="latitude_out_of_range">Latitude out of range</string>
+    <string name="longitude_out_of_range">Longitude out of range</string>
+    <string name="coordinate_invalid">Coordinate out of range</string>
+    <string name="coordinate_try_again">Coordinates not valid, please input again</string>
+
+
+    <!-- Button Labels -->
+    <string name="projects_button_label">Project</string>
+    <string name="collect_button_label">Collect</string>
+    <string name="stakeout_button_label">Stakeout</string>
+    <string name="cogo_button_label">COGO</string>
+    <string name="maps_button_label">Maps</string>
+    <string name="skyplot_button_label">Skyplot</string>
+    <string name="config_button_label">Equipment</string>
+    <string name="settings_button_label">Settings</string>
+    <string name="help_button_label">Support</string>
+
+    <!-- Text View Labels (initial text displayed) -->
+
+    <!-- Content Descriptions for images -->
+    <string name="groundstation_contentdescription">Ground Station Icon</string>
+    <string name="maps_single_point_contentdescription">Single point highlighted on map</string>
+
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Project Top Level Screen Strings -->
+    <!-- Menu Items -->
+
+    <!-- Button Labels -->
+    <string name="create_button_label">Create</string>
+    <string name="open_button_label">Open</string>
+    <string name="copy_button_label">Copy</string>
+    <string name="edit_button_label">Edit</string>
+    <string name="delete_button_label">Delete</string>
+    <string name="control_button_label">Control</string>
+    <string name="maintain_points_button_label">Maintain Points</string>
+    <string name="feature_codes_button_label">Feature Codes</string>
+    <string name="exchange_button_label">Exchange</string>
+
+    <string name="unrecognized_path_encountered">Unrecognized Path Encountered: </string>
+    <string name="delete_path_1">Selected Project </string>
+    <string name="delete_path_2"> is Deleted</string>
+
+    <string name="project_changed_sure_question"
+        >Project has changed, User will be asked: Are you sure you want to exit without saving?</string>
+    <string name="project_unchanged">Project unchanged, exit without saving</string>
+    <string name="settings_stored">Settings Stored</string>
+    <string name="no_save">Exit Without Saving</string>
+    <string name="save_contents">Data Saved Before Exit</string>
+    <string name="save_new_point">New Point saved to Permanent Storage</string>
+    <string name="save_existing_point">Existing Point updated in Permanent Storage</string>
+    <string name="save_copied_point">Copied Point saved to Permanent Storage</string>
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Project Maintainence/List:  -->
+    <string name="project_demo_descr"
+        >Sargent Road Reconnaissance Survey. Party Chief: Rusty Martin, GPS Rodman: Chip Schuller
+        </string>
+    <string name="project_list_title">ID    Name    Date Last Touched    Points</string>
+
+    <!-- Button Labels -->
+    <string name="project_view_existing_label">View Projects</string>
+    <string name="project_create_button_label">Create Project</string>
+    <string name="project_settings_button_label">View Settings</string>
+    <string name="list_points_button_label">List Points</string>
+
+    <!-- Text View Labels (initial text displayed) -->
+    <string name="project_screen_label">Project Attributes</string>
+    <string name="project_name_label">Name: </string>
+    <string name="project_id_label">ID: </string>
+    <string name="project_creation_date_label">Created: </string>
+    <string name="project_last_modified_date_label">Modified: </string>
+    <string name="project_description_label">Description: </string>
+
+
+    <!-- Prompts -->
+    <string name="project_stored"           >Project Attributes Stored</string>
+    <string name="project_selected"         >Project Selected</string>
+    <string name="project_selection_ignored">Project Selection Ignored</string>
+    <string name="project_no_selection"     >Project Has NOT been selected yet</string>
+    <string name="project_no_edit"          >Edit is identical to Open. Choose Open</string>
+
+
+
+    <!--      NEW SCREEN      -->
+    <!-- Project List Strings -->
+    <string name="project_row_id_label">ID: </string>
+    <string name="project_row_name_label">Name: </string>
+    <string name="project_row_creation_date_label">Created: </string>
+    <string name="project_row_last_modified_date_label">Modified: </string>
+    <string name="project_row_description_label">Description: </string>
+    <string name="project_row_size_label">Size: </string>
+
+
+    <!-- Point List Strings -->
+    <string name="point_row_project_id_label">Project: </string>
+    <string name="point_row_point_id_label">Point: </string>
+    <string name="point_row_easting_label">Easting: </string>
+    <string name="point_row_northing_label">Northing: </string>
+    <string name="point_row_elevation_label">Elevation: </string>
+    <string name="point_row_description_label">Description: </string>
+    <string name="point_row_notes_label">Notes: </string>
+
+
+
+
+
+    <!--      NEW SCREEN                        -->
+    <!-- Maintain/List Points Screen Strings -->
+    <string name="point_screen_label"   >Point Attributes</string>
+    <string name="point_project_id_label">Project ID: </string>
+    <string name="point_screen_id_label">Point ID: </string>
+    <string name="point_easting_label"  >Easting: </string>
+    <string name="point_northing_label" >Northing: </string>
+    <string name="point_elevation_label">Elevation: </string>
+    <string name="point_description_label">Description: </string>
+    <string name="point_notes_label"    >Notes: </string>
+
+    <string name="dummy_project_description">No permanent storage of Projects yet, so couldn\'t lookup the real project</string>
+    <string name="dummy_project_name">Dummy Name no Lookup</string>
+    <string name="unknown_process">UNKNOWN process</string>
+
+    <string name="cant_view_projects">Can not view projects on create path</string>
+    <string name="cant_view_points">Can not view points on create path</string>
+    <string name="point_unchanged">Point unchanged, exit without saving</string>
+    <string name="point_no_selection">Point Has NOT been selected yet</string>
+    <string name="point_view_existing_label">View Existing Points</string>
+
+    <string name="save_new_project">New Project saved to Permanent Storage</string>
+    <string name="save_existing_project">Existing Project updated in Permanent Storage</string>
+    <string name="save_copied_project">Copied Project saved to Permanent Storage</string>
+
+
+    <!-- Button Labels -->
+    <string name="point_maintain_points_label">Maintain Points</string>
+    <string name="save_changes_button_label">Save Changes</string>
+
+
+
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Collect Top Level Collect Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="collect_points_button_label">Measure Points</string>
+    <string name="collect_lines_button_label">Measure Lines</string>
+    <string name="collect_areas_button_label">Measure Areas</string>
+    <string name="autostore_button_label">Auto Store</string>
+    <string name="gps_base_station_button_label">GPS Base Station</string>
+    <string name="total_station_button_label">Total Station</string>
+    <string name="traverse_button_label">Traverse</string>
+    <string name="gallery_button_label">Gallery</string>
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Collect Measure Points Screen Strings -->
+    <!-- Menu Items -->
+
+    <!-- Button Labels -->
+    <string name="zoom_in_button_label">Zoom In</string>
+    <string name="zoom_out_button_label">Zoom Out</string>
+    <string name="zoom_ext_button_label">Extended Zoom</string>
+    <string name="picture_button_label">Picture</string>
+    <string name="notes_button_label">Notes</string>
+
+
+    <!-- Text View Labels (initial text displayed) -->
+    <string name="scale_factor_label">SF:  |___1,000 ft_____|</string>
+    <string name="point_id_label">PT:   12533</string>
+    <string name="current_northing_label">N: 1,384,506.48</string>
+    <string name="current_easting_label">E: 2,302,844.75</string>
+    <string name="current_elevation_label">ELE:   1,683.08</string>
+    <string name="function_code_label">FC: CL1</string>
+    <string name="current_height_label">HT:  6.56</string>
+    <string name="current_position_label">Current Position</string>
+    <string name="store_position_label">Store Position</string>
+    <string name="offset_position_label">Offset Position</string>
+    <string name="ave_position_label">Average Position</string>
+
+    <!-- Content Descriptions for images -->
+    <string name="drawing_pad_contentdescription">Screen area rendering points layout</string>
+    <string name="zoom_in_contentdescription">Select to zoom in or magnifying the drawing area</string>
+    <string name="zoom_out_contentdescription">Select to zoom out or condensing the drawing area</string>
+    <string name="zoom_ext_contentdescription">Select to zoom to size to fit the drawing area</string>
+
+
+
+
+
+
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Stakeout Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="stakeout_points_button_label">Stakeout Points</string>
+    <string name="stakeout_lines_button_label">Stakeout Lines</string>
+    <string name="stakeout_arcs_button_label">Stake Arc</string>
+    <string name="stakeout_offset_button_label">Stake Offsets</string>
+    <string name="stakeout_report_button_label">Report</string>
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Cogo Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="cogo_points_button_label">Key In Points</string>
+    <string name="cogo_coordinates_button_label">Coordinates</string>
+    <string name="cogo_inverse_button_label">Inverse</string>
+    <string name="cogo_intersections_button_label">Intersections</string>
+    <string name="cogo_triangles_button_label">Triangles</string>
+    <string name="cogo_curves_button_label">Curves</string>
+    <string name="cogo_areas_button_label">Areas</string>
+    <string name="cogo_map_check_button_label">Map Check</string>
+    <string name="cogo_convert_button_label">Convert</string>
+
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Skyplots Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="skyplot_gps_position_button_label">GPS Position</string>
+    <string name="skyplot_qc_position_button_label">QC Position</string>
+    <string name="skyplot_plots_button_label">Skyplots</string>
+    <string name="skyplot_satinfo_button_label">Sat Info</string>
+    <string name="skyplot_reference_button_label">Reference</string>
+    <string name="skyplot_compas_button_label">Compass</string>
+    <string name="skyplot_waypoints_button_label">Waypoints</string>
+    <string name="skyplot_navigate_button_label">Navigate</string>
+    <string name="skyplot_save_button_label">Save Plots</string>
+
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Configuration Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="config_equipment_button_label">Equipment</string>
+    <string name="config_communications_button_label">Communications</string>
+    <string name="config_corrections_label">Corrections</string>
+    <string name="config_peripherals_button_label">Peripherals</string>
+    <string name="config_calibrations_button_label">Calibrations</string>
+    <string name="config_log_raw_button_label">Log Raw Data</string>
+    <string name="config_utilities_button_label">Utilities</string>
+    <string name="config_general_button_label">General</string>
+    <string name="config_save_button_label">Save Profile</string>
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Settings Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="setting_project_id">ID</string>
+    <string name="settings_project_name">Name</string>
+    <string name="setting_units_button_label">Units</string>
+    <string name="setting_formats_button_label">Formats</string>
+    <string name="setting_tolerances_button_label">Tolerances</string>
+    <string name="setting_datums_button_label">Datums</string>
+    <string name="setting_projections_button_label">Projections</string>
+    <string name="setting_geoid_models_button_label">Geoid Models</string>
+    <string name="setting_general_button_label">General</string>
+    <string name="setting_localizations_button_label">Localizations</string>
+    <string name="setting_survey_styles_button_label">Survey Styles</string>
+
+    <string name="setting_global_button_label">Global</string>
+    <string name="setting_project_defaults_button_label">Project Defaults</string>
+    <string name="unused_button_label"> </string>
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Project Defaults Settings Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="reset_defaults_button_label">Restore Defaults</string>
+
+
+    <!-- Text View Labels (initial text displayed) -->
+    <string name="distance_units_label">Distance Units: </string>
+    <string name="decimal_display_label">Decimal Display: </string>
+    <string name="angle_units_label">Angle Units: </string>
+    <string name="angle_display_label">Angle Display: </string>
+    <string name="grid_direction_label">Grid Direction: </string>
+    <string name="scale_factor_settings_label">Scale Factor: </string>
+    <string name="sea_level_label">Sea Level: </string>
+    <string name="refraction_label">Refraction: </string>
+    <string name="datum_label">Datum: </string>
+    <string name="projection_label">Projection: </string>
+    <string name="zone_label">Zone: </string>
+    <string name="coordinate_display_label">Scale Factor: </string>
+    <string name="geod_model_label">Geoid Model: </string>
+    <string name="starting_point_id_label">Starting Point ID: </string>
+    <string name="alphanumeric_label">Alphanumeric: </string>
+    <string name="feature_codes_label">Feature Codes: </string>
+    <string name="feature_codes_control_file_label">FC Control File: </string>
+    <string name="feature_codes_time_stamp_label">FC Time Stamp: </string>
+
+
+
+
+
+
+
+
+    <!-- Footer -->
+    <!-- Button Labels -->
+    <string name="esc_button_label">Esc</string>
+    <string name="enter_button_label">Enter</string>
+    <string name="enter_to_save_button_label">Save / Exit</string>
+    <string name="enter_to_copy_button_label">Copy / Exit</string>
+    <string name="enter_to_create_button_label">Create / Exit</string>
+
+    <!-- Text View Labels (initial text displayed) -->
+    <string name="filename_label">Current File: Cambridge_16021002</string>
+    <string name="model_label">Model: Trimble Leap</string>
+    <string name="sn_label">S/N: L505O00176</string>
+    <string name="tracking_label">Tracking: 8 SVs</string>
+    <string name="mode_label">Mode: RTK</string>
+    <string name="horiz_label">H: 0.005m</string>
+    <string name="vert_label">V:0.012m</string>
+    <string name="rms_label">RMS:8</string>
+    <string name="pdop_label">PDOP: 7.5</string>
+
+    <!-- Footer Strings -->
+
+
+
+
+
+
+    <!-- Coordinate Conversion Screen Strings -->
+    <!-- Menu Items -->
+
+    <!-- Button Labels -->
+    <string name="convert_button_label">Convert</string>
+    <string name="clear_form_button_label">Clear Form</string>
+
+    <!-- Text View Labels (initial text displayed) -->
+    <string name="latitude_label">Latitude:  </string>
+    <string name="longitude_label">Longetude: </string>
+    <string name="utm_integer_label">UTM Coord: </string>
+    <string name="utm_nm_label">UTM Coord: </string>
+    <string name="utm_so_label">UTM Coord: </string>
+    <string name="utm_zone_label">Zone </string>
+    <string name="utm_easting_label">Easting </string>
+    <string name="utm_northing_label">Northing </string>
+    <string name="utm_hemisphere_label">Hemi </string>
+    <string name="utm_latband_label">Latband </string>
+    <string name="utm_meters">in Meters:</string>
+    <string name="utm_feet">in Feet:</string>
+
+    <!-- Edit View Fields (initial text displayed) -->
+    <string name="latitude_input_label">Enter Latitude decimal number  </string>
+    <string name="longitude_input_label">Enter Longitude decimal number </string>
+
+    <!-- Prompts -->
+    <string name="latitude_prompt">Latitude must be between -80.0 and 84.0</string>
+    <string name="longitude_prompt">Longitude must be between -180.0 and 180.0</string>
+    <string name="coordinate_type_button">Change Type</string>
+    <string name="type_decimal_degrees_label">Decimal Degrees</string>
+    <string name="type_degrees_label">Degrees</string>
+    <string name="type_minutes_label">Minutes</string>
+    <string name="type_seconds_label">Seconds</string>
+    <string name="utm_integer_output_prompt">Meter Precision UTM</string>
+    <string name="utm_nanometer_output_prompt">Nanometer Precision UTM</string>
+    <string name="utm_so_output_prompt">Foot Precision UTM</string>
+
+    <!--Input error Message-->
+    <string name="input_double_format_error_string">Not in correct decimal Format</string>
+    <string name="input_wrong_range_error">Not within range, (see prompt)</string>
+
+    <!-- Stubs -->
+    <string name="conversion_stub">Coordinates Converted</string>
+
+
+    <!-- Content Descriptions for images -->
+
+
+
+    <!-- Alert Dialog Strings -->
+    <string name="are_you_sure">Are You Sure?</string>
+    <string name="continue_delete_dont_save">Permanently Delete</string>
+    <string name="delete_title">Delete Prism 4D Project</string>
+    <string name="abandon_title">Prism 4D Project Changes Could Be Lost</string>
+    <string name="continue_abandon_changes">Abandon Changes</string>
+    <string name="cancel">Cancel</string>
+
+
+    <!-- (Screen Name) Screen Strings -->
+    <!-- Menu Items -->
+
+    <!-- Button Labels -->
+
+    <!-- Text View Labels (initial text displayed) -->
+
+    <!-- Edit View Fields (initial text displayed) -->
+
+    <!-- Prompts -->
+
+    <!--Input error Message-->
+
+    <!-- Stubs -->
+
+    <!-- Content Descriptions for images -->
+
+
+
+
+</resources>

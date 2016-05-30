@@ -158,9 +158,10 @@ public class MainPrism4DListPointsFragment extends Fragment {
         mRecyclerView.setLayoutManager(mLayoutManager);
 
         //4) create some dummy data and tell the adapter about it
-        //preparePointDataset();
-        //      get our singleton holder
+        //  this is done in the singleton container
+        //      get our singleton list container
         Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+
         //      then go get our list of points
         //mPointList = pointsContainer.getPoints();
 
@@ -188,25 +189,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
                     @Override
                     public void onClick(View view, int position) {
-                        mSelectedPosition = position;
-                        mSelectedPoint = mPointList.get(position);
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                String.valueOf(mSelectedPoint.getPointID()) + " is selected!",
-                                Toast.LENGTH_SHORT).show();
-
-                        //also enable the Enter button according to path
-                        if (mPointPath.equals(Prism4DPath.sDeleteTag)) {
-                            mEnterButton.setText(R.string.delete_button_label);
-                        } else if (mPointPath.equals(Prism4DPath.sOpenTag)) {
-                            mEnterButton.setText(R.string.open_button_label);
-                        } else if (mPointPath.equals(Prism4DPath.sCopyTag)) {
-                            mEnterButton.setText(R.string.copy_button_label);
-                        } else {
-                            //this is really an error, so todo should throw exception
-                            mEnterButton.setText(R.string.enter_button_label);
-                        }
-                        mEnterButton.setEnabled(true);
-                        mEnterButton.setTextColor(Color.BLACK);
+                       onSelect(position);
                     }
 
                     @Override
@@ -246,67 +229,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                //Point has to have been selected to do anything here
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    if (mSelectedPoint != null) {
-
-                        //We'll need to pass the path forward
-
-                        if (mPointPath.equals(Prism4DPath.sOpenTag)){
-
-                            //if the path is open, open the selected point
-                            myActivity.switchToMaintainPointScreen(
-                                    new Prism4DPath(mProjectPath),
-                                    mSelectedPoint,
-                                    new Prism4DPath(mPointPath));
-
-                        }else if (mPointPath.equals(Prism4DPath.sCopyTag)){
-
-                            //if the path is copy,
-                            // create a new point with the selected points details
-                            // but it has to be in the same project as this one
-                            Prism4DProject ourProject =
-                                    getOurProject(mSelectedPoint.getProjectID());
-
-                            Prism4DPoint newPoint = new Prism4DPoint(ourProject);
-                            newPoint.setPointEasting    (mSelectedPoint.getPointEasting());
-                            newPoint.setPointNorthing   (mSelectedPoint.getPointNorthing());
-                            newPoint.setPointElevation  (mSelectedPoint.getPointElevation());
-                            newPoint.setPointDescription(mSelectedPoint.getPointDescription());
-                            newPoint.setPointNotes      (mSelectedPoint.getPointNotes());
-
-                            //then switch to point update with that new point
-                            myActivity.switchToMaintainPointScreen(
-                                    new Prism4DPath(mProjectPath),
-                                    mSelectedPoint,
-                                    new Prism4DPath(mPointPath));
-
-                        }else if (mPointPath.equals(Prism4DPath.sDeleteTag)){
-
-                            //ask the user if they are sure they want to proceed.
-                            areYouSureDelete();
-                        }else {
-
-                            //todo need to throw an unrecognized path exception
-                            Toast.makeText(getActivity(),
-                                    R.string.unrecognized_path_encountered,
-                                    Toast.LENGTH_SHORT).show();
-
-                            //for now, go home
-                            myActivity.switchToHomeScreen();
-
-                        }
-
-
-                    } else {
-                        //user hasn't selected anything yet
-                        //for now, just put up a toast that nothing has been pressed yet
-                        Toast.makeText(getActivity(),
-                                R.string.point_no_selection,
-                                Toast.LENGTH_LONG).show();
-                    }
-                }
+                onEnter();
 
             }
         });
@@ -355,13 +278,105 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
 
 
-    Prism4DProject getOurProject(int projectID){
+    private Prism4DProject getOurProject(int projectID){
         //ultimately, this needs to look up in the DB
         return new Prism4DProject(
           getResources().getString(R.string.dummy_project_name),
           mProjectID );
     }
 
+    //executed when an item in the list is selected
+    private void onSelect(int position){
+        mSelectedPosition = position;
+        mSelectedPoint = mPointList.get(position);
+        Toast.makeText(getActivity().getApplicationContext(),
+                String.valueOf(mSelectedPoint.getPointID()) + " is selected!",
+                Toast.LENGTH_SHORT).show();
+
+        if (true){
+            onEnter();
+        } else {
+            //also enable the Enter button according to path
+            if (mPointPath.equals(Prism4DPath.sDeleteTag)) {
+                mEnterButton.setText(R.string.delete_button_label);
+            } else if (mPointPath.equals(Prism4DPath.sOpenTag)) {
+                mEnterButton.setText(R.string.open_button_label);
+            } else if (mPointPath.equals(Prism4DPath.sCopyTag)) {
+                mEnterButton.setText(R.string.copy_button_label);
+            } else {
+                //this is really an error, so todo should throw exception
+                mEnterButton.setText(R.string.enter_button_label);
+            }
+            mEnterButton.setEnabled(true);
+            mEnterButton.setTextColor(Color.BLACK);
+        }
+    }
+
+    //executed when enter is selected
+    private void onEnter(){
+        //Point has to have been selected to do anything here
+        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+        if (myActivity != null){
+            if (mSelectedPoint != null) {
+
+                //We'll need to pass the path forward
+
+                if (mPointPath.equals(Prism4DPath.sOpenTag)){
+
+                    //if the path is open, open the selected point
+                    myActivity.switchToMaintainPointScreen(
+                            new Prism4DPath(mProjectPath),
+                            mSelectedPoint,
+                            new Prism4DPath(mPointPath));
+
+                }else if (mPointPath.equals(Prism4DPath.sCopyTag)){
+
+                    //if the path is copy,
+                    // create a new point with the selected points details
+                    // but it has to be in the same project as this one
+                    Prism4DProject ourProject =
+                            getOurProject(mSelectedPoint.getProjectID());
+
+                    Prism4DPoint newPoint = new Prism4DPoint(ourProject);
+                    newPoint.setPointEasting    (mSelectedPoint.getPointEasting());
+                    newPoint.setPointNorthing   (mSelectedPoint.getPointNorthing());
+                    newPoint.setPointElevation  (mSelectedPoint.getPointElevation());
+                    newPoint.setPointDescription(mSelectedPoint.getPointDescription());
+                    newPoint.setPointNotes      (mSelectedPoint.getPointNotes());
+
+                    //then switch to point update with that new point
+                    myActivity.switchToMaintainPointScreen(
+                            new Prism4DPath(mProjectPath),
+                            mSelectedPoint,
+                            new Prism4DPath(mPointPath));
+
+                }else if (mPointPath.equals(Prism4DPath.sDeleteTag)){
+
+                    //ask the user if they are sure they want to proceed.
+                    areYouSureDelete();
+                }else {
+
+                    //todo need to throw an unrecognized path exception
+                    Toast.makeText(getActivity(),
+                            R.string.unrecognized_path_encountered,
+                            Toast.LENGTH_SHORT).show();
+
+                    //for now, go home
+                    myActivity.switchToHomeScreen();
+
+                }
+
+
+            } else {
+                //user hasn't selected anything yet
+                //for now, just put up a toast that nothing has been pressed yet
+                Toast.makeText(getActivity(),
+                        R.string.point_no_selection,
+                        Toast.LENGTH_LONG).show();
+            }
+        }
+
+    }
 
     //Add some code to improve the recycler view
     public interface ClickListener {
