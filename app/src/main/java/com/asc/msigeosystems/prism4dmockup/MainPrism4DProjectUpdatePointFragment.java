@@ -313,6 +313,11 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
                 if (mPointChanged) {
                     saveChanges();
                     setPointSaved();
+
+                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                    if (myActivity != null) {
+                        myActivity.popToProjectUpdateScreen();
+                    }
                 }
             }
         });

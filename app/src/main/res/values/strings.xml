@@ -1,5 +1,7 @@
 <resources>
     <string name="app_name">Prism4DMockup</string>
+    <string name="ygps_app_name">Prism4DMockup Skyplot</string>
+    <string name="hello">Hello World, YGPS!</string>
 
     <!-- ORDER of screens is: -->
     <!-- Menu     -->
@@ -305,6 +307,37 @@
     <string name="skyplot_navigate_button_label">Navigate</string>
     <string name="skyplot_save_button_label">Save Plots</string>
 
+    <string name="skyplot_screen_label">Skyplot: Location and Status</string>
+    <string name="skyplot_location_label">LOCATION</string>
+    <string name="skyplot_status_screen_label">GPS STATUS</string>
+
+    <string name="skyplot_latitude_label">Latitude: </string>
+    <string name="skyplot_longitude_label">Longitude: </string>
+    <string name="skyplot_ellipsoid_elevation_label">Ellipsoid Elevation: </string>
+    <string name="skyplot_geoid_label">GEOID: </string>
+    <string name="skyplot_orthometric_elevation_label">Orthometric Elevation: </string>
+    <string name="skyplot_localization_file_label">Localization File: </string>
+    <string name="skyplot_local_northing_label">Local Northing: </string>
+    <string name="skyplot_local_easting_label">Local Easting: </string>
+    <string name="skyplot_local_elevation_label">Local Elevation: </string>
+
+    <string name="skyplot_status_label">Status: </string>
+    <string name="skyplot_satellites_label">Satellites: </string>
+    <string name="skyplot_hdop_label">HDOP: </string>
+    <string name="skyplot_vdop_label">VDOP: </string>
+    <string name="skyplot_tdop_label">TDOP: </string>
+    <string name="skyplot_pdop_label">PDOP: </string>
+    <string name="skyplot_gdop_label">GDOP: </string>
+    <string name="skyplot_hrms_label">HRMS: </string>
+    <string name="skyplot_vrms_label">VRMS: </string>
+
+
+
+
+    <!--      NEW SCREEN                  -->
+    <!-- Skyplot NMEA List:  -->
+    <string name="skyplot_nmea_list_title">NMEA Sentences Received</string>
+    <string name="skyplot_no_nema_found">No NMEA Sentences found</string>
 
 
 

@@ -308,6 +308,10 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                     saveChanges();
 
                     setProjectSaved();
+                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                    if (myActivity != null) {
+                        myActivity.popToProject1Screen();
+                    }
                 }
             }
         });

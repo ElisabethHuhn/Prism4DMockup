@@ -1,5 +1,6 @@
 package com.asc.msigeosystems.prism4dmockup;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -101,6 +102,12 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_plots_button_label,
                         Toast.LENGTH_SHORT).show();
+                Intent inent = new Intent(getActivity(), YGPS.class);
+
+                // calling an activity using <intent-filter> action name
+                //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
+
+                startActivity(inent);
 
             }
         });

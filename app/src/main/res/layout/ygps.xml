@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_height="wrap_content"
+    android:layout_width="fill_parent" >
+
+    <!-- GPS Dashboard -->
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/dashboardview"
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content">
+
+        <!-- Position View, Signal View -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="4"
+            >
+            <com.asc.msigeosystems.prism4dmockup.SatellitePositionView
+                android:id="@+id/positionview"
+                android:layout_width="fill_parent"
+                android:layout_height="200dp"
+                />
+            <com.asc.msigeosystems.prism4dmockup.SatelliteSignalView
+                android:id="@+id/signalview"
+                android:layout_width="fill_parent"
+                android:layout_height="150dp"
+                />
+        </LinearLayout>
+
+        <!-- GPS State, satellite in sky, satellite in fix, -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+            <com.asc.msigeosystems.prism4dmockup.GPSStateView
+                android:id="@+id/gpsstate"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="fill_parent" />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/satinsky"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="fill_parent" />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/satinfix"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="fill_parent" />
+        </LinearLayout>
+
+        <!-- Latitude, Longitude -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/latitude"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/longitude"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"  />
+        </LinearLayout>
+
+        <!-- Accuracy, Altitude -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/accuracy"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"
+                />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/altitude"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="fill_parent" />
+        </LinearLayout>
+
+        <!-- Speed, Bearing -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/speed"
+                android:layout_width="0px"
+                android:layout_weight="1"
+                android:layout_height="fill_parent" />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/bearing"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"  />
+        </LinearLayout>
+
+        <!-- Ttff, Tslf -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/ttff"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"  />
+            <com.asc.msigeosystems.prism4dmockup.DataView
+                android:id="@+id/tslf"
+                android:layout_width="0px"
+                android:layout_height="match_parent"
+                android:layout_weight="1"  />
+        </LinearLayout>
+
+        <!-- time -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+            <com.asc.msigeosystems.prism4dmockup.DateView
+                android:id="@+id/time"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"  />
+        </LinearLayout>
+
+        <!-- device time -->
+        <LinearLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="0px"
+            android:layout_weight="1">
+
+            <com.asc.msigeosystems.prism4dmockup.DateView
+                android:id="@+id/devicetime"
+                android:layout_width="0px"
+                android:layout_height="fill_parent"
+                android:layout_weight="1"  />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

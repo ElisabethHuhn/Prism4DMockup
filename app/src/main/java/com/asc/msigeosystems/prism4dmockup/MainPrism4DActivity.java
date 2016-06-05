@@ -1,8 +1,12 @@
 package com.asc.msigeosystems.prism4dmockup;
 
+import android.Manifest;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
@@ -12,43 +16,48 @@ import android.widget.Toast;
 //used to extend
 public class MainPrism4DActivity extends AppCompatActivity {
 
-    private static String sHomeTag               = "HOME";//HOME screen fragment
+    //DEFINE constants / literals
+    public static final int MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS = 1;
+    public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATIONS = 2;
 
-    private static String sProjectTopTag         = "PROJECT_TOP";
-    private static String sProjectCreateTag      = "PROJECT_CREATE_TOP";
-    private static String sProjectOpenTag        = "PROJECT_OPEN";
-    private static String sProjectCopyTag        = "PROJECT_COPY";
-    private static String sProjectEditTag        = "PROJECT_EDIT";
-    private static String sProjectUpdateTag      = "PROJECT_UPDATE";
-    private static String sProjectDeleteTag      = "PROJECT_DELETE";
-    private static String sProjectSettingsTag    = "PROJECT_SETTINGS";
 
-    private static String sPointTopTag         = "POINT_TOP";
-    private static String sPointCreateTag      = "POINT_CREATE_TOP";
-    private static String sPointOpenTag        = "POINT_OPEN";
-    private static String sPointCopyTag        = "POINT_COPY";
-    private static String sPointEditTag        = "POINT_EDIT";
-    private static String sPointUpdateTag      = "POINT_UPDATE";
-    private static String sPointDeleteTag      = "POINT_DELETE";
-    private static String sPointSettingsTag    = "POINT_SETTINGS";
+    private static final String sHomeTag               = "HOME";//HOME screen fragment
 
-    private static String sCollectTopTag         = "COLLECT_TOP";
-    private static String sCollectPointsTag      = "COLLECT_POINTS";
-    private static String sCollectPointsMapTag   = "COLLECT_POINTS_MAP";
+    private static final String sProjectTopTag         = "PROJECT_TOP";
+    private static final String sProjectCreateTag      = "PROJECT_CREATE_TOP";
+    private static final String sProjectOpenTag        = "PROJECT_OPEN";
+    private static final String sProjectCopyTag        = "PROJECT_COPY";
+    private static final String sProjectEditTag        = "PROJECT_EDIT";
+    private static final String sProjectUpdateTag      = "PROJECT_UPDATE";
+    private static final String sProjectDeleteTag      = "PROJECT_DELETE";
+    private static final String sProjectSettingsTag    = "PROJECT_SETTINGS";
 
-    private static String sStakeoutTopTag        = "STAKEOUT_TOP";
+    private static final String sPointTopTag         = "POINT_TOP";
+    private static final String sPointCreateTag      = "POINT_CREATE_TOP";
+    private static final String sPointOpenTag        = "POINT_OPEN";
+    private static final String sPointCopyTag        = "POINT_COPY";
+    private static final String sPointEditTag        = "POINT_EDIT";
+    private static final String sPointUpdateTag      = "POINT_UPDATE";
+    private static final String sPointDeleteTag      = "POINT_DELETE";
+    private static final String sPointSettingsTag    = "POINT_SETTINGS";
 
-    private static String sCogoTopTag            = "COGO_TOP";
+    private static final String sCollectTopTag         = "COLLECT_TOP";
+    private static final String sCollectPointsTag      = "COLLECT_POINTS";
+    private static final String sCollectPointsMapTag   = "COLLECT_POINTS_MAP";
 
-    private static String sSkyplotTopTag         = "SKYPLOT_TOP";
+    private static final String sStakeoutTopTag        = "STAKEOUT_TOP";
 
-    private static String sConfigTopTag          = "CONFIG_TOP";
+    private static final String sCogoTopTag            = "COGO_TOP";
 
-    private static String sSettingsTopTag        = "SETTINGS_TOP";
-    private static String sSettingsGlobalTag     = "SETTINGS_GLOBAL";
-    private static String sSettingsProjectDefaultTag = "SETTINGS_PROJECT_DEFAULT";
+    private static final String sSkyplotTopTag         = "SKYPLOT_TOP";
 
-    private static String sConversionTag         = "CONVERSION";
+    private static final String sConfigTopTag          = "CONFIG_TOP";
+
+    private static final String sSettingsTopTag        = "SETTINGS_TOP";
+    private static final String sSettingsGlobalTag     = "SETTINGS_GLOBAL";
+    private static final String sSettingsProjectDefaultTag = "SETTINGS_PROJECT_DEFAULT";
+
+    private static final String sConversionTag         = "CONVERSION";
 
 
 
@@ -58,38 +67,137 @@ public class MainPrism4DActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_prism4_dmockup);
 
-         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
 
-        //Do fragments in real time, not xml
+        //set up fragments
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
-        if (fragment == null){
+        if (fragment == null) {
             //when we first create the activity,
             // the fragment needs to be the home screen
             fragment = new MainPrism4DHomeFragment();
             //fragment = new MainPrism4DCollect11PointsFragment();
             fm.beginTransaction()
-              .add(R.id.fragment_container, fragment)
-              .commit();
+                    .add(R.id.fragment_container, fragment)
+                    .commit();
         }
 
 
         //Put the name of the fragment on the title bar
         getSupportActionBar().setSubtitle(R.string.action_home);
 
+        GpsStuff();
+
 /****************** For now, comment out the floating action button
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+ FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+ fab.setOnClickListener(new View.OnClickListener() {
+@Override public void onClick(View view) {
+Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+.setAction("Action", null).show();
+}
+});
+ ****************/
+    }
+
+    private void GpsStuff() {
+
+        //make sure we have GPS permissions
+        //check for permission to continue
+        int permissionCheckCourse = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_COARSE_LOCATION);
+        int permissionCheckFine = ContextCompat.checkSelfPermission(this,
+                Manifest.permission.ACCESS_FINE_LOCATION);
+
+        //If we don't currently have permission, we have to ask for it
+        if (permissionCheckCourse != PackageManager.PERMISSION_GRANTED){
+            //find out if we need to explain to the user why we need GPS
+            if (
+                    //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
+                 false){
+                //tell the user why GPS is required
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},
+                        MainPrism4DActivity.MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS);
+
+                // MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
             }
-        });
-****************/
+        }
+
+        //If we don't currently have permission, we have to ask for it
+        if (permissionCheckFine != PackageManager.PERMISSION_GRANTED) {
+            //find out if we need to explain to the user why we need GPS
+            if (false) {
+                //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
+
+                //tell the user why GPS is required
+                // Show an expanation to the user *asynchronously* -- don't block
+                // this thread waiting for the user's response! After the user
+                // sees the explanation, try again to request the permission.
+            } else {
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
+                        MainPrism4DActivity.MY_PERMISSIONS_REQUEST_FINE_LOCATIONS);
+
+                // MY_PERMISSIONS_REQUEST_FINE_LOCATIONS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+
+            }
+            //So now signup for the GpsStatus.NmeaListener
+
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            case MY_PERMISSIONS_REQUEST_FINE_LOCATIONS: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+
+                } else {
+
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+            // other 'case' lines to check for other
+            // permissions this app might request
+        }
     }
 
     @Override
@@ -165,7 +273,9 @@ public class MainPrism4DActivity extends AppCompatActivity {
     }
 
 
-    /*****
+
+
+    /**************************************************************************
      * The following methods switch the fragment being displayed by this activity
      * In the future, need to refactor. Seen BNR page 171 for suggestions
      *

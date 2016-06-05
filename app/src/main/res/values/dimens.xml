@@ -8,4 +8,7 @@
     <dimen name="interum_vertical_margin">10dp</dimen>
     <dimen name="interum_vertical">5dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
+    <dimen name="button_start_margin">16dp</dimen>
+    <dimen name="button_end_margin">16dp</dimen>
+    <dimen name="button_interum_margin">8dp</dimen>
 </resources>
