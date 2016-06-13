@@ -50,6 +50,8 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sCogoTopTag            = "COGO_TOP";
 
     private static final String sSkyplotTopTag         = "SKYPLOT_TOP";
+    private static final String sSkyplotListNmeaTag    = "SKYPLOT_LIST_NMEA";
+    private static final String sSkyplotGpsNmeaTag     = "SKYPLOT_GPS_NMEA";
 
     private static final String sConfigTopTag          = "CONFIG_TOP";
 
@@ -86,7 +88,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
         }
 
 
-        //Put the name of the fragment on the title bar
+        //Put Home on the title bar
         getSupportActionBar().setSubtitle(R.string.action_home);
 
         GpsStuff();
@@ -1395,10 +1397,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      *******************************************/
 
 
-
-
-
-
     /****
      * Method to switch fragment to top level Skyplot screen
      * EMH 5/1/16
@@ -1428,7 +1426,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             fm.beginTransaction()
                     //replace whatever is being displayed with the collect fragment
                     .replace(R.id.fragment_container, fragment, sSkyplotTopTag)
-                            //and add the transaction to the back stack
+                    //and add the transaction to the back stack
                     .addToBackStack(sSkyplotTopTag)
                     .commit();
         }
@@ -1438,6 +1436,86 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
     }
 
+
+    /****
+     * Method to switch fragment to coordinate conversion screen
+     * EMH 6/7/16
+
+    public void switchToListNmeaScreen(){
+        //Show Nmea Sentences
+
+        //Need the Fragment Manager to do the swap for us
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //Are any fragments already being displayed?
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fragment == null){
+            //It shouldn't ever be the case that we got this far with no fragments on the screen,
+            // but code defensively
+            fragment = new MainPrism4DListNmeaFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment, sSkyplotListNmeaTag)
+                    .commit();
+        } else {
+            //There is already a fragment being displayed
+
+            //Create a new Collect fragment
+            fragment = new MainPrism4DListNmeaFragment();
+            fm.beginTransaction()
+                    //replace whatever is being displayed with the collect fragment
+                    .replace(R.id.fragment_container, fragment, sSkyplotListNmeaTag)
+                    //and add the transaction to the back stack
+                    .addToBackStack(sSkyplotListNmeaTag)
+                    .commit();
+        }
+
+        //Put the name of the fragment on the title bar
+        getSupportActionBar().setSubtitle(R.string.subtitle_list_nmea);
+
+    }
+
+
+     */
+
+
+    /****
+     * Method to switch fragment to display GPS data from NMEA Sentences
+     * EMH 6/7/16
+     */
+    public void switchToGpsNmeaScreen(){
+        //show GPS data collected from NMEA Sentences
+
+        //Need the Fragment Manager to do the swap for us
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //Are any fragments already being displayed?
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fragment == null){
+            //It shouldn't ever be the case that we got this far with no fragments on the screen,
+            // but code defensively
+            fragment = new MainPrism4DGpsFromNmeaFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment, sSkyplotGpsNmeaTag)
+                    .commit();
+        } else {
+            //There is already a fragment being displayed
+
+            //Create a new Collect fragment
+            fragment = new MainPrism4DGpsFromNmeaFragment();
+            fm.beginTransaction()
+                    //replace whatever is being displayed with the collect fragment
+                    .replace(R.id.fragment_container, fragment, sSkyplotGpsNmeaTag)
+                    //and add the transaction to the back stack
+                    .addToBackStack(sSkyplotGpsNmeaTag)
+                    .commit();
+        }
+
+        //Put the name of the fragment on the title bar
+        getSupportActionBar().setSubtitle(R.string.subtitle_gps_nmea);
+
+    }
 
 
 

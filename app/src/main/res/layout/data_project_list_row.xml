@@ -14,7 +14,7 @@
     android:background="?android:attr/selectableItemBackground"
     >
 
-    <!-- ID -->
+    <!-- ID 3-->
     <TextView
         android:id="@+id/projectRowID"
 
@@ -28,13 +28,13 @@
         android:background="@color/colorWhite"
         />
 
-    <!-- Name -->
+    <!-- Name 7-->
     <TextView
         android:id="@+id/projectRowName"
 
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="5"
+        android:layout_weight="7"
 
         android:layout_marginEnd="8dp"
 
@@ -42,7 +42,7 @@
         android:background="@color/colorWhite"
         />
 
-    <!-- Date last maintained -->
+    <!-- Date last maintained 5-->
     <TextView
         android:id="@+id/projectRowLastModified"
 
@@ -56,7 +56,7 @@
         android:background="@color/colorWhite"
         />
 
-    <!-- Size = number of points -->
+    <!-- Size = number of points 3-->
     <TextView
         android:id="@+id/projectRowSize"
 

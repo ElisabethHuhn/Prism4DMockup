@@ -66,6 +66,10 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_gps_position_button_label,
                         Toast.LENGTH_SHORT).show();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToGpsNmeaScreen();
+                }
 
             }
         });
@@ -85,6 +89,9 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_qc_position_button_label,
                         Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getActivity(), Prism4DGPSActivity.class);
+                startActivity(intent);
+
 
             }
         });
@@ -102,12 +109,8 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_plots_button_label,
                         Toast.LENGTH_SHORT).show();
-                Intent inent = new Intent(getActivity(), YGPS.class);
-
-                // calling an activity using <intent-filter> action name
-                //  Intent inent = new Intent("com.hmkcode.android.ANOTHER_ACTIVITY");
-
-                startActivity(inent);
+                Intent intent = new Intent(getActivity(), YGPS.class);
+                startActivity(intent);
 
             }
         });
@@ -123,6 +126,11 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_satinfo_button_label,
                         Toast.LENGTH_SHORT).show();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null) {
+                    //myActivity.switchToListNmeaScreen();
+                }
+
 
             }
         });
@@ -206,15 +214,6 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
 
             }
         });
-
-
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are NOT enabled on the collect screen
-        //so we can ignore the footer for now
 
 
         return v;

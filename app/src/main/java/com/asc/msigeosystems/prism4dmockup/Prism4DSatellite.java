@@ -52,7 +52,7 @@ public class Prism4DSatellite {
 
 
     /*
-     *   constructor
+     *   constructorS
      */
 
     public Prism4DSatellite(int satelliteID, int elevation, int azimuth, int snr) {
@@ -60,6 +60,9 @@ public class Prism4DSatellite {
         mElevation = elevation;
         mAzimuth = azimuth;
         mSnr = snr;
+    }
+    public Prism4DSatellite(int satelliteID) {
+        mSatelliteID = satelliteID;
     }
 }
 

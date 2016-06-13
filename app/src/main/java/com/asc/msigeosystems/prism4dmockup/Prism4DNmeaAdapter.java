@@ -37,8 +37,8 @@ public class Prism4DNmeaAdapter extends RecyclerView.Adapter<Prism4DNmeaAdapter.
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.data_nmea_list_row, parent,  false);
-        return new MyViewHolder(itemView);
 
+        return new MyViewHolder(itemView);
     }
 
     public void removeItem(int position) {
@@ -50,11 +50,8 @@ public class Prism4DNmeaAdapter extends RecyclerView.Adapter<Prism4DNmeaAdapter.
     public void onBindViewHolder(MyViewHolder holder, int position){
         if (mNmeaList != null ) {
             Prism4DNmea nmea = mNmeaList.get(position);
-
             holder.nmeaSentence.setText(String.valueOf(nmea.getNmeaSentence()));
-
         } else {
-
             holder.nmeaSentence.setText(R.string.skyplot_no_nema_found);
         }
 
@@ -72,3 +69,4 @@ public class Prism4DNmeaAdapter extends RecyclerView.Adapter<Prism4DNmeaAdapter.
 
 
 }
+

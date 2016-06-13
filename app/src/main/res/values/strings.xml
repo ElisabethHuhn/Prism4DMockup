@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">Prism4DMockup</string>
-    <string name="ygps_app_name">Prism4DMockup Skyplot</string>
+    <string name="ygps_app_name">Prism4DMockup YGPS Skyplot</string>
+    <string name="gps_app_name">GPS Skyplot</string>
     <string name="hello">Hello World, YGPS!</string>
 
     <!-- ORDER of screens is: -->
@@ -46,6 +47,8 @@
     <string name="subtitle_project_settings">Project Settings</string>
     <string name="subtitle_unknown_error">Unknown Error</string>
     <string name="subtitle_convert_to_utm">Convert to UTM</string>
+    <string name="subtitle_list_nmea">List NMEA Sentences</string>
+    <string name="subtitle_gps_nmea">GPS data from NMEA</string>
 
     //Collect menu items
     <string name="action_measure_points">Measure Points</string>
@@ -296,7 +299,9 @@
     <!--      NEW SCREEN                  -->
     <!-- Skyplots Top Level Screen Strings -->
 
-    <!-- Button Labels -->
+    <!-- Field Labels -->
+    <string name="skyplot_nmea_sentence_label">NMEA Sentence</string>
+    <string name="skyplot_time_label">Time</string>
     <string name="skyplot_gps_position_button_label">GPS Position</string>
     <string name="skyplot_qc_position_button_label">QC Position</string>
     <string name="skyplot_plots_button_label">Skyplots</string>
@@ -332,7 +337,7 @@
     <string name="skyplot_vrms_label">VRMS: </string>
 
 
-
+    <string name="skyplot_localization_file">What is this supposed to be?</string>
 
     <!--      NEW SCREEN                  -->
     <!-- Skyplot NMEA List:  -->

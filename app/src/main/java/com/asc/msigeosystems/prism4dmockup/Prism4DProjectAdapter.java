@@ -15,7 +15,6 @@ import java.util.List;
 public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAdapter.MyViewHolder> {
 
     private List<Prism4DProject> mProjectList;
-    //private Context mContext;
 
     //implement the ViewHolder as an inner class
     public class MyViewHolder extends RecyclerView.ViewHolder {
@@ -39,8 +38,6 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
 
     @Override
     public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
-        //save context for date formatting later
-        //mContext = parent.getContext();
 
         View itemView = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.data_project_list_row, parent,  false);

@@ -55,7 +55,9 @@ public class MainPrism4DListPointsFragment extends Fragment {
     private CharSequence mPointPath;
 
 
-
+    /**********************************************************/
+    //          Fragment Lifecycle Functions                  //
+    /**********************************************************/
 
 
     public MainPrism4DListPointsFragment newInstance(
@@ -73,8 +75,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
         args.putCharSequence(Prism4DPath.sProjectPathTag,    projectPath.getPath());
         args.putCharSequence(Prism4DPath.sPointPathTag,      pointPath.getPath());
 
-        MainPrism4DListPointsFragment fragment =
-                new MainPrism4DListPointsFragment();
+        MainPrism4DListPointsFragment fragment = new MainPrism4DListPointsFragment();
 
         fragment.setArguments(args);
         return fragment;
@@ -91,11 +92,10 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mProjectID = getArguments().getInt(Prism4DProject.sProjectIDTag);
+        mProjectID   = getArguments().getInt         (Prism4DProject.sProjectIDTag);
         mProjectName = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
-
         mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
-        mPointPath = getArguments().getCharSequence(Prism4DPath.sPointPathTag);
+        mPointPath   = getArguments().getCharSequence(Prism4DPath.sPointPathTag);
 
         //This would be the place to do anything unique to a given path
 
@@ -120,7 +120,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
          * 7) create and set a line item decorator
          * 8) add event listeners to the recycler view
          *
-         * 8) return the view
+         * 9) return the view
          */
         //1) Inflate the layout for this fragment
         View v = inflater.inflate
@@ -138,21 +138,16 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
         //4) create some dummy data and tell the adapter about it
         //  this is done in the singleton container
+
         //      get our singleton list container
         Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
-
-        //      then go get our list of points
-        //mPointList = pointsContainer.getPoints();
-
         //filter out points not in this project
         mPointList = pointsContainer.getProjectPointsList(mProjectID);
 
 
-        //5) Use the data to Create and set the Adapter
+        //5) Use the data to Create and set out points Adapter
         mAdapter = new Prism4DPointAdapter(mPointList);
         mRecyclerView.setAdapter(mAdapter);
-
-
 
         //6) create and set the itemAnimator
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -177,63 +172,16 @@ public class MainPrism4DListPointsFragment extends Fragment {
                     }
                 }));
 
+        //No FOOTER on this screen
 
-
-        //FOOTER WIDGETS
-
-
-
-
+        //9) return the view
         return v;
     }
 
-    //Build and display the alert dialog
-    private void areYouSureDelete(){
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.delete_title)
-                .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.continue_delete_dont_save, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // continue with delete
 
-                        CharSequence message =
-                                        "Point " +
-                                        String.valueOf(mSelectedPoint.getPointID()) +
-                                        " is deleted";
-
-                        Prism4DPointAdapter myAdapter =
-                                (Prism4DPointAdapter) mRecyclerView.getAdapter();
-
-                        myAdapter.removeItem(mSelectedPosition);
-
-                        Toast.makeText(getActivity(),
-                                message,
-                                Toast.LENGTH_SHORT).show();
-
-                        //delete the point and return to list points
-                    }
-                })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        Toast.makeText(getActivity(),
-                                "Pressed Cancel",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setIcon(R.drawable.ground_station_icon)
-                .show();
-    }
-
-
-
-
-    private Prism4DProject getOurProject(int projectID){
-        //ultimately, this needs to look up in the DB
-        return new Prism4DProject(
-          getResources().getString(R.string.dummy_project_name),
-          mProjectID );
-    }
+    /**********************************************************/
+    //      Utility Functions used in handling events         //
+    /**********************************************************/
 
     //executed when an item in the list is selected
     private void onSelect(int position){
@@ -314,7 +262,52 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
     }
 
-    //Add some code to improve the recycler view
+    //Build and display the alert dialog
+    private void areYouSureDelete(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.delete_title)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.continue_delete_dont_save, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // continue with delete
+
+                        CharSequence message =
+                                        "Point " +
+                                        String.valueOf(mSelectedPoint.getPointID()) +
+                                        " is deleted";
+
+                        Prism4DPointAdapter myAdapter =
+                                (Prism4DPointAdapter) mRecyclerView.getAdapter();
+
+                        myAdapter.removeItem(mSelectedPosition);
+
+                        Toast.makeText(getActivity(),
+                                message,
+                                Toast.LENGTH_SHORT).show();
+
+                        //delete the point and return to list points
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(getActivity(),
+                                "Pressed Cancel",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(R.drawable.ground_station_icon)
+                .show();
+    }
+
+    private Prism4DProject getOurProject(int projectID){
+        //ultimately, this needs to look up in the DB
+        return new Prism4DProject(
+          getResources().getString(R.string.dummy_project_name),
+          mProjectID );
+    }
+
+     //Add some code to improve the recycler view
     public interface ClickListener {
         void onClick(View view, int position);
 

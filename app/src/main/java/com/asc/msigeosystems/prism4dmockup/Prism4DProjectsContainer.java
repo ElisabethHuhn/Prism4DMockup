@@ -84,6 +84,48 @@ public class Prism4DProjectsContainer {
         project = new Prism4DProject("Roswell",       1007);
         sProjectList.add(project);
 
+        project = new Prism4DProject("Cambridge Subdivision 2", 1008);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Jones Creek 2",   1009);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Hampton South 2", 1010);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Johns Creek 2",   1011);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Macon Airport 2", 1012);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("MSI Demo 2",      1013);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Roswell 2",       1014);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Cambridge Subdivision 3", 1015);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Jones Creek 3",   1016);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Hampton South 3", 1017);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Johns Creek 3",   1018);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Macon Airport 3", 1019);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("MSI Demo 3",      1020);
+        sProjectList.add(project);
+
+        project = new Prism4DProject("Roswell 3",       1021);
+        sProjectList.add(project);
+
 
 
     }

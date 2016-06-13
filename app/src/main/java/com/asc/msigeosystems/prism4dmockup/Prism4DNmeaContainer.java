@@ -26,12 +26,13 @@ public class Prism4DNmeaContainer {
         sNmeaList = new ArrayList<>();
 
         //This is where we would read the list from the database
-        //but for now, just make up some data
-        prepareNmeaDataset();
+
+        //for now, no dummy data. We'll build up enough just listening
+        //prepareNmeaDataset();
     }
 
     //returns the list of NMEA sentences
-    public List<Prism4DNmea> getNmea() {
+    public List<Prism4DNmea> getNmeaList() {
         return sNmeaList;
     }
 
@@ -44,10 +45,9 @@ public class Prism4DNmeaContainer {
     private void prepareNmeaDataset() {
         //Nmea sentences come from GPS
 
-
         // create some dummy data
         // add some NMEA Sentences
-        Prism4DNmea nmea = new Prism4DNmea();
+        Prism4DNmea nmea = new Prism4DNmea("$GPRMC,092204.999,A,4250.5589,S,14718.5084,E,0.00,89.68,211200,,*25");
 
         nmea.setNmeaSentence("$GPGGA,123519,4807.038,N,01131.000,E,1,08,0.9,545.4,M,46.9,M,,*47");
         sNmeaList.add(nmea);
@@ -106,8 +106,6 @@ public class Prism4DNmeaContainer {
         nmea.setNmeaSentence(" $GPRMC,235947.000,V,0000.0000,N,00000.0000,E,,,041299,,*1D");
         sNmeaList.add(nmea);
 
-        nmea.setNmeaSentence("$GPRMC,092204.999,A,4250.5589,S,14718.5084,E,0.00,89.68,211200,,*25");
-        sNmeaList.add(nmea);
 
     }
 

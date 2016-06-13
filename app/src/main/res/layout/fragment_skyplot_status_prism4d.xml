@@ -47,6 +47,88 @@
 
             </TableRow>
 
+            <!-- Row: NMEA Sentence -->
+            <TableRow
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/skyplotNmeaSentenceLabel"
+                    android:text="@string/skyplot_nmea_sentence_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:focusable="false"
+                    android:clickable="false"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <TextView
+                    android:id="@+id/skyplotNmeaSentenceOutput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:layout_marginEnd="16dp"
+
+                    android:focusable="false"
+                    android:clickable="false"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
+            <!-- Row: Time -->
+            <TableRow
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_gravity="center_horizontal"
+                android:paddingTop="10dp"
+                >
+                <TextView
+                    android:id="@+id/skyplotTimeLabel"
+                    android:text="@string/skyplot_time_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="25"
+                    android:gravity="end"
+
+                    android:focusable="false"
+                    android:clickable="false"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+                <TextView
+                    android:id="@+id/skyplotTimeOutput"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="75"
+
+                    android:layout_marginEnd="16dp"
+
+                    android:focusable="false"
+                    android:clickable="false"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorWhite"
+                    />
+
+
+            </TableRow>
+
             <!-- Row: Latitude -->
             <TableRow
 
@@ -276,7 +358,7 @@
                     />
                 <TextView
                     android:id="@+id/skyplotLocalizationOutput"
-
+                    android:text="@string/skyplot_localization_file"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="75"

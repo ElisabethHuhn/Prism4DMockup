@@ -58,6 +58,12 @@ public class YGPS extends Activity implements Listener, LocationListener {
     private DataView mSatInSky;
     private DataView mSatInFix;
 
+    //Parser figures out what is in the NMEA Sentences
+    private static Prism4DNmeaParser mNmeaParser = new Prism4DNmeaParser();
+
+    private Prism4DNmea mNmeaData; //latest nmea sentence received
+
+
     Handler mHandler;
     long mClockSkew;
     LastFixUpdater mLastFixUpdater;
@@ -91,6 +97,7 @@ public class YGPS extends Activity implements Listener, LocationListener {
         mLocationManager = (LocationManager)getSystemService(Context.LOCATION_SERVICE);
         mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
         mLocationManager.addGpsStatusListener(this);
+        //mLocationManager.addNmeaListener(this);
 
         mPositionView = (SatellitePositionView) findViewById(R.id.positionview);
         mSignalView   = (SatelliteSignalView)   findViewById(R.id.signalview);
@@ -190,21 +197,22 @@ public class YGPS extends Activity implements Listener, LocationListener {
     //************************************************************//
 
 
-    //@Override
+
+    @Override
     public void onProviderDisabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
             setGpsStatus();
         }
     }
 
-    //@Override
+    @Override
     public void onProviderEnabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
             setGpsStatus();
         }
     }
 
-    //@Override
+    @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         if (!LocationManager.GPS_PROVIDER.equals(provider)){
             return;
@@ -229,6 +237,25 @@ public class YGPS extends Activity implements Listener, LocationListener {
         mClockSkew = System.currentTimeMillis() - mLastUpdateTime;
         updateLastUpdateTime();
     }
+
+    /****************
+    @Override
+    public void onNmeaReceived(long timestamp, String nmea) {
+        //create an object with all the fields from the string
+        mNmeaData = mNmeaParser.parse(nmea);
+
+        //update the UI
+        //updateNmeaUI(mNmeaData);
+
+        //save the raw data
+        //get the nmea container
+        Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
+        nmeaContainer.add(mNmeaData);
+    }
+
+    *******************************/
+
+
 
     //*********************** End of Callbacks *******************//
 

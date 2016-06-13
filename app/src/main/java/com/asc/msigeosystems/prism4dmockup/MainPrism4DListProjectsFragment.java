@@ -35,9 +35,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private Prism4DProjectAdapter mAdapter;
 
-
-
-
     private String mProjectName;
     private String mProjectID;
     private Date   mProjectDate;
@@ -50,11 +47,12 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     private CharSequence   mProjectPath;
 
 
+    /**********************************************************/
+    //          Fragment Lifecycle Functions                  //
+    /**********************************************************/
 
-
-
-    public MainPrism4DListProjectsFragment newInstance(
-            Prism4DPath projectPath){
+    //this is called by Activity to store parameters before fragment is instantiated
+    public MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath){
 
         Bundle args = new Bundle();
 
@@ -63,8 +61,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         //For now, the only thing to pass is the path type itself
         args.putCharSequence(Prism4DPath.sProjectPathTag,   projectPath.getPath());
 
-        MainPrism4DListProjectsFragment fragment =
-                new MainPrism4DListProjectsFragment();
+        MainPrism4DListProjectsFragment fragment = new MainPrism4DListProjectsFragment();
 
         fragment.setArguments(args);
         return fragment;
@@ -76,6 +73,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         //  is first created
     }
 
+    //This is where parameters are unbundled
     @Override
     public void onCreate(Bundle savedInstanceState){
 
@@ -88,7 +86,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     }
 
 
-
+    //set up the recycler view
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -106,20 +104,15 @@ public class MainPrism4DListProjectsFragment extends Fragment {
          * 7) create and set a line item decorator
          * 8) add event listeners to the recycler view
          *
-         * 8) return the view
+         * 9) return the view
          */
         //1) Inflate the layout for this fragment
-        View v = inflater.inflate
-                (R.layout.fragment_project_list_prism4d, container, false);
+        View v = inflater.inflate(R.layout.fragment_project_list_prism4d, container, false);
         v.setTag(TAG);
 
         //2) find and remember the RecyclerView
         mRecyclerView = (RecyclerView) v.findViewById(R.id.projectsList);
 
-
-        // LinearLayoutManager is used here, this will layout the elements in a similar fashion
-        // to the way ListView would layout elements. The RecyclerView.LayoutManager defines how
-        // elements are laid out.
         //3) create and assign a layout manager to the recycler view
         RecyclerView.LayoutManager mLayoutManager  = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
@@ -127,17 +120,14 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         //4) read data in from the database and tell the adapter about it
         //   this is now done in the projects container singleton
 
-
         //      get the singleton list container
         Prism4DProjectsContainer projectContainer = Prism4DProjectsContainer.getInstance();
         //      then go get our list of projects
         mProjectList = projectContainer.getProjects();
 
-        //5) Use the data to Create and set the Adapter
+        //5) Use the data to Create and set out project Adapter
         mAdapter = new Prism4DProjectAdapter(mProjectList);
         mRecyclerView.setAdapter(mAdapter);
-
-
 
         //6) create and set the itemAnimator
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
@@ -162,15 +152,17 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                     }
                 }));
 
-
-
         //No FOOTER on this screen
 
+        //9) return the view
         return v;
     }
 
+    /**********************************************************/
+    //      Utility Functions used in handling events         //
+    /**********************************************************/
 
-    //executed when a project is selected
+    //called from onClick(), executed when a project is selected
     private void onSelect(int position){
         //todo need to update selection visually
         mSelectedPosition = position;
@@ -242,7 +234,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
             }
         }
     }
-
 
     //Build and display the alert dialog
     private void areYouSureDelete(){

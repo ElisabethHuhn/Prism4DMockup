@@ -6,110 +6,115 @@
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
     >
-    <!-- Title Line -->
+
+    <!-- Everything on the screen has to scroll horizontally -->
     <HorizontalScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        >
-        <LinearLayout
-
-        android:orientation="horizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-
-        android:focusable="false"
-        android:clickable="false"
-
-        android:paddingTop="@dimen/interum_vertical"
-
-        android:background="@color/colorScreenBackground"
-        >
-
-        <!-- ID -->
-        <TextView
-            android:text="@string/project_row_id_label"
-
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-
-            android:layout_marginEnd="8dp"
-
-            android:textColor="@color/colorTextBlack"
-            android:background="@color/colorScreenBackground"
-            />
-
-        <!-- Name -->
-        <TextView
-            android:text="@string/project_row_name_label"
-
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="5"
-
-            android:layout_marginEnd="8dp"
-
-            android:textColor="@color/colorTextBlack"
-            android:background="@color/colorScreenBackground"
-            />
-
-        <!-- Date last maintained -->
-        <TextView
-            android:text="@string/project_row_last_modified_date_label"
-
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="5"
-
-            android:layout_marginEnd="8dp"
-
-            android:textColor="@color/colorTextBlack"
-            android:background="@color/colorScreenBackground"
-            />
-
-        <!-- Size = number of points -->
-        <TextView
-            android:text="@string/project_row_size_label"
-
-            android:layout_height="wrap_content"
-            android:layout_width="0dp"
-            android:layout_weight="3"
-
-            android:layout_marginEnd="8dp"
-
-            android:textColor="@color/colorTextBlack"
-            android:background="@color/colorScreenBackground"
-            />
-
-    </LinearLayout>
-    </HorizontalScrollView>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-
         android:fillViewport="true"
-
         >
 
-        <HorizontalScrollView
+        <!-- rest of the screen -->
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             >
-            <!-- Recycler view containing the list of projects -->
-            <android.support.v7.widget.RecyclerView
-                android:id="@+id/projectsList"
+            <!-- title line -->
+            <LinearLayout
+
+                android:orientation="horizontal"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+
+                android:focusable="false"
+                android:clickable="false"
+
+                android:paddingTop="@dimen/interum_vertical"
+
+                android:background="@color/colorScreenBackground"
                 >
 
-            </android.support.v7.widget.RecyclerView>
+                <!-- ID 3-->
+                <TextView
+                    android:text="@string/project_row_id_label"
 
-        </HorizontalScrollView>
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
 
-    </ScrollView>
+                    android:layout_marginEnd="8dp"
 
-    <!-- No Footer on the Projects list page -->
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <!-- Name 7-->
+                <TextView
+                    android:text="@string/project_row_name_label"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="7"
+
+                    android:layout_marginEnd="8dp"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <!-- Date last maintained 5-->
+                <TextView
+                    android:text="@string/project_row_last_modified_date_label"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="5"
+
+                    android:layout_marginEnd="8dp"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+
+                <!-- Size = number of points 3-->
+                <TextView
+                    android:text="@string/project_row_size_label"
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="3"
+
+                    android:layout_marginEnd="8dp"
+
+                    android:textColor="@color/colorTextBlack"
+                    android:background="@color/colorScreenBackground"
+                    />
+            </LinearLayout>
+
+            <!--recycler view for the list of projects-->
+            <ScrollView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:fillViewport="true"
+                >
+
+                <!-- Recycler view containing the list of projects -->
+                <android.support.v7.widget.RecyclerView
+                    android:id="@+id/projectsList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    >
+
+                </android.support.v7.widget.RecyclerView>
+
+            </ScrollView>
+
+        </LinearLayout>
+
+    </HorizontalScrollView>
+
+    <!-- Only buttons in the Footer on the Projects list page -->
     <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
 
 </LinearLayout>

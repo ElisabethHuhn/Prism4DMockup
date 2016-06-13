@@ -31,6 +31,14 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.asc.msigeosystems.prism4dmockup.Prism4DGPSActivity"
+            android:label="@string/gps_app_name" >
+            <intent-filter>
+                <action android:name="com.asc.msigeosystems.prism4dmockup.Prism4DGPSActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>
