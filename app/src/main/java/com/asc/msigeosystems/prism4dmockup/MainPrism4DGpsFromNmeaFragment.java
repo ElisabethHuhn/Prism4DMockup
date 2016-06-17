@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.GpsStatus;
 import android.location.Location;
+import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -16,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
+import android.widget.Toast;
 
 /**
  * The Maintain Point Fragment
@@ -23,15 +25,11 @@ import android.widget.TextView;
  * pre-populated prior to updating the point
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DGpsFromNmeaFragment extends Fragment
-        implements
-            //GpsStatus.Listener, //if you see this, remove all code for these listeners
-            // LocationListener,
-            GpsStatus.NmeaListener {
+public class MainPrism4DGpsFromNmeaFragment extends Fragment implements GpsStatus.Listener, LocationListener, GpsStatus.NmeaListener {
 
     private GpsStatus mGpsStatus = null;
     private static Prism4DNmeaParser mNmeaParser = new Prism4DNmeaParser();
-
+    int counter = 0;
     private Prism4DNmea mNmeaData; //latest nmea sentence received
 
     long     lastNmeaTime;
@@ -71,14 +69,6 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
     private TextView mLocalizationLabel;
     private TextView mLocalizationOutput;
 
-    private TextView mLocalNorthingLabel;
-    private TextView mLocalNorthingOutput;
-
-    private TextView mLocalEastingLabel;
-    private TextView mLocalEastingOutput;
-
-    private TextView mLocalElevationLabel;
-    private TextView mLocalElevationOutput;
 
     //Status
     private TextView mStatusLabel;
@@ -162,13 +152,24 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
         //For now ignore the text view widgets, as this is just a mockup
         //      for the real screen we'll have to actually fill the fields
         wireWidgets(v);
-
+/*
+        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled){
+            //Leave even though project has chaged
+            Toast.makeText(getActivity(),
+                    R.string.skyplot_gps_not_enabled,
+                    Toast.LENGTH_SHORT).show();
+        }
+*/
         if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED ||
                 ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED){return v;}
 
         mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+
+
 
 
 
@@ -188,7 +189,7 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
                         != PackageManager.PERMISSION_GRANTED){return;}
 
         //ask the Location Manager to start sending us updates
-        //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
+        mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
         //mLocationManager.addGpsStatusListener(this);
         mLocationManager.addNmeaListener(this);
 
@@ -210,40 +211,53 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
                         != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                                 != PackageManager.PERMISSION_GRANTED){return;}
+
+        mLocationManager.removeUpdates(this);
         //mLocationManager.removeGpsStatusListener(this);
-        //mLocationManager.removeUpdates(this);
         mLocationManager.removeNmeaListener(this);
     }
 
-//******************************************************************//
-//             GPS Listener Callbacks                               //
-//            Called by the OS to handle GPS events                 //
-//******************************************************************//
 
-/************ if you see this, remove the callbacks, outdated code
+
+
+    //******************************************************************//
+    //             GPS Listener Callbacks                               //
+    //            Called by the OS to handle GPS events                 //
+    //******************************************************************//
+
+    //GpsStatus.Listener Callback
+
+
+    //OS calls this callback when
+    // a change has been detected in GPS satellite status
+    //Called to report changes in the GPS status.
+
+    // The parameter event type is one of:
+
+    // o GPS_EVENT_STARTED
+    // o GPS_EVENT_STOPPED
+    // o GPS_EVENT_FIRST_FIX
+    // o GPS_EVENT_SATELLITE_STATUS
+
+    //When this method is called,
+    // the client should call getGpsStatus(GpsStatus)
+    // to get additional status information.
     @Override
-    public void onGpsStatusChanged(int state) {
+    public void onGpsStatusChanged(int eventType) {
         setGpsStatus();
     }
-     **************end of code to remove*/
 
-
-    //utility that is called by most of the GPS callbacks to update the UI
-    protected void setGpsStatus() {
-        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            mGpsStatus = mLocationManager.getGpsStatus(mGpsStatus);
-        }
-        //plluss a whole bunch of other stuff
-    }
 
 
 //******************************************************************//
 //             Location Listener Callbacks                          //
 //            Called by the OS to handle GPS events                 //
 //******************************************************************//
-/******If you see this, remove these listeners, outdated code*****
+
     // called when the GPS provider is turned off
     // (i.e. user turning off the GPS on the phone)
+    // If requestLocationUpdates is called on an already disabled provider,
+    // this method is called immediately.
     @Override
     public void onProviderDisabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
@@ -260,11 +274,17 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
         }
     }
 
-    // called when the status of the GPS provider changes
+    //Called when the provider status changes.
+    // This method is called when
+    // o a provider is unable to fetch a location or
+    // o if the provider has recently become available
+    //    after a period of unavailability.
     @Override
     public void onStatusChanged(String provider, int status, Bundle extras) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
             setGpsStatus();
+
+
         }
 
     }
@@ -276,25 +296,51 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
         mCurLocation = new Location(loc); // copy location
     }
 
-********end of code to remove*******/
+
 
 //******************************************************************//
 //             NMEA Listener Callbacks                              //
 //            Called by the OS to handle GPS events                 //
 //******************************************************************//
-
-    @Override
-    public void onNmeaReceived(long timestamp, String nmea) {
+@Override
+public void onNmeaReceived(long timestamp, String nmea) {
+    //todo maybe need to do something with the timestamp
+    try {
         //create an object with all the fields from the string
         mNmeaData = mNmeaParser.parse(nmea);
 
-        //update the UI
-        updateNmeaUI(mNmeaData);
+        if (!(mNmeaData == null)){
+            //update the UI
+            updateNmeaUI(mNmeaData);
 
-        //save the raw data
-        //get the nmea container
-        Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
-        nmeaContainer.add(mNmeaData);
+            //save the raw data
+            //get the nmea container
+            Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
+            nmeaContainer.add(mNmeaData);
+        }
+
+
+    } catch (RuntimeException e){
+        //there was an exception processing the NMEA Sentence
+        Toast toast = Toast.makeText(getActivity(), e.getMessage(), Toast.LENGTH_SHORT);
+        toast.show();
+        //throw new RuntimeException(e);
+    }
+}
+
+
+    //******************** Callback Utilities *****************//
+    //        Called by OS when a Listener condition is met       //
+    //************************************************************//
+
+
+    //Update the UI with satellite status info from GPS
+    protected void setGpsStatus(){
+        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //location manager is enabled,
+            //update the UI with info from GPS
+            counter++;
+            mLocalizationOutput.setText("Set GPS is called for the "+(Integer.toString(counter))+"th time.");        }
     }
 
 
@@ -335,18 +381,6 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
         mLocalizationLabel = (TextView) v.findViewById(R.id.skyplotLocalizationLabel);
         mLocalizationOutput = (TextView) v.findViewById(R.id.skyplotLocalizationOutput);
 
-        //Local Northing
-        mLocalNorthingLabel = (TextView) v.findViewById(R.id.skyplotLocalNorthingLabel);
-        mLocalNorthingOutput = (TextView) v.findViewById(R.id.skyplotLocalNorthingOutput);
-
-        //Local Easting
-        mLocalEastingLabel = (TextView) v.findViewById(R.id.skyplotLocalEastingLabel);
-        mLocalEastingOutput = (TextView) v.findViewById(R.id.skyplotLocalEastingOutput);
-
-
-        //Local Elevation
-        mLocalElevationLabel = (TextView) v.findViewById(R.id.skyplotLocalElevationLabel);
-        mLocalElevationOutput = (TextView) v.findViewById(R.id.skyplotLocalElevationOutput);
 
         //Status
         mStatusLabel = (TextView) v.findViewById(R.id.skyplotStatusLabel);
@@ -386,70 +420,75 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment
     }
 
     private void updateNmeaUI(Prism4DNmea nmeaData){
-        //Which fields have meaning depend upon the type of the sentence
-        switch (nmeaData.getNmeaType().toString()){
-            case "GGA":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mTimeOutput      .setText(Double. toString(nmeaData.getTime()));
-                mLatitudeOutput  .setText(Double. toString(nmeaData.getLatitude()));
-                mLongitudeOutput .setText(Double. toString(nmeaData.getLongitude()));
-                mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-                mHDopOutput.      setText(Double. toString(nmeaData.getHdop()));
-                mEllipsoidElevationOutput.
-                                  setText(Double.toString(nmeaData.getEllipsoidalElevation()));
-                mGeoidOutput.     setText(Double.toString(nmeaData.getGeoid()));
-                //fixed or quality
-                break;
-            case "GNS":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mTimeOutput      .setText(Double. toString(nmeaData.getTime()));
-                mLatitudeOutput  .setText(Double. toString(nmeaData.getLatitude()));
-                mLongitudeOutput .setText(Double. toString(nmeaData.getLongitude()));
-                mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-                mHDopOutput.      setText(Double. toString(nmeaData.getHdop()));
-                mEllipsoidElevationOutput.
-                        setText(Double.toString(nmeaData.getEllipsoidalElevation()));
-                mGeoidOutput.     setText(Double.toString(nmeaData.getGeoid()));
-                //fixed or quality
-                break;
-            case "GGL":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mTimeOutput      .setText(Double. toString(nmeaData.getTime()));
-                mLatitudeOutput  .setText(Double. toString(nmeaData.getLatitude()));
-                mLongitudeOutput .setText(Double. toString(nmeaData.getLongitude()));
-                break;
-            case "RMA":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mLatitudeOutput  .setText(Double. toString(nmeaData.getLatitude()));
-                mLongitudeOutput .setText(Double. toString(nmeaData.getLongitude()));
-                break;
-            case "RMC":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mTimeOutput      .setText(Double. toString(nmeaData.getTime()));
-                mLatitudeOutput  .setText(Double. toString(nmeaData.getLatitude()));
-                mLongitudeOutput .setText(Double. toString(nmeaData.getLongitude()));
-                break;
-            case "GSV":
-                //this is better shown graphically
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-                break;
-            case "GSA":
-                mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
-                mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-                mPDopOutput      .setText(Double .toString(nmeaData.getPdop()));
-                mHDopOutput      .setText(Double .toString(nmeaData.getHdop()));
-                mVDopOutput      .setText(Double .toString(nmeaData.getVdop()));
-                break;
+
+        if (nmeaData != null){
+            //Which fields have meaning depend upon the type of the sentence
+            String type = nmeaData.getNmeaType().toString();
+            if (type != null){
+
+                if (type.contains("GGA")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mTimeOutput.setText(Double.toString(nmeaData.getTime()));
+                    mLatitudeOutput.setText(Double.toString(nmeaData.getLatitude()));
+                    mLongitudeOutput.setText(Double.toString(nmeaData.getLongitude()));
+                    mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
+                    mHDopOutput.setText(Double.toString(nmeaData.getHdop()));
+                    mOrthometricElevationOutput.
+                            setText(Double.toString(nmeaData.getOrthometricElevation()));
+                    mGeoidOutput.setText(Double.toString(nmeaData.getGeoid()));
+                    //fixed or quality
+                } else if (type.contains("GNS")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mTimeOutput.setText(Double.toString(nmeaData.getTime()));
+                    mLatitudeOutput.setText(Double.toString(nmeaData.getLatitude()));
+                    mLongitudeOutput.setText(Double.toString(nmeaData.getLongitude()));
+                    mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
+                    mHDopOutput.setText(Double.toString(nmeaData.getHdop()));
+                    mOrthometricElevationOutput.
+                            setText(Double.toString(nmeaData.getOrthometricElevation()));
+                    mGeoidOutput.setText(Double.toString(nmeaData.getGeoid()));
+                    //fixed or quality
+                } else if (type.contains("GGL")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mTimeOutput.setText(Double.toString(nmeaData.getTime()));
+                    mLatitudeOutput.setText(Double.toString(nmeaData.getLatitude()));
+                    mLongitudeOutput.setText(Double.toString(nmeaData.getLongitude()));
+                } else if (type.contains("RMA")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mLatitudeOutput.setText(Double.toString(nmeaData.getLatitude()));
+                    mLongitudeOutput.setText(Double.toString(nmeaData.getLongitude()));
+                } else if (type.contains("RMC")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mTimeOutput.setText(Double.toString(nmeaData.getTime()));
+                    mLatitudeOutput.setText(Double.toString(nmeaData.getLatitude()));
+                    mLongitudeOutput.setText(Double.toString(nmeaData.getLongitude()));
+                }else if (type.contains("GSV")) {
+                    //this is better shown graphically
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
+                    //TODO rest of satellite data
+                } else if (type.contains("GSA")) {
+                    mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
+                    mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
+                    mPDopOutput.setText(Double.toString(nmeaData.getPdop()));
+                    mHDopOutput.setText(Double.toString(nmeaData.getHdop()));
+                    mVDopOutput.setText(Double.toString(nmeaData.getVdop()));
+                }
+
+            } else {
+                //there was an exception processing the NMEA Sentence
+                Toast toast = Toast.makeText(getActivity(), "Null type found", Toast.LENGTH_SHORT);
+                toast.show();
+            }
+
+
         }
+
     }
 
 
+
     /*********************************************************/
-
-
-
-
 
 }
 

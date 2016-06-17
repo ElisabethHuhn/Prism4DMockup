@@ -211,7 +211,7 @@
 
             </TableRow>
 
-            <!-- Row: Ellipsoid Elevation -->
+            <!-- Row: Orthometric Elevation -->
             <TableRow
 
                 android:layout_height="wrap_content"
@@ -220,8 +220,8 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/skyplotEllipsoidElevationLabel"
-                    android:text="@string/skyplot_ellipsoid_elevation_label"
+                    android:id="@+id/skyplotOrthometricElevationLabel"
+                    android:text="@string/skyplot_orthometric_elevation_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"
@@ -234,7 +234,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotEllipsoidElevationOutput"
+                    android:id="@+id/skyplotOrthometricElevationOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -293,7 +293,7 @@
 
             </TableRow>
 
-            <!-- Row: Orthometric Elevation -->
+            <!-- Row: Ellipsoid Elevation -->
             <TableRow
 
                 android:layout_height="wrap_content"
@@ -302,8 +302,8 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/skyplotOrthometricElevationLabel"
-                    android:text="@string/skyplot_orthometric_elevation_label"
+                    android:id="@+id/skyplotEllipsoidElevationLabel"
+                    android:text="@string/skyplot_ellipsoid_elevation_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"
@@ -316,7 +316,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotOrthometricElevationOutput"
+                    android:id="@+id/skyplotEllipsoidElevationOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -333,6 +333,7 @@
 
 
             </TableRow>
+
 
             <!-- Row: Localization File -->
             <TableRow
@@ -375,128 +376,6 @@
 
             </TableRow>
 
-            <!-- Row: Local Easting -->
-            <TableRow
-
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
-                >
-                <TextView
-                    android:id="@+id/skyplotLocalEastingLabel"
-                    android:text="@string/skyplot_local_easting_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <TextView
-                    android:id="@+id/skyplotLocalEastingOutput"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="75"
-
-                    android:layout_marginEnd="16dp"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
-
-
-            </TableRow>
-
-            <!-- Row: Local Northing -->
-            <TableRow
-
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
-                >
-                <TextView
-                    android:id="@+id/skyplotLocalNorthingLabel"
-                    android:text="@string/skyplot_local_northing_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <TextView
-                    android:id="@+id/skyplotLocalNorthingOutput"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="75"
-
-                    android:layout_marginEnd="16dp"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
-
-
-            </TableRow>
-
-            <!-- Row: Local Elevation -->
-            <TableRow
-
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
-                >
-                <TextView
-                    android:id="@+id/skyplotLocalElevationLabel"
-                    android:text="@string/skyplot_local_elevation_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <TextView
-                    android:id="@+id/skyplotLocalElevationOutput"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="75"
-
-                    android:layout_marginEnd="16dp"
-
-                    android:focusable="false"
-                    android:clickable="false"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
-
-
-            </TableRow>
 
 
              <!-- Row: Skyplot Status Screen Label -->
@@ -815,7 +694,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotHrmsLabel"
-                    android:text="@string/skyplot_hdop_label"
+                    android:text="@string/skyplot_hrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"
@@ -856,7 +735,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotVrmsLabel"
-                    android:text="@string/skyplot_hdop_label"
+                    android:text="@string/skyplot_vrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"

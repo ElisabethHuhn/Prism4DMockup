@@ -400,9 +400,8 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
 
     private Prism4DPoint storeNewPoint (Prism4DPointsContainer pointsContainer){
-        Prism4DPoint newPoint;
-        newPoint = createNewPoint(mPointProjectID);
-        pointsContainer.getPoints().add(newPoint);
+        Prism4DPoint newPoint = createNewPoint(mPointProjectID);
+        pointsContainer.add(newPoint);
         return updateThisPoint(newPoint);
     }
 
@@ -413,17 +412,17 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
             //todo throw an exception here
             //but for the mockup, keep going
             newPoint = createNewPoint(mPointProjectID);
-            pointsContainer.getPoints().add(newPoint);
+            pointsContainer.add(newPoint);
         }
         return updateThisPoint(newPoint);
     }
 
     private Prism4DPoint updateThisPoint (Prism4DPoint thisPoint){
-        thisPoint.setPointEasting(mPointEasting);
-        thisPoint.setPointNorthing(mPointNorthing);
-        thisPoint.setPointElevation(mPointElevation);
+        thisPoint.setPointEasting    (mPointEasting);
+        thisPoint.setPointNorthing   (mPointNorthing);
+        thisPoint.setPointElevation  (mPointElevation);
         thisPoint.setPointDescription(mPointDescription);
-        thisPoint.setPointNotes(mPointNotes);
+        thisPoint.setPointNotes      (mPointNotes);
 
         return thisPoint;
     }
@@ -504,12 +503,12 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
         //And we don't have a database yet, so we can't look it up
         Prism4DProject project =
                 new Prism4DProject("Dummy Project Name", mPointProjectID);
-        mPointID = project.getNextPointID();
-        mPointEasting = 0.0;
-        mPointNorthing = 0.0;
-        mPointElevation = 0.0;
+        mPointID          = project.getNextPointID();
+        mPointEasting     = 0.0;
+        mPointNorthing    = 0.0;
+        mPointElevation   = 0.0;
         mPointDescription = "";
-        mPointNotes = "";
+        mPointNotes       = "";
 
 
     }
@@ -538,14 +537,14 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
         // get the point if it already exists
         //      get our project list
-        Prism4DPointsContainer pointList = Prism4DPointsContainer.getInstance();
+        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
         //      then go get our point
-        Prism4DPoint ourPoint = pointList.getPoint(projectID, mPointID);
+        Prism4DPoint ourPoint = pointsContainer.getPoint(projectID, mPointID);
 
         if (ourPoint == null){
             //it isn't alread in the list, so add it
             ourPoint = new Prism4DPoint(getOurProject(projectID));
-            pointList.add(ourPoint);
+            pointsContainer.add(ourPoint);
             //todo probably need to assure that this is create or copy path
         }
 

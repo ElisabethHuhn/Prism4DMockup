@@ -81,7 +81,13 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         //Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_coord_conversion_prism4d, container, false);
 
+        //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
 
+        return v;
+    }
+
+    private void wireWidgets(View v){
         //Wire up the UI widgets so they can handle events later
         //For now ignore the text view widgets, as this is just a mockup
         //      for the real screen we'll have to actually fill the fields
@@ -134,15 +140,12 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         mClearButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-               clearForm();
+                clearForm();
             }
         });
 
 
 
-
-
-        return v;
     }
 
     private boolean convertInputs() {
@@ -250,11 +253,11 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
                 Prism4DUTM utmCoordinate = new Prism4DUTM(mWSG84Coordinate);
 
                 //Also output the result in separate fields
-                mUtmNmZoneOutput.setText(String.valueOf(utmCoordinate.getZone()));
+                mUtmNmZoneOutput      .setText(String.valueOf(utmCoordinate.getZone()));
                 mUtmNmHemisphereOutput.setText(String.valueOf(utmCoordinate.getHemisphere()));
-                mUtmNmLatBandOutput.setText(String.valueOf(utmCoordinate.getLatBand()));
-                mUtmNmEastingMOutput.setText(String.valueOf(utmCoordinate.getEasting()));
-                mUtmNmNorthingMOutput.setText(String.valueOf(utmCoordinate.getNorthing()));
+                mUtmNmLatBandOutput   .setText(String.valueOf(utmCoordinate.getLatBand()));
+                mUtmNmEastingMOutput  .setText(String.valueOf(utmCoordinate.getEasting()));
+                mUtmNmNorthingMOutput .setText(String.valueOf(utmCoordinate.getNorthing()));
 
                 //convert meters to feet
                 double temp =   Prism4DWSG84Coordinate.convertMetersToFeet(utmCoordinate.getEasting());
@@ -284,15 +287,15 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
     private void clearForm() {
 
-        mLatDigDegInput.  setText("");
-        mLatDegInput.setText("");
-        mLatMinInput.setText("");
-        mLatSecInput.     setText("");
+        mLatDigDegInput.setText("");
+        mLatDegInput   .setText("");
+        mLatMinInput   .setText("");
+        mLatSecInput   .setText("");
 
-        mLongDigDegInput. setText("");
-        mLongDegInput.setText("");
-        mLongMinInput.setText("");
-        mLongSecInput.setText("");
+        mLongDigDegInput.setText("");
+        mLongDegInput   .setText("");
+        mLongMinInput   .setText("");
+        mLongSecInput   .setText("");
 
         mUtmIntegerOutput.setText("");
         mUtmSOOutput.     setText("");

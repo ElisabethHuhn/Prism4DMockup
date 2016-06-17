@@ -104,7 +104,7 @@
                 >
                 <TextView
                     android:id="@+id/pointIDLabel"
-                    android:text="@string/point_id_label"
+                    android:text="@string/point_screen_id_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"

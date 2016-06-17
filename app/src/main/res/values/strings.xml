@@ -48,7 +48,9 @@
     <string name="subtitle_unknown_error">Unknown Error</string>
     <string name="subtitle_convert_to_utm">Convert to UTM</string>
     <string name="subtitle_list_nmea">List NMEA Sentences</string>
+    <string name="subtitle_list_satellites">List Visible Satellites</string>
     <string name="subtitle_gps_nmea">GPS data from NMEA</string>
+    <string name="subtitle_workflow">Coordinate Workflow</string>
 
     //Collect menu items
     <string name="action_measure_points">Measure Points</string>
@@ -171,6 +173,13 @@
     <string name="point_row_notes_label">Notes: </string>
 
 
+    <!-- Project List Strings -->
+    <string name="satellite_row_id_label">ID: </string>
+    <string name="satellite_row_elevation_label">Elevation: </string>
+    <string name="satellite_row_azimuth_label">Azimuth: </string>
+    <string name="satellite_row_snr_label">Signal To Noise: </string>
+
+    <string name="satellite_selected">Satellite selected</string>
 
 
 
@@ -284,6 +293,7 @@
     <!-- Button Labels -->
     <string name="cogo_points_button_label">Key In Points</string>
     <string name="cogo_coordinates_button_label">Coordinates</string>
+    <string name="cogo_workflow_button_label">Workflow</string>
     <string name="cogo_inverse_button_label">Inverse</string>
     <string name="cogo_intersections_button_label">Intersections</string>
     <string name="cogo_triangles_button_label">Triangles</string>
@@ -298,6 +308,8 @@
 
     <!--      NEW SCREEN                  -->
     <!-- Skyplots Top Level Screen Strings -->
+
+    <string name="skyplot_gps_not_enabled">GPS NOT enabled!</string>
 
     <!-- Field Labels -->
     <string name="skyplot_nmea_sentence_label">NMEA Sentence</string>
@@ -338,6 +350,11 @@
 
 
     <string name="skyplot_localization_file">What is this supposed to be?</string>
+    <string name="skyplot_nmea_fragment">NMEA Fragment</string>
+    <string name="skyplot_nmea_activity">NMEA Activity</string>
+    <string name="skyplot_list_nmea">List NMEA</string>
+    <string name="skyplot_list_satellites">List Satellites</string>
+    <string name="skyplot_ygps">YGPS program</string>
 
     <!--      NEW SCREEN                  -->
     <!-- Skyplot NMEA List:  -->
@@ -449,36 +466,91 @@
     <!-- Coordinate Conversion Screen Strings -->
     <!-- Menu Items -->
 
+
     <!-- Button Labels -->
+    <string name="workflow_controls">Workflow Controls</string>
+    <string name="start_gps_button_label">Start GPS</string>
+    <string name="stop_gps_button_label">Stop GPS</string>
+    <string name="start_mean_button_label">Start Mean</string>
+    <string name="stop_mean_button_label">Stop Mean</string>
+
     <string name="convert_button_label">Convert</string>
     <string name="clear_form_button_label">Clear Form</string>
 
     <!-- Text View Labels (initial text displayed) -->
     <string name="latitude_label">Latitude:  </string>
     <string name="longitude_label">Longetude: </string>
+    <string name="elevation_label">Elevation:  </string>
+    <string name="geoid_height_label">Geoid: </string>
+
     <string name="utm_integer_label">UTM Coord: </string>
     <string name="utm_nm_label">UTM Coord: </string>
     <string name="utm_so_label">UTM Coord: </string>
     <string name="utm_zone_label">Zone </string>
-    <string name="utm_easting_label">Easting </string>
-    <string name="utm_northing_label">Northing </string>
+    <string name="utm_easting_label">Easting:</string>
+    <string name="utm_northing_label">Northing:</string>
+    <string name="utm_easting_meters_label">Easting Meters</string>
+    <string name="utm_northing_meters_label">Northing Meters</string>
+    <string name="utm_easting_feet_label">Easting Feet</string>
+    <string name="utm_northing_feet_label">Northing Feet</string>
     <string name="utm_hemisphere_label">Hemi </string>
     <string name="utm_latband_label">Latband </string>
+    <string name="utm_convergence_label">Convergence </string>
+    <string name="utm_scale_factor_label">Scale Factor </string>
     <string name="utm_meters">in Meters:</string>
     <string name="utm_feet">in Feet:</string>
+
+    <string name="spc_label">SPC Coord: </string>
+    <string name="spc_zone_label">Zone </string>
+    <string name="spc_easting_label">Easting:</string>
+    <string name="spc_northing_label">Northing:</string>
+    <string name="spc_easting_meters_label">Easting Meters</string>
+    <string name="spc_northing_meters_label">Northing Meters</string>
+    <string name="spc_easting_feet_label">Easting Feet</string>
+    <string name="spc_northing_feet_label">Northing Feet</string>
+    <string name="spc_hemisphere_label">Hemi </string>
+    <string name="spc_latband_label">Latband </string>
+    <string name="spc_convergence_label">Convergence </string>
+    <string name="spc_scale_factor_label">Scale Factor </string>
+    <string name="spc_meters">in Meters:</string>
+    <string name="spc_feet">in Feet:</string>
+
 
     <!-- Edit View Fields (initial text displayed) -->
     <string name="latitude_input_label">Enter Latitude decimal number  </string>
     <string name="longitude_input_label">Enter Longitude decimal number </string>
 
     <!-- Prompts -->
+    <string name="gps_wgs84_prompt">Current GPS Position: WGS84</string>
+    <string name="mean_wgs84_prompt">Meaned GPS Position: WGS84</string>
+    <string name="nad83_prompt">NAD83 Position: NAD83</string>
+    <string name="spc_prompt">State Plane Coordinates Position: SPC</string>
+    <string name="utm_prompt">Universal Transverse Mercator Projection Position: UTM</string>
+
+    <string name="mean_start_time_label">Start time:</string>
+    <string name="mean_end_time_label">End time:</string>
+    <string name="mean_number_of_points_label"># readings:</string>
+    <string name="mean_standard_deviation">SDev:</string>
+    <string name="mean_lat_sigma">Lat SDev:</string>
+    <string name="mean_long_sigma">Long SDev:</string>
+    <string name="mean_elev_sigma">Ele SDev:</string>
+    <string name="mean_vector_sigma">Vect SDev:</string>
+    <string name="gps_time_label">Current GPS Time:</string>
+
     <string name="latitude_prompt">Latitude must be between -80.0 and 84.0</string>
     <string name="longitude_prompt">Longitude must be between -180.0 and 180.0</string>
+    <string name="elevation_prompt">Elevation Prompt (What should this say?)</string>
+
     <string name="coordinate_type_button">Change Type</string>
     <string name="type_decimal_degrees_label">Decimal Degrees</string>
     <string name="type_degrees_label">Degrees</string>
     <string name="type_minutes_label">Minutes</string>
     <string name="type_seconds_label">Seconds</string>
+    <string name="type_elevation_feet_label">Elevation feet</string>
+    <string name="type_elevation_meters_label">Elevation meters</string>
+    <string name="type_geoid_height_feet_label">Geoid Height feet</string>
+    <string name="type_geoid_height_meters_label">Geoid Height meters</string>
+
     <string name="utm_integer_output_prompt">Meter Precision UTM</string>
     <string name="utm_nanometer_output_prompt">Nanometer Precision UTM</string>
     <string name="utm_so_output_prompt">Foot Precision UTM</string>

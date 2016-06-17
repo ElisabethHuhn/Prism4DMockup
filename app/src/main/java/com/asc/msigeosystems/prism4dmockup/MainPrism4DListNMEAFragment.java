@@ -145,6 +145,15 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
 
         //Now take care of the GPS Stuff
         //GPS Stuff
+        /*
+        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled){
+            //Leave even though project has chaged
+            Toast.makeText(getActivity(),
+                    R.string.skyplot_gps_not_enabled,
+                    Toast.LENGTH_SHORT).show();
+        }
+        */
         //Make sure we have the proper GPS permissions before starting
         //If we don't currently have permission, bail
         if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -179,7 +188,7 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
                                 != PackageManager.PERMISSION_GRANTED){return;}
 
         //ask the Location Manager to start sending us updates
-        //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
+        mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
         //mLocationManager.addGpsStatusListener(this);
         mLocationManager.addNmeaListener(this);
 
@@ -201,7 +210,7 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
                         != PackageManager.PERMISSION_GRANTED ||
                         ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
                                 != PackageManager.PERMISSION_GRANTED){return;}
-        //mLocationManager.removeGpsStatusListener(this);
+        mLocationManager.removeGpsStatusListener(this);
         //mLocationManager.removeUpdates(this);
         mLocationManager.removeNmeaListener(this);
     }
@@ -215,7 +224,10 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
     public void onNmeaReceived (long timestamp, String nmea){
         //create an object with all the fields from the string
         mNmeaData = mNmeaParser.parse(nmea);
-        mNmeaList.add(mNmeaData);
+        if (!(mNmeaData == null)){
+            mNmeaList.add(mNmeaData);
+        }
+
 
     }
 

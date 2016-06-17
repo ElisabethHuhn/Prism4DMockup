@@ -48,9 +48,12 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sStakeoutTopTag        = "STAKEOUT_TOP";
 
     private static final String sCogoTopTag            = "COGO_TOP";
+    private static final String sCogoCnversionTag      = "COGO_CONVERSION";
+    private static final String sCogoWorkflowTag       = "COGO_WORKFLOW";
 
     private static final String sSkyplotTopTag         = "SKYPLOT_TOP";
     private static final String sSkyplotListNmeaTag    = "SKYPLOT_LIST_NMEA";
+    private static final String sSkyplotListSatelliteTag = "SKYPLOT_LIST_SATELLITE";
     private static final String sSkyplotGpsNmeaTag     = "SKYPLOT_GPS_NMEA";
 
     private static final String sConfigTopTag          = "CONFIG_TOP";
@@ -1349,6 +1352,44 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
 
+    /****
+     * Method to switch fragment to coordinate conversion screen
+     * EMH 6/15/16
+     */
+    public void switchToCoordWorkflow(){
+        //Show Nmea Sentences
+
+        //Need the Fragment Manager to do the swap for us
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //Are any fragments already being displayed?
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fragment == null){
+            //It shouldn't ever be the case that we got this far with no fragments on the screen,
+            // but code defensively
+            fragment = new MainPrism4DCoordWorkflowFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment, sCogoWorkflowTag)
+                    .commit();
+        } else {
+            //There is already a fragment being displayed
+
+            //Create a new Collect fragment
+            fragment = new MainPrism4DCoordWorkflowFragment();
+            fm.beginTransaction()
+                    //replace whatever is being displayed with the collect fragment
+                    .replace(R.id.fragment_container, fragment, sCogoWorkflowTag)
+                    //and add the transaction to the back stack
+                    .addToBackStack(sCogoWorkflowTag)
+                    .commit();
+        }
+
+        //Put the name of the fragment on the title bar
+        getSupportActionBar().setSubtitle(R.string.subtitle_workflow);
+
+    }
+
 
 
     /****
@@ -1440,7 +1481,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     /****
      * Method to switch fragment to coordinate conversion screen
      * EMH 6/7/16
-
+     */
     public void switchToListNmeaScreen(){
         //Show Nmea Sentences
 
@@ -1476,7 +1517,45 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
 
+    /****
+     * Method to switch fragment to coordinate conversion screen
+     * EMH 6/13/16
      */
+    public void switchToListSatellitesScreen(){
+        //Show Visible Satellites
+
+        //Need the Fragment Manager to do the swap for us
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //Are any fragments already being displayed?
+        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fragment == null){
+            //It shouldn't ever be the case that we got this far with no fragments on the screen,
+            // but code defensively
+            fragment = new MainPrism4DListSatellitesFragment();
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, fragment, sSkyplotListSatelliteTag)
+                    .commit();
+        } else {
+            //There is already a fragment being displayed
+
+            //Create a new Collect fragment
+            fragment = new MainPrism4DListSatellitesFragment();
+            fm.beginTransaction()
+                    //replace whatever is being displayed with the collect fragment
+                    .replace(R.id.fragment_container, fragment, sSkyplotListSatelliteTag)
+                    //and add the transaction to the back stack
+                    .addToBackStack(sSkyplotListSatelliteTag)
+                    .commit();
+        }
+
+        //Put the name of the fragment on the title bar
+        getSupportActionBar().setSubtitle(R.string.subtitle_list_satellites);
+
+    }
+
+
 
 
     /****

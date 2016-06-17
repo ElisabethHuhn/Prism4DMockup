@@ -167,6 +167,7 @@ public class MainPrism4DCogo1Fragment extends Fragment {
         //Map Check Button
         mMapCheckButton = (Button) v.findViewById(R.id.row3Button2);
         mMapCheckButton.setText(R.string.cogo_map_check_button_label);
+        mMapCheckButton.setText(R.string.cogo_workflow_button_label);
         mMapCheckButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_cogo, 0, 0);
         mMapCheckButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -174,8 +175,14 @@ public class MainPrism4DCogo1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.cogo_map_check_button_label,
+                        //R.string.cogo_map_check_button_label,
+                        R.string.cogo_workflow_button_label,
                         Toast.LENGTH_SHORT).show();
+
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null){
+                    myActivity.switchToCoordWorkflow();
+                }
 
             }
         });

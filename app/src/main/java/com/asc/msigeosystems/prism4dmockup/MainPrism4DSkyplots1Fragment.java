@@ -57,6 +57,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //GPS Position Button
         MGpsPositionButton = (Button) v.findViewById(R.id.row1Button1);
         MGpsPositionButton.setText(R.string.skyplot_gps_position_button_label);
+        MGpsPositionButton.setText(R.string.skyplot_nmea_fragment);
         //the order of images here is left, top, right, bottom
         MGpsPositionButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_skyplot, 0, 0);
         MGpsPositionButton.setOnClickListener(new View.OnClickListener() {
@@ -80,6 +81,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //QC Position Button
         mQcPositionButton = (Button) v.findViewById(R.id.row1Button2);
         mQcPositionButton.setText(R.string.skyplot_qc_position_button_label);
+        mQcPositionButton.setText(R.string.skyplot_nmea_activity);
         //the order of images here is left, top, right, bottom
         mQcPositionButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_skyplot, 0, 0);
         mQcPositionButton.setOnClickListener(new View.OnClickListener() {
@@ -100,6 +102,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //Skyplots Button
         mSkyplotsButton = (Button) v.findViewById(R.id.row3Button3);
         mSkyplotsButton.setText(R.string.skyplot_plots_button_label);
+        mSkyplotsButton.setText(R.string.skyplot_ygps);
         mSkyplotsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_skyplot, 0, 0);
         mSkyplotsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -118,6 +121,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //Sat Info Button
         mSatInfoButton = (Button) v.findViewById(R.id.row1Button3);
         mSatInfoButton.setText(R.string.skyplot_satinfo_button_label);
+        mSatInfoButton.setText(R.string.skyplot_list_satellites);
         mSatInfoButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_skyplot, 0, 0);
         mSatInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -128,7 +132,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                         Toast.LENGTH_SHORT).show();
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    //myActivity.switchToListNmeaScreen();
+                    myActivity.switchToListSatellitesScreen();
                 }
 
 
@@ -138,6 +142,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //Reference Button
         mReferenceButton = (Button) v.findViewById(R.id.row2Button1);
         mReferenceButton.setText(R.string.skyplot_reference_button_label);
+        mReferenceButton.setText(R.string.skyplot_list_nmea);
         mReferenceButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_skyplot, 0, 0);
         mReferenceButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -147,6 +152,11 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_reference_button_label,
                         Toast.LENGTH_SHORT).show();
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToListNmeaScreen();
+                }
+
 
             }
         });

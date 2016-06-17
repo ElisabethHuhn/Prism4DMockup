@@ -56,99 +56,307 @@ public class Prism4DNmeaParser {
     // parsers
     class GPGGA implements SentenceParser {
         public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
-            nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
-            nmeaInfo.mLatitude             = Latitude2Decimal(tokens[2], tokens[3]);
-            nmeaInfo.mLongitude            = Longitude2Decimal(tokens[4], tokens[5]);
-            nmeaInfo.mQuality              = Integer.parseInt(tokens[6]);
-            nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
-            nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
-            nmeaInfo.mEllipsoidalElevation = Double.parseDouble(tokens[9]);
-            nmeaInfo.mGeoid                = Double.parseDouble(tokens[11]);
+            try {
+                if (!(tokens[1].equals(""))){
+                    nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
+                }
+                if (!(tokens[2].equals("")) &&
+                    ((tokens[3].equals("S")) || (tokens[3].equals("N")))) {
+                    nmeaInfo.mLatitude = Latitude2Decimal(tokens[2], tokens[3]);
+                }
+                if (!(tokens[4].equals("")) &&
+                    ((tokens[5].equals("E")) || (tokens[5].equals("W")))) {
+                    nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
+                }
+                if (!(tokens[6].equals(""))){
+                    nmeaInfo.mQuality              = Integer.parseInt(tokens[6]);
+                    if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
+                }
 
-            if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
-            return true;
+                if (!(tokens[7].equals(""))){
+                    nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
+                }
+                if (!(tokens[8].equals(""))){
+                    nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
+                }
+                if (!(tokens[9].equals(""))){
+                    nmeaInfo.mOrthometricElevation = Double.parseDouble(tokens[9]);
+                }
+                if (!(tokens[11].equals(""))){
+                    nmeaInfo.mGeoid                = Double.parseDouble(tokens[11]);
+                }
+
+                return true;
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     class GNGNS implements SentenceParser {
         char quality;
         public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
-            nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
-            nmeaInfo.mLatitude             = Latitude2Decimal(tokens[2], tokens[3]);
-            nmeaInfo.mLongitude            = Longitude2Decimal(tokens[4], tokens[5]);
-            //see quality below for tokens[6]
-            nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
-            nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
-            nmeaInfo.mEllipsoidalElevation = Double.parseDouble(tokens[9]);
-            nmeaInfo.mGeoid                = Double.parseDouble(tokens[11]);
-
-            int quality = 0;
-            //convert the quality indicator to the other format from GGA
-            switch (tokens[6]){
-                case "N":
-                    quality = 0;
-                    break;
-                case "A":
-                    quality = 1;
-                    break;
-                case "D":
-                    quality = 2;
-                    break;
-                case "P":
-                    quality = 3;
-                    break;
-                case "R":
-                    quality = 4;
-                    break;
-                case "F":
-                    quality = 5;
-                    break;
-                case "E":
-                    quality = 6;
-                    break;
-                case "M":
-                    quality = 7;
-                    break;
-                case "S":
-                    quality = 8;
-                    break;
+            if (!(tokens[1].equals(""))){
+                nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
             }
-            nmeaInfo.mQuality = quality;
-            if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
+            if (!(tokens[2].equals("")) &&
+                ((tokens[3].equals("S")) || (tokens[3].equals("N")))) {
+                nmeaInfo.mLatitude = Latitude2Decimal(tokens[2], tokens[3]);
+            }
+            if (!(tokens[4].equals("")) &&
+                ((tokens[5].equals("E")) || (tokens[5].equals("W")))) {
+                nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
+            }
+            if (!(tokens[6].equals(""))){
+                int quality = 0;
+                //convert the quality indicator to the other format from GGA
+                switch (tokens[6]){
+                    case "N":
+                        quality = 0;
+                        break;
+                    case "A":
+                        quality = 1;
+                        break;
+                    case "D":
+                        quality = 2;
+                        break;
+                    case "P":
+                        quality = 3;
+                        break;
+                    case "R":
+                        quality = 4;
+                        break;
+                    case "F":
+                        quality = 5;
+                        break;
+                    case "E":
+                        quality = 6;
+                        break;
+                    case "M":
+                        quality = 7;
+                        break;
+                    case "S":
+                        quality = 8;
+                        break;
+                }
+                nmeaInfo.mQuality = quality;
+                if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
+            }
+
+            if (!(tokens[7].equals(""))){
+                nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
+            }
+            if (!(tokens[8].equals(""))){
+                nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
+            }
+            if (!(tokens[9].equals(""))){
+                nmeaInfo.mOrthometricElevation = Double.parseDouble(tokens[9]);
+            }
+            if (!(tokens[10].equals(""))){
+                nmeaInfo.mGeoid                = Double.parseDouble(tokens[10]);
+            }
+
+            return true;
+        }
+    }
+    class GPGNS implements SentenceParser {
+        char quality;
+        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
+            if (!(tokens[1].equals(""))){
+                nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
+            }
+            if (!(tokens[2].equals("")) &&
+                    ((tokens[3].equals("S")) || (tokens[3].equals("N")))) {
+                nmeaInfo.mLatitude = Latitude2Decimal(tokens[2], tokens[3]);
+            }
+            if (!(tokens[4].equals("")) &&
+                    ((tokens[5].equals("E")) || (tokens[5].equals("W")))) {
+                nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
+            }
+            if (!(tokens[6].equals(""))){
+                int quality = 0;
+                //convert the quality indicator to the other format from GGA
+                switch (tokens[6]){
+                    case "N":
+                        quality = 0;
+                        break;
+                    case "A":
+                        quality = 1;
+                        break;
+                    case "D":
+                        quality = 2;
+                        break;
+                    case "P":
+                        quality = 3;
+                        break;
+                    case "R":
+                        quality = 4;
+                        break;
+                    case "F":
+                        quality = 5;
+                        break;
+                    case "E":
+                        quality = 6;
+                        break;
+                    case "M":
+                        quality = 7;
+                        break;
+                    case "S":
+                        quality = 8;
+                        break;
+                }
+                nmeaInfo.mQuality = quality;
+                if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
+            }
+
+            if (!(tokens[7].equals(""))){
+                nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
+            }
+            if (!(tokens[8].equals(""))){
+                nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
+            }
+            if (!(tokens[9].equals(""))){
+                nmeaInfo.mOrthometricElevation = Double.parseDouble(tokens[9]);
+            }
+            if (!(tokens[10].equals(""))){
+                nmeaInfo.mGeoid                = Double.parseDouble(tokens[10]);
+            }
+
+            return true;
+        }
+    }
+    class GLGNS implements SentenceParser {
+        char quality;
+        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
+            if (!(tokens[1].equals(""))){
+                nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
+            }
+            if (!(tokens[2].equals("")) &&
+                    ((tokens[3].equals("S")) || (tokens[3].equals("N")))) {
+                nmeaInfo.mLatitude = Latitude2Decimal(tokens[2], tokens[3]);
+            }
+            if (!(tokens[4].equals("")) &&
+                    ((tokens[5].equals("E")) || (tokens[5].equals("W")))) {
+                nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
+            }
+            if (!(tokens[6].equals(""))){
+                int quality = 0;
+                //convert the quality indicator to the other format from GGA
+                switch (tokens[6]){
+                    case "N":
+                        quality = 0;
+                        break;
+                    case "A":
+                        quality = 1;
+                        break;
+                    case "D":
+                        quality = 2;
+                        break;
+                    case "P":
+                        quality = 3;
+                        break;
+                    case "R":
+                        quality = 4;
+                        break;
+                    case "F":
+                        quality = 5;
+                        break;
+                    case "E":
+                        quality = 6;
+                        break;
+                    case "M":
+                        quality = 7;
+                        break;
+                    case "S":
+                        quality = 8;
+                        break;
+                }
+                nmeaInfo.mQuality = quality;
+                if (nmeaInfo.mQuality > 0) {nmeaInfo.mFixed = true;}
+            }
+
+            if (!(tokens[7].equals(""))){
+                nmeaInfo.mSatellites           = Integer.parseInt(tokens[7]);
+            }
+            if (!(tokens[8].equals(""))){
+                nmeaInfo.mHdop                 = Double.parseDouble(tokens[8]);
+            }
+            if (!(tokens[9].equals(""))){
+                nmeaInfo.mOrthometricElevation = Double.parseDouble(tokens[9]);
+            }
+            if (!(tokens[10].equals(""))){
+                nmeaInfo.mGeoid                = Double.parseDouble(tokens[10]);
+            }
+
             return true;
         }
     }
 
     class GPGGL implements SentenceParser {
         public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
-            nmeaInfo.mLatitude  = Latitude2Decimal(tokens[1], tokens[2]);
-            nmeaInfo.mLongitude = Longitude2Decimal(tokens[3], tokens[4]);
-            //if tokens[5] starts with * it is a checksum, else it is time
-            if(tokens[5].startsWith("*")) {
-                //field is checksum
-            } else {
-                //time
-                nmeaInfo.mTime      = Double.parseDouble(tokens[5]);
-            }
 
-            return true;
+            try {
+
+                if (!(tokens[1].equals("")) &&
+                    ((tokens[2].equals("S")) || (tokens[2].equals("N")))) {
+                    nmeaInfo.mLatitude = Latitude2Decimal(tokens[1], tokens[2]);
+                }
+                if (!(tokens[3].equals("")) &&
+                    ((tokens[4].equals("E")) || (tokens[4].equals("W")))) {
+                    nmeaInfo.mLongitude = Longitude2Decimal(tokens[3], tokens[4]);
+                }
+                //if tokens[5] starts with * it is a checksum, else it is time
+                if(tokens[5].startsWith("*")) {
+                    //field is checksum
+                } else {
+                    //time
+                    nmeaInfo.mTime      = Double.parseDouble(tokens[5]);
+                }
+
+                return true;
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     class GPRMA implements SentenceParser {
         public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
-            nmeaInfo.mLatitude  = Latitude2Decimal(tokens[2], tokens[3]);
-            nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
-            return true;
+            try {
+                if (!(tokens[2].equals("")) &&
+                    ((tokens[3].equals("S")) || (tokens[3].equals("N")))) {
+                    nmeaInfo.mLatitude = Latitude2Decimal(tokens[2], tokens[3]);
+                }
+                if (!(tokens[4].equals("")) &&
+                        ((tokens[5].equals("E")) || (tokens[5].equals("W")))) {
+                    nmeaInfo.mLongitude = Longitude2Decimal(tokens[4], tokens[5]);
+                }
+                return true;
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
     class GPRMC implements SentenceParser {
         public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
-            nmeaInfo.mTime      = Double.parseDouble(tokens[1]);
-            nmeaInfo.mLatitude  = Latitude2Decimal(tokens[3], tokens[4]);
-            nmeaInfo.mLongitude = Longitude2Decimal(tokens[5], tokens[6]);
-            return true;
+            try {
+                if (!(tokens[1].equals(""))){
+                    nmeaInfo.mTime                 = Double.parseDouble(tokens[1]);
+                }
+                if (!(tokens[3].equals("")) &&
+                    ((tokens[4].equals("S")) || (tokens[4].equals("N")))) {
+                    nmeaInfo.mLatitude = Latitude2Decimal(tokens[3], tokens[4]);
+                }
+                if (!(tokens[5].equals("")) &&
+                    ((tokens[6].equals("E")) || (tokens[6].equals("W")))) {
+                    nmeaInfo.mLongitude = Longitude2Decimal(tokens[5], tokens[6]);
+                }
+                return true;
+
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -156,66 +364,160 @@ public class Prism4DNmeaParser {
     //              Satellite Status classes            //
     /****************************************************/
     class GPGSV implements SentenceParser {
-        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo){
-            int i = Integer.parseInt(tokens[3]);
-            nmeaInfo.mSatellites  = i;
-            Prism4DSatellite satellite;
+        public boolean parse(String[] tokens, Prism4DNmea nmeaInfo) {
+            Prism4DSatelliteContainer satelliteContainer = Prism4DSatelliteContainer.getInstance();
 
-            for(int l=0; l<=i; l++){
-                satellite = new Prism4DSatellite(
-                        Integer.parseInt(tokens[(l*4)+4]), //Satellite ID
-                        Integer.parseInt(tokens[(l*4)+5]), //elevation
-                        Integer.parseInt(tokens[(l*4)+6]), //azimuth
-                        Integer.parseInt(tokens[(l*4)+7])); //SNR
-                nmeaInfo.setSatellite(satellite);
+            try {
+                int msgInCycle = Integer.parseInt(tokens[1]); //The number of messages in the cycle
+                int thisMsg = Integer.parseInt(tokens[2]); //Which message this one is in the cycle
+                int totSat = Integer.parseInt(tokens[3]); //total number of satelites in the cycle
+                int i = totSat - ((thisMsg - 1) * 4);//number of satellites in this NMEA Sentence
+                if (i > 4) {
+                    i = 4; //The most satellites in one sentence is 4
+                }
+                nmeaInfo.mSatellites = totSat;
+                Prism4DSatellite satellite;
+                String s;
 
+
+                for (int l = 0; l < i; l++) {
+
+                    //Any of the tokens could be null, in which case, toss the satellite
+                    if (tokens[(l * 4) + 7].equals("")) tokens[(l * 4) + 7] = "-1";
+
+                    //check if the last token has a checksum
+                    if (tokens[(l * 4) + 7].contains("*")) {
+                        String parts[] = tokens[(l * 4) + 7].split("[*]");
+                        if ((parts[0] == null) || (parts[0].equals(""))) {
+                            tokens[(l * 4) + 7] = "-1"; //todo what does it mean to have no signal to noise?
+                        } else {
+                            tokens[(l * 4) + 7] = parts[0]; //toss the checksum
+                        }
+                    }
+
+                    if ((!(tokens[(l * 4) + 4]).equals("")) &&
+                        (!(tokens[(l * 4) + 5]).equals("")) &&
+                        (!(tokens[(l * 4) + 6]).equals("")) ){
+                        //All the fields are non-null, so report on the satellite
+                        satellite = new Prism4DSatellite(
+                                Integer.parseInt(tokens[(l * 4) + 4]), //Satellite ID
+                                Integer.parseInt(tokens[(l * 4) + 5]), //elevation
+                                Integer.parseInt(tokens[(l * 4) + 6]), //azimuth
+                                Integer.parseInt(tokens[(l * 4) + 7])); //SNR
+                        //nmeaInfo.setSatellite(satellite);
+                        //remove any old satellite records before adding this new one
+                        satelliteContainer.add(satellite);
+                    }
+                }
+
+                return true;
+
+            } catch (RuntimeException e){
+                throw new RuntimeException(e);
             }
 
-            return true;
         }
     }
 
     class GLGSV implements SentenceParser {
-        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo){
-            int i = Integer.parseInt(tokens[3]);
-            nmeaInfo.mSatellites  = i;
-            Prism4DSatellite satellite;
+        public boolean parse(String[] tokens, Prism4DNmea nmeaInfo) {
+            Prism4DSatelliteContainer satelliteContainer = Prism4DSatelliteContainer.getInstance();
+            try {
+                int msgInCycle = Integer.parseInt(tokens[1]); //The number of messages in the cycle
+                int thisMsg = Integer.parseInt(tokens[2]); //Which message this one is in the cycle
+                int totSat = Integer.parseInt(tokens[3]); //total number of satelites in the cycle
+                int i = totSat - ((thisMsg - 1) * 4);//number of satellites in this NMEA Sentence
+                if (i > 4) {
+                    i = 4; //The most satellites in one sentence is 4
+                }
+                nmeaInfo.mSatellites = totSat;
+                Prism4DSatellite satellite;
+                String s;
 
-            for(int l=0; l<=i; l++){
-                satellite = new Prism4DSatellite(
-                        Integer.parseInt(tokens[(l*4)+4]), //Satellite ID
-                        Integer.parseInt(tokens[(l*4)+5]), //elevation
-                        Integer.parseInt(tokens[(l*4)+6]), //azimuth
-                        Integer.parseInt(tokens[(l*4)+7])); //SNR
-                nmeaInfo.setSatellite(satellite);
+
+                for (int l = 0; l < i; l++) {
+
+                    //Any of the tokens could be null, in which case, toss the satellite
+                    if (tokens[(l * 4) + 7].equals("")) tokens[(l * 4) + 7] = "-1";
+
+                    //check if the last token has a checksum
+                    if (tokens[(l * 4) + 7].contains("*")) {
+                        String parts[] = tokens[(l * 4) + 7].split("[*]");
+                        if ((parts[0] == null) || (parts[0].equals(""))) {
+                            tokens[(l * 4) + 7] = "-1"; //todo what does it mean to have no signal to noise?
+                        } else {
+                            tokens[(l * 4) + 7] = parts[0]; //toss the checksum
+                        }
+                    }
+
+                    if ((!(tokens[(l * 4) + 4]).equals("")) &&
+                        (!(tokens[(l * 4) + 5]).equals("")) &&
+                        (!(tokens[(l * 4) + 6]).equals("")) ){
+                        //All the fields are non-null, so report on the satellite
+                        satellite = new Prism4DSatellite(
+                                Integer.parseInt(tokens[(l * 4) + 4]), //Satellite ID
+                                Integer.parseInt(tokens[(l * 4) + 5]), //elevation
+                                Integer.parseInt(tokens[(l * 4) + 6]), //azimuth
+                                Integer.parseInt(tokens[(l * 4) + 7])); //SNR
+                        //nmeaInfo.setSatellite(satellite);
+                        //remove any old satellite records before adding this new one
+                        satelliteContainer.add(satellite);
+                    }
+                }
+
+                return true;
+
+            } catch (RuntimeException e){
+                throw new RuntimeException(e);
             }
 
-            return true;
         }
     }
 
+
     class GPGSA implements SentenceParser {
-        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo){
+        public boolean parse(String [] tokens, Prism4DNmea nmeaInfo) {
 
             Prism4DSatellite satellite;
             int counter = 0;
             int satelliteID;
-            for(int l=3; l<=14; l++){
-                satelliteID = Integer.parseInt(tokens[l]);
+            try {
+                for (int l = 3; l <= 14; l++) {
+                    if (!(tokens[l].equals(""))) {
+                        satelliteID = Integer.parseInt(tokens[l]);
 
-                if (satelliteID > 0){
-                    satellite = new Prism4DSatellite(satelliteID);
-                    nmeaInfo.setSatellite(satellite);
-                    counter++;
+                        if (satelliteID > 0) {
+                            satellite = new Prism4DSatellite(satelliteID);
+                            nmeaInfo.setSatellite(satellite);
+                            counter++;
+                        }
+                    }
+
+                }
+                nmeaInfo.setSatellites(counter);
+                if (!(tokens[15].equals(""))) {
+                    nmeaInfo.mPdop = Double.parseDouble(tokens[15]);
+                }
+                if (!(tokens[16].equals(""))) {
+                    nmeaInfo.mHdop = Double.parseDouble(tokens[16]);
+                }
+                if (!(tokens[17].equals(""))) {
+                    //check if the last token has a checksum
+                    if (tokens[17].contains("*")) {
+                        String parts[] = tokens[17].split("[*]");
+                        if ((parts[0] == null) || (parts[0].equals(""))) {
+                            tokens[17] = "0"; //todo what does it mean to have no VDOP
+                        } else {
+                            tokens[17] = parts[0]; //toss the checksum
+                        }
+                    }
+                    nmeaInfo.mVdop = Double.parseDouble(tokens[17]);
                 }
 
+                return true;
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
             }
-            nmeaInfo.setSatellites(counter);
-            nmeaInfo.mPdop = Double.parseDouble(tokens[15]);
-            nmeaInfo.mHdop = Double.parseDouble(tokens[16]);
-            nmeaInfo.mVdop = Double.parseDouble(tokens[17]);
-
-            return true;
         }
     }
 
@@ -224,49 +526,49 @@ public class Prism4DNmeaParser {
             Prism4DSatellite satellite;
             int counter = 0;
             int satelliteID;
-            for(int l=3; l<=14; l++){
-                satelliteID = Integer.parseInt(tokens[l]);
+            try {
+                for (int l = 3; l <= 14; l++) {
+                    if (!(tokens[l].equals(""))) {
+                        satelliteID = Integer.parseInt(tokens[l]);
 
-                if (satelliteID > 0){
-                    satellite = new Prism4DSatellite(satelliteID);
-                    nmeaInfo.setSatellite(satellite);
-                    counter++;
+                        if (satelliteID > 0) {
+                            satellite = new Prism4DSatellite(satelliteID);
+                            nmeaInfo.setSatellite(satellite);
+                            counter++;
+                        }
+                    }
+
+                }
+                nmeaInfo.setSatellites(counter);
+                if (!(tokens[15].equals(""))) {
+                    nmeaInfo.mPdop = Double.parseDouble(tokens[15]);
+                }
+                if (!(tokens[16].equals(""))) {
+                    nmeaInfo.mHdop = Double.parseDouble(tokens[16]);
+                }
+                if (!(tokens[17].equals(""))) {
+                    //check if the last token has a checksum
+                    if (tokens[17].contains("*")) {
+                        String parts[] = tokens[17].split("[*]");
+                        if ((parts[0] == null) || (parts[0].equals(""))) {
+                            tokens[17] = "0"; //todo what does it mean to have no VDOP
+                        } else {
+                            tokens[17] = parts[0]; //toss the checksum
+                        }
+                    }
+                    nmeaInfo.mVdop = Double.parseDouble(tokens[17]);
                 }
 
+                return true;
+            } catch (RuntimeException e) {
+                throw new RuntimeException(e);
             }
-            nmeaInfo.setSatellites(counter);
-            nmeaInfo.mPdop = Double.parseDouble(tokens[15]);
-            nmeaInfo.mHdop = Double.parseDouble(tokens[16]);
-            nmeaInfo.mVdop = Double.parseDouble(tokens[17]);
-
-            return true;
         }
     }
 
     /****************************************************/
-    //              Position Data class                 //
+    //              Data for the Parser Class           //
     /****************************************************/
-
-    public class GPSPosition {
-        public double time = 0.0d;
-        public double lat = 0.0d;
-        public double lon = 0.0d;
-        public boolean fixed = false;
-        public int quality = 0;
-        public double dir = 0.0d;
-        public double altitude = 0.0d;
-        public double velocity = 0.0d;
-
-        public void updatefix() {
-            fixed = quality > 0;
-        }
-
-        //note that the formater uses float for the decimals
-        public String toString() {
-            return String.format("POSITION: lat: %f, lon: %f, time: %f, Q: %d, dir: %f, alt: %f, vel: %f", lat, lon, time, quality, dir, altitude, velocity);
-        }
-    }
-
 
     Prism4DNmea mPrism4DNmea;
 
@@ -294,9 +596,11 @@ public class Prism4DNmeaParser {
         //IN sample data
         //position
         sentenceParsers.put("GPGGA", new GPGGA());//Global Positioning System Fix Data
-        //sentenceParsers.put("GPGNS", new GPGNS());//fix data
+
+        sentenceParsers.put("GPGNS", new GPGNS());//fix data
         sentenceParsers.put("GNGNS", new GNGNS());
-        //sentenceParsers.put("GNGNS", new GLGNS());
+        sentenceParsers.put("GNGNS", new GLGNS());
+
         sentenceParsers.put("GPRMC", new GPRMC());
 
         //satellite information
@@ -340,6 +644,8 @@ public class Prism4DNmeaParser {
                 // store the original NMEA sentence in it
                 mPrism4DNmea = new Prism4DNmea(line);
 
+                mPrism4DNmea.setNmeaType(type);
+
                 sentenceParsers.get(type).parse(tokens, mPrism4DNmea);
                 //finally, set the fixed boolean based on the quality token
                 //TODO mPrism4DNmea.updatefix();
@@ -372,4 +678,31 @@ public class Prism4DNmeaParser {
             System.out.println("latitude="+latitude+" ; longitude="+longitude+" ; course = "+course);
         }
     }
-}
+
+
+        /****************************************************/
+        //              Position Data class                 //
+        /****************************************************/
+
+        public class GPSPosition {
+            public double time = 0.0d;
+            public double lat = 0.0d;
+            public double lon = 0.0d;
+            public boolean fixed = false;
+            public int quality = 0;
+            public double dir = 0.0d;
+            public double altitude = 0.0d;
+            public double velocity = 0.0d;
+
+            public void updatefix() {
+                fixed = quality > 0;
+            }
+
+            //note that the formater uses float for the decimals
+            public String toString() {
+                return String.format("POSITION: lat: %f, lon: %f, time: %f, Q: %d, dir: %f, alt: %f, vel: %f", lat, lon, time, quality, dir, altitude, velocity);
+            }
+        }
+
+
+    }

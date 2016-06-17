@@ -181,15 +181,15 @@ public class Prism4DUTM {
         //WGS84 Datum constants
         //Karney 2010 page 5
         //From the Ellipsoid
-        double equatorialRadiusA = 6378137.0; //equatorial radius in meters
-        double polarRadiusB = 6356752.314245; //polar semi axis
-        //flattening = (equatorialRadius-polarRadius)/equatorialRadius;
-        double a = equatorialRadiusA;
-        double b = polarRadiusB;
-        double numerator = a-b;
-        double flatten = numerator/a;
+        //double equatorialRadiusA = 6378137.0; //equatorial radius in meters
+        //double polarRadiusB = 6356752.314245; //polar semi axis
 
-        double flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
+        //flattening = (equatorialRadius-polarRadius)/equatorialRadius;
+        double a = Prism4DConstants.sWGSEquatorialRadiusA; //equatorialRadiusA;
+        double b = Prism4DConstants.sWGSPolarRadiusB;      //polarRadiusB;
+
+        //double flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
+        double flatteningF = (a-b)/a;
         //double flatteningF = 1/298.257223563; //0.0033528107
 
         //this calculation for inverseFlatteningF is just wrong, it is flattening
@@ -201,7 +201,7 @@ public class Prism4DUTM {
 
         // eccentricity  (.0066943801)1/2 = 0.0818191915
         double e = Math.sqrt(flatteningF*(2.-flatteningF));
-        double ee = Math.sqrt(1. - Math.pow((polarRadiusB/equatorialRadiusA),2.));
+        double ee = Math.sqrt(1. - Math.pow((b/a),2.));
 
         //lamda  λ is longitude in radians
         double cosLongRad = Math.cos(longRad);
@@ -287,7 +287,7 @@ public class Prism4DUTM {
         double n3 = n*n2;//.0000000047
         double n4 = n*n3;
         double n5 = n*n4;
-        double n6 = n*n5; // TODO: compare Horner-form accuracy?
+        double n6 = n*n5;
         //double n7 = n*n6;
         //double n8 = n*n7;
 
@@ -515,7 +515,7 @@ public class Prism4DUTM {
 
         // 2πA is the circumference of a meridian
         //Karney (14) and (29)
-        double A = (equatorialRadiusA/(1.+n)) * (1. + (1./4.)*n2 + (1./64.)*n4 + (1./256.)*n6);// + (25/16384)*n8);
+        double A = (Prism4DConstants.sWGSEquatorialRadiusA/(1.+n)) * (1. + (1./4.)*n2 + (1./64.)*n4 + (1./256.)*n6);// + (25/16384)*n8);
 
         //scale the result to give the transverse Mercator easting and northing
         // UTM scale on the central meridian
@@ -575,7 +575,7 @@ public class Prism4DUTM {
 
         //kʹ kappaPrime
         double kappaPrime = (Math.sqrt(1. - e*e*sinLat*sinLat) * Math.sqrt(1. + tau*tau)) / latDenominator;
-        double kappaDoublePrime = (A / equatorialRadiusA) * Math.sqrt(rhoPrime*rhoPrime + qʹ*qʹ);
+        double kappaDoublePrime = (A / Prism4DConstants.sWGSEquatorialRadiusA) * Math.sqrt(rhoPrime*rhoPrime + qʹ*qʹ);
 
         //kappa k
         //Scale [karney paragraph between (24) and (25)

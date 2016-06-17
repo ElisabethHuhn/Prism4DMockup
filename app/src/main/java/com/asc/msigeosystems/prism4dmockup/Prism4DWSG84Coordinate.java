@@ -26,6 +26,9 @@ public class Prism4DWSG84Coordinate {
     private int    mLongitudeMinute;
     private double mLongitudeSecond;
 
+    private double mElevation; //Orthometric Elevation in Meters
+    private double mGeoid;     //Mean Sea Level in Meters
+
     private boolean mValidCoordinate = true;
 
     /********
@@ -66,6 +69,18 @@ public class Prism4DWSG84Coordinate {
         return mLongitudeSecond;
     }
 
+    public double getElevation() {  return mElevation;   }
+
+    public double getElevationFeet() {return convertMetersToFeet(mElevation); }
+
+    public void setElevation(double elevation) { mElevation = elevation;   }
+
+    public double getGeoid() {   return mGeoid; }
+
+    public double getGeoidFeet() { return convertMetersToFeet(mGeoid);}
+
+    public void setGeoid(double geoid) { mGeoid = geoid;  }
+
     public boolean isValidCoordinate() {
         return mValidCoordinate;
     }
@@ -78,9 +93,9 @@ public class Prism4DWSG84Coordinate {
 
     public static double convertMetersToFeet(double meters) {
         //function converts Feet to Meters.
-        double toFeet = meters;
-        toFeet = meters * 3.280833333;  // official conversion rate of Meters to Feet
-        return toFeet;
+
+        return (meters * Prism4DConstants.feetInAMeter);  // official conversion rate of Meters to Feet
+
     }
 
     /********
