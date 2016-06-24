@@ -28,19 +28,16 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
 
     //Input / Output Fields on screen
-    private TextView mLatLabel;
     private EditText mLatDigDegInput;
     private EditText mLatDegInput;
     private EditText mLatMinInput;
     private EditText mLatSecInput;
 
-    private TextView mLongLabel;
     private EditText mLongDigDegInput;
     private EditText mLongDegInput;
     private EditText mLongMinInput;
     private EditText mLongSecInput;
 
-    private TextView mUtmLabel;
     private TextView mUtmIntegerOutput;
     private TextView mUtmSOOutput;
 
@@ -59,7 +56,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     private Button mClearButton;
 
 
-    private Prism4DWSG84Coordinate mWSG84Coordinate;
+    private Prism4DCoordinateWGS84 mCoordinateWGS84;
 
     private double mConvergence;
     private double mScale;
@@ -93,14 +90,12 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
         //      for the real screen we'll have to actually fill the fields
 
         //Latitude
-        mLatLabel       = (TextView) v.findViewById(R.id.latitudeLabel);
         mLatDigDegInput = (EditText) v.findViewById(R.id.latitudeInput);
         mLatDegInput    = (EditText) v.findViewById(R.id.latDegreesInput);
         mLatMinInput    = (EditText) v.findViewById(R.id.latMinutesInput);
         mLatSecInput    = (EditText) v.findViewById(R.id.latSecondsInput);
 
         //Longitude
-        mLongLabel       = (TextView)v.findViewById(R.id.longitudeLabel);
         mLongDigDegInput = (EditText) v.findViewById(R.id.longitudeInput);
         mLongDegInput    = (EditText) v.findViewById(R.id.longDegreesInput);
         mLongMinInput    = (EditText) v.findViewById(R.id.longMinutesInput);
@@ -149,17 +144,18 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     }
 
     private boolean convertInputs() {
-        mWSG84Coordinate = new Prism4DWSG84Coordinate(mLatDigDegInput.getText(),
-                                                      mLongDigDegInput.getText());
-        if (!mWSG84Coordinate.isValidCoordinate()) {
-            mWSG84Coordinate = new Prism4DWSG84Coordinate(
+        mCoordinateWGS84 = new Prism4DCoordinateWGS84(mLatDigDegInput.getText().toString(),
+                                                      mLongDigDegInput.getText().toString());
+
+        if (!mCoordinateWGS84.isValidCoordinate()) {
+            mCoordinateWGS84 = new Prism4DCoordinateWGS84(
                     mLatDegInput.getText(),
                     mLatMinInput.getText(),
                     mLatSecInput.getText(),
                     mLongDegInput.getText(),
                     mLongMinInput.getText(),
                     mLongSecInput.getText());
-            if (!mWSG84Coordinate.isValidCoordinate()){
+            if (!mCoordinateWGS84.isValidCoordinate()){
                 Toast.makeText(getActivity(),
                         R.string.coordinate_try_again,
                         Toast.LENGTH_SHORT).show();
@@ -167,15 +163,15 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
             }
         }
         //display the coordinate values in the UI
-        mLatDigDegInput.setText(String.valueOf(mWSG84Coordinate.getLatitude()));
-        mLatDegInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeDegree()));
-        mLatMinInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeMinute()));
-        mLatSecInput   .setText(String.valueOf(mWSG84Coordinate.getLatitudeSecond()));
+        mLatDigDegInput.setText(String.valueOf(mCoordinateWGS84.getLatitude()));
+        mLatDegInput   .setText(String.valueOf(mCoordinateWGS84.getLatitudeDegree()));
+        mLatMinInput   .setText(String.valueOf(mCoordinateWGS84.getLatitudeMinute()));
+        mLatSecInput   .setText(String.valueOf(mCoordinateWGS84.getLatitudeSecond()));
 
-        mLongDigDegInput.setText(String.valueOf(mWSG84Coordinate.getLongitude()));
-        mLongDegInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeDegree()));
-        mLongMinInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeMinute()));
-        mLongSecInput   .setText(String.valueOf(mWSG84Coordinate.getLongitudeSecond()));
+        mLongDigDegInput.setText(String.valueOf(mCoordinateWGS84.getLongitude()));
+        mLongDegInput   .setText(String.valueOf(mCoordinateWGS84.getLongitudeDegree()));
+        mLongMinInput   .setText(String.valueOf(mCoordinateWGS84.getLongitudeMinute()));
+        mLongSecInput   .setText(String.valueOf(mCoordinateWGS84.getLongitudeSecond()));
 
         setLatColor();
         setLongColor();
@@ -202,87 +198,99 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
         //only attempt the conversions if the inputs are valid
          if (inputsValid) {
-
             //The IBM code:
-            try {
-                //an actual conversion
-                IBMCoordinateConversion coordinateConversion =
-                                            new IBMCoordinateConversion();
-
-                //integer precision (meter)
-                String utmStringCoordinates =
-                        coordinateConversion.latLon2UTM(mWSG84Coordinate.getLatitude(),
-                                                        mWSG84Coordinate.getLongitude());
-                mUtmIntegerOutput.setText(utmStringCoordinates);
-
-            } catch (IllegalArgumentException exc) {
-                //input parameters were not within range
-                mLatDigDegInput.setText(R.string.input_wrong_range_error);
-                mLongDigDegInput.setText(R.string.input_wrong_range_error);
-                inputsValid = false;
-            }
+             inputsValid = convertIBM();
         }
 
         if (inputsValid) {
             //The stack overflow conversion code:
+            inputsValid = convertStackOverflow();
 
-            try {
-                //create a new WGS84 object from the Lat / Long coordinates
-                WGS84 latlong = new WGS84(mWSG84Coordinate.getLatitude(),
-                                          mWSG84Coordinate.getLongitude());
-
-                //Now convert the coordinates into UTM
-                //There is not very robust exception handling in this class
-                UTM utmCoordinates = new UTM(latlong);
-
-                mUtmSOOutput.setText(utmCoordinates.toString());
-            } catch (IllegalArgumentException exc) {
-                //input parameters were not within range
-                mLatDigDegInput.setText(R.string.input_wrong_range_error);
-                mLongDigDegInput.setText(R.string.input_wrong_range_error);
-                inputsValid = false;
-            }
         }
         if (inputsValid){
             //Create the UTM coordinate based on the WSG coordinate from the user
             // The Prism4D conversion
             // algorithm based on Kearny (2010)
             // supposed nanometer accuracy
-
-            try{
-                Prism4DUTM utmCoordinate = new Prism4DUTM(mWSG84Coordinate);
-
-                //Also output the result in separate fields
-                mUtmNmZoneOutput      .setText(String.valueOf(utmCoordinate.getZone()));
-                mUtmNmHemisphereOutput.setText(String.valueOf(utmCoordinate.getHemisphere()));
-                mUtmNmLatBandOutput   .setText(String.valueOf(utmCoordinate.getLatBand()));
-                mUtmNmEastingMOutput  .setText(String.valueOf(utmCoordinate.getEasting()));
-                mUtmNmNorthingMOutput .setText(String.valueOf(utmCoordinate.getNorthing()));
-
-                //convert meters to feet
-                double temp =   Prism4DWSG84Coordinate.convertMetersToFeet(utmCoordinate.getEasting());
-                //and round to a reasonable precision
-                BigDecimal bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
-                temp = bdTemp.doubleValue();
-                mUtmNmEastingFOutput.setText(String.valueOf(temp));
-
-                temp = Prism4DWSG84Coordinate.convertMetersToFeet(utmCoordinate.getNorthing());
-                bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
-                temp = bdTemp.doubleValue();
-
-                mUtmNmNorthingFOutput.setText(String.valueOf(temp ));
-
-            } catch (IllegalArgumentException exc) {
-                //input parameters were not within range
-                mLatDigDegInput.setText(R.string.input_wrong_range_error);
-                mLongDigDegInput.setText(R.string.input_wrong_range_error);
-                inputsValid = false;
-            }
+            inputsValid = convertKarney();
         }
 
     }
 
+    private boolean convertIBM() {
+        try {
+            //an actual conversion
+            IBMCoordinateConversion coordinateConversion =
+                    new IBMCoordinateConversion();
 
+            //integer precision (meter)
+            String utmStringCoordinates =
+                    coordinateConversion.latLon2UTM(mCoordinateWGS84.getLatitude(),
+                            mCoordinateWGS84.getLongitude());
+            mUtmIntegerOutput.setText(utmStringCoordinates);
+            return true;
+
+        } catch (IllegalArgumentException exc) {
+            //input parameters were not within range
+            mLatDigDegInput.setText(R.string.input_wrong_range_error);
+            mLongDigDegInput.setText(R.string.input_wrong_range_error);
+            return false;
+        }
+    }
+
+    private boolean convertStackOverflow() {
+        try {
+            //create a new WGS84 object from the Lat / Long coordinates
+            WGS84 latlong = new WGS84(mCoordinateWGS84.getLatitude(),
+                    mCoordinateWGS84.getLongitude());
+
+            //Now convert the coordinates into UTM
+            //There is not very robust exception handling in this class
+            UTM utmCoordinates = new UTM(latlong);
+
+            mUtmSOOutput.setText(utmCoordinates.toString());
+            return true;
+        } catch (IllegalArgumentException exc) {
+            //input parameters were not within range
+            mLatDigDegInput.setText(R.string.input_wrong_range_error);
+            mLongDigDegInput.setText(R.string.input_wrong_range_error);
+            return false;
+        }
+    }
+
+    private boolean convertKarney(){
+        try{
+            //The UTM constructor performs the conversion from WGS84
+            Prism4DCoordinateUTM utmCoordinate = new Prism4DCoordinateUTM(mCoordinateWGS84);
+
+            //Also output the result in separate fields
+            mUtmNmZoneOutput      .setText(String.valueOf(utmCoordinate.getZone()));
+            mUtmNmHemisphereOutput.setText(String.valueOf(utmCoordinate.getHemisphere()));
+            mUtmNmLatBandOutput   .setText(String.valueOf(utmCoordinate.getLatBand()));
+            mUtmNmEastingMOutput  .setText(String.valueOf(utmCoordinate.getEasting()));
+            mUtmNmNorthingMOutput .setText(String.valueOf(utmCoordinate.getNorthing()));
+
+            //convert meters to feet
+            double temp = utmCoordinate.getEastingFeet();
+            //and round to a reasonable precision
+            BigDecimal bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
+            temp = bdTemp.doubleValue();
+            mUtmNmEastingFOutput.setText(String.valueOf(temp));
+
+            temp = utmCoordinate.getNorthingFeet();
+            bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
+            temp = bdTemp.doubleValue();
+
+            mUtmNmNorthingFOutput.setText(String.valueOf(temp ));
+            return true;
+
+        } catch (IllegalArgumentException exc) {
+            //input parameters were not within range
+            mLatDigDegInput.setText(R.string.input_wrong_range_error);
+            mLongDigDegInput.setText(R.string.input_wrong_range_error);
+            return false;
+        }
+    }
 
 
     private void clearForm() {
@@ -312,7 +320,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     }
 
     private void setLatColor(){
-        if (mWSG84Coordinate.getLatitude() >= 0.0) {
+        if (mCoordinateWGS84.getLatitude() >= 0.0) {
             setLatColorPos();
 
         } else {
@@ -321,7 +329,7 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     }
 
     private void setLongColor(){
-        if (mWSG84Coordinate.getLongitude() >= 0.0) {
+        if (mCoordinateWGS84.getLongitude() >= 0.0) {
             setLongColorPos();
 
         } else {

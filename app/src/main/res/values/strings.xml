@@ -487,8 +487,8 @@
     <string name="utm_nm_label">UTM Coord: </string>
     <string name="utm_so_label">UTM Coord: </string>
     <string name="utm_zone_label">Zone </string>
-    <string name="utm_easting_label">Easting:</string>
-    <string name="utm_northing_label">Northing:</string>
+    <string name="utm_easting_label">Easting M/F:</string>
+    <string name="utm_northing_label">Northing M/F:</string>
     <string name="utm_easting_meters_label">Easting Meters</string>
     <string name="utm_northing_meters_label">Northing Meters</string>
     <string name="utm_easting_feet_label">Easting Feet</string>
@@ -502,8 +502,8 @@
 
     <string name="spc_label">SPC Coord: </string>
     <string name="spc_zone_label">Zone </string>
-    <string name="spc_easting_label">Easting:</string>
-    <string name="spc_northing_label">Northing:</string>
+    <string name="spc_easting_label">Easting M/F:</string>
+    <string name="spc_northing_label">Northing M/F:</string>
     <string name="spc_easting_meters_label">Easting Meters</string>
     <string name="spc_northing_meters_label">Northing Meters</string>
     <string name="spc_easting_feet_label">Easting Feet</string>

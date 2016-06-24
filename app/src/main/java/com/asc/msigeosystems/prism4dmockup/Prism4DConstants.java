@@ -4,26 +4,21 @@ package com.asc.msigeosystems.prism4dmockup;
  * Created by elisabethhuhn on 6/13/2016.
  */
 public class Prism4DConstants {
-    //WGS84 Constants
-    public static final double sWGSSemiMajorAxis      = 6378137.0;    // a meters
-    public static final double sWGSFlattening         = 298.257223563; // 1/f unitless
+
+    /********
+     *
+     * Static constants
+     *
+     **********/
     public static final double sGravitationalConstant = 3.986004418e14; // cubic meters/square seconds
     public static final double sMeanAngularVelocity   = 7.292115e-5;    // rads / s
 
-    //WGS84 Datum constants
-    //Karney 2010 page 5
-    //From the Ellipsoid
-    public static final double sWGSEquatorialRadiusA = 6378137.0;      //equatorial radius in meters
-    public static final double sWGSPolarRadiusB      = 6356752.314245; //polar semi axis
 
     //used in calculating Moments of Inertia, based on EGM2008
     public static final double sDynSecDegZonal = -4.84165143790815e-4; //
     public static final double sSectorialHarmonics = 2.43938357328313e-6; //
     
-    //NAD83 Constants
-    public static final double sNADSemiMajorAxis = 6378137.;      // a meters
-    public static final double sNADFlattening    = 298.257222101; // 1/f unitless
-    
+
     //Constants for transforming WGS84 to NAD83
     public static final double sTx19972011 = 0.99343; // meters
     public static final double sTx1997PS11 = 0.9080;  
@@ -82,6 +77,28 @@ public class Prism4DConstants {
     public static final double sdS1997MA11  = 0.08;
 
 
-    public static final double feetInAMeter = 3.280833333;
+    //Constants used in conversion from NAD83 to State Plane Coordinates
+    public static final double E0 = 2000000.0000; //meters Easting of projection and grid origion
+    public static final double E0feet = 6561666.667; //E0 in feet
+    public static final double Nb = 500000.0000;  //meters northing of the grid base
+    public static final double Nbfeet = 1640416.667; //feet
+
+    public static final double feetPerMeter = 3.280833333;
+    public static final double cmPerInch =    100./feetPerMeter; //2.54
+    public static final double inchesPerMeter = feetPerMeter/12.;   //39.37
+
+    /********
+     *
+     * Static functions
+     *
+     **********/
+
+    public static double convertMetersToFeet(double meters) {
+        //function converts Feet to Meters.
+
+        return (meters * Prism4DConstants.feetPerMeter);  // official conversion rate of Meters to Feet
+
+    }
+
 
 }

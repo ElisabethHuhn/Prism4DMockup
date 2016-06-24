@@ -33,7 +33,6 @@
 
                 <!-- Latitude Prompt -->
                 <TextView
-                    android:id="@+id/latitudePrompt"
                     android:text="@string/latitude_prompt"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -54,7 +53,6 @@
                     android:layout_gravity="center_horizontal"
                     >
                     <TextView
-                        android:id="@+id/latitudeLabel"
                         android:text="@string/latitude_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -93,7 +91,6 @@
                     >
                     <!-- blank label to make fields line up on screen -->
                     <TextView
-
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
                         android:layout_weight="25"
@@ -175,7 +172,6 @@
 
                 <!-- Longitude Prompt -->
                 <TextView
-                    android:id="@+id/longitudePrompt"
                     android:text="@string/longitude_prompt"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -196,7 +192,6 @@
 
                     >
                     <TextView
-                        android:id="@+id/longitudeLabel"
                         android:text="@string/longitude_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -372,7 +367,6 @@
                 <!-- IBM UTM Source Code  -->
                 <!-- UTM Integer (meter accuracy) Prompt -->
                 <TextView
-                    android:id="@+id/utmIntegerPrompt"
                     android:text="@string/utm_integer_output_prompt"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -392,7 +386,6 @@
                     android:paddingBottom="20dp"
                     >
                     <TextView
-                        android:id="@+id/utmIntegerLabel"
                         android:text="@string/utm_integer_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -421,7 +414,6 @@
                 <!-- UTM Stack Overflow  -->
                 <!-- Prompt -->
                 <TextView
-                    android:id="@+id/utmSOPrompt"
                     android:text="@string/utm_so_output_prompt"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -441,7 +433,6 @@
 
                     >
                     <TextView
-                        android:id="@+id/utmSOLabel"
                         android:text="@string/utm_so_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"
@@ -470,7 +461,6 @@
                 <!-- UTM Rewritten from scratch  -->
                 <!--  Prompt -->
                 <TextView
-                    android:id="@+id/utmNmPrompt"
                     android:text="@string/utm_nanometer_output_prompt"
                     android:layout_height="wrap_content"
                     android:layout_width="wrap_content"
@@ -492,7 +482,6 @@
                     >
                     <!-- label -->
                     <TextView
-                        android:id="@+id/utmNmLabel"
                         android:text="@string/utm_nm_label"
                         android:layout_height="wrap_content"
                         android:layout_width="0dp"

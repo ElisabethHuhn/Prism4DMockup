@@ -633,45 +633,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
 
-    /****
-     * Method to switch fragment to Edit Project screen
-     * EMH 4/26/16
-     */
-    public void switchToProject14EditScreen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DProject14EditFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectEditTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DProject14EditFragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sProjectEditTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sProjectEditTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
-
-    }
 
 
 

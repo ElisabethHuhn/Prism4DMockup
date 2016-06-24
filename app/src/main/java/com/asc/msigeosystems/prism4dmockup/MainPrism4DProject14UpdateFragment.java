@@ -127,6 +127,12 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+
+        return v;
+    }
+
+    private void wireWidgets(View v){
         //For now ignore the text view widgets, as this is just a mockup
         //      for the real screen we'll have to actually fill the fields
 
@@ -161,7 +167,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         mProjectDateInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-               setProjectChanged();
+                setProjectChanged();
                 return false;
             }
         });
@@ -189,12 +195,12 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         });
 
 /***  For now, assume we did the right thing whith the project we passed in
-        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
-            setCreateNewProject();
-        } else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
-            setCopyProject();
-        }
-***/
+ if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+ setCreateNewProject();
+ } else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
+ setCopyProject();
+ }
+ ***/
 
         //set the screen fields from the arguments bundle
         showInputProject();
@@ -242,7 +248,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                     }
 
                 } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
-                           (mProjectPath.equals(Prism4DPath.sCopyTag))) {
+                        (mProjectPath.equals(Prism4DPath.sCopyTag))) {
                     if (mProjectChanged){
                         //ask the user if should continue
                         areYouSureViewProjects();
@@ -267,7 +273,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 }
 
 
-           }
+            }
         });
 
 
@@ -315,13 +321,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 }
             }
         });
-
-
-
-
-
-
-        return v;
     }
 
     //Build and display the alert dialog
