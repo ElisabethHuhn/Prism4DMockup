@@ -13,6 +13,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseManager;
+
 //used to extend
 public class MainPrism4DActivity extends AppCompatActivity {
 
@@ -468,6 +470,10 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToProject11CreateScreen(){
 
+        //We are going to need the database to create a project,
+        //and we can only open the database from an Activity,
+        //so open the database now
+        Prism4DDatabaseManager.initializeInstance(getApplicationContext());
 
         //Gets the project which contains the defaults for all other projects
         Prism4DProject project = getProjectForCreate();
@@ -956,9 +962,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             Prism4DPath pointPath){
 
         //      Get the singleton container of projects
-        Prism4DProjectsContainer projectContainer = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then go get our project
-        Prism4DProject newProject = projectContainer.getProject(projectID);
+        Prism4DProject newProject = projectManager.getProject(projectID);
 
         if (newProject == null){
             //Need a project, not just the ID
@@ -970,7 +976,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                     getResources().getString(R.string.dummy_project_description));
 
 
-            projectContainer.add(newProject);
+            projectManager.add(newProject);
 
             //todo need to throw an exception here
             //But tell the user

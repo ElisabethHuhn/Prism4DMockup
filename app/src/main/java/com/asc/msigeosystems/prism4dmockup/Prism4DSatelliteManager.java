@@ -6,22 +6,22 @@ import java.util.List;
 /**
  * Created by elisabethhuhn on 5/18/2016.
  */
-public class Prism4DSatelliteContainer {
+public class Prism4DSatelliteManager {
 
     private static List<Prism4DSatellite> sSatelliteList;
 
-    private static Prism4DSatelliteContainer ourInstance ;
+    private static Prism4DSatelliteManager ourInstance ;
 
-    public static Prism4DSatelliteContainer getInstance() {
+    public static Prism4DSatelliteManager getInstance() {
         if (ourInstance == null){
-            ourInstance = new Prism4DSatelliteContainer();
+            ourInstance = new Prism4DSatelliteManager();
         }
         return ourInstance;
     }
 
 
 
-    private Prism4DSatelliteContainer() {
+    private Prism4DSatelliteManager() {
 
         sSatelliteList = new ArrayList<>();
 

@@ -6,24 +6,28 @@ import java.util.List;
 /**
  * Created by elisabethhuhn on 5/18/2016.
  */
-public class Prism4DProjectsContainer {
+public class Prism4DProjectManager {
 
     private static List<Prism4DProject> sProjectList;
 
-    private static Prism4DProjectsContainer ourInstance ;
+    private static Prism4DProjectManager ourInstance ;
 
-    public static Prism4DProjectsContainer getInstance() {
+    public static Prism4DProjectManager getInstance() {
         if (ourInstance == null){
-            ourInstance = new Prism4DProjectsContainer();
+            ourInstance = new Prism4DProjectManager();
+
         }
         return ourInstance;
     }
 
 
 
-    private Prism4DProjectsContainer() {
+    private Prism4DProjectManager() {
 
         sProjectList = new ArrayList<>();
+
+        //get the list of projects from the DB
+
 
         //This is where we would read the list from the database
         //but for now, just make up some data
@@ -31,9 +35,7 @@ public class Prism4DProjectsContainer {
     }
 
 
-    public List<Prism4DProject> getProjects() {
-        return sProjectList;
-    }
+    public List<Prism4DProject> getProjects() {return sProjectList;}
 
 
     public Prism4DProject getProject(int projectID) {

@@ -5,6 +5,10 @@ import java.math.RoundingMode;
 
 /**
  * Created by elisabethhuhn on 5/25/2016.
+ *
+ * This class is part of the Coordinate s hierarchy
+ * This is the super class of
+ * Easting/Northing rectangular coordinate systems
  */
 public class Prism4DCoordinateEN {
     protected int    mZone;        //1-60
@@ -14,6 +18,7 @@ public class Prism4DCoordinateEN {
     protected char   mLatBand;
 
     //for now, the only conversion supported is from WGS84 to UTM
+    //// but the datum is set when the subclass coordinate is constructed
     protected CharSequence mDatum = "WGS84"; //eg WGS84
     protected double mConvergence; //
     protected double mScale;
@@ -23,6 +28,44 @@ public class Prism4DCoordinateEN {
     //Conversion Constants
     protected double mEquatorialRadiusA;
     protected double mPolarRadiusB;
+
+    protected double a = mEquatorialRadiusA; //equatorialRadiusA;
+    protected double b = mPolarRadiusB;      //polarRadiusB;
+
+    //double flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
+    protected double flatteningF ;
+    //double flatteningF = 1/298.257223563; //0.0033528107 WGS numbers
+
+    //mean radius = sqrt (equatorialRadius * polarRadius)
+
+
+
+    // eccentricity  (.0066943801)1/2 = 0.0818191915
+    protected double e ;
+    protected double ee ;
+
+    protected double n;
+
+    protected double A ;
+
+    //scale the result to give the transverse Mercator easting and northing
+    // UTM scale on the central meridian
+    protected double K0;
+
+
+
+
+
+    //alpha α is one-based array (6th order Krüger expressions)
+    //The number of terms used in the series calculations below
+
+    //Karney (12) takes it to n4, (35) to n8
+    //protected double alpha[];
+
+
+    protected double falseEasting ;
+    protected double falseNorthing;
+
 
     /***
      * Setters and getters
@@ -174,40 +217,15 @@ public class Prism4DCoordinateEN {
         //lamda  λ is longitude in radians ( +/- from central meridian)
         double longRad = (longi * Math.PI/180.) - zoneCentralMeridanRad;
 
-        //Karney:
-        //Consider an ellipsoid of revolution with:
-        // a = equatorial radius
-        // b = polar semi axis, i.e. polar radius
-        // f = flattening = (a - b) / a
-        // e = eccentricity =  sqrt[f * (2.-f)]
-        // n = third flattening = (a-b)/(a+b) = f / (2.-f)
 
         // phi   = latitude
         // lamda = longitude
         //
 
-
-        //WGS84 Datum constants
-        //Karney 2010 page 5
-        //From the Ellipsoid
-        //double equatorialRadiusA = 6378137.0; //equatorial radius in meters
-        //double polarRadiusB = 6356752.314245; //polar semi axis
-
-        //flattening = (equatorialRadius-polarRadius)/equatorialRadius;
-        double a = mEquatorialRadiusA; //equatorialRadiusA;
-        double b = mPolarRadiusB;      //polarRadiusB;
-
-        //double flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
-        double flatteningF = (a-b)/a;
-        //double flatteningF = 1/298.257223563; //0.0033528107 WGS numbers
-
-        //mean radius = sqrt (equatorialRadius * polarRadius)
+        setConstants();
 
         // ---- easting, northing: Karney 2011 Eq 7-14, 29, 35:
 
-        // eccentricity  (.0066943801)1/2 = 0.0818191915
-        double e = Math.sqrt(flatteningF*(2.-flatteningF));
-        //double ee = Math.sqrt(1. - Math.pow((b/a),2.));
 
         //lamda  λ is longitude in radians
         double cosLongRad = Math.cos(longRad);
@@ -256,38 +274,8 @@ public class Prism4DCoordinateEN {
         double sigma = Math.sinh( e * atanh ) ; //Karney (9)
 
 
-        //tau prime τʹ  Karney (7)
-        //var τʹ = τ*Math.sqrt(1+σ*σ) - σ*Math.sqrt(1+τ*τ);
-        //Karney (7)
-        double tauPrime = (tau * Math.sqrt(1.+(sigma*sigma))) - (sigma*Math.sqrt(1.+tau*tau));
-
-        //xi prime ξʹ
-        //var ξʹ = Math.atan2(τʹ, cosλ);
-        //Karney (10)
-        //tan-1(tauPrime/cosLamda)    lamda is longitude
-        double xiPrime = Math.atan2(tauPrime, cosLongRad);
-
-        //eta prime  ηʹ
-        //var ηʹ = Math.asinh(sinλ / Math.sqrt(τʹ*τʹ + cosλ*cosλ));
-        //Karney (10)
-        //************************************
-        //asinh function is also missing from vanilla Math package
-        //sinh−1(z) = log[z+(z2 + 1)½ ].
-
-        //so assign termz = (z2 + 1)½
-        //asinh (z) = log ( z + termz)
-
-
-        //var ηʹ = Math.asinh(sinλ / Math.sqrt(τʹ*τʹ + cosλ*cosλ));
-        double etaDenominator = Math.sqrt((tauPrime * tauPrime) + (cosLongRad * cosLongRad));
-        double z = sinLongRad / etaDenominator;
-
-        double termz = Math.sqrt((z * z) + 1.);
-        double etaPrime = Math.log(z + termz);
-
-        //prepare the array for Karney (12) and (35)
-        // WGS84 n = .0033528107/1.9966471893 = .0016792204
-        double n = flatteningF / (2. - flatteningF); // 3rd flattening
+        //alpha α is one-based array (6th order Krüger expressions)
+        //The number of terms used in the series calculations below
         //double n = (equatorialRadiusA - polarRadiusB)/ (equatorialRadiusA+polarRadiusB);
         double n2 = n*n; //.0000028197
         double n3 = n*n2;//.0000000047
@@ -296,7 +284,6 @@ public class Prism4DCoordinateEN {
         double n6 = n*n5;
         //double n7 = n*n6; //6 terms are sufficient. Accuracy lost in 7 and 8
         //double n8 = n*n7;
-
 
 
         double a1dot1 = (1.0/2.0)*n;
@@ -351,19 +338,44 @@ public class Prism4DCoordinateEN {
         //double a8dot8 = (1424729850961.0/743921418240.0)*n8; //Horner form
 
 
-
-
-        //alpha α is one-based array (6th order Krüger expressions)
-        //The number of terms used in the series calculations below
-
         //Karney (12) takes it to n4, (35) to n8
-        double alpha[] = {
-                a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6,//alpha[0]
+        double alpha[] = {a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6,//alpha[0]
+
                 a2dot2 - a2dot3 + a2dot4 + a2dot5 - a2dot6,//alpha[1]
                 a3dot3 - a3dot4 + a3dot5 + a3dot6,//alpha[2]
                 a4dot4 - a4dot5 + a4dot6,//alpha[3]
                 a5dot5 - a5dot6,//alpha[4]
                 a6dot6};//alpha5]
+
+
+        //tau prime τʹ  Karney (7)
+        //var τʹ = τ*Math.sqrt(1+σ*σ) - σ*Math.sqrt(1+τ*τ);
+        //Karney (7)
+        double tauPrime = (tau * Math.sqrt(1.+(sigma*sigma))) - (sigma*Math.sqrt(1.+tau*tau));
+
+        //xi prime ξʹ
+        //var ξʹ = Math.atan2(τʹ, cosλ);
+        //Karney (10)
+        //tan-1(tauPrime/cosLamda)    lamda is longitude
+        double xiPrime = Math.atan2(tauPrime, cosLongRad);
+
+        //eta prime  ηʹ
+        //var ηʹ = Math.asinh(sinλ / Math.sqrt(τʹ*τʹ + cosλ*cosλ));
+        //Karney (10)
+        //************************************
+        //asinh function is also missing from vanilla Math package
+        //sinh−1(z) = log[z+(z2 + 1)½ ].
+
+        //so assign termz = (z2 + 1)½
+        //asinh (z) = log ( z + termz)
+
+
+        //var ηʹ = Math.asinh(sinλ / Math.sqrt(τʹ*τʹ + cosλ*cosλ));
+        double etaDenominator = Math.sqrt((tauPrime * tauPrime) + (cosLongRad * cosLongRad));
+        double z = sinLongRad / etaDenominator;
+
+        double termz = Math.sqrt((z * z) + 1.);
+        double etaPrime = Math.log(z + termz);
 
 
         //xi ξ = ξʹ
@@ -394,11 +406,11 @@ public class Prism4DCoordinateEN {
 
         // 2πA is the circumference of a meridian
         //Karney (14) and (29)
-        double A = (mEquatorialRadiusA/(1.+n)) * (1. + (1./4.)*n2 + (1./64.)*n4 + (1./256.)*n6);// + (25/16384)*n8);
+        A = (mEquatorialRadiusA/(1.+n)) * (1. + (1./4.)*n2 + (1./64.)*n4 + (1./256.)*n6);// + (25/16384)*n8);
 
-        //scale the result to give the transverse Mercator easting and northing
-        // UTM scale on the central meridian
-        double K0 = 0.9996;
+
+
+
         //Karney (13)
         //Karney's x is mEasting and y is mNorthing
         mEasting  = K0 * A * eta;
@@ -457,24 +469,9 @@ public class Prism4DCoordinateEN {
 
         // To avoid negative numbers, ‘false eastings’ and ‘false northings’ are used:
 
-        //Eastings are referenced in meters from the central meridian of each zone,
-        //Eastings are measured from 500,000 metres west of the central meridian
-        //Eastings (at the equator) range from 166,021m to 833,978m
-        // (the range decreases moving away from the equator);
-        // a point on the the central meridian has the value 500,000m.
-        double falseEasting = 500e3;
-
-
         // shift easting/northing to false origins
         mEasting = mEasting + falseEasting;    // make easting relative to false easting
 
-
-        //In the northern hemisphere, northings are measured in meters from the equator –
-        // ranging from 0 at the equator to 9,329,005m at 84°N).
-        //In the southern hemisphere they are measured from 10,000,000 metres
-        // south of the equator (close to the pole) –
-        // ranging from 1,116,915m at 80°S to 10,000,000m at the equator.
-        double falseNorthing = 10000e3;
 
         // make northing in southern hemisphere relative to false northing
         if (mNorthing < 0.){
@@ -507,8 +504,76 @@ public class Prism4DCoordinateEN {
         BigDecimal bdScale = new BigDecimal(kappa).setScale(12, RoundingMode.HALF_UP);
         mScale = bdScale.doubleValue();
 
+    }
 
-        return ;
+    private void setConstants() {
+        //Karney:
+        //Consider an ellipsoid of revolution with:
+        // a = equatorial radius
+        // b = polar semi axis, i.e. polar radius
+        // f = flattening = (a - b) / a
+        // e = eccentricity =  sqrt[f * (2.-f)]
+        // n = third flattening = (a-b)/(a+b) = f / (2.-f)
+
+        //WGS84 Datum constants
+        //Karney 2010 page 5
+        //From the Ellipsoid
+        //double equatorialRadiusA = 6378137.0; //equatorial radius in meters
+        //double polarRadiusB = 6356752.314245; //polar semi axis
+
+        //flattening = (equatorialRadius-polarRadius)/equatorialRadius;
+         a = mEquatorialRadiusA; //equatorialRadiusA;
+         b = mPolarRadiusB;      //polarRadiusB;
+
+        //flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
+        //flatteningF = 1/298.257223563; //0.0033528107 WGS numbers
+        flatteningF = (a-b)/a;
+
+        //mean radius = sqrt (equatorialRadius * polarRadius)
+
+
+
+        // eccentricity  (.0066943801)1/2 = 0.0818191915
+         e = Math.sqrt(flatteningF *(2.- flatteningF));
+        //double ee = Math.sqrt(1. - Math.pow((b/a),2.));
+
+        //prepare the array for Karney (12) and (35)
+        // WGS84 n = .0033528107/1.9966471893 = .0016792204
+         n = flatteningF / (2. - flatteningF); // 3rd flattening
+
+
+
+
+        //scale the result to give the transverse Mercator easting and northing
+        // UTM scale on the central meridian
+         K0 = 0.9996;
+
+
+
+
+
+
+
+
+
+        // To avoid negative numbers, ‘false eastings’ and ‘false northings’ are used:
+        //Eastings are referenced in meters from the central meridian of each zone,
+        //Eastings are measured from 500,000 metres west of the central meridian
+        //Eastings (at the equator) range from 166,021m to 833,978m
+        // (the range decreases moving away from the equator);
+        // a point on the the central meridian has the value 500,000m.
+        falseEasting = 500e3;
+
+
+
+
+        //In the northern hemisphere, northings are measured in meters from the equator –
+        // ranging from 0 at the equator to 9,329,005m at 84°N).
+        //In the southern hemisphere they are measured from 10,000,000 metres
+        // south of the equator (close to the pole) –
+        // ranging from 1,116,915m at 80°S to 10,000,000m at the equator.
+        falseNorthing = 10000e3;
+
     }
 
 

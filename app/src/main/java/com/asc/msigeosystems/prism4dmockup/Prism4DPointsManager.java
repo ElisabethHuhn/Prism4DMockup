@@ -6,22 +6,22 @@ import java.util.List;
 /**
  * Created by elisabethhuhn on 5/18/2016.
  */
-public class Prism4DPointsContainer {
+public class Prism4DPointsManager {
 
     private static List<Prism4DPoint> sPointList;
 
-    private static Prism4DPointsContainer ourInstance ;
+    private static Prism4DPointsManager ourInstance ;
 
-    public static Prism4DPointsContainer getInstance() {
+    public static Prism4DPointsManager getInstance() {
         if (ourInstance == null){
-            ourInstance = new Prism4DPointsContainer();
+            ourInstance = new Prism4DPointsManager();
         }
         return ourInstance;
     }
 
 
 
-    private Prism4DPointsContainer() {
+    private Prism4DPointsManager() {
 
         sPointList = new ArrayList<>();
 
@@ -71,8 +71,8 @@ public class Prism4DPointsContainer {
 
 
 
-    public void add(Prism4DPoint newPoint){
-        sPointList.add(newPoint);
+    public boolean add(Prism4DPoint newPoint){
+        return sPointList.add(newPoint);
     }
 
 
@@ -96,6 +96,10 @@ public class Prism4DPointsContainer {
         return size;
     }
 
+    //removes the indicated point
+    public boolean remove(Prism4DPoint point){
+        return sPointList.remove(point);
+    }
 
     //copies all the points from one project to another proejct
     public void copyProjectPoints(int fromProjectID, int toProjectID){
@@ -103,11 +107,11 @@ public class Prism4DPointsContainer {
         Prism4DPoint fromPoint;
         Prism4DPoint toPoint;
         int pointProjectID;
-        Prism4DProjectsContainer projectsContainer = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectsManager = Prism4DProjectManager.getInstance();
 
-        List<Prism4DProject> projects = projectsContainer.getProjects();
-        Prism4DProject fromProject = projectsContainer.getProject(fromProjectID);
-        Prism4DProject toProject   = projectsContainer.getProject(toProjectID);
+        List<Prism4DProject> projects = projectsManager.getProjects();
+        Prism4DProject fromProject = projectsManager.getProject(fromProjectID);
+        Prism4DProject toProject   = projectsManager.getProject(toProjectID);
 
         for (int i = 0; i < sPointList.size(); i++) {
 
@@ -134,9 +138,8 @@ public class Prism4DPointsContainer {
     private void preparePointDataset() {
         //Points get created for projects
         //get the singleton container
-        Prism4DProjectsContainer projectListInstance;
-        projectListInstance = Prism4DProjectsContainer.getInstance();
-        List<Prism4DProject> projectList = projectListInstance.getProjects();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        List<Prism4DProject> projectList = projectManager.getProjects();
         Prism4DProject project;
 
         //for each project, create some dummy points

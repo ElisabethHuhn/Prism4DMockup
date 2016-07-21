@@ -19,6 +19,7 @@ public class Prism4DProjectSettings {
     private CharSequence mDatum ;
     private CharSequence mProjection ;
     private CharSequence mZone  ;
+    private double       mSpcScaleFactor  ;
     private CharSequence mCoordinateDisplay;
     private CharSequence mGeoidModel ;
     private CharSequence mStartingPointID ;

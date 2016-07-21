@@ -121,9 +121,9 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         //   this is now done in the projects container singleton
 
         //      get the singleton list container
-        Prism4DProjectsContainer projectContainer = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then go get our list of projects
-        mProjectList = projectContainer.getProjects();
+        mProjectList = projectManager.getProjects();
 
         //5) Use the data to Create and set out project Adapter
         mAdapter = new Prism4DProjectAdapter(mProjectList);
@@ -198,9 +198,9 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
                     //copy the points from the selected project
                     // to the newly created project
-                    Prism4DPointsContainer pointsContainer =
-                            Prism4DPointsContainer.getInstance();
-                    pointsContainer.copyProjectPoints(
+                    Prism4DPointsManager pointsManager =
+                            Prism4DPointsManager.getInstance();
+                    pointsManager.copyProjectPoints(
                             mSelectedProject.getProjectID(),
                             copiedProject.getProjectID());
 

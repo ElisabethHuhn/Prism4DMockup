@@ -194,13 +194,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
             }
         });
 
-/***  For now, assume we did the right thing whith the project we passed in
- if (mProjectPath.equals(Prism4DPath.sCreateTag)){
- setCreateNewProject();
- } else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
- setCopyProject();
- }
- ***/
+
 
         //set the screen fields from the arguments bundle
         showInputProject();
@@ -236,41 +230,41 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         mProjectViewExistingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                //what this button does depends upon the path  {create, open, copy}
-                if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            //what this button does depends upon the path  {create, open, copy}
+            if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+                Toast.makeText(getActivity(),
+                        R.string.cant_view_projects,
+                        Toast.LENGTH_SHORT).show();
+
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null){
+                    myActivity.switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
+                }
+
+            } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
+                    (mProjectPath.equals(Prism4DPath.sCopyTag))) {
+                if (mProjectChanged){
+                    //ask the user if should continue
+                    areYouSureViewProjects();
+
+                } else {
                     Toast.makeText(getActivity(),
-                            R.string.cant_view_projects,
+                            R.string.project_unchanged,
                             Toast.LENGTH_SHORT).show();
 
-                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                    MainPrism4DActivity myActivity =
+                            (MainPrism4DActivity) getActivity();
                     if (myActivity != null){
                         myActivity.switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
                     }
-
-                } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
-                        (mProjectPath.equals(Prism4DPath.sCopyTag))) {
-                    if (mProjectChanged){
-                        //ask the user if should continue
-                        areYouSureViewProjects();
-
-                    } else {
-                        Toast.makeText(getActivity(),
-                                R.string.project_unchanged,
-                                Toast.LENGTH_SHORT).show();
-
-                        MainPrism4DActivity myActivity =
-                                (MainPrism4DActivity) getActivity();
-                        if (myActivity != null){
-                            myActivity.switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
-                        }
-                    }
-                } else {
-                    Toast.makeText(getActivity(),
-                            R.string.unrecognized_path_encountered,
-                            Toast.LENGTH_SHORT).show();
-                    //todo need to throw an exception here
-                    //Notice that we don't leave the screen on this condition
                 }
+            } else {
+                Toast.makeText(getActivity(),
+                        R.string.unrecognized_path_encountered,
+                        Toast.LENGTH_SHORT).show();
+                //todo need to throw an exception here
+                //Notice that we don't leave the screen on this condition
+            }
 
 
             }
@@ -499,9 +493,9 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
     //returns null if not found
     private Prism4DProject findThisProject(){
         //      make sure our singleton list holder exists first
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then go get our project
-        Prism4DProject newProject = projectList.getProject(Integer.valueOf(mProjectID.toString()));
+        Prism4DProject newProject = projectManager.getProject(Integer.valueOf(mProjectID.toString()));
 
         if (newProject == null){
             newProject = new Prism4DProject(
@@ -517,7 +511,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
             //todo eventually throw an exception
             //and save it in the project list
-            projectList.add(newProject);
+            projectManager.add(newProject);
         }
         return newProject;
     }
@@ -526,9 +520,10 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
     private Prism4DProject saveChanges() {
 
         //get the project list
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        //
         //   get our project
-        Prism4DProject newProject = projectList.getProject(
+        Prism4DProject newProject = projectManager.getProject(
                 Integer.valueOf(mProjectID.toString()));
 
         if (mProjectPath.equals(Prism4DPath.sCreateTag)){
@@ -544,7 +539,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                         mProjectNameInput.getText(),
                         Integer.valueOf(mProjectIDInput.getText().toString()));
                 //put it into the project list
-                projectList.add(newProject);
+                projectManager.add(newProject);
             }
 
         } else if (mProjectPath.equals(Prism4DPath.sOpenTag)){
@@ -554,7 +549,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 newProject = new Prism4DProject(
                         mProjectNameInput.getText(),
                         Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectList.add(newProject);
+                projectManager.add(newProject);
             }
             Toast.makeText(getActivity(),
                     R.string.save_existing_project,
@@ -568,7 +563,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 newProject = new Prism4DProject(
                         mProjectNameInput.getText(),
                         Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectList.add(newProject);
+                projectManager.add(newProject);
             }
             Toast.makeText(getActivity(),
                     R.string.save_copied_project,
@@ -584,7 +579,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 newProject = new Prism4DProject(
                         mProjectNameInput.getText(),
                         Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectList.add(newProject);
+                projectManager.add(newProject);
             }
         }
         //but regardless of the path,

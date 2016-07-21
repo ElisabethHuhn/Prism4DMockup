@@ -77,9 +77,9 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         int projectID       = getArguments().getInt(Prism4DProject.sProjectIDTag);
 
         //      make sure our singleton list holder exists first
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then go get our project
-        mProject = projectList.getProject(projectID);
+        mProject = projectManager.getProject(projectID);
 
         if (mProject == null){
             mProject = new Prism4DProject(

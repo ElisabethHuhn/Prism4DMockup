@@ -365,7 +365,7 @@ public class Prism4DNmeaParser {
     /****************************************************/
     class GPGSV implements SentenceParser {
         public boolean parse(String[] tokens, Prism4DNmea nmeaInfo) {
-            Prism4DSatelliteContainer satelliteContainer = Prism4DSatelliteContainer.getInstance();
+            Prism4DSatelliteManager satelliteManager = Prism4DSatelliteManager.getInstance();
 
             try {
                 int msgInCycle = Integer.parseInt(tokens[1]); //The number of messages in the cycle
@@ -406,7 +406,7 @@ public class Prism4DNmeaParser {
                                 Integer.parseInt(tokens[(l * 4) + 7])); //SNR
                         //nmeaInfo.setSatellite(satellite);
                         //remove any old satellite records before adding this new one
-                        satelliteContainer.add(satellite);
+                        satelliteManager.add(satellite);
                     }
                 }
 
@@ -421,7 +421,7 @@ public class Prism4DNmeaParser {
 
     class GLGSV implements SentenceParser {
         public boolean parse(String[] tokens, Prism4DNmea nmeaInfo) {
-            Prism4DSatelliteContainer satelliteContainer = Prism4DSatelliteContainer.getInstance();
+            Prism4DSatelliteManager satelliteManager = Prism4DSatelliteManager.getInstance();
             try {
                 int msgInCycle = Integer.parseInt(tokens[1]); //The number of messages in the cycle
                 int thisMsg = Integer.parseInt(tokens[2]); //Which message this one is in the cycle
@@ -461,7 +461,7 @@ public class Prism4DNmeaParser {
                                 Integer.parseInt(tokens[(l * 4) + 7])); //SNR
                         //nmeaInfo.setSatellite(satellite);
                         //remove any old satellite records before adding this new one
-                        satelliteContainer.add(satellite);
+                        satelliteManager.add(satellite);
                     }
                 }
 

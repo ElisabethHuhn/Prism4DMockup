@@ -53,9 +53,8 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
         notifyItemRemoved(position);
 
         //but we also need to remove it from the list of all points in all projects
-        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
-        List<Prism4DPoint> pointList = pointsContainer.getPoints();
-        pointList.remove(point);
+        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
+        pointsManager.remove(point);
 
     }
 
@@ -82,6 +81,7 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
         }
 
     }
+
     @Override
     public int getItemCount(){
 

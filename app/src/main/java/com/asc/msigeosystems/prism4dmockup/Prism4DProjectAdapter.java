@@ -48,8 +48,10 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
     public void removeItem(int position) {
         //This list is used locally as well as in the project container,
         // so we only have to remove it once
+        //TODO Hide this in the pointsManager
         mProjectList.remove(position);
         notifyItemRemoved(position);
+
     }
 
     @Override
@@ -57,8 +59,8 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
         if (mProjectList != null ) {
             Prism4DProject project = mProjectList.get(position);
 
-            Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
-            int numberPoints = pointsContainer.getSize(project.getProjectID());
+            Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
+            int numberPoints = pointsManager.getSize(project.getProjectID());
 
             holder.projectName.        setText(project.getProjectName());
             holder.projectID.          setText(String.valueOf(project.getProjectID()));
@@ -76,6 +78,7 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
         }
 
     }
+
     @Override
     public int getItemCount(){
 

@@ -140,9 +140,9 @@ public class MainPrism4DListPointsFragment extends Fragment {
         //  this is done in the singleton container
 
         //      get our singleton list container
-        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
         //filter out points not in this project
-        mPointList = pointsContainer.getProjectPointsList(mProjectID);
+        mPointList = pointsManager.getProjectPointsList(mProjectID);
 
 
         //5) Use the data to Create and set out points Adapter

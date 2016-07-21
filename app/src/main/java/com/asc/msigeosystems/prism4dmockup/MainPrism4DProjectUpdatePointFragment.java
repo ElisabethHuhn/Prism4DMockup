@@ -337,26 +337,26 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
     //Either returns the new/updated point, or null if errors encountered
     private Prism4DPoint saveChanges() {
         //get any existing point from the singleton
-        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
 
         Prism4DPoint newPoint;
 
         if (mPointPath.equals(Prism4DPath.sCreateTag)){
-            newPoint = storeNewPoint(pointsContainer);
+            newPoint = storeNewPoint(pointsManager);
 
             Toast.makeText(getActivity(),
                     R.string.save_new_point,
                     Toast.LENGTH_SHORT).show();
 
         } else if (mPointPath.equals(Prism4DPath.sOpenTag)){
-            newPoint = updateExistingPoint(pointsContainer);
+            newPoint = updateExistingPoint(pointsManager);
 
             Toast.makeText(getActivity(),
                     R.string.save_existing_point,
                     Toast.LENGTH_SHORT).show();
 
         } else if (mPointPath.equals(Prism4DPath.sCopyTag)){
-            newPoint = storeNewPoint(pointsContainer);
+            newPoint = storeNewPoint(pointsManager);
 
             Toast.makeText(getActivity(),
                     R.string.save_copied_point,
@@ -378,13 +378,13 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
             //we must be creating it for the first time
 
             //first we need the project
-            Prism4DProjectsContainer projectsContainer = Prism4DProjectsContainer.getInstance();
-            Prism4DProject project = projectsContainer.getProject(mPointProjectID);
+            Prism4DProjectManager projectsManager = Prism4DProjectManager.getInstance();
+            Prism4DProject project = projectsManager.getProject(mPointProjectID);
 
             //so now make the new point
             newPoint = new Prism4DPoint(project);
             //and store it off in the singleton repository
-            pointsContainer.add(newPoint);
+            pointsManager.add(newPoint);
         }
 
         //update the point with values from this screen
@@ -399,13 +399,13 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
     }
 
 
-    private Prism4DPoint storeNewPoint (Prism4DPointsContainer pointsContainer){
+    private Prism4DPoint storeNewPoint (Prism4DPointsManager pointsContainer){
         Prism4DPoint newPoint = createNewPoint(mPointProjectID);
         pointsContainer.add(newPoint);
         return updateThisPoint(newPoint);
     }
 
-    private Prism4DPoint updateExistingPoint (Prism4DPointsContainer pointsContainer){
+    private Prism4DPoint updateExistingPoint (Prism4DPointsManager pointsContainer){
         Prism4DPoint newPoint = pointsContainer.getPoint(mPointProjectID, mPointID);
 
         if (newPoint == null){
@@ -516,9 +516,9 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
     private Prism4DProject getOurProject (int projectID){
         //get the project list
-        Prism4DProjectsContainer projectList = Prism4DProjectsContainer.getInstance();
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then go get our project out of the list
-        Prism4DProject ourProject = projectList.getProject(projectID);
+        Prism4DProject ourProject = projectManager.getProject(projectID);
         if (ourProject == null){
             //if it doesn't already exist, we have to create one
             Prism4DProject project =
@@ -537,14 +537,14 @@ public class MainPrism4DProjectUpdatePointFragment extends Fragment {
 
         // get the point if it already exists
         //      get our project list
-        Prism4DPointsContainer pointsContainer = Prism4DPointsContainer.getInstance();
+        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
         //      then go get our point
-        Prism4DPoint ourPoint = pointsContainer.getPoint(projectID, mPointID);
+        Prism4DPoint ourPoint = pointsManager.getPoint(projectID, mPointID);
 
         if (ourPoint == null){
             //it isn't alread in the list, so add it
             ourPoint = new Prism4DPoint(getOurProject(projectID));
-            pointsContainer.add(ourPoint);
+            pointsManager.add(ourPoint);
             //todo probably need to assure that this is create or copy path
         }
 

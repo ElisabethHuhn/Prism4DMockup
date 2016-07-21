@@ -4,6 +4,9 @@
     <string name="gps_app_name">GPS Skyplot</string>
     <string name="hello">Hello World, YGPS!</string>
 
+    <!-- Exceptions -->
+    <string name="database_context_exception">Can't create database without a context</string>
+
     <!-- ORDER of screens is: -->
     <!-- Menu     -->
     <!-- Home     -->

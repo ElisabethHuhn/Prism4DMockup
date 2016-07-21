@@ -93,10 +93,10 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
         //4) read data in from the database and tell the adapter about it
         //   this is now done in the satellites container singleton
 
-        //      get the singleton list container
-        Prism4DSatelliteContainer satelliteContainer = Prism4DSatelliteContainer.getInstance();
+        //      get the singleton manager
+        Prism4DSatelliteManager satelliteManager = Prism4DSatelliteManager.getInstance();
         //      then go get our list of satellites
-        mSatelliteList = satelliteContainer.getSatellites();
+        mSatelliteList = satelliteManager.getSatellites();
 
         //5) Use the data to Create and set out satellite Adapter
         mAdapter = new Prism4DSatelliteAdapter(mSatelliteList);
