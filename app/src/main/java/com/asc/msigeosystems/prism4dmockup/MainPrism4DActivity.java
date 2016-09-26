@@ -13,6 +13,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseAccess;
 import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseManager;
 
 //used to extend
@@ -28,8 +29,8 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sProjectTopTag         = "PROJECT_TOP";
     private static final String sProjectCreateTag      = "PROJECT_CREATE_TOP";
     private static final String sProjectOpenTag        = "PROJECT_OPEN";
-    private static final String sProjectCopyTag        = "PROJECT_COPY";
-    private static final String sProjectEditTag        = "PROJECT_EDIT";
+    //private static final String sProjectCopyTag        = "PROJECT_COPY";
+    //private static final String sProjectEditTag        = "PROJECT_EDIT";
     private static final String sProjectUpdateTag      = "PROJECT_UPDATE";
     private static final String sProjectDeleteTag      = "PROJECT_DELETE";
     private static final String sProjectSettingsTag    = "PROJECT_SETTINGS";
@@ -38,10 +39,10 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sPointCreateTag      = "POINT_CREATE_TOP";
     private static final String sPointOpenTag        = "POINT_OPEN";
     private static final String sPointCopyTag        = "POINT_COPY";
-    private static final String sPointEditTag        = "POINT_EDIT";
+    //private static final String sPointEditTag        = "POINT_EDIT";
     private static final String sPointUpdateTag      = "POINT_UPDATE";
-    private static final String sPointDeleteTag      = "POINT_DELETE";
-    private static final String sPointSettingsTag    = "POINT_SETTINGS";
+    //private static final String sPointDeleteTag      = "POINT_DELETE";
+    //private static final String sPointSettingsTag    = "POINT_SETTINGS";
 
     private static final String sCollectTopTag         = "COLLECT_TOP";
     private static final String sCollectPointsTag      = "COLLECT_POINTS";
@@ -50,7 +51,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sStakeoutTopTag        = "STAKEOUT_TOP";
 
     private static final String sCogoTopTag            = "COGO_TOP";
-    private static final String sCogoCnversionTag      = "COGO_CONVERSION";
+    //private static final String sCogoCnversionTag      = "COGO_CONVERSION";
     private static final String sCogoWorkflowTag       = "COGO_WORKFLOW";
 
     private static final String sSkyplotTopTag         = "SKYPLOT_TOP";
@@ -86,7 +87,6 @@ public class MainPrism4DActivity extends AppCompatActivity {
             //when we first create the activity,
             // the fragment needs to be the home screen
             fragment = new MainPrism4DHomeFragment();
-            //fragment = new MainPrism4DCollect11PointsFragment();
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
@@ -94,9 +94,13 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
 
         //Put Home on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_home);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_home);
+        }
         GpsStuff();
+
+        //open the database here for the whole application
+        new Prism4DDatabaseAccess.OpenPrism4DDB().execute(getApplicationContext());
 
 /****************** For now, comment out the floating action button
  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -121,14 +125,17 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //If we don't currently have permission, we have to ask for it
         if (permissionCheckCourse != PackageManager.PERMISSION_GRANTED){
             //find out if we need to explain to the user why we need GPS
+/*******
             if (
                     //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_COARSE_LOCATION)
                  false){
+                //// TODO: 9/5/2016 need to add code if GPS is off
                 //tell the user why GPS is required
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
             } else {
+ *******/
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
@@ -138,20 +145,23 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 // MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS is an
                 // app-defined int constant. The callback method gets the
                 // result of the request.
-            }
+            //}
         }
 
         //If we don't currently have permission, we have to ask for it
         if (permissionCheckFine != PackageManager.PERMISSION_GRANTED) {
             //find out if we need to explain to the user why we need GPS
+/*********
             if (false) {
                 //shouldShowRequestPermissionRationale(Manifest.permission.ACCESS_FINE_LOCATION)){
 
+                // TODO: 9/5/2016 so write the code to do this
                 //tell the user why GPS is required
                 // Show an expanation to the user *asynchronously* -- don't block
                 // this thread waiting for the user's response! After the user
                 // sees the explanation, try again to request the permission.
             } else {
+*******/
                 // No explanation needed, we can request the permission.
 
                 ActivityCompat.requestPermissions(this,
@@ -162,7 +172,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 // app-defined int constant. The callback method gets the
                 // result of the request.
 
-            }
+            //}
             //So now signup for the GpsStatus.NmeaListener
 
         }
@@ -174,33 +184,39 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS: {
                 // If request is cancelled, the result arrays are empty.
+                // TODO: 9/5/2016 Build in this functionality
+/*******
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
+
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
+ *****/
             }
             case MY_PERMISSIONS_REQUEST_FINE_LOCATIONS: {
                 // If request is cancelled, the result arrays are empty.
+                // TODO: 9/5/2016  fill this in
+/********
                 if (grantResults.length > 0
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
 
+
                 } else {
 
                     // permission denied, boo! Disable the
                     // functionality that depends on this permission.
                 }
-                return;
+********/
             }
             // other 'case' lines to check for other
             // permissions this app might request
@@ -316,36 +332,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //settings is at the top of the back stack, so pop it off
         fm.popBackStack();
 
-/****  We may need to do something about the case of invoking settings from the menu
-         //get the index of the last entry of the back stack
-         // this is the screen we want to return to
-         //
-         int currentIndex   = fm.getBackStackEntryCount();
-         int lastEntryIndex = currentIndex - 1; //programmers start counting at zero
-
-         if (currentIndex > 0){
-
-             //get the last entry of the back stack
-             android.support.v4.app.FragmentManager.BackStackEntry lastBackStackEntry =
-             getSupportFragmentManager().getBackStackEntryAt(lastEntryIndex);
-
-             //get the name (we assigned) of fragment this last entry
-             // expecting Home or ProjectTop
-             String lastFragTagName    = lastBackStackEntry.getName();
-
-             //get the actual fragment off the top of the stack
-             Fragment lastFragment     = getSupportFragmentManager().findFragmentByTag(lastFragTagName);
-
-             //Now that we have the fragment, display it
-             fm.beginTransaction()
-             //replace whatever is being displayed with the Home fragment
-             .replace(R.id.fragment_container, lastFragment, lastFragTagName)
-             //and add the transaction to the back stack
-             .addToBackStack(lastFragTagName)
-             .commit();
-
-         }
-***/
     }
 
 
@@ -391,7 +377,10 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         //Put the name of the fragment on the title bar
 
-        getSupportActionBar().setSubtitle(R.string.action_home);
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setSubtitle(R.string.action_home);
+        }
+
 
     }
 
@@ -421,12 +410,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         if (fragment == null){
             //It shouldn't ever be the case that we got this far with no fragments on the screen,
             // but code defensively
+            //If there wasn't one previously, need to add
             fragment = new MainPrism4DProject1Fragment();
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectTopTag)
                     .commit();
         } else {
             //There is already a fragment being displayed
+            //so need to replace
 
             //Create a new Collect fragment
             fragment = new MainPrism4DProject1Fragment();
@@ -440,7 +431,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_project);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_project);
+        }
 
     }
 
@@ -457,7 +450,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_project);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_project);
+        }
 
     }
 
@@ -473,7 +468,12 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //We are going to need the database to create a project,
         //and we can only open the database from an Activity,
         //so open the database now
+        //Use the application context, not the activity context
+        //The lifetime of this open is while the application is active
+        //From now on, can call the static getInstance() and it will return
+        //    the open database.
         Prism4DDatabaseManager.initializeInstance(getApplicationContext());
+
 
         //Gets the project which contains the defaults for all other projects
         Prism4DProject project = getProjectForCreate();
@@ -487,16 +487,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sCreateTag);
 
         if (fragment == null){
-            //It shouldn't ever be the case that we got this far with
-            // no fragments on the screen,
-            // but code defensively
+            //If there wasn't already a fragment, we have to add one.
             fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
 
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectCreateTag)
                     .commit();
         } else {
-
+            //because there was a fragment, we have to replace it
             fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
 
             fm.beginTransaction()
@@ -508,7 +506,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_create_project);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_create_project);
+        }
 
     }
 
@@ -531,7 +531,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         if (fragment == null){
             //pass the update project fragment the open path
-            fragment = new MainPrism4DListProjectsFragment().newInstance(projectPath);
+            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectOpenTag)
                     .commit();
@@ -539,7 +539,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new Collect fragment
-            fragment = new MainPrism4DListProjectsFragment().newInstance(projectPath);
+            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
 
             fm.beginTransaction()
                     //replace whatever is being displayed with the collect fragment
@@ -550,7 +550,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_open);
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_open);
+        }
 
     }
 
@@ -570,7 +572,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         if (fragment == null){
             //pass the update project fragment the open path
-            fragment = new MainPrism4DListProjectsFragment().newInstance(projectPath);
+            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectOpenTag)
                     .commit();
@@ -578,7 +580,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new Collect fragment
-            fragment = new MainPrism4DListProjectsFragment().newInstance(projectPath);
+            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
 
             fm.beginTransaction()
                     //replace whatever is being displayed with the collect fragment
@@ -589,8 +591,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the path being followed on the action bar
-        getSupportActionBar().setSubtitle(projectPath.getPath());
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(projectPath.getPath());
+        }
     }
 
 
@@ -615,7 +618,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         if (fragment == null){
 
-            fragment = new MainPrism4DListProjectsFragment().newInstance(path);
+            fragment = MainPrism4DListProjectsFragment.newInstance(path);
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectOpenTag)
                     .commit();
@@ -623,7 +626,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new fragment
-            fragment = new MainPrism4DListProjectsFragment().newInstance(path);
+            fragment = MainPrism4DListProjectsFragment.newInstance(path);
 
             fm.beginTransaction()
                     //replace whatever is being displayed
@@ -634,56 +637,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_open);
-
-    }
-
-
-
-
-
-    /****
-     * Method to
-     * clear the stack of the top fragment, then switch to
-     * switch fragment to display an existing project
-     * EMH 5/10/16
-     */
-    public void switchBackToProject14UpdateScreen(
-            Prism4DProject project,
-            Prism4DPath path){
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        fm.popBackStack(); //get rid of last update screen
-
-
-        if (fragment == null){
-
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
-
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                    .commit();
-        } else {
-
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sSettingsProjectDefaultTag)
-                    .commit();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_open);
         }
-
-        //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_project_default_settings);
-
     }
+
+
+
+
+
+
 
 
     /****
@@ -723,8 +686,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
+        }
     }
 
 
@@ -757,8 +721,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
+        }
     }
 
 
@@ -784,7 +749,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         if (fragment == null){
 
-            fragment = new MainPrism4DListProjectsFragment().newInstance(path);
+            fragment = MainPrism4DListProjectsFragment.newInstance(path);
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectDeleteTag)
                     .commit();
@@ -792,7 +757,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new fragment
-            fragment = new MainPrism4DListProjectsFragment().newInstance(path);
+            fragment = MainPrism4DListProjectsFragment.newInstance(path);
 
             fm.beginTransaction()
                     //replace whatever is being displayed
@@ -803,8 +768,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_delete);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_delete);
+        }
     }
 
 
@@ -829,7 +795,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         if (fragment == null){
             //It shouldn't ever be the case that we got this far with no fragments on the screen,
             // but code defensively
-            fragment = new MainPrism4DSettingsFragment().newInstance(project, projectPath);
+            fragment = MainPrism4DSettingsFragment.newInstance(project, projectPath);
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sProjectSettingsTag)
                     .commit();
@@ -837,7 +803,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new Collect fragment
-            fragment = new MainPrism4DSettingsFragment().newInstance(project, projectPath);
+            fragment = MainPrism4DSettingsFragment.newInstance(project, projectPath);
 
             fm.beginTransaction()
                     //replace whatever is being displayed with the collect fragment
@@ -848,8 +814,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_project_settings);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_project_settings);
+        }
     }
 
 
@@ -876,14 +843,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         if (fragment == null){
             //It shouldn't ever be the case that we got this far with
             // no fragments on the screen,
-            fragment = new MainPrism4DPoint1Fragment().newInstance (project, projectPath);
+            fragment = MainPrism4DPoint1Fragment.newInstance (project, projectPath);
 
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment, sPointTopTag)
                     .commit();
         } else {
 
-            fragment = new MainPrism4DPoint1Fragment().newInstance(project, projectPath);
+            fragment = MainPrism4DPoint1Fragment.newInstance(project, projectPath);
 
             fm.beginTransaction()
                     //replace whatever is being displayed
@@ -894,8 +861,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
+        }
     }
 
 
@@ -946,8 +914,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_create_point);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_create_point);
+        }
     }
 
 
@@ -1015,7 +984,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //we usually check for null, but its not worth the effort
 
          //Create a new fragment
-         fragment = new MainPrism4DListPointsFragment().newInstance(
+         fragment = MainPrism4DListPointsFragment.newInstance(
                  newProject,
                  projectPath,
                  pointPath);
@@ -1029,8 +998,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
         //Put the path being followed on the action bar
-        getSupportActionBar().setSubtitle(subtitle);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(subtitle);
+        }
     }
 
 
@@ -1055,11 +1025,11 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         //create the path for open
-        Prism4DPath path = new Prism4DPath(Prism4DPath.sOpenTag);
+        //Prism4DPath path = new Prism4DPath(Prism4DPath.sOpenTag);
 
         if (fragment == null){
             //pass the update project fragment the open path
-            fragment = new MainPrism4DProjectUpdatePointFragment().newInstance(
+            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
                                 projectPath,
                                 point,
                                 pointPath);
@@ -1070,7 +1040,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             //There is already a fragment being displayed
 
             //Create a new Collect fragment
-            fragment = new MainPrism4DProjectUpdatePointFragment().newInstance(
+            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
                     projectPath,
                     point,
                     pointPath);
@@ -1084,8 +1054,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
+        }
     }
 
 
@@ -1135,8 +1106,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_collect);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_collect);
+        }
     }
 
     /****
@@ -1174,8 +1146,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_measure_points);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_measure_points);
+        }
     }
 
 
@@ -1215,8 +1188,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_measure_points);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_measure_points);
+        }
     }
 
 
@@ -1265,8 +1239,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_stakeout);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_stakeout);
+        }
     }
 
 
@@ -1314,8 +1289,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_cogo);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_cogo);
+        }
     }
 
 
@@ -1353,8 +1329,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_workflow);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_workflow);
+        }
     }
 
 
@@ -1394,8 +1371,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_convert_to_utm);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_convert_to_utm);
+        }
     }
 
 
@@ -1440,8 +1418,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_skyplots);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_skyplots);
+        }
     }
 
 
@@ -1479,8 +1458,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_list_nmea);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_list_nmea);
+        }
     }
 
 
@@ -1518,8 +1498,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_list_satellites);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_list_satellites);
+        }
     }
 
 
@@ -1559,8 +1540,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.subtitle_gps_nmea);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.subtitle_gps_nmea);
+        }
     }
 
 
@@ -1610,8 +1592,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_config);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_config);
+        }
     }
 
 
@@ -1661,8 +1644,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_settings);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_settings);
+        }
     }
 
 
@@ -1702,8 +1686,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_global_settings);
-
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_global_settings);
+        }
     }
 
     /****
@@ -1747,52 +1732,12 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
         //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_project_default_settings);
-
-    }
-
-
-
-
-    /****
-     * Method to switch fragment to Default Project Settings screen
-     * EMH 5/11/16
-     */
-    public void switchToOLDSettings12ProjectDefaultsScreen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DSettingsFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DSettingsFragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sSettingsProjectDefaultTag)
-                    .commit();
+        if (getSupportActionBar() != null) {
+            getSupportActionBar().setSubtitle(R.string.action_project_default_settings);
         }
-
-        //Put the name of the fragment on the title bar
-        getSupportActionBar().setSubtitle(R.string.action_project_default_settings);
-
     }
+
+
 
 
 
@@ -1829,15 +1774,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         project.setProjectDescription(Prism4DProject.sProjectNewDesc);
         return project;
-    }
-
-
-    private Prism4DPoint getDefaultPoint(){
-        Prism4DPoint point = new Prism4DPoint(
-                              Prism4DPoint.sPointDefaultsID);
-
-        point.setPointDescription(Prism4DPoint.sPointDefaultsDesc);
-        return point;
     }
 
     private Prism4DPoint getPointForCreate(){

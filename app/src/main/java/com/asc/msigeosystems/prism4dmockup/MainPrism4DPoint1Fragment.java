@@ -42,7 +42,7 @@ public class MainPrism4DPoint1Fragment extends Fragment {
 
 
 
-    public MainPrism4DPoint1Fragment newInstance(
+    public static MainPrism4DPoint1Fragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath){
 

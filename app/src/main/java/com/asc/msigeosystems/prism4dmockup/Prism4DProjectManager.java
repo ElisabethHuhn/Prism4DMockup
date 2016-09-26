@@ -1,5 +1,9 @@
 package com.asc.msigeosystems.prism4dmockup;
 
+import android.content.ContentValues;
+
+import com.asc.msigeosystems.prism4d.database.Prisim4DSqliteOpenHelper;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,10 +30,10 @@ public class Prism4DProjectManager {
 
         sProjectList = new ArrayList<>();
 
-        //get the list of projects from the DB
-
-
         //This is where we would read the list from the database
+        //// TODO: 8/28/2016   get the list of projects from the DB
+
+        // TODO: 8/28/2016 create project data if none exists
         //but for now, just make up some data
         prepareProjectDataset();
     }
@@ -38,6 +42,9 @@ public class Prism4DProjectManager {
     public List<Prism4DProject> getProjects() {return sProjectList;}
 
 
+    //Get the project matching the passed project ID
+    //from the projects stored in the database
+    // TODO: 8/28/2016 write database access for a given single project 
     public Prism4DProject getProject(int projectID) {
         for (Prism4DProject project : sProjectList){
             if (project.getProjectID() == projectID){
@@ -58,6 +65,27 @@ public class Prism4DProjectManager {
 
     public void add (Prism4DProject project){
         sProjectList.add(project);
+    }
+
+    public void addProjectCV (Prism4DProject project){
+        //convert the Prism4DProject object into a ContentValues object containing a project
+        getProjectCV(project);
+        //then store the ContentValues
+
+
+    }
+
+    public ContentValues getProjectCV (Prism4DProject project){
+        //convert the Prism4DProject object into a ContentValues object containing a project
+        ContentValues cvProject = new ContentValues();
+        //put(columnName, value);
+        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_ID,   project.getProjectID());
+        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_NAME, project.getProjectName().toString());
+        cvProject.put(Prisim4DSqliteOpenHelper.KEY_CREATED_AT, project.getProjectDateCreated().toString());
+        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectLastModified().toString());
+        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_DESCRIPTION, project.getProjectDescription().toString());
+
+        return cvProject;
     }
 
     //Mock up some projects for now

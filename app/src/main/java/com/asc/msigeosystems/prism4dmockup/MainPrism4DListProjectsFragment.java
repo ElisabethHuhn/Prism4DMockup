@@ -52,7 +52,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     /**********************************************************/
 
     //this is called by Activity to store parameters before fragment is instantiated
-    public MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath){
+    public static MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath){
 
         Bundle args = new Bundle();
 

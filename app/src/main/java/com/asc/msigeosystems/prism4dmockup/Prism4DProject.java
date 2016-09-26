@@ -10,8 +10,8 @@ public class Prism4DProject {
     private static int sNextProjectID = 1008;
 
     // Project Data
-    private CharSequence mName;
     private int          mID;
+    private CharSequence mName;
     private Date         mDateCreated;
     private Date         mLastModified;
     private CharSequence mDescription;

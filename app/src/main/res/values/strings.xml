@@ -5,7 +5,9 @@
     <string name="hello">Hello World, YGPS!</string>
 
     <!-- Exceptions -->
-    <string name="database_context_exception">Can't create database without a context</string>
+    <string name="database_context_exception">Can\'t create database without a context</string>
+    <string name="database_access_exception1">Attempt to access the database before it has been initialized</string>
+    <string name="database_access_exception2">Attempt to access the database before it has been opened</string>
 
     <!-- ORDER of screens is: -->
     <!-- Menu     -->

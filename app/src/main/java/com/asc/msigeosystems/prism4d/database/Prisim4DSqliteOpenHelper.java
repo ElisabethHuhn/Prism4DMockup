@@ -11,11 +11,19 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
     //logcat Tag
     private static final String TAG = "Prisim4DSqliteOpenHelper";
 
-       //Database Version
+    /*****************************************************/
+    /*****************************************************/
+    /*****************************************************/
+
+    //Database Version
     private static final int DATABASE_VERSION = 1;
 
     //Database Name
     private static final String DATABASE_NAME = "Prism4D";
+
+    /*****************************************************/
+    /*****************************************************/
+    /*****************************************************/
 
     //Table Names
     public static final String TABLE_PROJECT = "Project";
@@ -30,6 +38,7 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
     //Project Column Names
     public static final String PROJECT_ID = "project_id";
     public static final String PROJECT_NAME = "project_name";
+    public static final String PROJECT_CREATED = "project_created";
     public static final String PROJECT_LAST_MAINTAINED = "project_last_maintained";
     public static final String PROJECT_DESCRIPTION = "project_description";
 
@@ -55,11 +64,16 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
 
 
     //Point Column Names
-    public static final String POINT_ID = "point_id";
-    public static final String POINT_PROJECT_ID = "point_project_id";
-    public static final String POINT_COORDINATE = "point_coordinate";
+    public static final String POINT_ID =          "point_id";
+    public static final String POINT_PROJECT_ID =  "point_project_id";
+    public static final String POINT_COORDINATE =  "point_coordinate";
     public static final String POINT_DESCRIPTION = "point_description";
-    public static final String POINT_NOTES = "point_notes";
+    public static final String POINT_NOTES =       "point_notes";
+
+    /*****************************************************/
+    /*****************************************************/
+    /*****************************************************/
+
 
     //create table statements
 
@@ -67,12 +81,13 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_PROJECT = "CREATE TABLE " + TABLE_PROJECT +"(" +
             KEY_ID                  + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PROJECT_ID              + "INTEGER, " +
-            PROJECT_NAME            + "TEXT"    +
-            PROJECT_LAST_MAINTAINED + "DATETIME" +
-            PROJECT_DESCRIPTION     + "TEXT"    +
-            KEY_CREATED_AT          + "DATETIME" + ")";
+            PROJECT_NAME            + "TEXT"      +
+            PROJECT_CREATED         + "INTEGER"   +
+            PROJECT_LAST_MAINTAINED + "INTEGER"   +
+            PROJECT_DESCRIPTION     + "TEXT"      +
+            KEY_CREATED_AT          + "DATETIME"  + ")";
 
-    //table create statements
+    //create project settings table
     private static final String CREATE_TABLE_PROJECT_SETTINGS = "CREATE TABLE " + TABLE_PROJECT_SETTINGS +"(" +
             KEY_ID                           + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PROJECT_SETTINGS_ID              + "INTEGER, "  +
@@ -93,9 +108,9 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
             PROJECT_SETTINGS_FEATURE_CODES   + "TEXT, "     +
             PROJECT_SETTINGS_FC_CONTROL_FILE + "TEXT, "     +
             PROJECT_SETTINGS_FC_TIMESTAMP    + "INTEGER, "  + //BOOLEAN  no-0/1-yes
-            KEY_CREATED_AT                   + "DATETIME, " + ")";
+            KEY_CREATED_AT                   + "INTEGER, "  + ")";
 
-    //create project table
+    //create point table
     private static final String CREATE_TABLE_POINT = "CREATE TABLE " + TABLE_POINT +"(" +
             KEY_ID             + "INTEGER PRIMARY KEY AUTOINCREMENT, " +
             POINT_ID           + "INTEGER, " +
@@ -103,7 +118,12 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
             POINT_COORDINATE   + "INTEGER, " +
             POINT_DESCRIPTION  + "TEXT, "    +
             POINT_NOTES        + "TEXT, "    +
-            KEY_CREATED_AT     + "DATETIME"  + ")";
+            KEY_CREATED_AT     + "INTEGER"   + ")";
+
+    /*****************************************************/
+    /*****************************************************/
+    /*****************************************************/
+
 
 
     private Context mContext;
@@ -117,16 +137,26 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
         this.mContext = context;
     }
 
+    /******************
+     * onCreate()
+     * when the helper constructor is executed with a name (2nd param),
+     * the platform checks if the database (second parameter) exists or not and
+     * if the database exists, it gets the version information from the database file header and
+     * triggers the right call back (e.g. onUpdate())
+     * if the database with the name doesn't exist, the platform triggers onCreate().
+     *
+     * @param db
+     */
     @Override
     public void onCreate(SQLiteDatabase db){
-        //create the tables
+        //create the tables using the pre-defined SQL
         db.execSQL(CREATE_TABLE_PROJECT);
         db.execSQL(CREATE_TABLE_PROJECT_SETTINGS);
         db.execSQL(CREATE_TABLE_POINT);
     }
 
     /******************
-     * This default verson of the onUpgrade() method just
+     * This default version of the onUpgrade() method just
      * deletes any data in the database file, and recreates the
      * database from scratch.
      *
@@ -158,7 +188,7 @@ public class Prisim4DSqliteOpenHelper extends SQLiteOpenHelper {
         super.onOpen(db);
     }
 
-    //Open the database, and return our instance of the database
+
 
 
     //The CRUD routines:

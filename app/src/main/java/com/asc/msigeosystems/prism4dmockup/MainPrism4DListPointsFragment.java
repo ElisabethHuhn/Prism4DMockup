@@ -60,7 +60,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
     /**********************************************************/
 
 
-    public MainPrism4DListPointsFragment newInstance(
+    public static MainPrism4DListPointsFragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath,
             Prism4DPath pointPath){

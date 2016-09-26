@@ -64,7 +64,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
 
-
+    //newInstance() stores the passed parameters in the fragments argument bundle
     public static MainPrism4DProject14UpdateFragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath) {
@@ -94,11 +94,14 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         return fragment;
     }
 
+    //Constructor
     public MainPrism4DProject14UpdateFragment() {
         //for now, we don't need to initialize anything when the fragment
-        //  is first created
+        //  is first created with this constructor
     }
 
+    //pull the arguments out of the fragment bundle and store in the member variables
+    //In this case, prepopulate the path (create/update/etc) and project
     @Override
     public void onCreate(Bundle savedInstanceState){
 
@@ -209,12 +212,9 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 if (mProjectChanged){
                     areYouSureViewSettings();
                 } else {
-                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                    if (myActivity != null){
-                        myActivity.switchToProjectSettingsScreen(
+                    ((MainPrism4DActivity) getActivity()).switchToProjectSettingsScreen(
                                 findThisProject(),
                                 new Prism4DPath(mProjectPath));
-                    }
                 }
 
             }
@@ -236,10 +236,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                         R.string.cant_view_projects,
                         Toast.LENGTH_SHORT).show();
 
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
-                }
+                //((MainPrism4DActivity) getActivity()).switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
 
             } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
                     (mProjectPath.equals(Prism4DPath.sCopyTag))) {
@@ -252,11 +249,7 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                             R.string.project_unchanged,
                             Toast.LENGTH_SHORT).show();
 
-                    MainPrism4DActivity myActivity =
-                            (MainPrism4DActivity) getActivity();
-                    if (myActivity != null){
-                        myActivity.switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
-                    }
+                    ((MainPrism4DActivity) getActivity()).switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
                 }
             } else {
                 Toast.makeText(getActivity(),
@@ -283,12 +276,10 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                     areYouSureMaintPoints();
                 } else {
                     //doesn't matter what path we are on, switch to maintain points
-                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                    if (myActivity != null){
-                        myActivity.switchToMaintainPoints1Screen(
+                    ((MainPrism4DActivity) getActivity()).switchToMaintainPoints1Screen(
                                 findThisProject(),
                                 new Prism4DPath(mProjectPath));
-                    }
+
                 }
 
             }
@@ -308,10 +299,8 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                     saveChanges();
 
                     setProjectSaved();
-                    MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                    if (myActivity != null) {
-                        myActivity.popToProject1Screen();
-                    }
+                    ((MainPrism4DActivity) getActivity()).popToProject1Screen();
+
                 }
             }
         });
@@ -451,29 +440,16 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
     private void showInputProject() {
         //show the data that came out of the input arguments bundle
-        mProjectIDInput.setText(mProjectID);
-        mProjectNameInput.setText(mProjectName);
-        mProjectDateInput.setText(mProjectCreateDate);
+        mProjectIDInput   .setText(mProjectID);
+        mProjectNameInput .setText(mProjectName);
+        mProjectDateInput .setText(mProjectCreateDate);
         mProjectMaintInput.setText(mProjectMaintDate);
-        mProjectDescInput.setText(mProjectDescription);
+        mProjectDescInput .setText(mProjectDescription);
     }
 
     private void setProjectChanged(){
         mProjectChanged = true;
-        //enable the enter button as the default is NOT enabled/grayed out
-        /*****
-        if (mProjectPath.equals(Prism4DPath.sCopyTag)){
-            mEnterButton.setText(R.string.enter_to_copy_button_label);
 
-        } else if (mProjectPath.equals(Prism4DPath.sCreateTag)){
-            mEnterButton.setText(R.string.enter_to_create_button_label);
-        } else {
-            mEnterButton.setText(R.string.enter_to_save_button_label);
-        }
-        mEnterButton.setText(R.string.enter_to_save_button_label);
-        mEnterButton.setEnabled(true);
-        mEnterButton.setTextColor(Color.BLACK);
-*****/
         //enable the save changes button
         mProjectSaveChangesButton.setEnabled(true);
         mProjectSaveChangesButton.setTextColor(Color.BLACK);
@@ -492,9 +468,10 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
     //returns null if not found
     private Prism4DProject findThisProject(){
-        //      make sure our singleton list holder exists first
+        //// TODO: 8/28/2016 Search through projects in database, not in memory list
+        //      Get the project manager instance
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        //      then go get our project
+        //      then use the project manager to get our project
         Prism4DProject newProject = projectManager.getProject(Integer.valueOf(mProjectID.toString()));
 
         if (newProject == null){
