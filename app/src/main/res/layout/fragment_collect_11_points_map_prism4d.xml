@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainASCMockupActivity"
+    tools:context="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"
@@ -28,120 +28,9 @@
 
                 >
 
-                <!-- button row on left of screen -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-
-                    >
-                    <Button
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:id="@+id/mapsButtonCollect"
-                        android:text="@string/maps_button_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:layout_gravity="top"
-                        android:drawableTop="@drawable/ic_maps25"
-                        />
-                    <Button
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:id="@+id/pictureButton"
-                        android:text="@string/picture_button_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:drawableTop="@drawable/ic_camera25"
-                        />
-                    <Button
-                        style="?android:attr/buttonBarButtonStyle"
-                        android:id="@+id/notesButton"
-                        android:text="@string/notes_button_label"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:layout_gravity="bottom"
-                        android:drawableTop="@drawable/ic_notes25"
-                        />
 
 
-                </LinearLayout>
-
-                <!-- Main drawing part of central screen -->
-                <LinearLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-
-                    android:orientation="vertical"
-                    >
-
-                    <!-- main drawing area of the screen -->
-                    <ImageView
-                        android:id="@+id/drawingPad"
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="20"
-                        android:src="@drawable/drawing_pad_with_maps_350"
-                        android:contentDescription="@string/drawing_pad_contentdescription"
-                        />
-
-                    <!-- button row below drawing pad -->
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="0dp"
-                        android:layout_weight="1"
-                        android:orientation="horizontal"
-
-                        >
-                        <!-- Buttons defining drawing pad actions -->
-                        <ImageButton
-                            android:id="@+id/zoomInButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_zoom_in25"
-                            android:contentDescription="@string/zoom_in_contentdescription"
-                            android:layout_gravity="start"
-                            />
-
-                        <ImageButton
-                            android:id="@+id/zoomOutButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_zoom_out25"
-                            android:contentDescription="@string/zoom_out_contentdescription"
-
-                            />
-
-                        <ImageButton
-                            android:id="@+id/zoomExtButton"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:src="@drawable/ic_zoom_extended25"
-                            android:contentDescription="@string/zoom_ext_contentdescription"
-
-                            />
-
-                        <TextView
-                            android:id="@+id/scaleFactorField"
-                            android:text="@string/scale_factor_label"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:gravity="end"
-                            android:layout_gravity="center_vertical|end"
-                            android:textColor="@color/colorTextBlack"
-                            android:background="@color/colorWhite"
-                            />
-
-                    </LinearLayout>
-
-                </LinearLayout>
-
-
-                <!-- position buttons and text views on right of screen -->
+                <!-- position buttons and text views on left of screen -->
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
@@ -253,6 +142,121 @@
                         android:textColor="@color/colorTextBlack"
                         android:background="@color/colorRedButton"
                         />
+
+                </LinearLayout>
+
+                <!-- Main drawing part of central screen -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+
+                    android:orientation="vertical"
+                    >
+
+                    <!-- main drawing area of the screen -->
+                    <ImageView
+                        android:id="@+id/drawingPad"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="20"
+                        android:src="@drawable/drawing_pad_with_maps_350"
+                        android:contentDescription="@string/drawing_pad_contentdescription"
+                        />
+
+                    <!-- button row below drawing pad -->
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+
+                        >
+                        <!-- Buttons defining drawing pad actions -->
+                        <ImageButton
+                            android:id="@+id/zoomInButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_zoom_in25"
+                            android:contentDescription="@string/zoom_in_contentdescription"
+                            android:layout_gravity="start"
+                            />
+
+                        <ImageButton
+                            android:id="@+id/zoomOutButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_zoom_out25"
+                            android:contentDescription="@string/zoom_out_contentdescription"
+
+                            />
+
+                        <ImageButton
+                            android:id="@+id/zoomExtButton"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:src="@drawable/ic_zoom_extended25"
+                            android:contentDescription="@string/zoom_ext_contentdescription"
+
+                            />
+
+                        <TextView
+                            android:id="@+id/scaleFactorField"
+                            android:text="@string/scale_factor_label"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:gravity="end"
+                            android:layout_gravity="center_vertical|end"
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            />
+
+                        <Button
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:id="@+id/mapsButtonCollect"
+                            android:text="@string/maps_button_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/colorTextBlack"
+                            android:layout_gravity="top"
+                            android:drawableTop="@drawable/ic_maps25"
+                            />
+
+                        <Button
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:id="@+id/pictureButton"
+                            android:text="@string/picture_button_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/colorTextBlack"
+                            android:drawableTop="@drawable/ic_camera25"
+                            />
+
+                        <Button
+                            style="?android:attr/buttonBarButtonStyle"
+                            android:id="@+id/notesButton"
+                            android:text="@string/notes_button_label"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:textColor="@color/colorTextBlack"
+                            android:layout_gravity="bottom"
+                            android:drawableTop="@drawable/ic_notes25"
+                            />
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+                <!-- old button row on left of screen -->
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+
+                    >
+
 
                 </LinearLayout>
 

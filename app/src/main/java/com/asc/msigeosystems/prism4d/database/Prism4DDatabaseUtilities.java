@@ -2,7 +2,7 @@ package com.asc.msigeosystems.prism4d.database;
 
 import android.content.ContentValues;
 
-import com.asc.msigeosystems.prism4dmockup.Prism4DProject;
+import com.asc.msigeosystems.prism4d.Prism4DProject;
 
 /**
  * Created by elisabethhuhn on 9/5/2016.

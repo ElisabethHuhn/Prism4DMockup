@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainPrism4DActivity"
+            android:name="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="adjustPan"
@@ -24,18 +24,18 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.asc.msigeosystems.prism4dmockup.YGPS"
+            android:name="com.asc.msigeosystems.prism4d.YGPS"
             android:label="@string/ygps_app_name" >
             <intent-filter>
-                <action android:name="com.asc.msigeosystems.prism4dmockup.YGPS" />
+                <action android:name="com.asc.msigeosystems.prism4d.YGPS" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
-            android:name="com.asc.msigeosystems.prism4dmockup.Prism4DGPSActivity"
+            android:name="com.asc.msigeosystems.prism4d.Prism4DGPSActivity"
             android:label="@string/gps_app_name" >
             <intent-filter>
-                <action android:name="com.asc.msigeosystems.prism4dmockup.Prism4DGPSActivity" />
+                <action android:name="com.asc.msigeosystems.prism4d.Prism4DGPSActivity" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>

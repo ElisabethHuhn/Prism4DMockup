@@ -4,7 +4,7 @@
     <!--  -->
     <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:tools="http://schemas.android.com/tools"
-        tools:context=".Prism4DGPSActivity"
+        tools:context="com.asc.msigeosystems.prism4d.Prism4DGPSActivity"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:fillViewport="true"

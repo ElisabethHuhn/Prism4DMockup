@@ -19,12 +19,12 @@
             android:layout_height="wrap_content"
             android:layout_weight="4"
             >
-            <com.asc.msigeosystems.prism4dmockup.SatellitePositionView
+            <com.asc.msigeosystems.prism4d.SatellitePositionView
                 android:id="@+id/positionview"
                 android:layout_width="fill_parent"
                 android:layout_height="200dp"
                 />
-            <com.asc.msigeosystems.prism4dmockup.SatelliteSignalView
+            <com.asc.msigeosystems.prism4d.SatelliteSignalView
                 android:id="@+id/signalview"
                 android:layout_width="fill_parent"
                 android:layout_height="150dp"
@@ -38,17 +38,17 @@
             android:layout_width="fill_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-            <com.asc.msigeosystems.prism4dmockup.GPSStateView
+            <com.asc.msigeosystems.prism4d.GPSStateView
                 android:id="@+id/gpsstate"
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:layout_height="fill_parent" />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/satinsky"
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:layout_height="fill_parent" />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/satinfix"
                 android:layout_width="0px"
                 android:layout_weight="1"
@@ -63,13 +63,13 @@
             android:layout_height="0px"
             android:layout_weight="1">
 
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/latitude"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/longitude"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
@@ -83,13 +83,13 @@
             android:layout_width="fill_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/accuracy"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"
                 />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/altitude"
                 android:layout_width="0px"
                 android:layout_weight="1"
@@ -103,12 +103,12 @@
             android:layout_width="fill_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/speed"
                 android:layout_width="0px"
                 android:layout_weight="1"
                 android:layout_height="fill_parent" />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/bearing"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
@@ -122,12 +122,12 @@
             android:layout_width="fill_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/ttff"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
                 android:layout_weight="1"  />
-            <com.asc.msigeosystems.prism4dmockup.DataView
+            <com.asc.msigeosystems.prism4d.DataView
                 android:id="@+id/tslf"
                 android:layout_width="0px"
                 android:layout_height="match_parent"
@@ -141,7 +141,7 @@
             android:layout_width="fill_parent"
             android:layout_height="0px"
             android:layout_weight="1">
-            <com.asc.msigeosystems.prism4dmockup.DateView
+            <com.asc.msigeosystems.prism4d.DateView
                 android:id="@+id/time"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"
@@ -156,7 +156,7 @@
             android:layout_height="0px"
             android:layout_weight="1">
 
-            <com.asc.msigeosystems.prism4dmockup.DateView
+            <com.asc.msigeosystems.prism4d.DateView
                 android:id="@+id/devicetime"
                 android:layout_width="0px"
                 android:layout_height="fill_parent"

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.MainPrism4DActivity"
+    tools:context="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/colorScreenBackground"

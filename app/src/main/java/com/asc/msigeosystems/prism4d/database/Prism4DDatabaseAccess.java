@@ -44,6 +44,7 @@ public class Prism4DDatabaseAccess {
      * Creates a single database record matching the passed project instance
      * If the project already exists: WHAT??
      */
+    /*
     private class AddProject extends AsyncTask<ContentValues, Void, Void> {
 
 
@@ -57,6 +58,8 @@ public class Prism4DDatabaseAccess {
             // TODO: 9/5/2016 add the code to add the project from the ContentValues
             Prism4DDatabaseManager.getDatabase().insert(Prisim4DSqliteOpenHelper.TABLE_PROJECT,
                     null, params[1]);
+
+            return Void;
 
         }
 
@@ -85,7 +88,7 @@ public class Prism4DDatabaseAccess {
         }
     }
 
-
+*/
 
 
     /*****

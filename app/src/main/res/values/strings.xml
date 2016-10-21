@@ -1,8 +1,10 @@
 <resources>
-    <string name="app_name">Prism4DMockup</string>
-    <string name="ygps_app_name">Prism4DMockup YGPS Skyplot</string>
+    <string name="app_name">Prism4D</string>
+    <string name="ygps_app_name">Prism4D YGPS Skyplot</string>
     <string name="gps_app_name">GPS Skyplot</string>
     <string name="hello">Hello World, YGPS!</string>
+    <string name="unused_button_label"> </string>
+
 
     <!-- Exceptions -->
     <string name="database_context_exception">Can\'t create database without a context</string>
@@ -57,6 +59,10 @@
     <string name="subtitle_gps_nmea">GPS data from NMEA</string>
     <string name="subtitle_workflow">Coordinate Workflow</string>
 
+    <string name="subtitle_maps">Maps</string>
+    <string name="subtitle_support">Support</string>
+
+
     //Collect menu items
     <string name="action_measure_points">Measure Points</string>
     <string name="action_open">Open</string>
@@ -82,7 +88,7 @@
     <string name="cogo_button_label">COGO</string>
     <string name="maps_button_label">Maps</string>
     <string name="skyplot_button_label">Skyplot</string>
-    <string name="config_button_label">Equipment</string>
+    <string name="config_button_label">Configurations</string>
     <string name="settings_button_label">Settings</string>
     <string name="help_button_label">Support</string>
 
@@ -232,10 +238,12 @@
     <string name="collect_lines_button_label">Measure Lines</string>
     <string name="collect_areas_button_label">Measure Areas</string>
     <string name="autostore_button_label">Auto Store</string>
-    <string name="gps_base_station_button_label">GPS Base Station</string>
-    <string name="total_station_button_label">Total Station</string>
     <string name="traverse_button_label">Traverse</string>
-    <string name="gallery_button_label">Gallery</string>
+    <string name="resection_button_label">Gallery</string>
+    <string name="monitor_button_label">Monitor</string>
+    <string name="scan_button_label">GPS Base Station</string>
+    <string name="level_button_label">Total Station</string>
+
 
 
 
@@ -283,11 +291,15 @@
     <!-- Stakeout Top Level Screen Strings -->
 
     <!-- Button Labels -->
-    <string name="stakeout_points_button_label">Stakeout Points</string>
-    <string name="stakeout_lines_button_label">Stakeout Lines</string>
-    <string name="stakeout_arcs_button_label">Stake Arc</string>
+    <string name="stakeout_points_button_label">Stake Points</string>
+    <string name="stakeout_lines_button_label">Stake Lines</string>
+    <string name="stakeout_arcs_button_label">Stake Curves</string>
     <string name="stakeout_offset_button_label">Stake Offsets</string>
-    <string name="stakeout_report_button_label">Report</string>
+    <string name="stakeout_grids_button_label">Stake Grids</string>
+    <string name="stakeout_dtms_button_label">Stake DTMs</string>
+    <string name="stakeout_alignments_button_label">Stake Alignments</string>
+    <string name="stakeout_sections_button_label">Stake Sections</string>
+    <string name="stakeout_report_button_label">Stakeout Report</string>
 
 
 
@@ -309,6 +321,23 @@
 
 
 
+    <!--      NEW SCREEN                  -->
+    <!-- Maps Top Level Collect Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="google_maps_button_label">Google Maps</string>
+    <string name="earth_button_label">Google Earth</string>
+    <string name="custom_maps_button_label">Custom Maps</string>
+
+    <string name="layers_button_label">Layers</string>
+    <string name="markers_button_label">Markers</string>
+    <string name="polylines_button_label">Polylines</string>
+
+    <string name="track_button_label">Track</string>
+    <string name="background_button_label">Background</string>
+    <string name="save_profile_button_label">Save Profile</string>
+
+
 
 
     <!--      NEW SCREEN                  -->
@@ -320,14 +349,20 @@
     <string name="skyplot_nmea_sentence_label">NMEA Sentence</string>
     <string name="skyplot_time_label">Time</string>
     <string name="skyplot_gps_position_button_label">GPS Position</string>
-    <string name="skyplot_qc_position_button_label">QC Position</string>
+
     <string name="skyplot_plots_button_label">Skyplots</string>
     <string name="skyplot_satinfo_button_label">Sat Info</string>
-    <string name="skyplot_reference_button_label">Reference</string>
-    <string name="skyplot_compas_button_label">Compass</string>
+    <string name="skyplot_qc_position_button_label">QC Position</string>
+
+    <string name="skyplot_accelerometer_button_label">Accelerometer</string>
+    <string name="skyplot_compass_button_label">Compass</string>
+    <string name="skyplot_geocasching_button_label">Geocashing</string>
+
     <string name="skyplot_waypoints_button_label">Waypoints</string>
     <string name="skyplot_navigate_button_label">Navigate</string>
-    <string name="skyplot_save_button_label">Save Plots</string>
+    <string name="skyplot_noaa_button_label">NOAA SWPC</string>
+
+    <string name="skyplot_reference_button_label">Reference</string>
 
     <string name="skyplot_screen_label">Skyplot: Location and Status</string>
     <string name="skyplot_location_label">LOCATION</string>
@@ -403,8 +438,21 @@
 
     <string name="setting_global_button_label">Global</string>
     <string name="setting_project_defaults_button_label">Project Defaults</string>
-    <string name="unused_button_label"> </string>
 
+
+    <!--      NEW SCREEN                  -->
+    <!-- Support Top Level Screen Strings -->
+
+    <!-- Button Labels -->
+    <string name="support_manuals_button_label">Manuals</string>
+    <string name="support_faq_button_label">FAQ</string>
+    <string name="support_videos_button_label">Videos</string>
+    <string name="support_modules_button_label">Modues</string>
+    <string name="support_upgrades_button_label">Upgrades</string>
+    <string name="support_registration_button_label">Registration</string>
+    <string name="support_support_button_label">Support</string>
+    <string name="support_feedback_button_label">Feedback</string>
+    <string name="support_aboutus_button_label">About Us Report</string>
 
 
 
