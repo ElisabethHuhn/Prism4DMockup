@@ -185,15 +185,15 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         //Edit Button
         mEditButton = (Button) v.findViewById(R.id.row2Button1);
         //edit is disabled, so disable the button.
-        mEditButton.setEnabled(false);
-        mEditButton.setText(R.string.unused_button_label);
+
+        mEditButton.setText(R.string.edit_button_label);
         //mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_color_folders, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
                 ///Use open, not Edit
                 Toast.makeText(getActivity(),
-                        R.string.project_no_edit,
+                        R.string.edit_button_label,
                         Toast.LENGTH_SHORT).show();
 /***
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();

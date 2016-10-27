@@ -75,7 +75,7 @@ public class MainPrism4DConfigurations1Fragment extends Fragment {
 
         //Communications Button
         mCommunicationsButton = (Button) v.findViewById(R.id.row1Button2);
-        mCommunicationsButton.setText(R.string.stakeout_lines_button_label);
+        mCommunicationsButton.setText(R.string.config_communications_button_label);
         //the order of images here is left, top, right, bottom
         mCommunicationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_712_communications, 0, 0);
         mCommunicationsButton.setOnClickListener(new View.OnClickListener() {
@@ -83,7 +83,7 @@ public class MainPrism4DConfigurations1Fragment extends Fragment {
             public void onClick(View v) {
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.stakeout_lines_button_label,
+                        R.string.config_communications_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }

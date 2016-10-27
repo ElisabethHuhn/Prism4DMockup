@@ -158,9 +158,9 @@ public class MainPrism4DProject1Fragment extends Fragment {
         });
 
 
-        //Maintain Points Button
+        //List Points Button
         mListPointsButton = (Button) v.findViewById(R.id.row3Button1);
-        mListPointsButton.setText(R.string.maintain_points_button_label);
+        mListPointsButton.setText(R.string.list_points_button_label);
         mListPointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_117_pointsfile, 0, 0);
         mListPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -173,7 +173,7 @@ public class MainPrism4DProject1Fragment extends Fragment {
 ***/
                 ///for now, tell the user to go to maintain project screen
                 Toast.makeText(getActivity(),
-                        "Maintain points from project screen. Go open the project of interest",
+                        R.string.list_points_button_label,
                         Toast.LENGTH_LONG).show();
             }
         });

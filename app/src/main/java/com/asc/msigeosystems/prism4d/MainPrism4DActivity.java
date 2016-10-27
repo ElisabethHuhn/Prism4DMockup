@@ -13,8 +13,21 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseManager;
 import com.asc.msigeosystems.prism4dmockup.R;
+
+import static com.asc.msigeosystems.prism4d.Prism4DPath.sDeleteTag;
+import static com.asc.msigeosystems.prism4dmockup.R.string.action_cogo;
+import static com.asc.msigeosystems.prism4dmockup.R.string.action_config;
+import static com.asc.msigeosystems.prism4dmockup.R.string.action_global_settings;
+import static com.asc.msigeosystems.prism4dmockup.R.string.action_settings;
+import static com.asc.msigeosystems.prism4dmockup.R.string.action_skyplots;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_convert_to_utm;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_gps_nmea;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_list_nmea;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_list_satellites;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_maps;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_support;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_workflow;
 
 //used to extend
 public class MainPrism4DActivity extends AppCompatActivity {
@@ -325,6 +338,12 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      ********/
 
 
+    /*******************************************
+     * Screen switching utilities
+     *******************************************/
+
+
+
 
     /***
      * Switch to the fragment that is on the top of the backstack
@@ -345,48 +364,93 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to home screen
      * EMH 4/20/16
      */
-    public void switchToHomeScreen(){
+    private void switchScreen(Fragment toFragment, String tag) {
+        //Need the Fragment Manager to do the swap for us
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+
+        //Are any fragments already being displayed?
+        Fragment fromFragment = fm.findFragmentById(R.id.fragment_container);
+
+        if (fromFragment == null) {
+            //It shouldn't ever be the case that we got this far with no fragments on the screen,
+            // but code defensively
+            fm.beginTransaction()
+                    .add(R.id.fragment_container, toFragment, tag)
+                    .commit();
+        } else {
+            //There is already a fragment being displayed
+            fm.beginTransaction()
+                    //replace whatever is being displayed with the Home fragment
+                    .replace(R.id.fragment_container, toFragment, tag)
+                    //and add the transaction to the back stack
+                    .addToBackStack(tag)
+                    .commit();
+        }
+
+    }
+
+
+
+
+    //change the title bar subtitle
+    public void switchSubtitle(int subTitle){
+
+        //Put the name of the fragment on the title bar
+
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setSubtitle(subTitle);
+        }
+
+
+    }
+
+    //Overload the method with a String argument, rather than a Resource ID
+    public void switchSubtitle(String subTitle){
+
+        //Put the name of the fragment on the title bar
+
+        if (getSupportActionBar() != null){
+            getSupportActionBar().setSubtitle(subTitle);
+        }
+
+
+    }
+
+    //clear the backstack
+    public void clearBackstack() {
         //replace the fragment with the Home UI
 
         //Need the Fragment Manager to do the swap for us
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
         //clear the back stack
-        while (fm.getBackStackEntryCount() > 0){
+        while (fm.getBackStackEntryCount() > 0) {
             fm.popBackStackImmediate();
         }
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DHomeFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sHomeTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DHomeFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the Home fragment
-                    .replace(R.id.fragment_container, fragment, sHomeTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sHomeTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-
-        if (getSupportActionBar() != null){
-            getSupportActionBar().setSubtitle(R.string.action_home);
-        }
-
-
     }
+
+
+        /*******************************************
+         * Home
+         *******************************************/
+
+
+
+    /****
+     * Method to switch fragment to home screen
+     * EMH 4/20/16
+     */
+    public void switchToHomeScreen() {
+        //replace the fragment with the Home UI
+        clearBackstack();
+        Fragment fragment = new MainPrism4DHomeFragment();
+        String tag        = sHomeTag;
+        int subTitle      = R.string.action_home;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+    }
+
 
 
 
@@ -401,45 +465,19 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Project screen
      * EMH 4/23/16
      */
-    public void switchToProject1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
+    public void switchToProject1Screen() {
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DProject1Fragment();
+        String tag        = sProjectTopTag;
+        int subTitle      = R.string.action_project;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            //If there wasn't one previously, need to add
-            fragment = new MainPrism4DProject1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-            //so need to replace
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DProject1Fragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sProjectTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sProjectTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_project);
-        }
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
     }
+
+
+
 
 
 
@@ -476,45 +514,24 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //The lifetime of this open is while the application is active
         //From now on, can call the static getInstance() and it will return
         //    the open database.
-        Prism4DDatabaseManager.initializeInstance(getApplicationContext());
+        //Prism4DDatabaseManager.initializeInstance(getApplicationContext());
 
 
         //Gets the project which contains the defaults for all other projects
         Prism4DProject project = getProjectForCreate();
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
+        //set the action for the project to create
         Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sCreateTag);
 
-        if (fragment == null){
-            //If there wasn't already a fragment, we have to add one.
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
+        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
+        String tag        = sProjectCreateTag;
+        int subTitle      = R.string.subtitle_create_project;
 
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectCreateTag)
-                    .commit();
-        } else {
-            //because there was a fragment, we have to replace it
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sProjectCreateTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sProjectCreateTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_create_project);
-        }
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
     }
+
+
 
 
     /****
@@ -523,42 +540,18 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToProject12OpenScreen(){
 
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        //create the path for open
+        //set the action for the project to create
         Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sOpenTag);
 
-        if (fragment == null){
-            //pass the update project fragment the open path
-            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectOpenTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
+        String tag        = sProjectOpenTag;
+        int subTitle      = R.string.action_open;
 
-            //Create a new Collect fragment
-            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sProjectOpenTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sProjectOpenTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_open);
-        }
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
     }
+
 
 
     /****
@@ -567,38 +560,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToProjectListProjectsScreen(Prism4DPath projectPath){
 
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
+        String tag        = sProjectOpenTag;
+        String subTitle   = projectPath.getPath().toString();
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //pass the update project fragment the open path
-            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectOpenTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sProjectOpenTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sProjectOpenTag)
-                    .commit();
-        }
-
-        //Put the path being followed on the action bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(projectPath.getPath());
-        }
     }
+
 
 
 
@@ -609,42 +579,18 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToProject13CopyScreen(){
 
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
         //create the path for copy
         Prism4DPath path = new Prism4DPath(Prism4DPath.sCopyTag);
 
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(path);
+        String tag        = sProjectOpenTag;
+        int subTitle      = R.string.action_open;
 
-        if (fragment == null){
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-            fragment = MainPrism4DListProjectsFragment.newInstance(path);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectOpenTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new fragment
-            fragment = MainPrism4DListProjectsFragment.newInstance(path);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sProjectOpenTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sProjectOpenTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_open);
-        }
     }
+
 
 
 
@@ -657,38 +603,13 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             Prism4DProject project,
             Prism4DPath path){
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
+        String tag        = sProjectUpdateTag;
+        int subTitle      = R.string.subtitle_maintain_project;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with
-            // no fragments on the screen,
-            // but code defensively
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
-
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectUpdateTag)
-                    .commit();
-        } else {
-
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sProjectUpdateTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sProjectUpdateTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
-        }
     }
 
 
@@ -720,10 +641,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
 
 
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_project);
-        }
+        int subTitle = R.string.subtitle_maintain_project;
+        switchSubtitle(subTitle);
+
     }
 
 
@@ -736,42 +656,18 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToProject15DeleteScreen(){
 
-
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
         //create the path for open
-        Prism4DPath path = new Prism4DPath(Prism4DPath.sDeleteTag);
+        Prism4DPath path = new Prism4DPath(sDeleteTag);
 
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(path);
+        String tag        = sDeleteTag;
+        int subTitle      = R.string.action_delete;
 
-        if (fragment == null){
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-            fragment = MainPrism4DListProjectsFragment.newInstance(path);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectDeleteTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new fragment
-            fragment = MainPrism4DListProjectsFragment.newInstance(path);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sProjectDeleteTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sProjectDeleteTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_delete);
-        }
     }
+
 
 
 
@@ -783,41 +679,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             Prism4DProject project,
             Prism4DPath projectPath){
 
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
+        Fragment fragment =  MainPrism4DSettingsFragment.newInstance(project, projectPath);
+        String tag        = sProjectSettingsTag;
+        int subTitle      = R.string.subtitle_project_settings;
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = MainPrism4DSettingsFragment.newInstance(project, projectPath);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sProjectSettingsTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = MainPrism4DSettingsFragment.newInstance(project, projectPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sProjectSettingsTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sProjectSettingsTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_project_settings);
-        }
     }
+
 
 
 
@@ -834,37 +704,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             Prism4DProject project,
             Prism4DPath projectPath){
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        Fragment fragment =  MainPrism4DPoint1Fragment.newInstance(project, projectPath);
+        String tag        = sPointTopTag;
+        int subTitle      = R.string.subtitle_maintain_point;
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with
-            // no fragments on the screen,
-            fragment = MainPrism4DPoint1Fragment.newInstance (project, projectPath);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sPointTopTag)
-                    .commit();
-        } else {
-
-            fragment = MainPrism4DPoint1Fragment.newInstance(project, projectPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sPointTopTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sPointTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
-        }
     }
+
 
 
 
@@ -884,40 +733,18 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         Prism4DPath pointPath = new Prism4DPath(Prism4DPath.sCreateTag);
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment =  MainPrism4DProjectUpdatePointFragment.newInstance(
+                                                                    projectPath,
+                                                                    newPoint,
+                                                                    pointPath);
+        String tag        = sPointCreateTag;
+        int subTitle      = R.string.subtitle_create_point;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with
-            // no fragments on the screen,
-            // but code defensively
-            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
-                    projectPath, newPoint, pointPath);
-
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sPointCreateTag)
-                    .commit();
-        } else {
-
-            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
-                    projectPath, newPoint, pointPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sPointCreateTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sPointCreateTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_create_point);
-        }
     }
+
 
 
 
@@ -929,6 +756,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             int         projectID,
             Prism4DPath projectPath,
             Prism4DPath pointPath){
+
 
         //      Get the singleton container of projects
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
@@ -965,7 +793,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         } else if (path.equals(Prism4DPath.sOpenTag)) {
             subtitle = R.string.subtitle_open_point;
             tag = sPointOpenTag;
-        } else if (path.equals(Prism4DPath.sDeleteTag)){
+        } else if (path.equals(sDeleteTag)){
             subtitle = R.string.subtitle_delete_point;
             tag = sProjectDeleteTag;
         } else {
@@ -974,38 +802,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             tag = getResources().getString(R.string.unknown_process);
         }
 
+        Fragment fragment =  MainPrism4DListPointsFragment.newInstance(
+                newProject,
+                projectPath,
+                pointPath);
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        switchScreen(fragment, tag);
+        switchSubtitle(subtitle);
 
-        Fragment fragment;
-        //Are any fragments already being displayed?
-        //fragment = fm.findFragmentById(R.id.fragment_container);
-        //we usually check for null, but its not worth the effort
-
-         //Create a new fragment
-         fragment = MainPrism4DListPointsFragment.newInstance(
-                 newProject,
-                 projectPath,
-                 pointPath);
-
-         fm.beginTransaction()
-         //replace whatever is being displayed with the new fragment
-         .replace(R.id.fragment_container, fragment, tag)
-         //and add the transaction to the back stack
-         .addToBackStack(tag)
-         .commit();
-
-
-        //Put the path being followed on the action bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(subtitle);
-        }
     }
-
-
-
-
 
 
     /****
@@ -1018,49 +823,17 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
             Prism4DPath pointPath){
 
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment =  MainPrism4DProjectUpdatePointFragment.newInstance(
+                projectPath,
+                point,
+                pointPath);
+        String tag        = sPointUpdateTag;
+        int subTitle      = R.string.subtitle_maintain_point;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        //create the path for open
-        //Prism4DPath path = new Prism4DPath(Prism4DPath.sOpenTag);
-
-        if (fragment == null){
-            //pass the update project fragment the open path
-            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
-                                projectPath,
-                                point,
-                                pointPath);
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sPointUpdateTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = MainPrism4DProjectUpdatePointFragment.newInstance(
-                    projectPath,
-                    point,
-                    pointPath);
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sPointUpdateTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sProjectOpenTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_maintain_point);
-        }
     }
-
-
-
 
 
     /*******************************************
@@ -1068,47 +841,19 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      *******************************************/
 
 
-
-
-
     /****
      * Method to switch fragment to top level collect screen
      * EMH 5/1/16
      */
     public void switchToCollect1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCollect1Fragment();
+        String tag        = sCollectTopTag;
+        int subTitle      = R.string.action_collect;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCollect1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sCollectTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCollect1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCollectTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sCollectTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_collect);
-        }
     }
 
     /****
@@ -1116,39 +861,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/13/16
      */
     public void switchToCollect11PointsScreen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCollect11PointsFragment();
+        String tag        = sCollectPointsTag;
+        int subTitle      = R.string.action_measure_points;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCollect11PointsFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sCollectPointsTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCollect11PointsFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCollectPointsTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sCollectPointsTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_measure_points);
-        }
     }
 
 
@@ -1158,39 +878,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/13/16
      */
     public void switchToCollect11PointsWithMapScreen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCollect11PointsWithMapFragment();
+        String tag        = sCollectPointsMapTag;
+        int subTitle      = R.string.action_measure_points;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCollect11PointsWithMapFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sCollectPointsMapTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCollect11PointsWithMapFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCollectPointsMapTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sCollectPointsMapTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_measure_points);
-        }
     }
 
 
@@ -1200,50 +895,20 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      *******************************************/
 
 
-
-
-
-
     /****
      * Method to switch fragment to top level Stakeout screen
      * EMH 5/1/16
      */
     public void switchToStakeout1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DStakeout1Fragment();
+        String tag        = sStakeoutTopTag;
+        int subTitle      = R.string.action_stakeout;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DStakeout1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sStakeoutTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DStakeout1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCollectTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sStakeoutTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_stakeout);
-        }
     }
-
 
 
     /*******************************************
@@ -1255,39 +920,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/1/16
      */
     public void switchToCogo1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCogo1Fragment();
+        String tag        = sCogoTopTag;
+        int subTitle      = action_cogo;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCogo1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sCogoTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCogo1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCogoTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sCogoTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_cogo);
-        }
     }
 
 
@@ -1296,38 +936,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 6/15/16
      */
     public void switchToCoordWorkflow(){
-        //Show Nmea Sentences
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCoordWorkflowFragment();
+        String tag        = sCogoWorkflowTag;
+        int subTitle      = subtitle_workflow;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCoordWorkflowFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sCogoWorkflowTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCoordWorkflowFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sCogoWorkflowTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sCogoWorkflowTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_workflow);
-        }
     }
 
 
@@ -1337,40 +953,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/13/16
      */
     public void switchToConvertScreen(){
-        //replace the fragment with the coordinate conversion UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DCoordConversionFragment();
+        String tag        = sConversionTag;
+        int subTitle      = subtitle_convert_to_utm;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DCoordConversionFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sConversionTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DCoordConversionFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sConversionTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sConversionTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_convert_to_utm);
-        }
     }
+
 
 
 
@@ -1383,40 +975,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 10/21/2016
      */
     public void switchToMaps1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DMaps1Fragment();
+        String tag        = sMapsTopTag;
+        int subTitle      = subtitle_maps;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DMaps1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sMapsTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DMaps1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sMapsTopTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sMapsTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_maps);
-        }
     }
+
 
 
 
@@ -1430,39 +998,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/1/16
      */
     public void switchToSkyplot1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DSkyplots1Fragment();
+        String tag        = sSkyplotTopTag;
+        int subTitle      = action_skyplots;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DSkyplots1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSkyplotTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DSkyplots1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSkyplotTopTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sSkyplotTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_skyplots);
-        }
     }
 
 
@@ -1471,38 +1014,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 6/7/16
      */
     public void switchToListNmeaScreen(){
-        //Show Nmea Sentences
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DListNmeaFragment();
+        String tag        = sSkyplotListNmeaTag;
+        int subTitle      = subtitle_list_nmea;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DListNmeaFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSkyplotListNmeaTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DListNmeaFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSkyplotListNmeaTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sSkyplotListNmeaTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_list_nmea);
-        }
     }
 
 
@@ -1511,41 +1030,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 6/13/16
      */
     public void switchToListSatellitesScreen(){
-        //Show Visible Satellites
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DListSatellitesFragment();
+        String tag        = sSkyplotListSatelliteTag;
+        int subTitle      = subtitle_list_satellites;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DListSatellitesFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSkyplotListSatelliteTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DListSatellitesFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSkyplotListSatelliteTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sSkyplotListSatelliteTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_list_satellites);
-        }
     }
-
-
 
 
     /****
@@ -1553,38 +1046,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 6/7/16
      */
     public void switchToGpsNmeaScreen(){
-        //show GPS data collected from NMEA Sentences
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DGpsFromNmeaFragment();
+        String tag        = sSkyplotGpsNmeaTag;
+        int subTitle      = subtitle_gps_nmea;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DGpsFromNmeaFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSkyplotGpsNmeaTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DGpsFromNmeaFragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSkyplotGpsNmeaTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sSkyplotGpsNmeaTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_gps_nmea);
-        }
     }
 
 
@@ -1603,41 +1072,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/26/16
      */
     public void switchToConfig1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DConfigurations1Fragment();
+        String tag        = sConfigTopTag;
+        int subTitle      = action_config;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DConfigurations1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sConfigTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DConfigurations1Fragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sConfigTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sConfigTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_config);
-        }
     }
+
 
 
 
@@ -1651,40 +1095,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/1/16
      */
     public void switchToSettings1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DSettings1Fragment();
+        String tag        = sSettingsTopTag;
+        int subTitle      = action_settings;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DSettings1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSettingsTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DSettings1Fragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSettingsTopTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sSettingsTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_settings);
-        }
     }
 
 
@@ -1693,40 +1111,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/11/16
      */
     public void switchToSettings11GlobalScreen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DSettings11GlobalFragment();
+        String tag        = sSettingsGlobalTag;
+        int subTitle      = action_global_settings;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DSettings11GlobalFragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSettingsGlobalTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DSettings11GlobalFragment();
-
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSettingsGlobalTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sSettingsGlobalTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_global_settings);
-        }
     }
 
     /****
@@ -1739,40 +1131,17 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         //Gets the project which contains the defaults for all other projects
         Prism4DProject project = getDefaultProject();
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
-
         //This project will always exist, we will only ever want to update it
         Prism4DPath openPath = new Prism4DPath(Prism4DPath.sOpenTag);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with
-            // no fragments on the screen,
-            // but code defensively
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, openPath);
 
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                    .commit();
-        } else {
+        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, openPath);
+        String tag        = sSettingsProjectDefaultTag;
+        int subTitle      = R.string.action_project_default_settings;
 
-            fragment = MainPrism4DProject14UpdateFragment.newInstance(project, openPath);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-            fm.beginTransaction()
-                    //replace whatever is being displayed
-                    .replace(R.id.fragment_container, fragment, sSettingsProjectDefaultTag)
-                            //and add the transaction to the back stack
-                    .addToBackStack(sSettingsProjectDefaultTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_project_default_settings);
-        }
     }
 
 
@@ -1787,41 +1156,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 10/21/2016
      */
     public void switchToSupport1Screen(){
-        //replace the fragment with the collections UI
-        //Do fragments in real time, not xml
 
-        //Need the Fragment Manager to do the swap for us
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        Fragment fragment = new MainPrism4DSupport1Fragment();
+        String tag        = sSupportTopTag;
+        int subTitle      = subtitle_support;
 
-        //Are any fragments already being displayed?
-        Fragment fragment = fm.findFragmentById(R.id.fragment_container);
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
 
-        if (fragment == null){
-            //It shouldn't ever be the case that we got this far with no fragments on the screen,
-            // but code defensively
-            fragment = new MainPrism4DSupport1Fragment();
-            fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment, sSupportTopTag)
-                    .commit();
-        } else {
-            //There is already a fragment being displayed
-
-            //Create a new Collect fragment
-            fragment = new MainPrism4DSupport1Fragment();
-            fm.beginTransaction()
-                    //replace whatever is being displayed with the collect fragment
-                    .replace(R.id.fragment_container, fragment, sSupportTopTag)
-                    //and add the transaction to the back stack
-                    .addToBackStack(sSupportTopTag)
-                    .commit();
-        }
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.subtitle_support);
-        }
     }
-
 
 
     /*******************************************

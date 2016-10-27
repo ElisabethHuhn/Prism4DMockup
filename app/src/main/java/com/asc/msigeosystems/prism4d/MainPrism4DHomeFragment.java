@@ -20,9 +20,11 @@ public class MainPrism4DHomeFragment extends Fragment {
     private Button mProjectButton;
     private Button mCollectButton;
     private Button mStakeoutButton;
+
     private Button mCogoButton;
     private Button mMapsButton;
     private Button mSkyplotButton;
+
     private Button mConfigButton;
     private Button mSettingsButton;
     private Button mHelpButton;
@@ -134,6 +136,12 @@ public class MainPrism4DHomeFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.maps_button_label,
                         Toast.LENGTH_SHORT).show();
+                //Switch the fragment to the top level collect fragment.
+                // But the switching happens on the container Activity
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToMaps1Screen();
+                }
 
             }
         });
@@ -199,6 +207,12 @@ public class MainPrism4DHomeFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.help_button_label,
                         Toast.LENGTH_SHORT).show();
+                //Switch the fragment to the top level collect fragment.
+                // But the switching happens on the container Activity
+                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+                if (myActivity != null) {
+                    myActivity.switchToSupport1Screen();
+                }
 
             }
         });

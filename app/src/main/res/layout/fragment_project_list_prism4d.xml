@@ -1,30 +1,32 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools=  "http://schemas.android.com/tools"
     tools:context="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
-    android:layout_width="match_parent"
+
+    android:layout_width= "match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorScreenBackground"
-    android:orientation="vertical"
+    android:background=   "@color/colorScreenBackground"
+    android:orientation=  "vertical"
     >
 
     <!-- Everything on the screen has to scroll horizontally -->
     <HorizontalScrollView
-        android:layout_width="match_parent"
+        android:layout_width= "match_parent"
         android:layout_height="match_parent"
-        android:fillViewport="true"
+        android:fillViewport= "true"
         >
 
         <!-- rest of the screen -->
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:orientation=  "vertical"
+            android:layout_width= "match_parent"
             android:layout_height="match_parent"
             >
             <!-- title line -->
             <LinearLayout
 
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
+                android:orientation=  "horizontal"
+                android:layout_width= "match_parent"
                 android:layout_height="wrap_content"
 
                 android:focusable="false"
@@ -94,9 +96,9 @@
 
             <!--recycler view for the list of projects-->
             <ScrollView
-                android:layout_width="match_parent"
+                android:layout_width= "match_parent"
                 android:layout_height="match_parent"
-                android:fillViewport="true"
+                android:fillViewport= "true"
                 >
 
                 <!-- Recycler view containing the list of projects -->
@@ -115,7 +117,7 @@
     </HorizontalScrollView>
 
     <!-- Only buttons in the Footer on the Projects list page -->
-    <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
+    <!-- <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/> -->
 
 </LinearLayout>
 

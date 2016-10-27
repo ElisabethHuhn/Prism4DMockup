@@ -17,7 +17,6 @@ import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
-import java.util.Date;
 import java.util.List;
 
 /**
@@ -37,13 +36,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     private RecyclerView mRecyclerView;
     private Prism4DProjectAdapter mAdapter;
 
-    private String mProjectName;
-    private String mProjectID;
-    private Date   mProjectDate;
-    private String mProjectDescription;
-
     private Prism4DProject mSelectedProject;
-    private Prism4DProject mLastSelectedProject;
     private int            mSelectedPosition;
 
     private CharSequence   mProjectPath;
