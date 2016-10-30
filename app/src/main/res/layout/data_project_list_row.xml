@@ -1,8 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
 
     android:orientation="horizontal"
+
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
 
@@ -14,7 +16,8 @@
     android:background="?android:attr/selectableItemBackground"
     >
 
-    <!-- ID 3-->
+    <!-- Each field needs a weight that matches the weight of the header -->
+    <!-- ID: weight = 3 -->
     <TextView
         android:id="@+id/projectRowID"
 

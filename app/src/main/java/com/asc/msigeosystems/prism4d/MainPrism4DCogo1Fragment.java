@@ -179,7 +179,7 @@ public class MainPrism4DCogo1Fragment extends Fragment {
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
                         //R.string.cogo_map_check_button_label,
-                        R.string.cogo_workflow_button_label,
+                        R.string.cogo_map_check_button_label,
                         Toast.LENGTH_SHORT).show();
 
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();

@@ -88,7 +88,7 @@
     <string name="cogo_button_label">COGO</string>
     <string name="maps_button_label">Maps</string>
     <string name="skyplot_button_label">Skyplot</string>
-    <string name="config_button_label">Configurations</string>
+    <string name="config_button_label">Configuration</string>
     <string name="settings_button_label">Settings</string>
     <string name="help_button_label">Support</string>
 
@@ -114,6 +114,7 @@
     <string name="delete_button_label">Delete</string>
     <string name="control_button_label">Control</string>
     <string name="maintain_points_button_label">Maintain Points</string>
+    <string name="list_points_button_label">List Points</string>
     <string name="feature_codes_button_label">Feature Codes</string>
     <string name="exchange_button_label">Exchange</string>
 
@@ -144,7 +145,7 @@
     <string name="project_view_existing_label">View Projects</string>
     <string name="project_create_button_label">Create Project</string>
     <string name="project_settings_button_label">View Settings</string>
-    <string name="list_points_button_label">List Points</string>
+
 
     <!-- Text View Labels (initial text displayed) -->
     <string name="project_screen_label">Project Attributes</string>
@@ -237,12 +238,14 @@
     <string name="collect_points_button_label">Measure Points</string>
     <string name="collect_lines_button_label">Measure Lines</string>
     <string name="collect_areas_button_label">Measure Areas</string>
+
     <string name="autostore_button_label">Auto Store</string>
     <string name="traverse_button_label">Traverse</string>
-    <string name="resection_button_label">Gallery</string>
+    <string name="resection_button_label">Resection</string>
+
     <string name="monitor_button_label">Monitor</string>
-    <string name="scan_button_label">GPS Base Station</string>
-    <string name="level_button_label">Total Station</string>
+    <string name="scan_button_label">Scan</string>
+    <string name="level_button_label">Level</string>
 
 
 
@@ -316,8 +319,8 @@
     <string name="cogo_triangles_button_label">Triangles</string>
     <string name="cogo_curves_button_label">Curves</string>
     <string name="cogo_areas_button_label">Areas</string>
-    <string name="cogo_map_check_button_label">Map Check</string>
-    <string name="cogo_convert_button_label">Convert</string>
+    <string name="cogo_map_check_button_label">Map Check/Workflow</string>
+    <string name="cogo_convert_button_label">Translate/Convert</string>
 
 
 
@@ -391,7 +394,7 @@
 
     <string name="skyplot_localization_file">What is this supposed to be?</string>
     <string name="skyplot_nmea_fragment">NMEA Fragment</string>
-    <string name="skyplot_nmea_activity">NMEA Activity</string>
+    <string name="skyplot_nmea_activity">QC Position/NMEA Activity</string>
     <string name="skyplot_list_nmea">List NMEA</string>
     <string name="skyplot_list_satellites">List Satellites</string>
     <string name="skyplot_ygps">YGPS program</string>

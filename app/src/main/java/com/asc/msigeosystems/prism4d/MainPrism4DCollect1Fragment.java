@@ -116,7 +116,7 @@ public class MainPrism4DCollect1Fragment extends Fragment {
 
 
         //Measure Areas Button
-        mAreasButton = (Button) v.findViewById(R.id.row3Button3);
+        mAreasButton = (Button) v.findViewById(R.id.row1Button3);
         mAreasButton.setText(R.string.collect_areas_button_label);
         mAreasButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_213_dcareas, 0, 0);
         mAreasButton.setOnClickListener(new View.OnClickListener() {
@@ -132,7 +132,7 @@ public class MainPrism4DCollect1Fragment extends Fragment {
         });
 
         //Autostore Button
-        mAutoStoreButton = (Button) v.findViewById(R.id.row1Button3);
+        mAutoStoreButton = (Button) v.findViewById(R.id.row2Button1);
         mAutoStoreButton.setText(R.string.autostore_button_label);
         mAutoStoreButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_214_dcauto, 0, 0);
         mAutoStoreButton.setOnClickListener(new View.OnClickListener() {
@@ -180,9 +180,9 @@ public class MainPrism4DCollect1Fragment extends Fragment {
         });
 
         //Monitor Button
-        mMonitorButton = (Button) v.findViewById(R.id.row2Button2);
+        mMonitorButton = (Button) v.findViewById(R.id.row3Button1);
         mMonitorButton.setText(R.string.monitor_button_label);
-        mMonitorButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_216_dcresection, 0, 0);
+        mMonitorButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_217_dcmonitor, 0, 0);
         mMonitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -195,8 +195,8 @@ public class MainPrism4DCollect1Fragment extends Fragment {
             }
         });
 
-       //Scan Button
-        mScanButton = (Button) v.findViewById(R.id.row3Button1);
+        //Scan Button
+        mScanButton = (Button) v.findViewById(R.id.row3Button2);
         mScanButton.setText(R.string.scan_button_label);
         mScanButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_218_dcscan, 0, 0);
         mScanButton.setOnClickListener(new View.OnClickListener() {
@@ -212,7 +212,7 @@ public class MainPrism4DCollect1Fragment extends Fragment {
         });
 
         //Level Button
-        mLevelButton = (Button) v.findViewById(R.id.row3Button2);
+        mLevelButton = (Button) v.findViewById(R.id.row3Button3);
         mLevelButton.setText(R.string.level_button_label);
         mLevelButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_219_dclevel, 0, 0);
         mLevelButton.setOnClickListener(new View.OnClickListener() {

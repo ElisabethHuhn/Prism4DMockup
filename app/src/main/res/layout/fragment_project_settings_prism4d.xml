@@ -1,19 +1,17 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools=  "http://schemas.android.com/tools"
     tools:context="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
-    android:layout_width="match_parent"
+
+    android:layout_width= "match_parent"
     android:layout_height="match_parent"
-    android:background="@color/colorScreenBackground"
-    android:orientation="vertical"
+
+    android:background= "@color/colorScreenBackground"
+
     >
     <!-- This layout is for creating a new project -->
     <!--  -->
-    <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5"
 
-        >
 
         <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
         <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
@@ -104,33 +102,34 @@
 
             <!-- Row Distance Units -->
             <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                android:layout_height= "wrap_content"
+                android:layout_width=  "match_parent"
                 android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
+                android:paddingTop=    "10dp"
                 >
                 <TextView
-                    android:id="@+id/distanceUnitsLabel"
-                    android:text="@string/distance_units_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
+                    android:labelFor="@+id/distanceUnitsInput"
+                    android:text=    "@string/distance_units_label"
 
-                    android:textColor="@color/colorTextBlack"
+                    android:layout_height="wrap_content"
+                    android:layout_width= "0dp"
+                    android:layout_weight="25"
+                    android:gravity=      "end"
+
+                    android:textColor= "@color/colorTextBlack"
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/distanceUnitsInput"
+                    android:id="@id/distanceUnitsInput"
 
                     android:layout_height="wrap_content"
-                    android:layout_width="0dp"
+                    android:layout_width= "0dp"
                     android:layout_weight="75"
 
-                    android:inputType="text"
+                    android:inputType=       "text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorTextBlack"
+                    android:textColor= "@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -139,35 +138,36 @@
 
             <!-- Row  Decimal Display -->
             <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                android:layout_height= "wrap_content"
+                android:layout_width=  "match_parent"
                 android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
+                android:paddingTop=    "10dp"
                 >
 
 
                 <TextView
-                    android:id="@+id/decimalDisplayLabel"
-                    android:text="@string/decimal_display_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
+                    android:labelFor="@+id/decimalDisplayInput"
+                    android:text=    "@string/decimal_display_label"
 
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+                    android:layout_height="wrap_content"
+                    android:layout_width= "0dp"
+                    android:layout_weight="25"
+                    android:gravity=      "end"
+
+                    android:textColor=  "@color/colorTextBlack"
+                    android:background= "@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/decimalDisplayInput"
+                    android:id="@id/decimalDisplayInput"
 
                     android:layout_height="wrap_content"
-                    android:layout_width="0dp"
+                    android:layout_width= "0dp"
                     android:layout_weight="75"
 
-                    android:inputType="text"
+                    android:inputType=        "text"
                     android:layout_marginEnd="16dp"
 
-                    android:textColor="@color/colorTextBlack"
+                    android:textColor= "@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
 
@@ -175,13 +175,13 @@
 
             <!-- Row : Angle Units -->
             <TableRow
-                android:layout_height="wrap_content"
-                android:layout_width="match_parent"
+                android:layout_height= "wrap_content"
+                android:layout_width=  "match_parent"
                 android:layout_gravity="center_horizontal"
-                android:paddingTop="10dp"
+                android:paddingTop=    "10dp"
                 >
                 <TextView
-                    android:id="@+id/angleUnitsLabel"
+                    android:labelFor="@+id/angleUnitsInput"
                     android:text="@string/angle_units_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -192,7 +192,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/angleUnitsInput"
+                    android:id="@id/angleUnitsInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -216,7 +216,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/angleDisplayLabel"
+                    android:labelFor="@id/angleDisplayInput"
                     android:text="@string/angle_display_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -240,7 +240,6 @@
                     android:background="@color/colorWhite"
                     />
 
-
             </TableRow>
 
             <!-- Row : Grid Direction -->
@@ -251,7 +250,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/gridDirectionLabel"
+                    android:labelFor="@+id/gridDirectionInput"
                     android:text="@string/grid_direction_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -262,7 +261,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/gridDirectionInput"
+                    android:id="@id/gridDirectionInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -274,8 +273,6 @@
                     android:textColor="@color/colorTextBlack"
                     android:background="@color/colorWhite"
                     />
-
-
             </TableRow>
 
             <!-- Row : Scale Factor -->
@@ -288,7 +285,7 @@
 
 
                 <TextView
-                    android:id="@+id/scaleFactorLabel"
+                    android:labelFor="@+id/scaleFactorInput"
                     android:text="@string/scale_factor_settings_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -299,7 +296,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/scaleFactorInput"
+                    android:id="@id/scaleFactorInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -322,7 +319,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/seaLevelLabel"
+                    android:labelFor="@+id/seaLevelInput"
                     android:text="@string/sea_level_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -333,7 +330,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/seaLevelInput"
+                    android:id="@id/seaLevelInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -359,7 +356,7 @@
 
 
                 <TextView
-                    android:id="@+id/refractionLabel"
+                    android:labelFor="@+id/refractionInput"
                     android:text="@string/refraction_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -370,7 +367,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/refractionInput"
+                    android:id="@id/refractionInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -393,7 +390,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/datumLabel"
+                    android:labelFor="@+id/datumInput"
                     android:text="@string/datum_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -404,7 +401,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/datumInput"
+                    android:id="@id/datumInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -428,7 +425,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/projectionLabel"
+                    android:labelFor="@+id/projectionInput"
                     android:text="@string/projection_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -439,7 +436,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/projectionInput"
+                    android:id="@id/projectionInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -463,7 +460,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/zoneLabel"
+                    android:labelFor="@+id/zoneInput"
                     android:text="@string/zone_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -474,7 +471,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/zoneInput"
+                    android:id="@id/zoneInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -500,7 +497,7 @@
 
 
                 <TextView
-                    android:id="@+id/coordinateDisplayLabel"
+                    android:labelFor="@+id/coordinateDisplayInput"
                     android:text="@string/coordinate_display_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -511,7 +508,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/coordinateDisplayInput"
+                    android:id="@id/coordinateDisplayInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -534,7 +531,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/geoidModelLabel"
+                    android:labelFor="@+id/geoidModelInput"
                     android:text="@string/geod_model_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -545,7 +542,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/geoidModelInput"
+                    android:id="@id/geoidModelInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -568,9 +565,8 @@
                 android:paddingTop="10dp"
                 >
 
-
                 <TextView
-                    android:id="@+id/startingPointIDLabel"
+                    android:labelFor="@+id/startingPointIDInput"
                     android:text="@string/starting_point_id_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -581,7 +577,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/startingPointIDInput"
+                    android:id="@id/startingPointIDInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -604,7 +600,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/alphanumericLabel"
+                    android:labelFor="@+id/alphanumericInput"
                     android:text="@string/alphanumeric_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -639,7 +635,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/featureCodesLabel"
+                    android:labelFor="@+id/featureCodesInput"
                     android:text="@string/feature_codes_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -650,7 +646,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/featureCodesInput"
+                    android:id="@id/featureCodesInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -674,7 +670,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/fcControlFileLabel"
+                    android:labelFor="@+id/fcControlFileInput"
                     android:text="@string/feature_codes_control_file_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -685,7 +681,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/fcControlFileInput"
+                    android:id="@id/fcControlFileInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -709,7 +705,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/fcTimeStampLabel"
+                    android:labelFor="@+id/fcTimeStampInput"
                     android:text="@string/feature_codes_time_stamp_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -720,7 +716,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/fcTimeStampInput"
+                    android:id="@id/fcTimeStampInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -761,13 +757,9 @@
 
         </TableLayout>
 
-
-
-    </ScrollView>
-
     <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_inclusion_prism4d"/>
+    <!-- <include layout="@layout/fragment_footer_inclusion_prism4d"/> -->
 
 
-</LinearLayout>
+</ScrollView>
 

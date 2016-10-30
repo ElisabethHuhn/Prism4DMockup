@@ -69,7 +69,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         //Skyplots Button
         mSkyplotsButton = (Button) v.findViewById(R.id.row1Button1);
         mSkyplotsButton.setText(R.string.skyplot_plots_button_label);
-        mSkyplotsButton.setText(R.string.skyplot_ygps);
+        //mSkyplotsButton.setText(R.string.skyplot_ygps);
         mSkyplotsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_611_skyplots, 0, 0);
         mSkyplotsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -121,6 +121,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_qc_position_button_label,
                         Toast.LENGTH_SHORT).show();
+
                 Intent intent = new Intent(getActivity(), Prism4DGPSActivity.class);
                 startActivity(intent);
 
@@ -158,7 +159,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
 
         //Compass Button
         mCompassButton = (Button) v.findViewById(R.id.row2Button2);
-        mCompassButton.setText(R.string.skyplot_compas_button_label);
+        mCompassButton.setText(R.string.skyplot_compass_button_label);
         mCompassButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_615_compass, 0, 0);
         mCompassButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -166,7 +167,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
 
                 ///for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.skyplot_compas_button_label,
+                        R.string.skyplot_compass_button_label,
                         Toast.LENGTH_SHORT).show();
 
             }
@@ -228,7 +229,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
         });
 
         //NOAA Button
-        mNoaaButton = (Button) v.findViewById(R.id.row3Button2);
+        mNoaaButton = (Button) v.findViewById(R.id.row3Button3);
         mNoaaButton.setText(R.string.skyplot_noaa_button_label);
         mNoaaButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_619_swpc, 0, 0);
         mNoaaButton.setOnClickListener(new View.OnClickListener() {
