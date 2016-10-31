@@ -216,7 +216,7 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:labelFor="@id/angleDisplayInput"
+                    android:labelFor="@+id/angleDisplayInput"
                     android:text="@string/angle_display_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -227,7 +227,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <EditText
-                    android:id="@+id/angleDisplayInput"
+                    android:id="@id/angleDisplayInput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"

@@ -22,13 +22,13 @@ public class Prism4DDatabaseUtilities {
      */
     public static ContentValues dbConvert(Prism4DProject project) {
         ContentValues cv = new ContentValues();
-        cv.put(Prisim4DSqliteOpenHelper.PROJECT_ID, project.getProjectID());
-        cv.put(Prisim4DSqliteOpenHelper.PROJECT_NAME, project.getProjectName().toString());
+        cv.put(Prism4DSqliteOpenHelper.PROJECT_ID, project.getProjectID());
+        cv.put(Prism4DSqliteOpenHelper.PROJECT_NAME, project.getProjectName().toString());
         //dates in Prism4D are Date, and in the DB are Integers representing the
         //  number of milliseconds since Jan 1, 1970 00:00:00 gmt
-        cv.put(Prisim4DSqliteOpenHelper.PROJECT_CREATED, project.getProjectDateCreated().getTime());
-        cv.put(Prisim4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectDateCreated().getTime());
-        cv.put(Prisim4DSqliteOpenHelper.PROJECT_DESCRIPTION, project.getProjectDescription().toString());
+        cv.put(Prism4DSqliteOpenHelper.PROJECT_CREATED, project.getProjectDateCreated().getTime());
+        cv.put(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectDateCreated().getTime());
+        cv.put(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION, project.getProjectDescription().toString());
 
         return cv;
     }

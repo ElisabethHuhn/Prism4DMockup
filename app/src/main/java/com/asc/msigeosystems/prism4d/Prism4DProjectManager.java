@@ -2,7 +2,7 @@ package com.asc.msigeosystems.prism4d;
 
 import android.content.ContentValues;
 
-import com.asc.msigeosystems.prism4d.database.Prisim4DSqliteOpenHelper;
+import com.asc.msigeosystems.prism4d.database.Prism4DSqliteOpenHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -55,12 +55,17 @@ public class Prism4DProjectManager {
     }
 
     public Prism4DProject getFirstProject() {
-        //todo improve this method
+
+        return sProjectList.get(0);
+
+        /*****
+         *  //todo improve this method
         for (Prism4DProject project : sProjectList){
             //Return the first project in the list
             return project;
         }
         return null;
+         ************/
     }
 
     public void add (Prism4DProject project){
@@ -79,16 +84,18 @@ public class Prism4DProjectManager {
         //convert the Prism4DProject object into a ContentValues object containing a project
         ContentValues cvProject = new ContentValues();
         //put(columnName, value);
-        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_ID,     project.getProjectID());
-        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_NAME,   project.getProjectName().toString());
-        cvProject.put(Prisim4DSqliteOpenHelper.KEY_CREATED_AT, project.getProjectDateCreated().toString());
-        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectLastModified().toString());
-        cvProject.put(Prisim4DSqliteOpenHelper.PROJECT_DESCRIPTION, project.getProjectDescription().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_ID,              project.getProjectID());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_NAME,            project.getProjectName().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.KEY_CREATED_AT,          project.getProjectDateCreated().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectLastModified().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION,     project.getProjectDescription().toString());
 
         return cvProject;
     }
 
-    //Mock up some projects for now
+
+
+        //Mock up some projects for now
     private void prepareProjectDataset(){
         //no use doing anything if the Adapter is not created yet
 

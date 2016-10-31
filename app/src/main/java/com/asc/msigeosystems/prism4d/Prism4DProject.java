@@ -42,9 +42,9 @@ public class Prism4DProject {
     public static final String sProjectNewDesc = "";
 
 
-    //
+    /**********************************************/
     //Setters and Getters
-    //
+    /**********************************************/
 
     //this should be good enough for the Mockup,
     //but we must do MUCH better for the real thing
@@ -90,16 +90,16 @@ public class Prism4DProject {
 
 
 
-    /*
-     *  Note this constructor does NOT have description
-     */
+    /*************************************************************
+     *             Constructor
+     *************************************************************/
     public Prism4DProject(CharSequence projectName, int projectID) {
-        this.mName = projectName;
-        this.mID = projectID;
+        this.mName         = projectName;
+        this.mID           = projectID;
 
         //defaults for the project
-        this.mDescription = "";
-        this.mDateCreated = new Date();
+        this.mDescription  = "";
+        this.mDateCreated  = new Date();
         this.mLastModified = new Date();
 
     }

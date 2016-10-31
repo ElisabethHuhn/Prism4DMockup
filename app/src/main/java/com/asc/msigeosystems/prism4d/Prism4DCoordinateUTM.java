@@ -8,11 +8,15 @@ public class Prism4DCoordinateUTM extends Prism4DCoordinateEN {
     //variables and setters/getters at super level
 
     public Prism4DCoordinateUTM(Prism4DCoordinateWGS84 coordinate) {
+        //initialize all variables to their defaults
+        super.initializeDefaultVariables();
         convertWGStoUTM(coordinate.getLatitude(), coordinate.getLongitude());
         mDatum = "WGS84"; //eg WGS84
     }
 
     public Prism4DCoordinateUTM(Prism4DCoordinateNAD83 coordinate) {
+        //initialize all variables to their defaults
+        super.initializeDefaultVariables();
         convertNADtoUTM(coordinate.getLatitude(), coordinate.getLongitude());
         mDatum = "NAD83"; //eg NAD83
     }

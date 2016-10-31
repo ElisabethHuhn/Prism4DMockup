@@ -3,20 +3,71 @@ package com.asc.msigeosystems.prism4d.database;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 
+import com.asc.msigeosystems.prism4d.Prism4DProject;
+import com.asc.msigeosystems.prism4d.Prism4DProjectManager;
+
+import java.util.ArrayList;
+
 /**
  * Created by elisabethhuhn on 5/18/2016.
  */
 public class Prism4DDatabaseManager {
 
+    /************************************************/
+    /*         static variables                     */
+    /************************************************/
+
     private static Prism4DDatabaseManager   sManagerInstance ;
-    private static Prisim4DSqliteOpenHelper sDatabaseHelper;
-    private static SQLiteDatabase sDatabase;
 
     private static String sNoContextException = "Can not create database without a context";
     private static String sNotInitializedException =
             "Attempt to access the database before it has been initialized";
     private static String sNotOpenedException =
             "Attempt to access the database before it has been opened";
+
+
+
+    /************************************************/
+    /*         Instance variables                   */
+    /************************************************/
+
+    private Prism4DSqliteOpenHelper mDatabaseHelper;
+    private  SQLiteDatabase           mDatabase;
+
+
+
+    /************************************************/
+    /*         setters & getters                    */
+    /************************************************/
+
+    //mDatabaseHelper
+    public void setDatabaseHelper(Prism4DSqliteOpenHelper mDatabaseHelper) {
+        this.mDatabaseHelper = mDatabaseHelper;
+    }
+    //Return null if the field has not yet been initialized
+    public synchronized Prism4DSqliteOpenHelper getDatabaseHelper()  {
+        return mDatabaseHelper;
+    }
+
+
+    //mDatabase
+    public    void   setDatabase(SQLiteDatabase mDatabase) {this.mDatabase = mDatabase; }
+    //return null if the field has not yet been initialized
+    public synchronized SQLiteDatabase getDatabase()       { return mDatabase; }
+
+
+    /************************************************/
+    /*         constructor                          */
+    /************************************************/
+    //null constructor. It should never be called.
+    //    initializeInstance() is the proper protocol
+    private Prism4DDatabaseManager() {}
+
+
+
+    /************************************************/
+    /*         static methods                       */
+    /************************************************/
 
 
 
@@ -56,35 +107,31 @@ public class Prism4DDatabaseManager {
             //create and store it's singleton connection to the database
             //The helper is the database connection
             //It's a singleton to keep the app thread safe
-            sDatabaseHelper = new Prisim4DSqliteOpenHelper(context);
+            sManagerInstance.setDatabaseHelper(new Prism4DSqliteOpenHelper(context));
 
             //Now that we have the connection, create the database as well
-            sDatabase = sDatabaseHelper.getWritableDatabase();
+            sManagerInstance.setDatabase (sManagerInstance.getDatabaseHelper().getWritableDatabase());
 
-        } else if (sDatabaseHelper == null){
+        } else if (sManagerInstance.getDatabaseHelper() == null){
             //if here, we had a Database Manager, but no connection to a database
             //Something is definately fishy, but maybe we can recover
             if (context == null) throw new RuntimeException(sNoContextException);
 
             //all the constructor does is save the context
-            sDatabaseHelper = new Prisim4DSqliteOpenHelper(context);
+            sManagerInstance.setDatabaseHelper( new Prism4DSqliteOpenHelper(context));
             //opening the database will create the tables if they do not
             //  already exist. It will also force an upgrade if the system
             //  detects a new version of the DB since the last time it was opened
-            sDatabase = sDatabaseHelper.getWritableDatabase();
+            sManagerInstance.setDatabase(sManagerInstance.getDatabaseHelper().getWritableDatabase());
 
-        } else if (sDatabase == null){
+        } else if (sManagerInstance.getDatabase() == null){
             //again, if we had a database manager, and a database helper/connection
             // we certainly should have had an instance of the database
             //something is fishy, but attempt recovery
-            sDatabase = sDatabaseHelper.getWritableDatabase();
+            sManagerInstance.setDatabase(sManagerInstance.getDatabaseHelper().getWritableDatabase());
         }
 
     }
-
-    //null constructor. It should never be called.
-    //    initializeInstance() is the proper protocol
-    private Prism4DDatabaseManager() {}
 
 
     //returns null if the Database Manager has not yet bee initialized
@@ -95,27 +142,42 @@ public class Prism4DDatabaseManager {
         //The reason we can't just initialize it now is because we need a context to initialize
         if (sManagerInstance == null)  {
             throw new RuntimeException(sNotInitializedException);
-            }
+        }
         return sManagerInstance;
     }
 
 
-    public static synchronized Prisim4DSqliteOpenHelper getDatabaseHelper() throws RuntimeException {
-        //The reason we can't just initialize it now is because we need a context to initialize
-        if ((sManagerInstance == null) || (sDatabaseHelper == null)){
-            throw new RuntimeException(sNotInitializedException);
-        }
-        return sDatabaseHelper;
-    }
+
+    /************************************************/
+    /*         Instance methods                     */
+    /************************************************/
+    //The CRUD routines:
 
 
-    public static synchronized SQLiteDatabase getDatabase() throws RuntimeException {
-        //we need a context to initialize the helper,
-        if ((sManagerInstance == null) || (sDatabaseHelper == null) || (sDatabase == null)){
-            throw new RuntimeException(sNotOpenedException);
-        }
-        return sDatabase;
+    //CRUD routines for a Project
+    //STUBS for now
+
+    public ArrayList<Prism4DProject> getAllProjects(){
+        return new ArrayList<>();
     }
+
+    public Prism4DProject getProject(int projectID){
+        return new Prism4DProject("StubProject", 10001);//dummy parameters for now
+    }
+
+    public void addProject(Prism4DProject project){
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        mDatabaseHelper.add(mDatabase,                               //database to add to
+                            Prism4DSqliteOpenHelper.TABLE_PROJECT,   //table to add to
+                            null,                                    //nullColumnHack
+                            projectManager.getProjectCV(project));   //Content Values of the object to add
+    }
+
+    public  void updateProject(Prism4DProject project){}
+
+    public void removeProject(int projectID){}
+
+
 
 
 

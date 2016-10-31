@@ -2,8 +2,13 @@ package com.asc.msigeosystems.prism4d;
 
 /**
  * Created by elisabethhuhn on 5/15/2016.
+ * One of the principal Data Classes of the model
  */
 public class Prism4DPoint {
+
+    /*****************************************************/
+    /********    Static constants                *********/
+    /*****************************************************/
 
     //Tags for fragment arguments
     public static final String sPointProjectIDTag  = "PROJECT_ID";
@@ -24,14 +29,28 @@ public class Prism4DPoint {
     public static final String sPointNewDesc = "";
 
 
-    private int          mProjectID;
+    /*****************************************************/
+    /********    Attributes stored in the DB     *********/
+    /*****************************************************/
 
+    private int          mProjectID;
     private int          mPointID;
+
     private double       mPointEasting;
     private double       mPointNorthing;
     private double       mPointElevation;
     private CharSequence mPointDescription;
     private CharSequence mPointNotes;
+
+
+    // TODO: 10/31/2016 Consider adding a List of the Coordinates that describe this point
+
+
+    /*****************************************************/
+    /********    Setters and Getters             *********/
+    /*****************************************************/
+
+
 
     public int  getProjectID()             {  return mProjectID;    }
     public void setProjectID(int projectID) {  this.mProjectID = projectID;  }
@@ -55,10 +74,48 @@ public class Prism4DPoint {
     public CharSequence getPointNotes() {  return mPointNotes;   }
     public void setPointNotes(CharSequence notes) { mPointNotes = notes;   }
 
+
+    /*****************************************************/
+    /********    Constructors                    *********/
+    /*****************************************************/
     //Need to know what project the new point will be in
     public Prism4DPoint(Prism4DProject project) {
-        this.mProjectID        = project.getProjectID();
-        this.mPointID          = project.getNextPointID() ;
+
+        initializeDefaultVariables();
+        //initialize all variables so we are assured that none are null
+        //that way we never have to check for null later
+        this.mProjectID = project.getProjectID();
+        this.mPointID = project.getNextPointID();
+    }
+
+
+     //Need to know what project the new point will be in
+    public Prism4DPoint(Prism4DProject project, double easting, double northing, double elevation) {
+        initializeDefaultVariables();
+
+        this.mProjectID = project.getProjectID();
+        this.mPointID = project.getNextPointID() ;
+    }
+
+    //a coule of special case points flag "create new point" and "open a point" path
+    public Prism4DPoint(int specialPointID) {
+        initializeDefaultVariables();
+
+        this.mProjectID        = specialPointID;
+        this.mPointID          = specialPointID ;
+
+        this.mPointDescription = "A special point";
+    }
+
+
+
+    /*****************************************************/
+    /********    Private Member Methods          *********/
+    /*****************************************************/
+
+    private void initializeDefaultVariables(){
+        this.mProjectID        = 0;
+        this.mPointID          = 0;
         this.mPointEasting     = 0.0;
         this.mPointNorthing    = 0.0;
         this.mPointElevation   = 5.0;
@@ -66,20 +123,5 @@ public class Prism4DPoint {
         this.mPointNotes       = "";
 
     }
-    //Need to know what project the new point will be in
-    public Prism4DPoint(Prism4DProject project, double easting, double northing, double elevation) {
-        this.mProjectID = project.getProjectID();
-        this.mPointID = project.getNextPointID() ;
-    }
 
-    //a coule of special case points flag "create new point" and "open a point" path
-    public Prism4DPoint(int specialPointID) {
-        this.mProjectID = specialPointID;
-        this.mPointID = specialPointID ;
-        this.mPointEasting = 0.0;
-        this.mPointNorthing = 0.0;
-        this.mPointElevation = 5.0;
-        this.mPointDescription = "A special point";
-        this.mPointNotes       = "";
-    }
 }

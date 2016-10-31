@@ -11,6 +11,13 @@ import java.math.RoundingMode;
  * Easting/Northing rectangular coordinate systems
  */
 public class Prism4DCoordinateEN {
+    /*****************************************************/
+    /********    Attributes stored in the DB     *********/
+    /*****************************************************/
+
+    protected int    mProjectID; //May or may not describe a point
+    protected int    mPointID;
+
     protected int    mZone;        //1-60
     protected char   mHemisphere;  //N or S
     protected double mEasting;
@@ -25,6 +32,9 @@ public class Prism4DCoordinateEN {
 
     protected boolean mValidCoordinate = true;
 
+    /*****************************************************/
+    /********    All other Attributes            *********/
+    /*****************************************************/
     //Conversion Constants
     protected double mEquatorialRadiusA;
     protected double mPolarRadiusB;
@@ -67,11 +77,18 @@ public class Prism4DCoordinateEN {
     protected double falseNorthing;
 
 
-    /***
+
+    /**************************************************************
      * Setters and getters
-     * I know this isn't standard, but it works for me today 5/1/2016
      *
-     */
+     *
+     ****************************************************************/
+
+    public int  getProjectID()              { return mProjectID; }
+    public void setProjectID(int projectID) { mProjectID = projectID; }
+
+    public int  getPointID()            { return mPointID; }
+    public void setPointID(int pointID) { mPointID = pointID; }
 
     public double getEasting()     { return mEasting;  }
     public double getNorthing()    { return mNorthing; }
@@ -93,7 +110,27 @@ public class Prism4DCoordinateEN {
 
     //default constructor
     public Prism4DCoordinateEN(){
+            initializeDefaultVariables();
+        }
+
+    protected void initializeDefaultVariables(){
+        //set all variables with defaults, so that none are null
+        //I know that one does not have to initialize int's etc, but
+        //to be explicit about the initialization, do it anyway
+
+        mProjectID      = 0; //assume does not describe a point
+        mPointID        = 0;
+
+        mZone        = 0;        //1-60
+        mHemisphere  = 'N';  //N or S
+        mEasting     = 0d;
+        mNorthing    = 0d;
+        mLatBand     = 'A';
         mValidCoordinate = false;
+        mDatum       = "WGS84"; //eg WGS84
+        mConvergence = 1d; //
+        mScale       = 1d;
+
     }
 
     /**

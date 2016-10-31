@@ -56,7 +56,7 @@ public class Prism4DDatabaseAccess {
             //the input argument is the project to be added
 
             // TODO: 9/5/2016 add the code to add the project from the ContentValues
-            Prism4DDatabaseManager.getDatabase().insert(Prisim4DSqliteOpenHelper.TABLE_PROJECT,
+            Prism4DDatabaseManager.getDatabase().insert(Prism4DSqliteOpenHelper.TABLE_PROJECT,
                     null, params[1]);
 
             return Void;
@@ -107,12 +107,13 @@ public class Prism4DDatabaseAccess {
             //there is no input argument as this returns all projects in the database
 
             //returned cursor contains all projects in the database
-            Cursor cursor = Prism4DDatabaseManager.getDatabase().query(
-                    Prisim4DSqliteOpenHelper.TABLE_PROJECT,
-                    new String[]{Prisim4DSqliteOpenHelper.PROJECT_ID,
-                            Prisim4DSqliteOpenHelper.PROJECT_NAME,
-                            Prisim4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
-                            Prisim4DSqliteOpenHelper.PROJECT_DESCRIPTION
+            Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+            Cursor cursor = databaseManager.getDatabase().query(
+                    Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                    new String[]{Prism4DSqliteOpenHelper.PROJECT_ID,
+                            Prism4DSqliteOpenHelper.PROJECT_NAME,
+                            Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
+                            Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION
                     },
                     null, null, null, null, null, null);
 
@@ -163,12 +164,13 @@ public class Prism4DDatabaseAccess {
 
 
             //returned cursor contains only the matching project
-            Cursor cursor = Prism4DDatabaseManager.getDatabase().query(
-                    Prisim4DSqliteOpenHelper.TABLE_PROJECT,
-                    new String[]{Prisim4DSqliteOpenHelper.PROJECT_ID,
-                            Prisim4DSqliteOpenHelper.PROJECT_NAME,
-                            Prisim4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
-                            Prisim4DSqliteOpenHelper.PROJECT_DESCRIPTION
+            Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+            Cursor cursor = databaseManager.getDatabase().query(
+                    Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                    new String[]{Prism4DSqliteOpenHelper.PROJECT_ID,
+                            Prism4DSqliteOpenHelper.PROJECT_NAME,
+                            Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
+                            Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION
                     },
                     null, null, null, null, null, null);
 

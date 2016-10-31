@@ -11,6 +11,13 @@ import java.math.RoundingMode;
 public class Prism4DCoordinateLL {
     //This class holds raw coordinates and is responsible for swapping DD to DMS format
 
+    /*****************************************************/
+    /********    Attributes stored in the DB     *********/
+    /*****************************************************/
+
+    protected int    mProjectID; //May or may not describe a point
+    protected int    mPointID;
+
     protected double mTime; //time coordinate taken
 
     //Latitude in DD and DMS formats
@@ -38,6 +45,12 @@ public class Prism4DCoordinateLL {
      * Setters and Getters
      *
      **********/
+
+    public int  getProjectID()              { return mProjectID; }
+    public void setProjectID(int projectID) { mProjectID = projectID; }
+
+    public int  getPointID()            { return mPointID; }
+    public void setPointID(int pointID) { mPointID = pointID; }
 
     public double getLatitude()        { return mLatitude;        }
     public void setLatitude(double latitude) { mLatitude = latitude; }
@@ -94,11 +107,42 @@ public class Prism4DCoordinateLL {
      *
      **********/
     public Prism4DCoordinateLL() {
-        //not real useful
+        //set all variables to their defaults
+        initializeDefaultVariables();
+    }
+
+    protected void initializeDefaultVariables() {
+        //I know that one does not have to initialize int's etc, but
+        //to be explicit about the initialization, do it anyway
+
+        mProjectID      = 0; //assume does not describe a point
+        mPointID        = 0;
+
+        mTime           = 0d; //time coordinate taken
+
+        //Latitude in DD and DMS formats
+        mLatitude       = 0d;
+
+        mLatitudeDegree = 0;
+        mLatitudeMinute = 0;
+        mLatitudeSecond = 0d;
+
+
+        //Longitude in DD and DMS formats
+        mLongitude      = 0d;
+
+        mLongitudeDegree = 0;
+        mLongitudeMinute = 0;
+        mLongitudeSecond = 0d;
+
+        mElevation       = 0; //Orthometric Elevation in Meters
+        mGeoid           = 0;     //Mean Sea Level in Meters
+
         mValidCoordinate = false;
     }
 
     public Prism4DCoordinateLL(double latitude, double longitude) {
+        initializeDefaultVariables();;
         latLongDD(latitude, longitude);
     }
 
@@ -109,6 +153,7 @@ public class Prism4DCoordinateLL {
                                int longitudeDegree,
                                int longitudeMinute,
                                double longitudeSecond) {
+        initializeDefaultVariables();
 
         latLongDMS(latitudeDegree,
                 latitudeMinute,
@@ -119,6 +164,7 @@ public class Prism4DCoordinateLL {
     }
 
     public Prism4DCoordinateLL(CharSequence latitudeString, CharSequence longitudeString) {
+        initializeDefaultVariables();
         latLongDDStrings(latitudeString, longitudeString);
     }
 
@@ -129,6 +175,7 @@ public class Prism4DCoordinateLL {
                                CharSequence longitudeDegreeString,
                                CharSequence longitudeMinuteString,
                                CharSequence longitudeSecondString) {
+        initializeDefaultVariables();
         latLongDMSStrings(latitudeDegreeString,
                  latitudeMinuteString,
                  latitudeSecondString,
@@ -237,8 +284,7 @@ public class Prism4DCoordinateLL {
         //strip out the decimal parts of mLatitude
         mLatitudeDegree = (int) mLatitude;
         int temp = mLatitudeDegree;
-        double degree = (double) mLatitudeDegree;
-        degree = temp;
+        double degree = temp;
 
         //digital degrees minus degrees will be decimal minutes plus seconds
         //converting to int strips out the seconds
