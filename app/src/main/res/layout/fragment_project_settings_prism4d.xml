@@ -41,7 +41,8 @@
                 android:paddingTop="10dp"
                 >
                 <TextView
-                    android:id="@+id/projectIDLabel"
+                    android:labelFor="@+id/projectIDOutput"
+                    android:text="@string/setting_project_id"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -53,7 +54,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/projectIDOutput"
+                    android:id="@id/projectIDOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -76,7 +77,8 @@
                 >
 
                 <TextView
-                    android:id="@+id/projectNameLabel"
+                    android:labelFor="@+id/projectNameOutput"
+                    android:text="@string/settings_project_name"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -87,7 +89,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/projectNameOutput"
+                    android:id="@id/projectNameOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"

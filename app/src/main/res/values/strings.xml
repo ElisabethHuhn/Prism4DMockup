@@ -1,15 +1,20 @@
 <resources>
-    <string name="app_name">Prism4D</string>
-    <string name="ygps_app_name">Prism4D YGPS Skyplot</string>
-    <string name="gps_app_name">GPS Skyplot</string>
-    <string name="hello">Hello World, YGPS!</string>
+    <string name="app_name"           >Prism4D</string>
+    <string name="ygps_app_name"      >Prism4D YGPS Skyplot</string>
+    <string name="gps_app_name"       >GPS Skyplot</string>
+
     <string name="unused_button_label"> </string>
+    <string name="no_project_open"    >No Project Open</string>
+
 
 
     <!-- Exceptions -->
     <string name="database_context_exception">Can\'t create database without a context</string>
     <string name="database_access_exception1">Attempt to access the database before it has been initialized</string>
     <string name="database_access_exception2">Attempt to access the database before it has been opened</string>
+    <string name="project_missing_exception" >Something is wrong, project does not exist</string>
+    <string name="no_projects"               >No projects defined</string>
+    <string name="no_points"                 >No points defined</string>
 
     <!-- ORDER of screens is: -->
     <!-- Menu     -->
@@ -44,28 +49,40 @@
 
 
     <!-- Project Subtitles -->
-    <string name="subtitle_maintain_project">Maintain Project</string>
-    <string name="subtitle_maintain_point">Maintain Point</string>
-    <string name="subtitle_create_project">Create Project</string>
-    <string name="subtitle_create_point">Create Point</string>
-    <string name="subtitle_copy_point">Copy Point</string>
-    <string name="subtitle_open_point">Open Point</string>
-    <string name="subtitle_delete_point">Delete Point</string>
-    <string name="subtitle_project_settings">Project Settings</string>
-    <string name="subtitle_unknown_error">Unknown Error</string>
-    <string name="subtitle_convert_to_utm">Convert to UTM</string>
-    <string name="subtitle_list_nmea">List NMEA Sentences</string>
-    <string name="subtitle_list_satellites">List Visible Satellites</string>
-    <string name="subtitle_gps_nmea">GPS data from NMEA</string>
-    <string name="subtitle_workflow">Coordinate Workflow</string>
+    <string name="subtitle_create_project"  >Create Project</string>
+    <string name="subtitle_open_project"    >Open Project</string>
+    <string name="subtitle_copy_project"    >Copy Project</string>
+    <string name="subtitle_edit_project"    >Edit Project</string>
+    <string name="subtitle_delete_project"  >Delete Project</string>
+    <string name="subtitle_error_in_path"   >Error in Project Path through App. Please send report</string>
 
-    <string name="subtitle_maps">Maps</string>
-    <string name="subtitle_support">Support</string>
+    <string name="subtitle_maintain_project">Maintain Project</string>
+    <string name="subtitle_maintain_point"  >Maintain Point</string>
+
+    <string name="subtitle_create_point"    >Create Point</string>
+    <string name="subtitle_open_point"      >Open Point</string>
+    <string name="subtitle_copy_point"      >Copy Point</string>
+    <string name="subtitle_edit_point"      >Edit Point</string>
+    <string name="subtitle_delete_point"    >Delete Point</string>
+    <string name="subtitle_show_point"      >Show Point</string>
+    <string name="subtitle_collect_points"  >Collect Points</string>
+
+    <string name="subtitle_project_settings">Project Settings</string>
+    <string name="subtitle_unknown_error"   >Unknown Error</string>
+    <string name="subtitle_convert_to_utm"  >Convert to UTM</string>
+    <string name="subtitle_list_nmea"       >List NMEA Sentences</string>
+    <string name="subtitle_list_satellites" >List Visible Satellites</string>
+    <string name="subtitle_gps_nmea"        >GPS data from NMEA</string>
+    <string name="subtitle_workflow"        >Coordinate Workflow</string>
+
+    <string name="subtitle_maps"            >Maps</string>
+    <string name="subtitle_support"         >Support</string>
 
 
     //Collect menu items
     <string name="action_measure_points">Measure Points</string>
     <string name="action_open">Open</string>
+    <string name="action_edit">Edit</string>
 
     //Settings Menu items
     <string name="action_global_settings">Global_Settings</string>
@@ -142,18 +159,19 @@
     <string name="project_list_title">ID    Name    Date Last Touched    Points</string>
 
     <!-- Button Labels -->
-    <string name="project_view_existing_label">View Projects</string>
-    <string name="project_create_button_label">Create Project</string>
+    <string name="project_view_existing_label"  >View Projects</string>
+    <string name="project_create_button_label"  >Create Project</string>
     <string name="project_settings_button_label">View Settings</string>
 
 
     <!-- Text View Labels (initial text displayed) -->
-    <string name="project_screen_label">Project Attributes</string>
-    <string name="project_name_label">Name: </string>
-    <string name="project_id_label">ID: </string>
-    <string name="project_creation_date_label">Created: </string>
+    <string name="project_screen_label"            >Project Attributes</string>
+    <string name="project_name_label"              >Name: </string>
+    <string name="project_id_label"                >ID: </string>
+    <string name="project_id_will_be_label"        >ID will be:</string>
+    <string name="project_creation_date_label"     >Created: </string>
     <string name="project_last_modified_date_label">Modified: </string>
-    <string name="project_description_label">Description: </string>
+    <string name="project_description_label"       >Description: </string>
 
 
     <!-- Prompts -->
@@ -161,7 +179,8 @@
     <string name="project_selected"         >Project Selected</string>
     <string name="project_selection_ignored">Project Selection Ignored</string>
     <string name="project_no_selection"     >Project Has NOT been selected yet</string>
-    <string name="project_no_edit"          >Edit is identical to Open. Choose Open</string>
+    <string name="project_opened_1"         >Project ID =   </string>
+    <string name="project_opened_2"         >     now Open </string>
 
 
 
@@ -222,9 +241,9 @@
 
 
     <!-- Button Labels -->
-    <string name="point_maintain_points_label">Maintain Points</string>
+    <string name="list_points_label"        >List Points</string>
     <string name="save_changes_button_label">Save Changes</string>
-
+    <string name="exit_button_label"        >Exit</string>
 
 
 
@@ -311,16 +330,18 @@
     <!-- Cogo Top Level Screen Strings -->
 
     <!-- Button Labels -->
-    <string name="cogo_points_button_label">Key In Points</string>
-    <string name="cogo_coordinates_button_label">Coordinates</string>
-    <string name="cogo_workflow_button_label">Workflow</string>
-    <string name="cogo_inverse_button_label">Inverse</string>
+    <string name="cogo_points_button_label"       >Key In Point</string>
+    <string name="cogo_coordinates_button_label"  >Coordinates</string>
+    <string name="cogo_workflow_button_label"     >Workflow</string>
+    <string name="cogo_inverse_button_label"      >Inverse</string>
     <string name="cogo_intersections_button_label">Intersections</string>
-    <string name="cogo_triangles_button_label">Triangles</string>
-    <string name="cogo_curves_button_label">Curves</string>
-    <string name="cogo_areas_button_label">Areas</string>
-    <string name="cogo_map_check_button_label">Map Check/Workflow</string>
-    <string name="cogo_convert_button_label">Translate/Convert</string>
+    <string name="cogo_triangles_button_label"    >Triangles</string>
+    <string name="cogo_curves_button_label"       >Curves</string>
+    <string name="cogo_areas_button_label"        >Areas</string>
+    <string name="cogo_map_check_button_label"    >Map Check/Workflow</string>
+    <string name="cogo_convert_button_label"      >Translate/Convert</string>
+
+    <string name="cogo_project_must_be_open"      >Project must be open to add points</string>
 
 
 
@@ -477,7 +498,7 @@
     <string name="refraction_label">Refraction: </string>
     <string name="datum_label">Datum: </string>
     <string name="projection_label">Projection: </string>
-    <string name="zone_label">Zone: </string>
+
     <string name="coordinate_display_label">Scale Factor: </string>
     <string name="geod_model_label">Geoid Model: </string>
     <string name="starting_point_id_label">Starting Point ID: </string>
@@ -540,7 +561,7 @@
     <string name="geoid_height_label">Geoid: </string>
 
     <string name="utm_integer_label">UTM Coord: </string>
-    <string name="utm_nm_label">UTM Coord: </string>
+    <string name="utm_coord_label">UTM Coord: </string>
     <string name="utm_so_label">UTM Coord: </string>
     <string name="utm_zone_label">Zone </string>
     <string name="utm_easting_label">Easting M/F:</string>
@@ -571,6 +592,20 @@
     <string name="spc_meters">in Meters:</string>
     <string name="spc_feet">in Feet:</string>
 
+    <string name="coord_label"           >Coord: </string>
+    <string name="zone_label"            >Zone </string>
+    <string name="easting_label"         >Easting M/F:</string>
+    <string name="northing_label"        >Northing M/F:</string>
+    <string name="easting_meters_label"  >Easting Meters</string>
+    <string name="northing_meters_label" >Northing Meters</string>
+    <string name="easting_feet_label"    >Easting Feet</string>
+    <string name="northing_feet_label"   >Northing Feet</string>
+    <string name="hemisphere_label"      >Hemi </string>
+    <string name="latband_label"         >Latband </string>
+    <string name="convergence_label"     >Convergence </string>
+    <string name="coord_scale_factor_label" >Scale Factor </string>
+    <string name="meters_label"          >in Meters:</string>
+    <string name="feet_label"            >in Feet:</string>
 
     <!-- Edit View Fields (initial text displayed) -->
     <string name="latitude_input_label">Enter Latitude decimal number  </string>

@@ -16,7 +16,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * when the user is creating / making changes to the project definition
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DCollect1Fragment extends Fragment {
+public class MainPrism4DTopCollectFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -59,7 +59,7 @@ public class MainPrism4DCollect1Fragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DCollect1Fragment() {
+    public MainPrism4DTopCollectFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -93,7 +93,7 @@ public class MainPrism4DCollect1Fragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToCollect11PointsScreen();
+                    myActivity.switchToCollectPointsScreen();
                 }
             }
         });

@@ -15,7 +15,7 @@
             android:name="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="adjustPan"
+
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

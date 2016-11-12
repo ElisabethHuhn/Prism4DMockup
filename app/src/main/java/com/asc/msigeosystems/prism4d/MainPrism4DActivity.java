@@ -12,11 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.Toast;
 
+import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseManager;
 import com.asc.msigeosystems.prism4dmockup.R;
 
 import static com.asc.msigeosystems.prism4d.Prism4DPath.sDeleteTag;
+import static com.asc.msigeosystems.prism4d.Prism4DPath.sShowTag;
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_cogo;
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_config;
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_global_settings;
@@ -33,6 +34,10 @@ import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_workflow;
 //used to extend
 public class MainPrism4DActivity extends AppCompatActivity {
 
+    /***********************************************************************/
+    /**********   Static Constants  ****************************************/
+    /***********************************************************************/
+
     //DEFINE constants / literals
     public static final int MY_PERMISSIONS_REQUEST_COURSE_LOCATIONS = 1;
     public static final int MY_PERMISSIONS_REQUEST_FINE_LOCATIONS = 2;
@@ -44,19 +49,20 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sProjectCreateTag      = "PROJECT_CREATE_TOP";
     private static final String sProjectOpenTag        = "PROJECT_OPEN";
     //private static final String sProjectCopyTag        = "PROJECT_COPY";
-    //private static final String sProjectEditTag        = "PROJECT_EDIT";
+    private static final String sProjectEditTag        = "PROJECT_EDIT";
     private static final String sProjectUpdateTag      = "PROJECT_UPDATE";
     private static final String sProjectDeleteTag      = "PROJECT_DELETE";
     private static final String sProjectSettingsTag    = "PROJECT_SETTINGS";
 
-    private static final String sPointTopTag         = "POINT_TOP";
-    private static final String sPointCreateTag      = "POINT_CREATE_TOP";
-    private static final String sPointOpenTag        = "POINT_OPEN";
-    private static final String sPointCopyTag        = "POINT_COPY";
-    //private static final String sPointEditTag        = "POINT_EDIT";
-    private static final String sPointUpdateTag      = "POINT_UPDATE";
-    //private static final String sPointDeleteTag      = "POINT_DELETE";
-    //private static final String sPointSettingsTag    = "POINT_SETTINGS";
+    private static final String sPointTopTag           = "POINT_TOP";
+    private static final String sPointCreateTag        = "POINT_CREATE_TOP";
+    private static final String sPointOpenTag          = "POINT_OPEN";
+    private static final String sPointCopyTag          = "POINT_COPY";
+    private static final String sPointEditTag          = "POINT_EDIT";
+    private static final String sPointUpdateTag        = "POINT_UPDATE";
+    private static final String sPointDeleteTag        = "POINT_DELETE";
+    private static final String sPointShowTag          = "POINT_SHOW";
+    //private static final String sPointSettingsTag      = "POINT_SETTINGS";
 
     private static final String sCollectTopTag         = "COLLECT_TOP";
     private static final String sCollectPointsTag      = "COLLECT_POINTS";
@@ -87,7 +93,52 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
 
 
+    /***********************************************************************/
+    /**********   Member Variables  ****************************************/
+    /***********************************************************************/
 
+    private int            mOpenProjectID;
+    private Prism4DProject mOpenProject;
+
+
+
+
+
+
+
+    /***********************************************************************/
+    /**********   Setters and Getters  *************************************/
+    /***********************************************************************/
+
+    public Prism4DProject getOpenProject() {return mOpenProject; }
+    public void           setOpenProject(Prism4DProject openProject) {
+        mOpenProject = openProject;
+        if (mOpenProject == null) {
+            mOpenProjectID = openProject.getProjectID();
+        } else {
+            mOpenProjectID = 0;
+        }
+    }
+
+   public int  getOpenProjectID()                  { return mOpenProjectID; }
+    public void setOpenProjectID(int openProjectID) { mOpenProjectID = openProjectID; }
+
+    public String getOpenProjectIDMessage(){
+        if (mOpenProject != null){
+            //A project is open
+            return getString(R.string.project_opened_1) + " " +
+                    String.valueOf(getOpenProjectID())  + " " +
+                    getOpenProject().getProjectName()   + " " +
+                    getString(R.string.project_opened_2);
+        } else {
+            return getString(R.string.no_project_open);
+        }
+
+    }
+
+    /***********************************************************************/
+    /**********   Lifecycle Methods  ***************************************/
+    /***********************************************************************/
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,7 +155,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
         if (fragment == null) {
             //when we first create the activity,
             // the fragment needs to be the home screen
-            fragment = new MainPrism4DHomeFragment();
+            fragment = new MainPrism4DTopHomeFragment();
             fm.beginTransaction()
                     .add(R.id.fragment_container, fragment)
                     .commit();
@@ -117,8 +168,8 @@ public class MainPrism4DActivity extends AppCompatActivity {
         }
         GpsStuff();
 
-        //open the database here for the whole application
-        //new Prism4DDatabaseAccess.OpenPrism4DDB().execute(getApplicationContext());
+        //initialize the database here for the whole application
+        Prism4DDatabaseManager.initializeInstance(this);
 
 /****************** For now, comment out the floating action button
  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
@@ -263,19 +314,19 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 return true;
 /***
             case  R.id.action_project:
-                switchToProject1Screen();
+                switchToTopProjectScreen();
                 return true;
 
             case R.id.action_collect:
-                switchToCollect1Screen();
+                switchToTopCollectScreen();
                 return true;
 
             case  R.id.action_stakeout:
-                switchToStakeout1Screen();
+                switchToTopStakeoutScreen();
                 return true;
 
             case R.id.action_cogo:
-                switchToCogo1Screen();
+                switchToTopCogoScreen();
                 return true;
 
             case R.id.action_maps:
@@ -285,15 +336,15 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                 return true;
 
             case R.id.action_skyplots:
-                switchToSkyplot1Screen();
+                switchToTopSkyplotScreen();
                 return true;
 
             case R.id.action_config:
-                switchToConfig1Screen();
+                switchToTopConfigScreen();
                 return true;
 
             case R.id.action_settings:
-                switchToSettings1Screen();
+                switchToTopSettingsScreen();
                 return true;
 
             case R.id.action_help:
@@ -322,7 +373,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      *
      * Fragments are added with a TAG so that the stack can be popped later
      * EMH 4/24/2016
-     */
+     ****************************************************************************/
 
 
     /******
@@ -358,6 +409,29 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
     }
 
+
+    public void popToScreen(String tag){
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        //fm.popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+
+        boolean stillLooking = true;
+        if (fm.getBackStackEntryCount() == 0) stillLooking = false;
+
+        int i;
+        CharSequence fragName;
+        while (stillLooking){
+            i = fm.getBackStackEntryCount()-1;
+            fragName = fm.getBackStackEntryAt(i).getName();
+            if (fragName.equals(tag)){
+                stillLooking = false;
+            } else {
+                fm.popBackStackImmediate();
+                if (fm.getBackStackEntryCount() == 0) stillLooking = false;
+            }
+        }
+
+
+    }
 
 
 
@@ -444,7 +518,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     public void switchToHomeScreen() {
         //replace the fragment with the Home UI
         clearBackstack();
-        Fragment fragment = new MainPrism4DHomeFragment();
+        Fragment fragment = new MainPrism4DTopHomeFragment();
         String tag        = sHomeTag;
         int subTitle      = R.string.action_home;
 
@@ -466,9 +540,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Project screen
      * EMH 4/23/16
      */
-    public void switchToProject1Screen() {
+    public void switchToTopProjectScreen() {
 
-        Fragment fragment = new MainPrism4DProject1Fragment();
+        Fragment fragment = new MainPrism4DTopProjectFragment();
         String tag        = sProjectTopTag;
         int subTitle      = R.string.action_project;
 
@@ -487,69 +561,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * But clear any intermediate screens from the stack
      * EMH 5/13/16
      */
-    public void popToProject1Screen(){
+    public void popToTopProjectScreen(){
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         fm.popBackStack(sProjectTopTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-
-        //Put the name of the fragment on the title bar
-        if (getSupportActionBar() != null) {
-            getSupportActionBar().setSubtitle(R.string.action_project);
-        }
-
-    }
-
-
-
-
-    /****
-     * Method to switch fragment to screen to create new project
-     * EMH 5/11/16
-     */
-    public void switchToProject11CreateScreen(){
-
-        //We are going to need the database to create a project,
-        //and we can only open the database from an Activity,
-        //so open the database now
-        //Use the application context, not the activity context
-        //The lifetime of this open is while the application is active
-        //From now on, can call the static getInstance() and it will return
-        //    the open database.
-        //Prism4DDatabaseManager.initializeInstance(getApplicationContext());
-
-
-        //Gets the project which contains the defaults for all other projects
-        Prism4DProject project = getProjectForCreate();
-        //set the action for the project to create
-        Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sCreateTag);
-
-        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, projectPath);
-        String tag        = sProjectCreateTag;
-        int subTitle      = R.string.subtitle_create_project;
-
-        switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
-
-    }
-
-
-
-
-    /****
-     * Method to switch fragment to show a list of projects to open
-     * EMH 5/11/16
-     */
-    public void switchToProject12OpenScreen(){
-
-        //set the action for the project to create
-        Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sOpenTag);
-
-        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
-        String tag        = sProjectOpenTag;
-        int subTitle      = R.string.action_open;
-
-        switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
 
     }
 
@@ -574,11 +588,74 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
     /****
+     * Method to switch fragment to screen to create new project
+     * EMH 5/11/16
+     */
+    public void switchToProjectCreateScreen(){
+
+        //Gets the project which contains the defaults for all other projects
+        Prism4DProject project = getProjectForCreate();
+        //set the action for the project to create
+        Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sCreateTag);
+
+        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, projectPath);
+        String tag        = sProjectCreateTag;
+        int subTitle      = R.string.subtitle_create_project;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
+
+
+
+
+    /****
+     * Method to switch fragment to show a list of projects to open
+     * EMH 5/11/16
+     */
+    public void switchToProjectOpenScreen(){
+
+        //set the action for the project to open
+        Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sOpenTag);
+
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(projectPath);
+        String tag        = sProjectOpenTag;
+        int subTitle      = R.string.action_open;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
+
+
+
+
+    /****
+     * Method to switch fragment to show a list of projects to open
+     * EMH 5/11/16
+     */
+    public void switchToProjectEditScreen(){
+        //create the path for Edit
+        Prism4DPath path = new Prism4DPath(Prism4DPath.sEditTag);
+
+        Fragment fragment = MainPrism4DListProjectsFragment.newInstance(path);
+        String tag        = sProjectEditTag;
+        int subTitle      = R.string.action_edit;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
+
+
+
+    /****
      * Method to switch fragment to show a list of projects to
      * pick the one to copy
      * EMH 5/11/16
      */
-    public void switchToProject13CopyScreen(){
+    public void switchToProjectCopyScreen(){
 
         //create the path for copy
         Prism4DPath path = new Prism4DPath(Prism4DPath.sCopyTag);
@@ -600,11 +677,11 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to display and existing Project
      * EMH 5/10/16
      */
-    public void switchToProject14UpdateScreen(
+    public void switchToProjectUpdateScreen(
             Prism4DProject project,
             Prism4DPath path){
 
-        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, path);
+        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, path);
         String tag        = sProjectUpdateTag;
         int subTitle      = R.string.subtitle_maintain_project;
 
@@ -622,30 +699,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/13/16
      */
     public void popToProjectUpdateScreen(){
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
-        //fm.popBackStack(sProjectUpdateTag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
-
-        boolean stillLooking = true;
-        if (fm.getBackStackEntryCount() == 0) stillLooking = false;
-
-        int i;
-        CharSequence fragName;
-        while (stillLooking){
-            i = fm.getBackStackEntryCount()-1;
-            fragName = fm.getBackStackEntryAt(i).getName();
-            if (fragName.equals(sProjectUpdateTag)){
-                stillLooking = false;
-            } else {
-                fm.popBackStackImmediate();
-                if (fm.getBackStackEntryCount() == 0) stillLooking = false;
-            }
-        }
-
-
-        int subTitle = R.string.subtitle_maintain_project;
-        switchSubtitle(subTitle);
-
-    }
+        String tag = sProjectUpdateTag;
+        popToScreen(tag);
+     }
 
 
 
@@ -655,7 +711,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * pick the one to delete
      * EMH 5/13/16
      */
-    public void switchToProject15DeleteScreen(){
+    public void switchToProjectDeleteScreen(){
 
         //create the path for open
         Prism4DPath path = new Prism4DPath(sDeleteTag);
@@ -676,11 +732,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to Project Settings screen
      * EMH 4/26/16
      */
-    public void switchToProjectSettingsScreen(
-            Prism4DProject project,
-            Prism4DPath projectPath){
+    public void switchToProjectSettingsScreen(Prism4DProject project, Prism4DPath projectPath){
 
-        Fragment fragment =  MainPrism4DSettingsFragment.newInstance(project, projectPath);
+        Fragment fragment =  MainPrism4DProjectSettingsFragment.newInstance(project, projectPath);
         String tag        = sProjectSettingsTag;
         int subTitle      = R.string.subtitle_project_settings;
 
@@ -701,12 +755,12 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to screen to create new point
      * EMH 5/11/16
      */
-    public void switchToMaintainPoints1Screen(
+    public void switchToTopMaintainPointsScreen(
             Prism4DProject project,
             Prism4DPath projectPath){
 
 
-        Fragment fragment =  MainPrism4DPoint1Fragment.newInstance(project, projectPath);
+        Fragment fragment =  MainPrism4DTopPointFragment.newInstance(project, projectPath);
         String tag        = sPointTopTag;
         int subTitle      = R.string.subtitle_maintain_point;
 
@@ -719,25 +773,23 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
     /****
-     * Method to switch fragment to screen to create new project
+     * Method to switch fragment to screen to edit a point
      * EMH 5/11/16
      */
-    public void switchToPoint11CreateScreen(Prism4DProject project,
-                                            Prism4DPath projectPath){
+    public void switchToPointCreateScreen(Prism4DProject project){
 
 
         //Gets the point which contains the defaults for all other projects
-        Prism4DPoint newPoint = getPointForCreate();
-        newPoint.setProjectID(project.getProjectID());
+        //Prism4DPoint newPoint = getPointForCreate();
+        //newPoint.setForProjectID(project.getProjectID());
         //overwrite the dummy ID with the next ID in the proejct
-        newPoint.setPointID(project.getNextPointID());
+        //newPoint.setPointID(project.getNextPointID());
 
         Prism4DPath pointPath = new Prism4DPath(Prism4DPath.sCreateTag);
 
-        Fragment fragment =  MainPrism4DProjectUpdatePointFragment.newInstance(
-                                                                    projectPath,
-                                                                    newPoint,
-                                                                    pointPath);
+        Fragment fragment =  MainPrism4DPointEditFragment.newInstance(project.getProjectID(),
+                                                                      pointPath,
+                                                                      null);
         String tag        = sPointCreateTag;
         int subTitle      = R.string.subtitle_create_point;
 
@@ -751,91 +803,72 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
     /****
      * Method to switch fragment to show a list of projects to open
+     * First method just passes the project ID
      * EMH 5/16/16
      */
-    public void switchToListPointsScreen(
-            int         projectID,
-            Prism4DPath projectPath,
-            Prism4DPath pointPath){
+    public void switchToListPointsScreen(int         projectID,
+                                         Prism4DPath pointPath){
 
 
-        //      Get the singleton container of projects
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        //      then go get our project
-        Prism4DProject newProject = projectManager.getProject(projectID);
+        Fragment fragment =  MainPrism4DListPointsFragment.newInstance(projectID,
+                                                                       pointPath);
+        switchScreen(fragment, getPointTag(pointPath));
+    }
 
-        if (newProject == null){
-            //Need a project, not just the ID
-            // going forward do this right,
-            // but for now, punt
-            newProject = new Prism4DProject(
-                    getResources().getString(R.string.dummy_project_name), projectID);
-            newProject.setProjectDescription(
-                    getResources().getString(R.string.dummy_project_description));
-
-
-            projectManager.add(newProject);
-
-            //todo need to throw an exception here
-            //But tell the user
-            Toast.makeText(this,
-                    "Error, project " + String.valueOf(projectID) + " not found",
-                    Toast.LENGTH_LONG).show();
-        }
+    /****
+     * Method to switch fragment to show a list of points on the given project
+     * This method passes the project itself
+     * EMH 5/16/16
+     */
+    public void switchToListPointsScreen(Prism4DProject project,
+                                         Prism4DPath    pointPath){
 
 
-        //figure out the Tag and the Subtitle from the path we are on
-        CharSequence path = pointPath.getPath();
-        int subtitle;
+        Fragment fragment =  MainPrism4DListPointsFragment.newInstance(project.getProjectID(),
+                                                                       pointPath);
+
+        switchScreen(fragment, getPointTag(pointPath));
+    }
+
+
+    private String getPointTag(Prism4DPath path){
+
+        //figure out the Tag from the path we are on
+        CharSequence pointPath = path.getPath();
         String tag;
-        if (path.equals(Prism4DPath.sCopyTag)){
-            subtitle = R.string.subtitle_copy_point;
+        if (pointPath.equals(Prism4DPath.sCopyTag)){
             tag = sPointCopyTag;
-        } else if (path.equals(Prism4DPath.sOpenTag)) {
-            subtitle = R.string.subtitle_open_point;
+        } else if (pointPath.equals(Prism4DPath.sOpenTag)) {
             tag = sPointOpenTag;
-        } else if (path.equals(sDeleteTag)){
-            subtitle = R.string.subtitle_delete_point;
-            tag = sProjectDeleteTag;
+        } else if (pointPath.equals(sDeleteTag)) {
+            tag = sPointDeleteTag;
+        } else if (pointPath.equals(sShowTag)){
+            tag = sPointShowTag;
         } else {
             //todo probably need to throw an exception
-            subtitle = R.string.subtitle_unknown_error;
             tag = getResources().getString(R.string.unknown_process);
         }
-
-        Fragment fragment =  MainPrism4DListPointsFragment.newInstance(
-                newProject,
-                projectPath,
-                pointPath);
-
-        switchScreen(fragment, tag);
-        switchSubtitle(subtitle);
-
+        return tag;
     }
 
 
     /****
-     * Method to switch fragment to show a list of projects to open
+     * Method to switch fragment to edit a point
      * EMH 5/16/16
      */
-    public void switchToMaintainPointScreen(
-            Prism4DPath projectPath,
-            Prism4DPoint point,
-            Prism4DPath pointPath){
+    public void switchToEditPointScreen(int            projectID,
+                                        Prism4DPath    pointPath,
+                                        Prism4DPoint   point){
 
-
-        Fragment fragment =  MainPrism4DProjectUpdatePointFragment.newInstance(
-                projectPath,
-                point,
-                pointPath);
-        String tag        = sPointUpdateTag;
+        Fragment fragment =  MainPrism4DPointEditFragment.newInstance(projectID,
+                                                                             pointPath,
+                                                                             point);
+        String tag        = sPointEditTag;
         int subTitle      = R.string.subtitle_maintain_point;
 
         switchScreen(fragment, tag);
         switchSubtitle(subTitle);
-
     }
-
 
     /*******************************************
      * COLLECT
@@ -846,9 +879,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level collect screen
      * EMH 5/1/16
      */
-    public void switchToCollect1Screen(){
+    public void switchToTopCollectScreen(){
 
-        Fragment fragment = new MainPrism4DCollect1Fragment();
+        Fragment fragment = new MainPrism4DTopCollectFragment();
         String tag        = sCollectTopTag;
         int subTitle      = R.string.action_collect;
 
@@ -861,14 +894,13 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level collect screen
      * EMH 4/13/16
      */
-    public void switchToCollect11PointsScreen(){
+    public void switchToCollectPointsScreen(){
 
-        Fragment fragment = new MainPrism4DCollect11PointsFragment();
+        Fragment fragment = new MainPrism4DCollectPointsFragment();
         String tag        = sCollectPointsTag;
-        int subTitle      = R.string.action_measure_points;
 
         switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
+
 
     }
 
@@ -878,9 +910,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      *                      with map behind the drawing area
      * EMH 4/13/16
      */
-    public void switchToCollect11PointsWithMapScreen(){
+    public void switchToCollectPointsWithMapScreen(){
 
-        Fragment fragment = new MainPrism4DCollect11PointsWithMapFragment();
+        Fragment fragment = new MainPrism4DCollectPointsWithMapFragment();
         String tag        = sCollectPointsMapTag;
         int subTitle      = R.string.action_measure_points;
 
@@ -900,9 +932,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Stakeout screen
      * EMH 5/1/16
      */
-    public void switchToStakeout1Screen(){
+    public void switchToTopStakeoutScreen(){
 
-        Fragment fragment = new MainPrism4DStakeout1Fragment();
+        Fragment fragment = new MainPrism4DTopStakeoutFragment();
         String tag        = sStakeoutTopTag;
         int subTitle      = R.string.action_stakeout;
 
@@ -920,9 +952,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Cogo screen
      * EMH 5/1/16
      */
-    public void switchToCogo1Screen(){
+    public void switchToTopCogoScreen(){
 
-        Fragment fragment = new MainPrism4DCogo1Fragment();
+        Fragment fragment = new MainPrism4DTopCogoFragment();
         String tag        = sCogoTopTag;
         int subTitle      = action_cogo;
 
@@ -930,6 +962,18 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         switchSubtitle(subTitle);
 
     }
+
+
+    /****
+     * Method to switch fragment to top level Project screen
+     * But clear any intermediate screens from the stack
+     * EMH 5/13/16
+     */
+    public void popToTopCogoScreen(){
+        String tag = sCogoTopTag;
+        popToScreen(tag);
+    }
+
 
 
     /****
@@ -975,9 +1019,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Cogo screen
      * EMH 10/21/2016
      */
-    public void switchToMaps1Screen(){
+    public void switchToTopMapsScreen(){
 
-        Fragment fragment = new MainPrism4DMaps1Fragment();
+        Fragment fragment = new MainPrism4DTopMapsFragment();
         String tag        = sMapsTopTag;
         int subTitle      = subtitle_maps;
 
@@ -998,9 +1042,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Skyplot screen
      * EMH 5/1/16
      */
-    public void switchToSkyplot1Screen(){
+    public void switchToTopSkyplotScreen(){
 
-        Fragment fragment = new MainPrism4DSkyplots1Fragment();
+        Fragment fragment = new MainPrism4DTopSkyplotsFragment();
         String tag        = sSkyplotTopTag;
         int subTitle      = action_skyplots;
 
@@ -1072,9 +1116,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to Configurations top matrix screen
      * EMH 4/26/16
      */
-    public void switchToConfig1Screen(){
+    public void switchToTopConfigScreen(){
 
-        Fragment fragment = new MainPrism4DConfigurations1Fragment();
+        Fragment fragment = new MainPrism4DTopConfigurationsFragment();
         String tag        = sConfigTopTag;
         int subTitle      = action_config;
 
@@ -1095,9 +1139,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Settings screen
      * EMH 5/1/16
      */
-    public void switchToSettings1Screen(){
+    public void switchToTopSettingsScreen(){
 
-        Fragment fragment = new MainPrism4DSettings1Fragment();
+        Fragment fragment = new MainPrism4DTopSettingsFragment();
         String tag        = sSettingsTopTag;
         int subTitle      = action_settings;
 
@@ -1111,9 +1155,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to Global Settings screen
      * EMH 5/11/16
      */
-    public void switchToSettings11GlobalScreen(){
+    public void switchToSettingsGlobalScreen(){
 
-        Fragment fragment = new MainPrism4DSettings11GlobalFragment();
+        Fragment fragment = new MainPrism4DSettingsGlobalFragment();
         String tag        = sSettingsGlobalTag;
         int subTitle      = action_global_settings;
 
@@ -1126,7 +1170,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to display Settings - Project Defaults
      * EMH 5/11/16
      */
-    public void switchToSettings12ProjectDefaultsScreen(){
+    public void switchToSettingsProjectDefaultsScreen(){
 
 
         //Gets the project which contains the defaults for all other projects
@@ -1136,7 +1180,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Prism4DPath openPath = new Prism4DPath(Prism4DPath.sOpenTag);
 
 
-        Fragment fragment = MainPrism4DProject14UpdateFragment.newInstance(project, openPath);
+        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, openPath);
         String tag        = sSettingsProjectDefaultTag;
         int subTitle      = R.string.action_project_default_settings;
 
@@ -1156,9 +1200,9 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * Method to switch fragment to top level Support screen
      * EMH 10/21/2016
      */
-    public void switchToSupport1Screen(){
+    public void switchToTopSupportScreen(){
 
-        Fragment fragment = new MainPrism4DSupport1Fragment();
+        Fragment fragment = new MainPrism4DTopSupportFragment();
         String tag        = sSupportTopTag;
         int subTitle      = subtitle_support;
 
@@ -1186,19 +1230,14 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
     private Prism4DProject getDefaultProject(){
-        Prism4DProject project = new Prism4DProject(
-                Prism4DProject.sProjectDefaultName,
-                Prism4DProject.sProjectDefaultsID);
+        Prism4DProject project = new Prism4DProject(Prism4DProject.sProjectDefaultName);
 
         project.setProjectDescription(Prism4DProject.sProjectDefaultsDesc);
         return project;
     }
 
     private Prism4DProject getProjectForCreate(){
-        Prism4DProject project = new Prism4DProject(
-                Prism4DProject.sProjectNewName,
-                Prism4DProject.sProjectNewID);
-
+        Prism4DProject project = new Prism4DProject(Prism4DProject.sProjectNewName);
         project.setProjectDescription(Prism4DProject.sProjectNewDesc);
         return project;
     }

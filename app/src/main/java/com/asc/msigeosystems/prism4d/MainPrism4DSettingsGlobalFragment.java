@@ -17,7 +17,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * local settings which are not covered here
  * Created by elisabethhuhn on 5/1/2016.
  */
-public class MainPrism4DSettings11GlobalFragment extends Fragment {
+public class MainPrism4DSettingsGlobalFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -42,7 +42,7 @@ public class MainPrism4DSettings11GlobalFragment extends Fragment {
 
 
 
-    public MainPrism4DSettings11GlobalFragment() {
+    public MainPrism4DSettingsGlobalFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }

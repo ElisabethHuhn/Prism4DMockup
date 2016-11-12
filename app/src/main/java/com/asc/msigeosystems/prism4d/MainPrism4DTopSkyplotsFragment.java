@@ -16,7 +16,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * for stakeout functions
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DSkyplots1Fragment extends Fragment {
+public class MainPrism4DTopSkyplotsFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -43,7 +43,7 @@ public class MainPrism4DSkyplots1Fragment extends Fragment {
 
 
 
-    public MainPrism4DSkyplots1Fragment() {
+    public MainPrism4DTopSkyplotsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }

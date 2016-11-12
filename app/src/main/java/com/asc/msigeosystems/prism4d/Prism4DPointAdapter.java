@@ -11,8 +11,13 @@ import com.asc.msigeosystems.prism4dmockup.R;
 import java.util.List;
 
 /**
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
  * patterned after Prism4DProjectAdapter
+ * The Adapter manages the connection between
+ *  - The data store of Projects (either in memory or on DB)
+ *  - Lists of projects on the UI
+ *
+ *  Adapters follow a pattern which is defined in the design documents
  */
 public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapter.MyViewHolder> {
 
@@ -48,15 +53,16 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
 
     }
 
-    public void removeItem(int position) {
+    public void removeItem(int position, int projectID) {
         Prism4DPoint point = mPointList.get(position);
 
-        mPointList.remove(position);
-        notifyItemRemoved(position);
+        //Can't maintain the project's point list directly
+        //Have to ask the pointManager to do it
+        Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
+        pointsManager.removePoint(projectID, point);
 
-        //but we also need to remove it from the list of all points in all projects
-        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
-        pointsManager.remove(point);
+        notifyItemRemoved(position); //update the UI
+
 
     }
 
@@ -65,20 +71,16 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
         if (mPointList != null ) {
             Prism4DPoint point = mPointList.get(position);
 
-            holder.projectID       .setText(String.valueOf(point.getProjectID()));
+            holder.projectID       .setText(String.valueOf(point.getForProjectID()));
             holder.pointID         .setText(String.valueOf(point.getPointID()));
-            holder.pointEasting    .setText(Double.toString(point.getPointEasting()));
-            holder.pointNorthing   .setText(Double.toString(point.getPointNorthing()));
-            holder.pointElevation  .setText(Double.toString(point.getPointElevation()));
+
             holder.pointDescription.setText(point.getPointDescription().toString());
 
         } else {
 
-            holder.projectID       .setText("No Points Defined");
+            holder.projectID       .setText(R.string.no_points);
             holder.pointID         .setText("");
-            holder.pointEasting    .setText("");
-            holder.pointNorthing   .setText("");
-            holder.pointElevation  .setText("");
+
             holder.pointDescription.setText("");
         }
 

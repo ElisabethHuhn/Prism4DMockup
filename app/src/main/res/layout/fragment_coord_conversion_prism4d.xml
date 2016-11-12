@@ -477,7 +477,7 @@
                 >
                 <!-- label -->
                 <TextView
-                    android:text="@string/utm_nm_label"
+                    android:text="@string/utm_coord_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="25"

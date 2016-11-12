@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android               = "http://schemas.android.com/apk/res/android"
+          android:orientation   = "vertical"
+          android:layout_width  = "match_parent"
+          android:layout_height = "wrap_content"
+
+          android:paddingBottom = "20dp"
+    >
+
+    <!--  Prompt (UTM is the default, replace if SPCS -->
+    <TextView
+        android:id            = "@+id/en_prompt"
+        android:text          = "@string/utm_prompt"
+        android:layout_height = "wrap_content"
+        android:layout_width  = "wrap_content"
+        android:layout_gravity= "center_horizontal"
+        android:gravity       = "center"
+
+        android:paddingBottom = "15dp"
+
+        android:textColor     = "@color/colorTextBlack"
+        android:background    = "@color/colorScreenBackground"
+        />
+
+
+    <!-- Zone Hemisphere Latband -->
+    <include android:id="@+id/zhlContainer"         layout="@layout/element_zone_hemi_latband"/>
+
+    <!-- easting and northing -->
+    <include android:id="@+id/eastingContainer"     layout="@layout/element_label_en_meters_feet"/>
+    <include android:id="@+id/northingContainer"    layout="@layout/element_label_en_meters_feet"/>
+
+    <!-- Convergence / Scale Factor -->
+    <include android:id="@+id/convergenceContainer" layout="@layout/element_convergence_scale_factor"/>
+
+
+</LinearLayout>

@@ -40,45 +40,6 @@
         android:background="@color/colorWhite"
         />
 
-    <!-- Easting -->
-    <TextView
-        android:id="@+id/pointRowEasting"
-
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="10"
-        android:layout_marginEnd="8dp"
-
-        android:textColor="@color/colorTextBlack"
-        android:background="@color/colorWhite"
-        />
-
-    <!-- Northing -->
-    <TextView
-        android:id="@+id/pointRowNorthing"
-
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="10"
-        android:layout_marginEnd="8dp"
-
-        android:textColor="@color/colorTextBlack"
-        android:background="@color/colorWhite"
-        />
-
-    <!-- Elevation -->
-    <TextView
-        android:id="@+id/pointRowElevation"
-
-        android:layout_height="wrap_content"
-        android:layout_width="0dp"
-        android:layout_weight="10"
-        android:layout_marginEnd="8dp"
-
-        android:textColor="@color/colorTextBlack"
-        android:background="@color/colorWhite"
-        />
-
     <!-- Description -->
     <TextView
         android:id="@+id/pointRowDescription"

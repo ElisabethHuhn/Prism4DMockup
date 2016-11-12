@@ -18,7 +18,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * when the user is making point measurements in the field
  * Created by elisabethhuhn on 4/13/2016.
  */
-public class MainPrism4DCollect11PointsFragment extends Fragment {
+public class MainPrism4DCollectPointsWithMapFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -71,7 +71,7 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
     private Button mEnterButton;
 
 
-    public MainPrism4DCollect11PointsFragment() {
+    public MainPrism4DCollectPointsWithMapFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -81,19 +81,24 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         //Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_collect_11_points_prism4d, container, false);
+        View v = inflater.inflate(R.layout.fragment_collect_points_map_prism4d, container, false);
 
-
-        //Wire up the UI widgets so they can handle events later
-        //For now ignore the text view widgets, as this is just a mockup
-        //      for the real screen we'll have to actually fill the fields
         //Wire up the UI widgets so they can handle events later
         wireWidgets(v);
+
+
+        //Set the titlebar subtitle
+        ((MainPrism4DActivity) getActivity()).
+                switchSubtitle(getString(R.string.subtitle_collect_points));
 
         return v;
     }
 
-    private void wireWidgets(View v){
+
+    private void wireWidgets(View v) {
+
+        //For now ignore the text view widgets, as this is just a mockup
+        //      for the real screen we'll have to actually fill the fields
 
         //ON THE LEFT PORTION OF THE MAIN DRAWING AREA
 
@@ -103,11 +108,11 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                //Switch the fragment to the collect with maps fragment.
+                //Switch the fragment to the collect without maps fragment.
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
-                    myActivity.switchToCollect11PointsWithMapScreen();
+                    myActivity.switchToCollectPointsScreen();
                 }
 
             }
@@ -226,7 +231,7 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
         //  unlike the home screen
         //  Esc and Enter buttons are enabled on the collect screen
 
-        //Esc Button
+        //Esc Button is enabled on this screen
         mEscButton = (Button) v.findViewById(R.id.escButton);
         //have to set the color and enable the button as the default is NOT enabled/grayed out
         mEscButton.setEnabled(true);
@@ -234,6 +239,7 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
         mEscButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //for now, just put up a toast that the button was pressed
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
                         R.string.no_save,
@@ -243,12 +249,14 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
                     myActivity.switchToPopBackstack();
+                    //have to pop regular collect screen off the stack too
+                    myActivity.switchToPopBackstack();
                 }
 
             }
         });
 
-        //Enter Button
+        //Enter Button is enabled on this screen
         mEnterButton = (Button) v.findViewById(R.id.enterButton);
         //have to set the color and enable the button as the default is NOT enabled/grayed out
         mEnterButton.setEnabled(true);
@@ -256,14 +264,16 @@ public class MainPrism4DCollect11PointsFragment extends Fragment {
         mEnterButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-            //Let user know data was saved
-            Toast.makeText(getActivity(),
-                    R.string.save_contents,
-                    Toast.LENGTH_SHORT).show();
+                //Let user know data was saved
+                Toast.makeText(getActivity(),
+                        R.string.save_contents,
+                        Toast.LENGTH_SHORT).show();
                 //Switch the fragment to the previous fragment.
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
+                    myActivity.switchToPopBackstack();
+                    //have to pop regular collect off stack too
                     myActivity.switchToPopBackstack();
                 }
 

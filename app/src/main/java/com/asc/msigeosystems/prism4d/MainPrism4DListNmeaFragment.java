@@ -29,7 +29,7 @@ import java.util.List;
 /**
  * The List Nmea Fragment is the UI
  * for the user to see the NMEA Sentences received from GPS
- * Created by elisabethhuhn on 5/8/2016.
+ * Created by Elisabeth Huhn on 5/8/2016.
  */
 public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.Listener, LocationListener, GpsStatus.NmeaListener{
 
@@ -82,7 +82,43 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //1) Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_nmea_list_prism4d, container, false);
+        v.setTag(TAG);
+
+        initializeRecyclerView(v);
+
+        //Now take care of the GPS Stuff
+        //GPS Stuff
         /*
+        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
+        if (!gpsEnabled){
+            //Leave even though project has chaged
+            Toast.makeText(getActivity(),
+                    R.string.skyplot_gps_not_enabled,
+                    Toast.LENGTH_SHORT).show();
+        }
+        */
+        //Make sure we have the proper GPS permissions before starting
+        //If we don't currently have permission, bail
+        if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED){return v;}
+
+        mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        //but don't turn them on until onResume()
+        //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
+        //mLocationManager.addGpsStatusListener(this);
+        //mLocationManager.addNmeaListener(this);
+
+        //9) return the view
+        return v;
+    }
+
+    private void initializeRecyclerView(View v){
+                /*
          * The steps for doing recycler view in onCreateView() of a fragment are:
          * 1) inflate the .xml
          *
@@ -97,9 +133,6 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
          *
          * 9) return the view
          */
-        //1) Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_nmea_list_prism4d, container, false);
-        v.setTag(TAG);
 
         //2) find and remember the RecyclerView
         mRecyclerView = (RecyclerView) v.findViewById(R.id.nmeaList);
@@ -145,33 +178,6 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
                     }
                 }));
 
-        //Now take care of the GPS Stuff
-        //GPS Stuff
-        /*
-        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled){
-            //Leave even though project has chaged
-            Toast.makeText(getActivity(),
-                    R.string.skyplot_gps_not_enabled,
-                    Toast.LENGTH_SHORT).show();
-        }
-        */
-        //Make sure we have the proper GPS permissions before starting
-        //If we don't currently have permission, bail
-        if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED){return v;}
-
-        mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        //but don't turn them on until onResume()
-        //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
-        //mLocationManager.addGpsStatusListener(this);
-        //mLocationManager.addNmeaListener(this);
-
-        //9) return the view
-        return v;
     }
 
     /************************************************************************/

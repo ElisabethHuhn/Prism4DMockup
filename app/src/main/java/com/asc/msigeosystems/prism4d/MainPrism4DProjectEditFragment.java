@@ -22,43 +22,48 @@ import java.util.Date;
  * The Update Project Fragment
  * is passed a project on startup. The project attribute fields are
  * pre-populated prior to updating the project
- * Created by elisabethhuhn on 4/13/2016.
+ *
+ * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DProject14UpdateFragment extends Fragment {
+public class MainPrism4DProjectEditFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
-     *  although in the mockup, most will be statically defined in the xml
+     *
      */
 
 
-    //Input / Output Fields on screen
-    private TextView mProjectNameLabel;
-    private EditText mProjectNameInput;
+    /***********************************************************************/
+    /**********   UI Widget Variables  *************************************/
+    /***********************************************************************/
 
+    //Input / Output Fields on screen
+    private EditText mProjectNameInput;
     private TextView mProjectIDLabel;
     private EditText mProjectIDInput;
-
-    private TextView mProjectDateLabel;
     private EditText mProjectDateInput;
-
-    private TextView mProjectMaintLabel;
     private EditText mProjectMaintInput;
-
-    private TextView mProjectDescLabel;
     private EditText mProjectDescInput;
+
 
     private Button mProjectViewSettingsButton;
     private Button mProjectViewExistingButton;
-    private Button mProjectMaintainPointsButton;
+    private Button mProjectListPointsButton;
     private Button mProjectSaveChangesButton;
+    private Button mProjectExitButton;
+
+
+    /***********************************************************************/
+    /**********   Member Variables  ****************************************/
+    /***********************************************************************/
 
     private CharSequence mProjectName;
     private CharSequence mProjectID;
-    private int          mProjectIntID;
     private CharSequence mProjectCreateDate;
     private CharSequence mProjectMaintDate;
     private CharSequence mProjectDescription;
+
+    private Prism4DProject mProjectBeingMaintained;
 
     private boolean      mProjectChanged = false;
     private CharSequence mProjectPath;
@@ -67,12 +72,12 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
     //newInstance() stores the passed parameters in the fragments argument bundle
-    public static MainPrism4DProject14UpdateFragment newInstance(
-            Prism4DProject project,
-            Prism4DPath projectPath) {
+    public static MainPrism4DProjectEditFragment newInstance(Prism4DProject project,
+                                                             Prism4DPath projectPath) {
 
         Bundle args = new Bundle();
 
+        // TODO: 11/10/2016 Rather than treat dates as char sequences, convert to long milliseconds
         //It will be some work to make all of the data model serializable
         //so for now, just pass the project values
         args.putInt         (Prism4DProject.sProjectIDTag,
@@ -89,15 +94,14 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                                                 projectPath.getPath());
 
 
-        MainPrism4DProject14UpdateFragment fragment =
-                new MainPrism4DProject14UpdateFragment();
+        MainPrism4DProjectEditFragment fragment = new MainPrism4DProjectEditFragment();
 
         fragment.setArguments(args);
         return fragment;
     }
 
     //Constructor
-    public MainPrism4DProject14UpdateFragment() {
+    public MainPrism4DProjectEditFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created with this constructor
     }
@@ -110,13 +114,29 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         int projectID       = getArguments().getInt(Prism4DProject.sProjectIDTag);
-        mProjectID = String.valueOf(projectID);
+
+        mProjectID          = String.valueOf(projectID);
         mProjectName        = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
         mProjectCreateDate  = getArguments().getCharSequence(Prism4DProject.sProjectCreateTag);
         mProjectMaintDate   = getArguments().getCharSequence(Prism4DProject.sProjectMaintTag);
         mProjectDescription = getArguments().getCharSequence(Prism4DProject.sProjectDescTag);
-        mProjectPath        = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
+        mProjectPath        = getArguments().getCharSequence(Prism4DPath.   sProjectPathTag);
 
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(Integer.parseInt(mProjectID.toString().trim()));
+        if (project == null){
+            //don't assign a new Project ID to this instance, or put it in the ProjectManager List
+            project             = new Prism4DProject(mProjectName.toString(), Prism4DProject.sProjectNewID);
+            mProjectID          = String.valueOf(project.getProjectID());
+            mProjectCreateDate  = project.getProjectDateCreated().toString();
+            mProjectMaintDate   = project.getProjectLastModified().toString();
+            mProjectDescription = project.getProjectDescription();
+
+        }
+        mProjectBeingMaintained = project;
+
+
+        //put this info on the screen in initializeUI()
 
     }
 
@@ -126,13 +146,22 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
         //Inflate the layout for this fragment
         View v = inflater.inflate(
-                R.layout.fragment_project_1_n_maintain_prism4d,
+                R.layout.fragment_project_edit_prism4d,
                 container,
                 false);
 
 
         //Wire up the UI widgets so they can handle events later
         wireWidgets(v);
+
+
+        //If we had any arguments passed, update the screen with them
+        initializeUI();
+
+        //set the title bar subtitle
+        setSubtitle();
+
+
 
         return v;
     }
@@ -142,7 +171,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         //      for the real screen we'll have to actually fill the fields
 
         //Project Name
-        mProjectNameLabel = (TextView) v.findViewById(R.id.projectNameLabel);
         mProjectNameInput = (EditText) v.findViewById(R.id.projectNameInput);
         mProjectNameInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -153,7 +181,10 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         });
 
         //Project ID
-        mProjectIDLabel = (TextView)v.findViewById(R.id.projectIDLabel);
+        mProjectIDLabel = (TextView) v.findViewById(R.id.projectIDLabel);
+        if (mProjectPath == Prism4DPath.sCreateTag){
+            mProjectIDLabel.setText(getString(R.string.project_id_will_be_label));
+        }
         mProjectIDInput = (EditText) v.findViewById(R.id.projectIDInput);
         //Shouldn't be able to change ID
         mProjectIDInput.setEnabled(false);
@@ -167,7 +198,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         });
 
         //Project Creation Date
-        mProjectDateLabel = (TextView) v.findViewById(R.id.projectCreationDateLabel);
         mProjectDateInput = (EditText) v.findViewById(R.id.projectCreationDateInput);
         mProjectDateInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -178,7 +208,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         });
 
         //Project Last Modified Date
-        mProjectMaintLabel = (TextView) v.findViewById(R.id.projectModifiedDateLabel);
         mProjectMaintInput = (EditText) v.findViewById(R.id.projectModifiedDateInput);
         mProjectMaintInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -189,7 +218,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         });
 
         //Project Description
-        mProjectDescLabel = (TextView)v.findViewById(R.id.projectDescLabel);
         mProjectDescInput = (EditText) v.findViewById(R.id.projectDescInput);
         mProjectDescInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
@@ -201,9 +229,6 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
 
 
-        //set the screen fields from the arguments bundle
-        showInputProject();
-
 
         //View Settings Button
         mProjectViewSettingsButton = (Button) v.findViewById(R.id.projectViewSettingsButton);
@@ -214,10 +239,8 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                 if (mProjectChanged){
                     areYouSureViewSettings();
                 } else {
-                    ((MainPrism4DActivity) getActivity()).switchToProjectSettingsScreen(
-                                findThisProject(),
-                                new Prism4DPath(mProjectPath));
-                }
+                    switchToProjectSettings();
+                 }
 
             }
         });
@@ -232,60 +255,33 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
         mProjectViewExistingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-            //what this button does depends upon the path  {create, open, copy}
-            if (mProjectPath.equals(Prism4DPath.sCreateTag)){
-                Toast.makeText(getActivity(),
-                        R.string.cant_view_projects,
-                        Toast.LENGTH_SHORT).show();
 
-                //((MainPrism4DActivity) getActivity()).switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
+                viewProjects();
 
-            } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
-                    (mProjectPath.equals(Prism4DPath.sCopyTag))) {
-                if (mProjectChanged){
-                    //ask the user if should continue
-                    areYouSureViewProjects();
-
-                } else {
-                    Toast.makeText(getActivity(),
-                            R.string.project_unchanged,
-                            Toast.LENGTH_SHORT).show();
-
-                    ((MainPrism4DActivity) getActivity()).switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
-                }
-            } else {
-                Toast.makeText(getActivity(),
-                        R.string.unrecognized_path_encountered,
-                        Toast.LENGTH_SHORT).show();
-                //todo need to throw an exception here
-                //Notice that we don't leave the screen on this condition
-            }
 
 
             }
         });
 
 
-        //Maintain Points Button
-        mProjectMaintainPointsButton = (Button) v.findViewById(R.id.projectMaintainPointsButton);
-        mProjectMaintainPointsButton.setEnabled(true);
-        mProjectMaintainPointsButton.setTextColor(Color.BLACK);
-        mProjectMaintainPointsButton.setOnClickListener(new View.OnClickListener() {
+        //List Points Button
+        mProjectListPointsButton = (Button) v.findViewById(R.id.projectListPointsButton);
+        mProjectListPointsButton.setEnabled(true);
+        mProjectListPointsButton.setTextColor(Color.BLACK);
+        mProjectListPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mProjectChanged){
                     //need to ask first about abandoning changes
-                    areYouSureMaintPoints();
+                    areYouSureListPoints();
                 } else {
-                    //doesn't matter what path we are on, switch to maintain points
-                    ((MainPrism4DActivity) getActivity()).switchToMaintainPoints1Screen(
-                                findThisProject(),
-                                new Prism4DPath(mProjectPath));
+                    switchToListPoints();
 
                 }
 
             }
         });
+
 
         //Save Changes Button
         mProjectSaveChangesButton = (Button) v.findViewById(R.id.projectSaveChangesButton);
@@ -301,152 +297,102 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
                     saveChanges();
 
                     setProjectSaved();
-                    ((MainPrism4DActivity) getActivity()).popToProject1Screen();
+                    ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
 
+                }
+            }
+        });
+
+        //Exit Button
+        mProjectExitButton = (Button) v.findViewById(R.id.projectExitButton);
+        //button is always enabled
+        mProjectExitButton.setEnabled(true);
+        mProjectExitButton.setTextColor(Color.BLACK);
+        mProjectExitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                //If the project changed, ask before exiting
+                if (mProjectChanged) {
+                    areYouSureExit();
+                } else {
+                    switchToExit();
                 }
             }
         });
     }
 
-    //Build and display the alert dialog
-    private void areYouSureMaintPoints(){
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.abandon_title)
-                .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.continue_abandon_changes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Leave even though project has chaged
-                                Toast.makeText(getActivity(),
-                                        R.string.continue_abandon_changes,
-                                        Toast.LENGTH_SHORT).show();
-
-                                MainPrism4DActivity myActivity =
-                                        (MainPrism4DActivity) getActivity();
-                                myActivity.switchToMaintainPoints1Screen(
-                                        findThisProject(),
-                                        new Prism4DPath(mProjectPath));
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        Toast.makeText(getActivity(),
-                                "Pressed Cancel",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setIcon(R.drawable.ground_station_icon)
-                .show();
-    }
-
-    //Build and display the alert dialog
-    private void areYouSureEsc(){
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.abandon_title)
-                .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.continue_abandon_changes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Leave even though project has chaged
-                                Toast.makeText(getActivity(),
-                                        R.string.continue_abandon_changes,
-                                        Toast.LENGTH_SHORT).show();
-
-                                MainPrism4DActivity myActivity =
-                                        (MainPrism4DActivity) getActivity();
-                                myActivity.popToProject1Screen();
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        Toast.makeText(getActivity(),
-                                "Pressed Cancel",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setIcon(R.drawable.ground_station_icon)
-                .show();
-    }
-
-
-    //Build and display the alert dialog
-    private void areYouSureViewProjects(){
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.abandon_title)
-                .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.continue_abandon_changes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Leave even though project has chaged
-                                Toast.makeText(getActivity(),
-                                        R.string.continue_abandon_changes,
-                                        Toast.LENGTH_SHORT).show();
-
-                                MainPrism4DActivity myActivity =
-                                        (MainPrism4DActivity) getActivity();
-
-                                myActivity.switchToProjectListProjectsScreen(
-                                        new Prism4DPath(mProjectPath));
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        Toast.makeText(getActivity(),
-                                "Pressed Cancel",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setIcon(R.drawable.ground_station_icon)
-                .show();
-    }
-
-
-    //Build and display the alert dialog
-    private void areYouSureViewSettings(){
-        new AlertDialog.Builder(getActivity())
-                .setTitle(R.string.abandon_title)
-                .setMessage(R.string.are_you_sure)
-                .setPositiveButton(R.string.continue_abandon_changes,
-                        new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface dialog, int which) {
-                                //Leave even though project has chaged
-                                Toast.makeText(getActivity(),
-                                        R.string.continue_abandon_changes,
-                                        Toast.LENGTH_SHORT).show();
-
-                                MainPrism4DActivity myActivity =
-                                        (MainPrism4DActivity) getActivity();
-                                if (myActivity != null){
-                                    myActivity.switchToProjectSettingsScreen(
-                                            findThisProject(),
-                                            new Prism4DPath(mProjectPath));
-                                }
-                            }
-                        })
-                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        // do nothing
-                        Toast.makeText(getActivity(),
-                                "Pressed Cancel",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .setIcon(R.drawable.ground_station_icon)
-                .show();
-    }
-
-
-
-    private void showInputProject() {
+    private void initializeUI() {
         //show the data that came out of the input arguments bundle
         mProjectIDInput   .setText(mProjectID);
         mProjectNameInput .setText(mProjectName);
         mProjectDateInput .setText(mProjectCreateDate);
         mProjectMaintInput.setText(mProjectMaintDate);
         mProjectDescInput .setText(mProjectDescription);
+    }
+
+
+
+    private void setSubtitle(){
+        String msg;
+
+        if (mProjectPath.equals(Prism4DPath.sOpenTag)) {
+            msg = getString(R.string.subtitle_open_project);
+        } else if (mProjectPath.equals(Prism4DPath.sCopyTag)) {
+            msg = getString(R.string.subtitle_copy_project);
+        } else if (mProjectPath.equals(Prism4DPath.sCreateTag)) {
+            msg = getString(R.string.subtitle_create_project);
+        } else if (mProjectPath.equals(Prism4DPath.sDeleteTag)) {
+            msg = getString(R.string.subtitle_delete_project);
+        } else if (mProjectPath.equals(Prism4DPath.sEditTag)) {
+            msg = getString(R.string.subtitle_edit_project);
+        } else {
+            msg = getString(R.string.subtitle_error_in_path);
+        }
+
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(msg);
+
+    }
+
+
+
+
+    private void viewProjects(){
+        //what this button does depends upon the path  {create, open, copy}
+        //*********************** CREATE **************************************/
+        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            Toast.makeText(getActivity(),
+                    R.string.cant_view_projects,
+                    Toast.LENGTH_SHORT).show();
+
+            //switchToProjectList();
+
+        //*********************** OPEN or COPY or EDIT **************************************/
+        } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
+                   (mProjectPath.equals(Prism4DPath.sCopyTag)) ||
+                   (mProjectPath.equals(Prism4DPath.sEditTag)) ) {
+            if (mProjectChanged){
+                //ask the user if should continue
+                areYouSureViewProjects();
+
+            } else {
+                Toast.makeText(getActivity(),
+                        R.string.project_unchanged,
+                        Toast.LENGTH_SHORT).show();
+
+                switchToProjectList();
+
+            }
+
+        //*********************** UNKNOWN **************************************/
+        } else {
+            Toast.makeText(getActivity(),
+                    R.string.unrecognized_path_encountered,
+                    Toast.LENGTH_SHORT).show();
+            //todo need to throw an exception here
+            //Notice that we don't leave the screen on this condition
+        }
+
     }
 
     private void setProjectChanged(){
@@ -470,108 +416,236 @@ public class MainPrism4DProject14UpdateFragment extends Fragment {
 
     //returns null if not found
     private Prism4DProject findThisProject(){
-        //// TODO: 8/28/2016 Search through projects in database, not in memory list
+
+        //it should be the one we saved coming into the fragment
+        if (mProjectBeingMaintained != null)return mProjectBeingMaintained;
+
         //      Get the project manager instance
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //      then use the project manager to get our project
         Prism4DProject newProject = projectManager.getProject(Integer.valueOf(mProjectID.toString()));
 
         if (newProject == null){
-            newProject = new Prism4DProject(
-                    mProjectName,
-                    Integer.valueOf(mProjectID.toString())) ;
-            newProject.setProjectDescription(mProjectDescription);
-            //for now punt on the dates
+            // TODO: 11/7/2016 is throwing an exception the right thing to do here?
+            throw new RuntimeException("Could not find project which must exist");
 
-            //But tell the user
-            Toast.makeText(getActivity(),
-                    "Error, project " + mProjectName + " not found",
-                    Toast.LENGTH_LONG).show();
-
-            //todo eventually throw an exception
-            //and save it in the project list
-            projectManager.add(newProject);
         }
         return newProject;
     }
 
 
     private Prism4DProject saveChanges() {
+        if (mProjectBeingMaintained == null){
+            mProjectBeingMaintained = findThisProject();
+        }
 
-        //get the project list
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        //
-        //   get our project
-        Prism4DProject newProject = projectManager.getProject(
-                Integer.valueOf(mProjectID.toString()));
 
+        /******************* CREATE **************************************/
         if (mProjectPath.equals(Prism4DPath.sCreateTag)){
             Toast.makeText(getActivity(),
                     R.string.save_new_project,
                     Toast.LENGTH_SHORT).show();
-            //newProject should be null here
-            if (newProject != null){
-                //It was created earlier with the save changes button
-                //but we don't have to create it again
-            } else {
-                newProject = new Prism4DProject(
-                        mProjectNameInput.getText(),
-                        Integer.valueOf(mProjectIDInput.getText().toString()));
+
+            if (mProjectBeingMaintained != null){
+                //It should have been created earlier with the save changes button
+
+                mProjectBeingMaintained = new Prism4DProject(mProjectNameInput.getText());
                 //put it into the project list
-                projectManager.add(newProject);
+                projectManager.add(mProjectBeingMaintained);
             }
 
-        } else if (mProjectPath.equals(Prism4DPath.sOpenTag)){
-            if (newProject == null){
-                //todo decide what to do here
-                //there really should have been one already created
-                newProject = new Prism4DProject(
-                        mProjectNameInput.getText(),
-                        Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectManager.add(newProject);
+        /************************************** Edit *****************************/
+        } else if (mProjectPath.equals(Prism4DPath.sEditTag)){
+            if (mProjectBeingMaintained == null){
+               Toast.makeText(getActivity(),
+                              R.string.project_missing_exception,
+                              Toast.LENGTH_SHORT).show();
+                throw new RuntimeException(getString(R.string.project_missing_exception));
             }
             Toast.makeText(getActivity(),
                     R.string.save_existing_project,
                     Toast.LENGTH_SHORT).show();
+            projectManager.update(mProjectBeingMaintained);
 
+        /***************************   COPY **************************************/
         } else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
-            //newProject will be null before it is saved for the first time
+            //mProjectBeingMaintained will be null before it is saved for the first time
             //might have been created with the save changes button
-            if (newProject == null){
+            if (mProjectBeingMaintained == null){
 
-                newProject = new Prism4DProject(
-                        mProjectNameInput.getText(),
-                        Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectManager.add(newProject);
+                mProjectBeingMaintained = new Prism4DProject(mProjectNameInput.getText(),
+                                             Integer.valueOf(mProjectIDInput.getText().toString()));
             }
             Toast.makeText(getActivity(),
                     R.string.save_copied_project,
                     Toast.LENGTH_SHORT).show();
+
+            projectManager.add(mProjectBeingMaintained);
+
+        /************************* UNKNOWN *******************************************/
         } else {
             Toast.makeText(getActivity(),
                     R.string.unrecognized_path_encountered,
                     Toast.LENGTH_SHORT).show();
-            //todo need to throw an exception here
-            //but create a project to be able to continue
-            if (newProject == null){
+            throw new RuntimeException(getString(R.string.unrecognized_path_encountered));
 
-                newProject = new Prism4DProject(
-                        mProjectNameInput.getText(),
-                        Integer.valueOf(mProjectIDInput.getText().toString()));
-                projectManager.add(newProject);
-            }
         }
         //but regardless of the path,
         // update the project with the screen attributes
-        newProject.setProjectName(mProjectNameInput.getText());
-        newProject.setProjectDateCreated(new Date());
-        newProject.setProjectLastModified(new Date());
-        newProject.setProjectDescription(mProjectDescInput.getText());
+        mProjectBeingMaintained.setProjectName(mProjectNameInput.getText());
+        // TODO: 11/7/2016 have to do better with date here!!!
+        mProjectBeingMaintained.setProjectDateCreated(new Date());
+        mProjectBeingMaintained.setProjectLastModified(new Date());
+        mProjectBeingMaintained.setProjectDescription(mProjectDescInput.getText());
 
         //disable the Enter and the Save Changes button
 
 
-        return newProject;
+        return mProjectBeingMaintained;
+    }
+
+
+
+    //Build and display the alert dialog
+    private void areYouSureViewProjects(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.abandon_title)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.continue_abandon_changes,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Leave even though project has chaged
+                                Toast.makeText(getActivity(),
+                                        R.string.continue_abandon_changes,
+                                        Toast.LENGTH_SHORT).show();
+
+                               switchToProjectList();
+                            }
+                        })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(getActivity(),
+                                "Pressed Cancel",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(R.drawable.ground_station_icon)
+                .show();
+    }
+
+    private void switchToProjectList(){
+        ((MainPrism4DActivity) getActivity()).
+                switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
+    }
+
+    //Build and display the alert dialog
+    private void areYouSureViewSettings(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.abandon_title)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.continue_abandon_changes,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Leave even though project has chaged
+                                Toast.makeText(getActivity(),
+                                        R.string.continue_abandon_changes,
+                                        Toast.LENGTH_SHORT).show();
+
+
+                                switchToProjectSettings();
+
+                             }
+                        })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(getActivity(),
+                                "Pressed Cancel",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(R.drawable.ground_station_icon)
+                .show();
+    }
+
+    private void switchToProjectSettings(){
+
+        ((MainPrism4DActivity) getActivity()).switchToProjectSettingsScreen(findThisProject(),
+                                                                new Prism4DPath(mProjectPath));
+    }
+
+
+    //Build and display the alert dialog
+    private void areYouSureListPoints(){
+
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.abandon_title)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.continue_abandon_changes,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Leave even though project has chaged
+                                Toast.makeText(getActivity(),
+                                        R.string.continue_abandon_changes,
+                                        Toast.LENGTH_SHORT).show();
+                                switchToListPoints();
+                            }
+                        })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(getActivity(),
+                                "Pressed Cancel",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(R.drawable.ground_station_icon)
+                .show();
+    }
+
+    private void switchToListPoints(){
+        //doesn't matter what path we are on, switch to maintain points
+        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+        myActivity.switchToListPointsScreen(findThisProject(),
+                                            new Prism4DPath(Prism4DPath.sShowTag));
+
+    }
+
+
+
+    //Build and display the alert dialog
+    private void areYouSureExit(){
+        new AlertDialog.Builder(getActivity())
+                .setTitle(R.string.abandon_title)
+                .setMessage(R.string.are_you_sure)
+                .setPositiveButton(R.string.continue_abandon_changes,
+                        new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int which) {
+                                //Leave even though project has chaged
+                                Toast.makeText(getActivity(),
+                                        R.string.continue_abandon_changes,
+                                        Toast.LENGTH_SHORT).show();
+                                switchToExit();
+
+                            }
+                        })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // do nothing
+                        Toast.makeText(getActivity(),
+                                "Pressed Cancel",
+                                Toast.LENGTH_SHORT).show();
+                    }
+                })
+                .setIcon(R.drawable.ground_station_icon)
+                .show();
+    }
+
+    private void switchToExit(){
+        ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
+
     }
 
 }

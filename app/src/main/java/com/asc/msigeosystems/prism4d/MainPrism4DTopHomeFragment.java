@@ -2,10 +2,12 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -14,7 +16,11 @@ import com.asc.msigeosystems.prism4dmockup.R;
 /**
  * A placeholder fragment containing a simple view.
  */
-public class MainPrism4DHomeFragment extends Fragment {
+public class MainPrism4DTopHomeFragment extends Fragment {
+
+
+    //Screen Label, used on this screen to display the open project
+    private TextView mScreenLabel;
 
     //main area of screen fragment
     private Button mProjectButton;
@@ -32,7 +38,7 @@ public class MainPrism4DHomeFragment extends Fragment {
 
 
 
-    public MainPrism4DHomeFragment() {
+    public MainPrism4DTopHomeFragment() {
     }
 
     @Override
@@ -50,6 +56,13 @@ public class MainPrism4DHomeFragment extends Fragment {
     }
 
     private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
+
 
         //projects Button
         mProjectButton = (Button) v.findViewById(R.id.row1Button1);
@@ -63,7 +76,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToProject1Screen();
+                    myActivity.switchToTopProjectScreen();
                 }
 
             }
@@ -82,7 +95,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToCollect1Screen();
+                    myActivity.switchToTopCollectScreen();
                 }
             }
         });
@@ -99,7 +112,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToStakeout1Screen();
+                    myActivity.switchToTopStakeoutScreen();
                 }
 
             }
@@ -118,7 +131,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToCogo1Screen();
+                    myActivity.switchToTopCogoScreen();
                 }
 
             }
@@ -140,7 +153,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToMaps1Screen();
+                    myActivity.switchToTopMapsScreen();
                 }
 
             }
@@ -158,7 +171,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToSkyplot1Screen();
+                    myActivity.switchToTopSkyplotScreen();
                 }
 
             }
@@ -175,7 +188,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToConfig1Screen();
+                    myActivity.switchToTopConfigScreen();
                 }
 
             }
@@ -190,7 +203,7 @@ public class MainPrism4DHomeFragment extends Fragment {
             public void onClick(View v){
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null){
-                    myActivity.switchToSettings1Screen();
+                    myActivity.switchToTopSettingsScreen();
                 }
 
             }
@@ -211,7 +224,7 @@ public class MainPrism4DHomeFragment extends Fragment {
                 // But the switching happens on the container Activity
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToSupport1Screen();
+                    myActivity.switchToTopSupportScreen();
                 }
 
             }

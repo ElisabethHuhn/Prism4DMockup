@@ -16,7 +16,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  *
  * Created by elisabethhuhn on 5/1/2016.
  */
-public class MainPrism4DSupport1Fragment extends Fragment {
+public class MainPrism4DTopSupportFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -40,7 +40,7 @@ public class MainPrism4DSupport1Fragment extends Fragment {
 
 
 
-    public MainPrism4DSupport1Fragment() {
+    public MainPrism4DTopSupportFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -70,7 +70,7 @@ public class MainPrism4DSupport1Fragment extends Fragment {
                 /*
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToSettings11GlobalScreen();
+                    myActivity.switchToSettingsGlobalScreen();
                 }
                 */
 
@@ -97,7 +97,7 @@ public class MainPrism4DSupport1Fragment extends Fragment {
                 /*
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
-                    myActivity.switchToSettings12ProjectDefaultsScreen();
+                    myActivity.switchToSettingsProjectDefaultsScreen();
                 }
                 */
 

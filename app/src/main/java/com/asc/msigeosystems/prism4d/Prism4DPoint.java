@@ -1,8 +1,10 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
+ *
  * One of the principal Data Classes of the model
+ * A Point is contained within one and only one project
  */
 public class Prism4DPoint {
 
@@ -29,51 +31,44 @@ public class Prism4DPoint {
     public static final String sPointNewDesc = "";
 
 
+
+    /*************************************/
+    /*    Static (class) Variables       */
+    /*************************************/
+
+
+    /*************************************/
+    /*    Member (instance) Variables    */
+    /*************************************/
+
     /*****************************************************/
     /********    Attributes stored in the DB     *********/
     /*****************************************************/
 
-    private int          mProjectID;
     private int          mPointID;
+    private int          mForProjectID;
+    private int          mHasACoordinateID;
 
-    private double       mPointEasting;
-    private double       mPointNorthing;
-    private double       mPointElevation;
     private CharSequence mPointDescription;
     private CharSequence mPointNotes;
 
-
-    // TODO: 10/31/2016 Consider adding a List of the Coordinates that describe this point
-
-
-    /*****************************************************/
-    /********    Setters and Getters             *********/
-    /*****************************************************/
+    //Actual location of point is given by Coordinates
+    private Prism4DCoordinateNAD83 mNad83Coordinate;
+    private Prism4DCoordinateWGS84 mWgs84Coordinate;
+    private Prism4DCoordinateUTM   mUtmCoordinate;
+    private Prism4DCoordinateSPCS  mSpcsCoordinate;
 
 
 
-    public int  getProjectID()             {  return mProjectID;    }
-    public void setProjectID(int projectID) {  this.mProjectID = projectID;  }
-
-    public int  getPointID()             {  return mPointID;    }
-    public void setPointID(int pointID) {  this.mPointID = pointID;  }
+    /*************************************/
+    /*         Static Methods            */
+    /*************************************/
 
 
-    public double getPointEasting() { return mPointEasting;  }
-    public void   setPointEasting(double easting) { this.mPointEasting = easting;   }
+    /*************************************/
+    /*         CONSTRUCTORS              */
 
-    public double getPointNorthing() { return mPointNorthing; }
-    public void   setPointNorthing(double northing) { this.mPointNorthing = northing; }
-
-    public double getPointElevation() { return mPointElevation;  }
-    public void   setPointElevation(double elevation) { this.mPointElevation = elevation;  }
-
-    public CharSequence getPointDescription() { return mPointDescription;  }
-    public void setPointDescription(CharSequence description) { mPointDescription = description;  }
-
-    public CharSequence getPointNotes() {  return mPointNotes;   }
-    public void setPointNotes(CharSequence notes) { mPointNotes = notes;   }
-
+    /*************************************/
 
     /*****************************************************/
     /********    Constructors                    *********/
@@ -84,28 +79,46 @@ public class Prism4DPoint {
         initializeDefaultVariables();
         //initialize all variables so we are assured that none are null
         //that way we never have to check for null later
-        this.mProjectID = project.getProjectID();
-        this.mPointID = project.getNextPointID();
+        this.mForProjectID = project.getProjectID();
+        this.mPointID      = project.getNextPointID();
     }
 
-
-     //Need to know what project the new point will be in
-    public Prism4DPoint(Prism4DProject project, double easting, double northing, double elevation) {
-        initializeDefaultVariables();
-
-        this.mProjectID = project.getProjectID();
-        this.mPointID = project.getNextPointID() ;
-    }
 
     //a coule of special case points flag "create new point" and "open a point" path
     public Prism4DPoint(int specialPointID) {
         initializeDefaultVariables();
 
-        this.mProjectID        = specialPointID;
+        this.mForProjectID     = specialPointID;
         this.mPointID          = specialPointID ;
-
         this.mPointDescription = "A special point";
     }
+
+    public Prism4DPoint() {
+        initializeDefaultVariables();
+    }
+
+
+
+    /*****************************************************/
+    /********    Setters and Getters             *********/
+    /*****************************************************/
+
+
+
+    public int getForProjectID()                  {  return mForProjectID;    }
+    public void setForProjectID(int forProjectID) {  this.mForProjectID = forProjectID;  }
+
+    public int  getPointID()             {  return mPointID;    }
+    public void setPointID(int pointID) {  this.mPointID = pointID;  }
+
+    public int getHasACoordinateID()                    {return mHasACoordinateID; }
+    public void setHasACoordinateID(int isACoordinateID) { mHasACoordinateID = isACoordinateID; }
+
+    public CharSequence getPointDescription() { return mPointDescription;  }
+    public void setPointDescription(CharSequence description) { mPointDescription = description;  }
+
+    public CharSequence getPointNotes() {  return mPointNotes;   }
+    public void setPointNotes(CharSequence notes) { mPointNotes = notes;   }
 
 
 
@@ -114,13 +127,16 @@ public class Prism4DPoint {
     /*****************************************************/
 
     private void initializeDefaultVariables(){
-        this.mProjectID        = 0;
+        this.mForProjectID     = 0;
         this.mPointID          = 0;
-        this.mPointEasting     = 0.0;
-        this.mPointNorthing    = 0.0;
-        this.mPointElevation   = 5.0;
+        this.mHasACoordinateID = 0;
         this.mPointDescription = "";
         this.mPointNotes       = "";
+
+        this.mNad83Coordinate  = null;
+        this.mWgs84Coordinate  = null;
+        this.mUtmCoordinate    = null;
+        this.mSpcsCoordinate   = null;
 
     }
 

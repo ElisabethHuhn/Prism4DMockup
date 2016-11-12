@@ -15,7 +15,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * when the user is creating / making changes to project points
  * Created by elisabethhuhn on 5/15/2016.
  */
-public class MainPrism4DPoint1Fragment extends Fragment {
+public class MainPrism4DTopPointFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -44,7 +44,12 @@ public class MainPrism4DPoint1Fragment extends Fragment {
 
 
 
-    public static MainPrism4DPoint1Fragment newInstance(
+    public MainPrism4DTopPointFragment() {
+        //for now, we don't need to initialize anything when the fragment
+        //  is first created
+    }
+
+    public static MainPrism4DTopPointFragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath){
 
@@ -65,7 +70,7 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         args.putCharSequence(Prism4DPath.sProjectPathTag,
                                 projectPath.getPath());
 
-        MainPrism4DPoint1Fragment fragment = new MainPrism4DPoint1Fragment();
+        MainPrism4DTopPointFragment fragment = new MainPrism4DTopPointFragment();
 
         fragment.setArguments(args);
         return fragment;
@@ -84,6 +89,7 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         mProject = projectManager.getProject(projectID);
 
         if (mProject == null){
+            //todo Don't add the new project until the save button is pressed
             mProject = new Prism4DProject(
                     getArguments().getCharSequence(Prism4DProject.sProjectNameTag),
                     getArguments().getInt(Prism4DProject.sProjectIDTag)
@@ -111,11 +117,6 @@ public class MainPrism4DPoint1Fragment extends Fragment {
 
     }
 
-    public MainPrism4DPoint1Fragment() {
-        //for now, we don't need to initialize anything when the fragment
-        //  is first created
-    }
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -123,6 +124,13 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         //Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_top_matrix_prism4d, container, false);
 
+
+        wireWidgets(v);
+
+        return v;
+    }
+
+    private void wireWidgets(View v){
 
         //Wire up the UI widgets so they can handle events later
 
@@ -134,13 +142,9 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         mListPoints.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToListPointsScreen(
+                ((MainPrism4DActivity)getActivity()).switchToListPointsScreen(
                             mProject.getProjectID(),
-                            mProjectPath,
-                            new Prism4DPath(Prism4DPath.sOpenTag));
-                }
+                            new Prism4DPath(Prism4DPath.sShowTag));
 
             }
         });
@@ -155,11 +159,7 @@ public class MainPrism4DPoint1Fragment extends Fragment {
             public void onClick(View v) {
                 //Switch the fragment to the collect with maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToPoint11CreateScreen(mProject,mProjectPath);
-
-                }
+                ((MainPrism4DActivity)getActivity()).switchToPointCreateScreen(mProject);
             }
         });
 
@@ -171,14 +171,12 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToListPointsScreen(
+                Toast.makeText(getActivity(), "Can Not Copy Points at this time", Toast.LENGTH_SHORT).show();
+                /*
+                ((MainPrism4DActivity)getActivity()).switchToListPointsScreen(
                             mProject.getProjectID(),
-                            mProjectPath,
                             new Prism4DPath(Prism4DPath.sCopyTag));
-                }
-
+                 */
             }
         });
 
@@ -187,20 +185,19 @@ public class MainPrism4DPoint1Fragment extends Fragment {
         //edit is disabled, so disable the button.
 
         mEditButton.setText(R.string.edit_button_label);
-        //mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_color_folders, 0, 0);
+        mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_color_folders, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                ///Use open, not Edit
+                ///Need to know which point to EDIT
                 Toast.makeText(getActivity(),
                         R.string.edit_button_label,
                         Toast.LENGTH_SHORT).show();
-/***
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToProject14EditScreen(mProject,mProjectPath);
-                }
-***/
+
+                Prism4DPath pointPath = new Prism4DPath(Prism4DPath.sEditTag) ;
+                ((MainPrism4DActivity)getActivity()).switchToListPointsScreen(
+                                                            mProject.getProjectID(),pointPath);
+
             }
         });
 
@@ -212,14 +209,9 @@ public class MainPrism4DPoint1Fragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToListPointsScreen(
+                ((MainPrism4DActivity)getActivity()).switchToListPointsScreen(
                             mProject.getProjectID(),
-                            mProjectPath,
                             new Prism4DPath(Prism4DPath.sDeleteTag));
-                }
-
             }
         });
 
@@ -287,11 +279,6 @@ public class MainPrism4DPoint1Fragment extends Fragment {
             }
         });
 
-
-
-
-
-        return v;
     }
 }
 

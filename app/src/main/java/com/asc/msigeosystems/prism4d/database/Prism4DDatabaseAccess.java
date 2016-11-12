@@ -6,7 +6,11 @@ import android.database.Cursor;
 import android.os.AsyncTask;
 
 /**
- * Created by elisabethhuhn on 7/13/2016.
+ * Created by Elisabeth Huhn on 7/13/2016.
+ *
+ * This is just a repository for AsyncTasks used in accessing the DB
+ * For now, we are skipping this level of complexity
+ * todo Delete this file
  */
 public class Prism4DDatabaseAccess {
     /*****
@@ -108,16 +112,15 @@ public class Prism4DDatabaseAccess {
 
             //returned cursor contains all projects in the database
             Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            Cursor cursor = databaseManager.getDatabase().query(
+            return databaseManager.getDatabase().query(
                     Prism4DSqliteOpenHelper.TABLE_PROJECT,
                     new String[]{Prism4DSqliteOpenHelper.PROJECT_ID,
-                            Prism4DSqliteOpenHelper.PROJECT_NAME,
-                            Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
-                            Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION
+                                 Prism4DSqliteOpenHelper.PROJECT_NAME,
+                                 Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
+                                 Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION
                     },
                     null, null, null, null, null, null);
 
-            return cursor;
         }
 
         @Override
@@ -165,7 +168,7 @@ public class Prism4DDatabaseAccess {
 
             //returned cursor contains only the matching project
             Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            Cursor cursor = databaseManager.getDatabase().query(
+            return databaseManager.getDatabase().query(
                     Prism4DSqliteOpenHelper.TABLE_PROJECT,
                     new String[]{Prism4DSqliteOpenHelper.PROJECT_ID,
                             Prism4DSqliteOpenHelper.PROJECT_NAME,
@@ -174,7 +177,7 @@ public class Prism4DDatabaseAccess {
                     },
                     null, null, null, null, null, null);
 
-            return cursor;
+
         }
 
         @Override

@@ -12,10 +12,15 @@ import java.text.DateFormat;
 import java.util.List;
 
 /**
- * Created by elisabethhuhn on 5/8/2016.
+ * Created by Elisabeth Huhn on 5/8/2016.
+ *
+ * An adapter sits between the Data Model and a list on the UI
+ * However, our Data Model classes all have managers: so...
+ * The Adapter uses the Project Manager to actually touch a project instance
  */
 public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAdapter.MyViewHolder> {
 
+    //Remember, only the ProjectManager may actually CRUD a member of this list
     private List<Prism4DProject> mProjectList;
 
     //implement the ViewHolder as an inner class
@@ -66,7 +71,7 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
             //Assume the size of the project is the number of points in the project
             Prism4DProject project = mProjectList.get(position);
 
-            Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
+            Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
             int numberPoints = pointsManager.getSize(project.getProjectID());
 
             holder.projectName.        setText(project.getProjectName());
@@ -77,7 +82,7 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
             holder.projectSize.        setText(String.valueOf(numberPoints));
 
         } else {
-            holder.projectName.setText("No projects defined");
+            holder.projectName.setText(R.string.no_projects);
             holder.projectID.setText("");
             holder.projectLastModified.setText("");
 

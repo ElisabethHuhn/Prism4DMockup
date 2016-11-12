@@ -1,11 +1,14 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4dmockup.com.asc.msigeosystems.prism4d.MainPrism4DActivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/colorScreenBackground"
-    android:orientation="vertical"
-              android:weightSum="1">
+<HorizontalScrollView
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools =   "http://schemas.android.com/tools"
+    tools:context = "com.asc.msigeosystems.prism4d.MainPrism4DActivity"
+    android:layout_width  = "match_parent"
+    android:layout_height = "match_parent"
+    android:background    = "@color/colorScreenBackground"
+    android:orientation   = "vertical"
+    android:weightSum     = "1"
+    android:fillViewport  = "true"
+    >
     <!-- This layout is for a comrehensive workflow of -->
     <!-- coordinate conversion between  -->
     <!-- GPS WGS84 lat/long      -->
@@ -14,12 +17,7 @@
     <!-- State Plane Coordinates -->
     <!-- UTM                     -->
 
-    <!-- Everything has to scroll both ways -->
-    <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        >
+
 
         <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
             android:layout_width="wrap_content"
@@ -727,7 +725,7 @@
 
                     <!-- Latitude Label and input fields -->
                     <!-- break out into separate fields -->
-                    <!-- decimal degrees/degrees/minutes/seconds -->
+                    <!-- | decimal degrees | degrees | minutes | seconds | -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -814,7 +812,7 @@
 
                     <!-- Longitude Label and input fields -->
                     <!-- break out into separate fields -->
-                    <!-- decimal degrees/degrees/minutes/seconds -->
+                    <!-- | decimal degrees | degrees | minutes | seconds  -->
                     <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -1010,6 +1008,7 @@
                                 />
 
                         </LinearLayout>
+
                     </LinearLayout>
 
                 </LinearLayout>
@@ -1643,7 +1642,7 @@
                         >
                         <!-- label -->
                         <TextView
-                            android:text="@string/utm_nm_label"
+                            android:text="@string/utm_coord_label"
                             android:layout_height="wrap_content"
                             android:layout_width="0dp"
                             android:layout_weight="25"
@@ -1897,9 +1896,8 @@
 
         </ScrollView>
 
-    </HorizontalScrollView>
 
 
 
-</LinearLayout>
+</HorizontalScrollView>
 

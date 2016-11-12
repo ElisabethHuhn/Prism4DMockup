@@ -20,10 +20,12 @@ import com.asc.msigeosystems.prism4dmockup.R;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.asc.msigeosystems.prism4d.Prism4DPath.sDeleteTag;
+
 /**
  * The List Points Fragment is the UI
  * for the user to see points of a given project
- * Created by elisabethhuhn on 5/8/2016.
+ * Created by Elisabeth Huhn on 5/8/2016.
  */
 public class MainPrism4DListPointsFragment extends Fragment {
 
@@ -33,60 +35,53 @@ public class MainPrism4DListPointsFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
-    private List<Prism4DPoint> mPointList = new ArrayList<>();
-    private List<Prism4DPoint> mProjectPointList = new ArrayList<>();
-    private RecyclerView mRecyclerView;
+    private List<Prism4DPoint>  mPointList = new ArrayList<>();
+    private RecyclerView        mRecyclerView;
     private Prism4DPointAdapter mAdapter;
 
 
 
     private int          mProjectID;
-    private CharSequence mProjectName;
 
-    private int          mPointID;
-    private double       mPointEasting;
-    private double       mPointNorthing;
-    private double       mPointElevation;
-    private CharSequence mPointDescription;
-    private CharSequence mNotes;
+
 
     private Prism4DPoint mSelectedPoint;
     private int          mSelectedPosition;
 
-    private CharSequence mProjectPath;
     private CharSequence mPointPath;
 
+
+
+    //
+    /**********************************************************/
+    //                     Constructor                        //
+    /**********************************************************/
+
+    public MainPrism4DListPointsFragment() {
+        //for now, we don't need to initialize anything when the fragment
+        //  is first created
+    }
 
     /**********************************************************/
     //          Fragment Lifecycle Functions                  //
     /**********************************************************/
 
 
-    public static MainPrism4DListPointsFragment newInstance(
-            Prism4DProject project,
-            Prism4DPath projectPath,
-            Prism4DPath pointPath){
+    public static MainPrism4DListPointsFragment newInstance(int         projectID,
+                                                            Prism4DPath pointPath){
 
         Bundle args = new Bundle();
 
         //It will be some work to make all of the data model serializable
         //so for now, just pass the point values
         //For now, the only thing to pass is the path type itself
-        args.putInt         (Prism4DProject.sProjectIDTag,   project.getProjectID());
-        args.putCharSequence(Prism4DProject.sProjectNameTag, project.getProjectName());
-        args.putCharSequence(Prism4DPath.sProjectPathTag,    projectPath.getPath());
-        args.putCharSequence(Prism4DPath.sPointPathTag,      pointPath.getPath());
+        args.putInt         (Prism4DProject.sProjectIDTag,   projectID);
+        args.putCharSequence(Prism4DPath   .sPointPathTag,   pointPath.getPath());
 
         MainPrism4DListPointsFragment fragment = new MainPrism4DListPointsFragment();
 
         fragment.setArguments(args);
         return fragment;
-    }
-
-    //Constructor
-    public MainPrism4DListPointsFragment() {
-        //for now, we don't need to initialize anything when the fragment
-        //  is first created
     }
 
     @Override
@@ -95,11 +90,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         mProjectID   = getArguments().getInt         (Prism4DProject.sProjectIDTag);
-        mProjectName = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
-        mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
-        mPointPath   = getArguments().getCharSequence(Prism4DPath.sPointPathTag);
-
-        //This would be the place to do anything unique to a given path
+        mPointPath   = getArguments().getCharSequence(Prism4DPath   .sPointPathTag);
 
     }
 
@@ -109,7 +100,22 @@ public class MainPrism4DListPointsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        /*
+          //1) Inflate the layout for this fragment
+        View v = inflater.inflate
+                (R.layout.fragment_point_list_prism4d, container, false);
+
+        initializeRecyclerView(v);
+
+        setSubtitle(mPointPath);
+
+        //9) return the view
+        return v;
+    }
+
+
+    private void initializeRecyclerView(View v){
+
+       /*
          * The steps for doing recycler view in onCreateView() of a fragment are:
          * 1) inflate the .xml
          *
@@ -124,9 +130,6 @@ public class MainPrism4DListPointsFragment extends Fragment {
          *
          * 9) return the view
          */
-        //1) Inflate the layout for this fragment
-        View v = inflater.inflate
-                (R.layout.fragment_point_list_prism4d, container, false);
         v.setTag(TAG);
 
         //2) find and remember the RecyclerView
@@ -142,8 +145,8 @@ public class MainPrism4DListPointsFragment extends Fragment {
         //  this is done in the singleton container
 
         //      get our singleton list container
-        Prism4DPointsManager pointsManager = Prism4DPointsManager.getInstance();
-        //filter out points not in this project
+        Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
+        //Get this projects points
         mPointList = pointsManager.getProjectPointsList(mProjectID);
 
 
@@ -165,7 +168,7 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
                     @Override
                     public void onClick(View view, int position) {
-                       onSelect(position);
+                        onSelect(position);
                     }
 
                     @Override
@@ -176,8 +179,27 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
         //No FOOTER on this screen
 
-        //9) return the view
-        return v;
+    }
+
+    private void setSubtitle(CharSequence path) {
+        int subtitle;
+
+        if (path.equals(Prism4DPath.sCopyTag)){
+            subtitle = R.string.subtitle_copy_point;
+
+        } else if (path.equals(Prism4DPath.sOpenTag)) {
+            subtitle = R.string.subtitle_open_point;
+
+        } else if (path.equals(sDeleteTag)){
+            subtitle = R.string.subtitle_delete_point;
+
+        } else {
+            //todo probably need to throw an exception
+            subtitle = R.string.subtitle_unknown_error;
+
+        }
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(getString(subtitle));
+
     }
 
 
@@ -194,52 +216,29 @@ public class MainPrism4DListPointsFragment extends Fragment {
                 Toast.LENGTH_SHORT).show();
 
 
-        onEnter();
+        processSelect();
 
     }
 
     //executed when enter is selected
-    private void onEnter(){
+    private void processSelect(){
         //Point has to have been selected to do anything here
         MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+
         if (myActivity != null){
             if (mSelectedPoint != null) {
 
                 //We'll need to pass the path forward
 
-                if (mPointPath.equals(Prism4DPath.sOpenTag)){
+                //What happens depends upon the path
+                //But as of 11/11/2016 the only path we should see is EDIT
+                if (mPointPath.equals(Prism4DPath.sEditTag)){
 
-                    //if the path is open, open the selected point
-                    myActivity.switchToMaintainPointScreen(
-                            new Prism4DPath(mProjectPath),
-                            mSelectedPoint,
-                            new Prism4DPath(mPointPath));
+                    //if the path is edit, open the selected point
+                    myActivity.switchToEditPointScreen( mProjectID,
+                                                        new Prism4DPath(mPointPath),
+                                                        mSelectedPoint );
 
-                }else if (mPointPath.equals(Prism4DPath.sCopyTag)){
-
-                    //if the path is copy,
-                    // create a new point with the selected points details
-                    // but it has to be in the same project as this one
-                    Prism4DProject ourProject =
-                            getOurProject(mSelectedPoint.getProjectID());
-
-                    Prism4DPoint newPoint = new Prism4DPoint(ourProject);
-                    newPoint.setPointEasting    (mSelectedPoint.getPointEasting());
-                    newPoint.setPointNorthing   (mSelectedPoint.getPointNorthing());
-                    newPoint.setPointElevation  (mSelectedPoint.getPointElevation());
-                    newPoint.setPointDescription(mSelectedPoint.getPointDescription());
-                    newPoint.setPointNotes      (mSelectedPoint.getPointNotes());
-
-                    //then switch to point update with that new point
-                    myActivity.switchToMaintainPointScreen(
-                            new Prism4DPath(mProjectPath),
-                            mSelectedPoint,
-                            new Prism4DPath(mPointPath));
-
-                }else if (mPointPath.equals(Prism4DPath.sDeleteTag)){
-
-                    //ask the user if they are sure they want to proceed.
-                    areYouSureDelete();
                 }else {
 
                     //todo need to throw an unrecognized path exception
@@ -281,7 +280,8 @@ public class MainPrism4DListPointsFragment extends Fragment {
                         Prism4DPointAdapter myAdapter =
                                 (Prism4DPointAdapter) mRecyclerView.getAdapter();
 
-                        myAdapter.removeItem(mSelectedPosition);
+                        //Need the project to remove the point
+                        myAdapter.removeItem(mSelectedPosition, mProjectID);
 
                         Toast.makeText(getActivity(),
                                 message,
@@ -302,14 +302,21 @@ public class MainPrism4DListPointsFragment extends Fragment {
                 .show();
     }
 
-    private Prism4DProject getOurProject(int projectID){
-        //ultimately, this needs to look up in the DB
-        return new Prism4DProject(
-          getResources().getString(R.string.dummy_project_name),
-          mProjectID );
+    private Prism4DProject getOurProject (int projectID){
+        //get the project list
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        //      then go get our project out of the list
+        Prism4DProject ourProject = projectManager.getProject(projectID);
+        if (ourProject == null){
+            Toast.makeText(getActivity(),R.string.project_missing_exception,Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(getString(R.string.project_missing_exception));
+            //todo really need to throw an exception here?
+
+        }
+        return ourProject;
     }
 
-     //Add some code to improve the recycler view
+    //Add some code to improve the recycler view
     public interface ClickListener {
         void onClick(View view, int position);
 

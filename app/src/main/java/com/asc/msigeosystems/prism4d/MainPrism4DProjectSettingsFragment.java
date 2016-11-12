@@ -14,9 +14,9 @@ import com.asc.msigeosystems.prism4dmockup.R;
 /**
  * The Project Settings Fragment is the UI
  * when the user customizes settings for this project
- * Created by elisabethhuhn on 4/13/2016.
+ * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DSettingsFragment extends Fragment {
+public class MainPrism4DProjectSettingsFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -25,71 +25,33 @@ public class MainPrism4DSettingsFragment extends Fragment {
 
 
     //Input / Output Fields on screen
-    private TextView mProjectIDLabel;
     private TextView mProjectIDOutput;
-
-    private TextView mProjectNameLabel;
     private TextView mProjectNameOutput;
 
-    private TextView mDistanceUnitsLabel;
     private EditText mDistanceUnitsInput;
-
-    private TextView mDecimalDisplayLabel;
     private EditText mDecimalDisplayInput;
-
-    private TextView mAngleUnitsLabel;
     private EditText mAngleUnitsInput;
-
-    private TextView mAngleDisplayLabel;
     private EditText mAngleDisplayInput;
-
-    private TextView mGridDirectionLabel;
     private EditText mGridDirectionInput;
-
-    private TextView mScaleFactorLabel;
     private EditText mScaleFactorInput;
-
-    private TextView mSeaLevelLabel;
     private EditText mSeaLevelInput;
-
-    private TextView mRefractionLabel;
     private EditText mRefractionInput;
-
-    private TextView mDatumLabel;
     private EditText mDatumInput;
-
-    private TextView mProjectionLabel;
     private EditText mProjectionInput;
-
-    private TextView mZoneLabel;
     private EditText mZoneInput;
-
-    private TextView mCoordinateDisplayLabel;
     private EditText mCoordinateDisplayInput;
-
-    private TextView mGeoidModelLabel;
     private EditText mGeoidModelInput;
-
-    private TextView mStartingPointIDLabel;
     private EditText mStartingPointIDInput;
-
-    private TextView mAlphanumericLabel;
     private EditText mAlphanumericInput;
-
-    private TextView mFeatureCodesLabel;
     private EditText mFeatureCodesInput;
-
-    private TextView mFCControlFileLabel;
     private EditText mFCControlFileInput;
-
-    private TextView mFCTimeStampLabel;
     private EditText mFCTimeStampInput;
 
     private Button mResetButton;
 
-    private boolean mAnyChanges = false;
 
 
+    //these same values are set in setDefaults()
     private CharSequence mDistanceUnits     = "US Survey Feet";
     private CharSequence mDecimalDisplay    = "123,456,789.00";
     private CharSequence mAngleUnits        = "Degrees";
@@ -121,7 +83,7 @@ public class MainPrism4DSettingsFragment extends Fragment {
 
 
 
-    public static MainPrism4DSettingsFragment newInstance(
+    public static MainPrism4DProjectSettingsFragment newInstance(
             Prism4DProject project,
             Prism4DPath projectPath) {
 
@@ -143,14 +105,14 @@ public class MainPrism4DSettingsFragment extends Fragment {
                 projectPath.getPath());
 
 
-        MainPrism4DSettingsFragment fragment =
-                new MainPrism4DSettingsFragment();
+        MainPrism4DProjectSettingsFragment fragment =
+                new MainPrism4DProjectSettingsFragment();
 
         fragment.setArguments(args);
         return fragment;
     }
 
-    public MainPrism4DSettingsFragment() {
+    public MainPrism4DProjectSettingsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -180,93 +142,81 @@ public class MainPrism4DSettingsFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+
+        //Set the titlebar subtitle
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(getString(R.string.subtitle_project_settings));
+
         //Initialize the fields with the defaults
+        //set and display default values
+        setDefaults();
+
+        return v;
+
+    }//end CreateView
+
+    private void wireWidgets(View v){
 
         //Project ID
-        mProjectIDLabel  = (TextView) v.findViewById(R.id.projectIDLabel);
         mProjectIDOutput = (TextView) v.findViewById(R.id.projectIDOutput);
 
         //Project Name
-        mProjectNameLabel  = (TextView) v.findViewById(R.id.projectNameLabel);
         mProjectNameOutput = (TextView) v.findViewById(R.id.projectNameOutput);
 
         //Distance Units
-        mDistanceUnitsLabel = (TextView) v.findViewById(R.id.distanceUnitsLabel);
         mDistanceUnitsInput = (EditText) v.findViewById(R.id.distanceUnitsInput);
 
         //DecimalDisplay
-        mDecimalDisplayLabel = (TextView)v.findViewById(R.id.decimalDisplayLabel);
         mDecimalDisplayInput = (EditText) v.findViewById(R.id.decimalDisplayInput);
 
         //AngleUnits
-        mAngleUnitsLabel = (TextView) v.findViewById(R.id.angleUnitsLabel);
         mAngleUnitsInput = (EditText) v.findViewById(R.id.angleUnitsInput);
 
         //AngleDisplay
-        mAngleDisplayLabel = (TextView)v.findViewById(R.id.angleDisplayLabel);
         mAngleDisplayInput = (EditText) v.findViewById(R.id.angleDisplayInput);
 
-
         //GridDirection
-        mGridDirectionLabel = (TextView) v.findViewById(R.id.gridDirectionLabel);
         mGridDirectionInput = (EditText) v.findViewById(R.id.gridDirectionInput);
 
         //ScaleFactor
-        mScaleFactorLabel = (TextView)v.findViewById(R.id.scaleFactorLabel);
         mScaleFactorInput = (EditText) v.findViewById(R.id.scaleFactorInput);
 
         //SeaLevel
-        mSeaLevelLabel = (TextView) v.findViewById(R.id.seaLevelLabel);
         mSeaLevelInput = (EditText) v.findViewById(R.id.seaLevelInput);
 
         //Refraction
-        mRefractionLabel = (TextView)v.findViewById(R.id.refractionLabel);
         mRefractionInput = (EditText) v.findViewById(R.id.refractionInput);
 
         //Datum
-        mDatumLabel = (TextView) v.findViewById(R.id.datumLabel);
         mDatumInput = (EditText) v.findViewById(R.id.datumInput);
 
         //Projection
-        mProjectionLabel = (TextView)v.findViewById(R.id.projectionLabel);
         mProjectionInput = (EditText) v.findViewById(R.id.projectionInput);
 
         //Zone
-        mZoneLabel = (TextView) v.findViewById(R.id.zoneLabel);
         mZoneInput = (EditText) v.findViewById(R.id.zoneInput);
 
         //CoordinateDisplay
-        mCoordinateDisplayLabel = (TextView)v.findViewById(R.id.coordinateDisplayLabel);
         mCoordinateDisplayInput = (EditText) v.findViewById(R.id.coordinateDisplayInput);
 
-
         //GeoidModel
-        mGeoidModelLabel = (TextView) v.findViewById(R.id.geoidModelLabel);
         mGeoidModelInput = (EditText) v.findViewById(R.id.geoidModelInput);
 
         //StartingPointID
-        mStartingPointIDLabel = (TextView)v.findViewById(R.id.startingPointIDLabel);
         mStartingPointIDInput = (EditText) v.findViewById(R.id.startingPointIDInput);
 
         //Alphanumeric
-        mAlphanumericLabel = (TextView) v.findViewById(R.id.alphanumericLabel);
         mAlphanumericInput = (EditText) v.findViewById(R.id.alphanumericInput);
 
         //FeatureCodes
-        mFeatureCodesLabel = (TextView)v.findViewById(R.id.featureCodesLabel);
         mFeatureCodesInput = (EditText) v.findViewById(R.id.featureCodesInput);
 
         //FCControlFile
-        mFCControlFileLabel = (TextView) v.findViewById(R.id.fcControlFileLabel);
         mFCControlFileInput = (EditText) v.findViewById(R.id.fcControlFileInput);
 
         //FCTimeStamp
-        mFCTimeStampLabel = (TextView)v.findViewById(R.id.fcTimeStampLabel);
         mFCTimeStampInput = (EditText) v.findViewById(R.id.fcTimeStampInput);
 
-
-        //set and display default values
-        setDefaults();
 
         //Reset Defaults Button
         mResetButton = (Button) v.findViewById(R.id.resetDefaultsButton);
@@ -283,11 +233,7 @@ public class MainPrism4DSettingsFragment extends Fragment {
         //FOOTER WIDGETS
 
 
-
-
-
-        return v;
-    }//end CreateView
+    }
 
     private void setDefaults() {
 
@@ -312,9 +258,7 @@ public class MainPrism4DSettingsFragment extends Fragment {
         mFCTimeStamp       = "NO";
 
         //display the new defaults
-        mProjectIDLabel.      setText(R.string.setting_project_id);
         mProjectIDOutput.     setText(String.valueOf(mProjectID));
-        mProjectNameLabel.    setText(R.string.settings_project_name);
         mProjectNameOutput.   setText(String.valueOf(mProjectName));
         mDistanceUnitsInput.  setText(mDistanceUnits);
         mDecimalDisplayInput. setText(mDecimalDisplay);

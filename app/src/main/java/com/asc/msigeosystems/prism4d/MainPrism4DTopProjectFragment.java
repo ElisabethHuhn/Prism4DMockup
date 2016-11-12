@@ -2,10 +2,12 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -13,15 +15,18 @@ import com.asc.msigeosystems.prism4dmockup.R;
 /**
  * The Project Fragment is the UI
  * when the user is creating / making changes to the project definition
- * Created by elisabethhuhn on 4/13/2016.
+ *
+ * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DProject1Fragment extends Fragment {
+public class MainPrism4DTopProjectFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
-     *  although in the mockup, most will be statically defined in the xml
+     *
      */
 
+    //Screen Label, used on this screen to display the open project
+    private TextView mScreenLabel;
 
     //Matrix Buttons
     private Button mCreateButton;
@@ -38,9 +43,14 @@ public class MainPrism4DProject1Fragment extends Fragment {
 
 
 
+    /***********************************************************************/
+    /**********   Member Variables  ****************************************/
+    /***********************************************************************/
+
+    private int mOpenProject;
 
 
-    public MainPrism4DProject1Fragment() {
+    public MainPrism4DTopProjectFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -54,6 +64,21 @@ public class MainPrism4DProject1Fragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+
+
+
+        return v;
+    }
+
+    private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
+
 
         //Create Button
         mCreateButton = (Button) v.findViewById(R.id.row1Button1);
@@ -65,10 +90,9 @@ public class MainPrism4DProject1Fragment extends Fragment {
             public void onClick(View v) {
                 //Switch the fragment to the collect with maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToProject11CreateScreen();
-                }
+                ((MainPrism4DActivity)getActivity()).switchToProjectCreateScreen();
+
+
             }
         });
 
@@ -80,10 +104,8 @@ public class MainPrism4DProject1Fragment extends Fragment {
         mOpenButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToProject12OpenScreen();
-                }
+                ((MainPrism4DActivity)getActivity()).switchToProjectOpenScreen();
+
 
             }
         });
@@ -96,17 +118,14 @@ public class MainPrism4DProject1Fragment extends Fragment {
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToProject13CopyScreen();
-                }
+                ((MainPrism4DActivity)getActivity()).switchToProjectCopyScreen();
 
             }
         });
 
         //Edit Button
         mEditButton = (Button) v.findViewById(R.id.row2Button1);
-        mEditButton.setEnabled(false);
+        mEditButton.setEnabled(true);
         mEditButton.setText(R.string.edit_button_label);
         mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_114_editfolder, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
@@ -115,12 +134,10 @@ public class MainPrism4DProject1Fragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.edit_button_label,
                         Toast.LENGTH_SHORT).show();
-/***
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToProject14EditScreen();
-                }
-***/
+
+                ((MainPrism4DActivity)getActivity()).switchToProjectEditScreen();
+
+
             }
         });
 
@@ -132,11 +149,7 @@ public class MainPrism4DProject1Fragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToProject15DeleteScreen();
-                }
-
+                ((MainPrism4DActivity)getActivity()).switchToProjectDeleteScreen();
             }
         });
 
@@ -165,12 +178,16 @@ public class MainPrism4DProject1Fragment extends Fragment {
         mListPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-/***
+
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToMaintainPoints1Screen();
+                Prism4DProject openProject = myActivity.getOpenProject();
+                if (openProject != null){
+                    myActivity.switchToListPointsScreen(openProject,
+                            new Prism4DPath(Prism4DPath.sShowTag));
                 }
-***/
+
+
+
                 ///for now, tell the user to go to maintain project screen
                 Toast.makeText(getActivity(),
                         R.string.list_points_button_label,
@@ -214,8 +231,6 @@ public class MainPrism4DProject1Fragment extends Fragment {
 
         //FOOTER WIDGETS
 
-
-        return v;
     }
 }
 

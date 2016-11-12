@@ -2,59 +2,66 @@ package com.asc.msigeosystems.prism4d;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
 import java.util.List;
 
+import static com.asc.msigeosystems.prism4d.Prism4DPath.sCopyTag;
+
 /**
  * The List Project Fragment is the UI
  * when the user can see the projects residing on this handset
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
  */
 public class MainPrism4DListProjectsFragment extends Fragment {
 
     private static final String TAG = "LIST_PROJECTS_FRAGMENT";
     /**
      * Create variables for all the widgets
-     *  although in the mockup, most will be statically defined in the xml
+     * although in the mockup, most will be statically defined in the xml
      */
 
-    private List<Prism4DProject> mProjectList ;
-    private RecyclerView mRecyclerView;
+    private List<Prism4DProject>  mProjectList;
+    private RecyclerView          mRecyclerView;
+    private Button                mProjectExitButton;
     private Prism4DProjectAdapter mAdapter;
 
-    private Prism4DProject mSelectedProject;
-    private int            mSelectedPosition;
+    private Prism4DProject        mSelectedProject;
+    private int                   mSelectedPosition;
 
-    private CharSequence   mProjectPath;
+    private CharSequence          mProjectPath;
 
 
     /**********************************************************/
     //          Fragment Lifecycle Functions                  //
+
     /**********************************************************/
 
     //this is called by Activity to store parameters before fragment is instantiated
-    public static MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath){
+    public static MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath) {
 
         Bundle args = new Bundle();
 
         //It will be some work to make all of the data model serializable
         //so for now, just pass the project values
         //For now, the only thing to pass is the path type itself
-        args.putCharSequence(Prism4DPath.sProjectPathTag,   projectPath.getPath());
+        args.putCharSequence(Prism4DPath.sProjectPathTag, projectPath.getPath());
 
         MainPrism4DListProjectsFragment fragment = new MainPrism4DListProjectsFragment();
 
@@ -70,7 +77,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
     //This is where parameters are unbundled
     @Override
-    public void onCreate(Bundle savedInstanceState){
+    public void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
 
@@ -86,82 +93,144 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-        /*
-         * The steps for doing recycler view in onCreateView() of a fragment are:
-         * 1) inflate the .xml
-         *
-         * the special recycler view stuff is:
-         * 2) get and store a reference to the recycler view widget that you created in xml
-         * 3) create and assign a layout manager to the recycler view
-         * 4) assure that there is data for the recycler view to show.
-         * 5) use the data to create and set an adapter in the recycler view
-         * 6) create and set an item animator (if desired)
-         * 7) create and set a line item decorator
-         * 8) add event listeners to the recycler view
-         *
-         * 9) return the view
-         */
-        //1) Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_project_list_prism4d, container, false);
-        v.setTag(TAG);
 
-        //2) find and remember the RecyclerView
-        mRecyclerView = (RecyclerView) v.findViewById(R.id.projectsList);
+        initializeRecyclerView(v);
 
-        //3) create and assign a layout manager to the recycler view
-        RecyclerView.LayoutManager mLayoutManager  = new LinearLayoutManager(getActivity());
-        mRecyclerView.setLayoutManager(mLayoutManager);
+        wireWidgets(v);
 
-        //4) read data in from the database and tell the adapter about it
-        //   this is now done in the projects container singleton
-
-        //      get the singleton list container
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        //      then go get our list of projects
-        mProjectList = projectManager.getProjects();
-
-        //5) Use the data to Create and set out project Adapter
-        mAdapter = new Prism4DProjectAdapter(mProjectList);
-        mRecyclerView.setAdapter(mAdapter);
-
-        //6) create and set the itemAnimator
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-
-        //7) create and add the item decorator
-        mRecyclerView.addItemDecoration(new DividerItemDecoration(
-                getActivity(), LinearLayoutManager.VERTICAL));
+        //subtitle is based on the path
+        setSubtitle();
 
 
-        //8) add event listeners to the recycler view
-        mRecyclerView.addOnItemTouchListener(
-                new RecyclerTouchListener(getActivity(), mRecyclerView, new ClickListener() {
 
-                    @Override
-                    public void onClick(View view, int position) {
-                       onSelect(position);
-                    }
-
-                    @Override
-                    public void onLongClick(View view, int position) {
-
-                    }
-                }));
-
-        //No FOOTER on this screen
-
-        //9) return the view
-        return v;
+            return v;
     }
+
 
     /**********************************************************/
     //      Utility Functions used in handling events         //
     /**********************************************************/
 
+    private void initializeRecyclerView(View v){
+        try {
+
+            /*
+             * The steps for doing recycler view in onCreateView() of a fragment are:
+             * 1) inflate the .xml
+             *
+             * the special recycler view stuff is:
+             * 2) get and store a reference to the recycler view widget that you created in xml
+             * 3) create and assign a layout manager to the recycler view
+             * 4) assure that there is data for the recycler view to show.
+             * 5) use the data to create and set an adapter in the recycler view
+             * 6) create and set an item animator (if desired)
+             * 7) create and set a line item decorator
+             * 8) add event listeners to the recycler view
+             *
+             * 9) return the view
+             */
+            //1) Inflate the layout for this fragment
+            v.setTag(TAG);
+
+            //2) find and remember the RecyclerView
+            mRecyclerView = (RecyclerView) v.findViewById(R.id.projectsList);
+
+            //3) create and assign a layout manager to the recycler view
+            RecyclerView.LayoutManager mLayoutManager  = new LinearLayoutManager(getActivity());
+            mRecyclerView.setLayoutManager(mLayoutManager);
+
+            //4) read data in from the database and tell the adapter about it
+            //   this is now done in the projects container singleton
+
+            //      get the singleton list container
+            Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+            //      then go get our list of projects
+            mProjectList = projectManager.getProjectList();
+
+            //5) Use the data to Create and set out project Adapter
+            mAdapter = new Prism4DProjectAdapter(mProjectList);
+            mRecyclerView.setAdapter(mAdapter);
+
+            //6) create and set the itemAnimator
+            mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+            //7) create and add the item decorator
+            mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                    getActivity(), LinearLayoutManager.VERTICAL));
+
+
+            //8) add event listeners to the recycler view
+            mRecyclerView.addOnItemTouchListener(
+                    new RecyclerTouchListener(getActivity(), mRecyclerView, new ClickListener() {
+
+                        @Override
+                        public void onClick(View view, int position) {
+                            onSelect(position);
+                        }
+
+                        @Override
+                        public void onLongClick(View view, int position) {
+
+                        }
+                    }));
+
+            //No FOOTER on this screen
+
+            //9) return the view
+        }catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
+
+    }
+
+
+    private void wireWidgets(View v){
+
+        //Exit Button
+        mProjectExitButton = (Button) v.findViewById(R.id.projectExitButton);
+        //button is always enabled
+        mProjectExitButton.setEnabled(true);
+        mProjectExitButton.setTextColor(Color.BLACK);
+        mProjectExitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
+
+            }
+        });
+    }
+
+
+    private void setSubtitle(){
+        String msg;
+
+        if (mProjectPath.equals(Prism4DPath.sOpenTag)) {
+            msg = getString(R.string.subtitle_open_project);
+        } else if (mProjectPath.equals(Prism4DPath.sCopyTag)) {
+            msg = getString(R.string.subtitle_copy_project);
+        } else if (mProjectPath.equals(Prism4DPath.sCreateTag)) {
+            msg = getString(R.string.subtitle_create_project);
+        } else if (mProjectPath.equals(Prism4DPath.sDeleteTag)) {
+            msg = getString(R.string.subtitle_delete_project);
+        } else if (mProjectPath.equals(Prism4DPath.sEditTag)) {
+            msg = getString(R.string.subtitle_edit_project);
+        } else {
+            msg = getString(R.string.subtitle_error_in_path);
+        }
+
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(msg);
+
+    }
+
+
     //called from onClick(), executed when a project is selected
     private void onSelect(int position){
         //todo need to update selection visually
         mSelectedPosition = position;
-        // TODO: 10/3/2016 Need to query list in Project Manager or Adapter, not locally 
+        // This is the one case where we can access the list directly
+        //all other maintenance must go through the ProjectManager
         mSelectedProject = mProjectList.get(position);
 
         Toast.makeText(getActivity().getApplicationContext(),
@@ -175,40 +244,49 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 //We'll need to pass the path forward
                 Prism4DPath copiedProjectPath = new Prism4DPath(mProjectPath);
 
+                /***************************  OPEN   ***************************/
                 if (mProjectPath.equals(Prism4DPath.sOpenTag)){
+                    //Save the opened project id up in the Activity
+                    myActivity.setOpenProject  (mSelectedProject);
 
-                    //if the path is open, open the selected project
-                    myActivity.switchToProject14UpdateScreen(
-                            mSelectedProject,
-                            copiedProjectPath);
+                    Toast.makeText(getActivity(),
+                                   myActivity.getOpenProjectIDMessage(),
+                                   Toast.LENGTH_SHORT).show();
 
+                    //switch back to the Home Screen
+                    myActivity.switchToHomeScreen();
+
+
+                /***************************  COPY   ***************************/
                 }else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
 
                     //if the path is copy, create a new project
                     // with the selected projects details
-                    Prism4DProject copiedProject = new Prism4DProject(
-                            mSelectedProject.getProjectName(),
-                            Prism4DProject.getNextProjectID()  );
-                    copiedProject.setProjectDescription(
-                            mSelectedProject.getProjectDescription());
+                    Prism4DProject copiedProject = new Prism4DProject(mSelectedProject.getProjectName() );
+                    copiedProject.setProjectDescription(mSelectedProject.getProjectDescription());
 
                     //copy the points from the selected project
                     // to the newly created project
-                    Prism4DPointsManager pointsManager =
-                            Prism4DPointsManager.getInstance();
-                    pointsManager.copyProjectPoints(
-                            mSelectedProject.getProjectID(),
-                            copiedProject.getProjectID());
+                    Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
+                    pointsManager.copyProjectPoints(mSelectedProject.getProjectID(),
+                                                    copiedProject.getProjectID());
 
                     //then switch to project update with that new project
-                    myActivity.switchToProject14UpdateScreen(
-                            copiedProject,
-                            copiedProjectPath);
+                    myActivity.switchToProjectUpdateScreen(copiedProject, copiedProjectPath);
 
+                /***************************  DELETE   ***************************/
                 }else if (mProjectPath.equals(Prism4DPath.sDeleteTag)){
 
                     //ask the user if they are sure they want to proceed.
                     areYouSureDelete();
+
+                /***************************  EDIT   ***************************/
+                }else if (mProjectPath.equals(Prism4DPath.sEditTag)){
+
+                    //if the path is Edit, open the selected project for update
+                    myActivity.switchToProjectUpdateScreen(mSelectedProject, copiedProjectPath);
+
+                /***************************  UNKNOWN!!!   ***************************/
                 }else {
 
                     //todo need to throw an unrecognized path exception
@@ -220,13 +298,6 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                     myActivity.switchToHomeScreen();
 
                 }
-
-
-            } else {
-                //for now, just put up a toast that nothing has been pressed yet
-                Toast.makeText(getActivity(),
-                        R.string.project_no_selection,
-                        Toast.LENGTH_LONG).show();
             }
         }
     }
@@ -239,18 +310,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 .setPositiveButton(R.string.continue_delete_dont_save, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // continue with delete
-
-                        Prism4DProjectAdapter myAdapter = (Prism4DProjectAdapter) mRecyclerView.getAdapter();
-                        myAdapter.removeItem(mSelectedPosition);
-
-                        CharSequence message =
-                                "Project " + mSelectedProject.getProjectName() + " is deleted";
-                        Toast.makeText(getActivity(),
-                                message,
-                                Toast.LENGTH_SHORT).show();
-
-                        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                        myActivity.popToProject1Screen();
+                        deleteProject();
                     }
                 })
                 .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
@@ -265,6 +325,27 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 .show();
     }
 
+    private void deleteProject(){
+
+        Prism4DProjectAdapter myAdapter = (Prism4DProjectAdapter) mRecyclerView.getAdapter();
+        myAdapter.removeItem(mSelectedPosition);
+
+        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+        int openProjectID = myActivity.getOpenProjectID();
+        if (openProjectID == mSelectedProject.getProjectID()){
+            myActivity.setOpenProject(null);
+        }
+
+
+        CharSequence message =
+                "Project " + mSelectedProject.getProjectName() + " is deleted";
+        Toast.makeText(getActivity(),
+                message,
+                Toast.LENGTH_SHORT).show();
+
+         myActivity.popToTopProjectScreen();
+
+    }
 
     //Add some code to improve the recycler view
     //Here is the interface for event handlers for Click and LongClick

@@ -2,10 +2,12 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -15,13 +17,16 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * when the user is 
  * Created by elisabethhuhn on 5/132016.
  */
-public class MainPrism4DCogo1Fragment extends Fragment {
+public class MainPrism4DTopCogoFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
      *  although in the mockup, most will be statically defined in the xml
      */
 
+
+    //Screen Label, used on this screen to display the open project
+    private TextView mScreenLabel;
 
     //Matrix Buttons
     private Button mPointsButton;
@@ -39,7 +44,7 @@ public class MainPrism4DCogo1Fragment extends Fragment {
 
 
 
-    public MainPrism4DCogo1Fragment() {
+    public MainPrism4DTopCogoFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -54,6 +59,18 @@ public class MainPrism4DCogo1Fragment extends Fragment {
 
         //Wire up the UI widgets so they can handle events later
 
+        wireWidgets(v);
+        return v;
+    }
+
+    private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
+
         //Key in points Button
         mPointsButton = (Button) v.findViewById(R.id.row1Button1);
         mPointsButton.setText(R.string.cogo_points_button_label);
@@ -62,10 +79,18 @@ public class MainPrism4DCogo1Fragment extends Fragment {
         mPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.cogo_points_button_label,
-                        Toast.LENGTH_SHORT).show();
+
+                //A project must be open to add points to it
+                MainPrism4DActivity myActivity = (MainPrism4DActivity)getActivity();
+                Prism4DProject project = myActivity.getOpenProject();
+                if (project == null){
+                    //Tell the user that a project must be open first
+                    Toast.makeText(getActivity(),
+                            R.string.cogo_project_must_be_open,
+                            Toast.LENGTH_SHORT).show();
+                } else {
+                    myActivity.switchToPointCreateScreen(project);
+                }
             }
         });
 
@@ -214,9 +239,6 @@ public class MainPrism4DCogo1Fragment extends Fragment {
         //      so do nothing in the footer
 
 
-
-
-        return v;
     }
 }
 

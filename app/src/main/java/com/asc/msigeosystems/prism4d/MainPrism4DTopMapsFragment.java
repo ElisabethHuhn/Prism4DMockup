@@ -16,7 +16,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * when the user is 
  * Created by elisabethhuhn on 5/132016.
  */
-public class MainPrism4DMaps1Fragment extends Fragment {
+public class MainPrism4DTopMapsFragment extends Fragment {
 
     /**
      * Create variables for all the widgets
@@ -40,7 +40,7 @@ public class MainPrism4DMaps1Fragment extends Fragment {
 
 
 
-    public MainPrism4DMaps1Fragment() {
+    public MainPrism4DTopMapsFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }

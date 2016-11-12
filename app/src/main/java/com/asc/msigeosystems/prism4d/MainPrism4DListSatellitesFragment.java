@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * The List Satellite Fragment is the UI
  * when the user can see the satellites visible to GPS
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
  */
 public class MainPrism4DListSatellitesFragment extends Fragment {
 
@@ -31,20 +31,20 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
-    private List<Prism4DSatellite> mSatelliteList ;
-    private RecyclerView mRecyclerView;
+    private List<Prism4DSatellite>  mSatelliteList ;
+    private RecyclerView            mRecyclerView;
     private Prism4DSatelliteAdapter mAdapter;
 
-    private String mSatelliteID;
-    private String mSatelliteElevation;
-    private Date   mSatelliteAzimuth;
-    private String mSatelliteSignalToNoise;
+    private String                  mSatelliteID;
+    private String                  mSatelliteElevation;
+    private Date                    mSatelliteAzimuth;
+    private String                  mSatelliteSignalToNoise;
 
-    private Prism4DSatellite mSelectedSatellite;
-    private Prism4DSatellite mLastSelectedSatellite;
-    private int            mSelectedPosition;
+    private Prism4DSatellite        mSelectedSatellite;
+    private Prism4DSatellite        mLastSelectedSatellite;
+    private int                     mSelectedPosition;
 
-    private CharSequence   mSatellitePath;
+    private CharSequence            mSatellitePath;
 
 
     /**********************************************************/
@@ -66,6 +66,19 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
+        //1) Inflate the layout for this fragment
+        View v = inflater.inflate(R.layout.fragment_satellite_list_prism4d, container, false);
+        v.setTag(TAG);
+
+        initializeRecyclerView(v);
+
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(getString(R.string.subtitle_list_satellites));
+
+        return v;
+    }
+
+    private void initializeRecyclerView(View v){
+
         /*
          * The steps for doing recycler view in onCreateView() of a fragment are:
          * 1) inflate the .xml
@@ -81,9 +94,6 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
          *
          * 9) return the view
          */
-        //1) Inflate the layout for this fragment
-        View v = inflater.inflate(R.layout.fragment_satellite_list_prism4d, container, false);
-        v.setTag(TAG);
 
         //2) find and remember the RecyclerView
         mRecyclerView = (RecyclerView) v.findViewById(R.id.satellitesList);
@@ -130,7 +140,7 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
         //No FOOTER on this screen
 
         //9) return the view
-        return v;
+
     }
 
     /**********************************************************/
