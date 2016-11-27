@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  */
 public class DataView extends BaseDataView {
 
@@ -24,8 +24,8 @@ public class DataView extends BaseDataView {
         mData.setGravity(Gravity.FILL_HORIZONTAL);
         mData.setBackgroundColor(YGPSConstants.dataviewTextFieldBgColor);
         mData.setTextSize(YGPSConstants.dataviewTextSize);
-        mData.setGravity(Gravity.RIGHT);
-        addView(mData, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        mData.setGravity(Gravity.END);
+        addView(mData, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         addLegend();
     }
 

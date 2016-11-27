@@ -20,6 +20,7 @@ import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.asc.msigeosystems.prism4d.Prism4DPath.sCopyTag;
@@ -57,11 +58,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
     public static MainPrism4DListProjectsFragment newInstance(Prism4DPath projectPath) {
 
         Bundle args = new Bundle();
-
-        //It will be some work to make all of the data model serializable
-        //so for now, just pass the project values
-        //For now, the only thing to pass is the path type itself
-        args.putCharSequence(Prism4DPath.sProjectPathTag, projectPath.getPath());
+        Prism4DPath.putPathInArguments(args, projectPath);
 
         MainPrism4DListProjectsFragment fragment = new MainPrism4DListProjectsFragment();
 
@@ -81,7 +78,8 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mProjectPath = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
+        Prism4DPath path = Prism4DPath.getPathFromArguments(getArguments());
+        mProjectPath = path.getPath();
 
         //This would be the place to do anything unique to a given path
 
@@ -242,7 +240,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
             if (mSelectedProject != null) {
 
                 //We'll need to pass the path forward
-                Prism4DPath copiedProjectPath = new Prism4DPath(mProjectPath);
+                Prism4DPath toProjectPath = new Prism4DPath(mProjectPath);
 
                 /***************************  OPEN   ***************************/
                 if (mProjectPath.equals(Prism4DPath.sOpenTag)){
@@ -259,20 +257,13 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
                 /***************************  COPY   ***************************/
                 }else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
+                    //do a deep copy and add the copied project to memory and the DB
+                    Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+                    Prism4DProject toProject = projectManager.deepCopyProject(mSelectedProject);
+                    projectManager.add(toProject);
 
-                    //if the path is copy, create a new project
-                    // with the selected projects details
-                    Prism4DProject copiedProject = new Prism4DProject(mSelectedProject.getProjectName() );
-                    copiedProject.setProjectDescription(mSelectedProject.getProjectDescription());
-
-                    //copy the points from the selected project
-                    // to the newly created project
-                    Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
-                    pointsManager.copyProjectPoints(mSelectedProject.getProjectID(),
-                                                    copiedProject.getProjectID());
-
-                    //then switch to project update with that new project
-                    myActivity.switchToProjectUpdateScreen(copiedProject, copiedProjectPath);
+                    //then switch to EDIT project with the new project
+                    myActivity.switchToProjectEditScreen(toProject);
 
                 /***************************  DELETE   ***************************/
                 }else if (mProjectPath.equals(Prism4DPath.sDeleteTag)){
@@ -284,7 +275,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 }else if (mProjectPath.equals(Prism4DPath.sEditTag)){
 
                     //if the path is Edit, open the selected project for update
-                    myActivity.switchToProjectUpdateScreen(mSelectedProject, copiedProjectPath);
+                    myActivity.switchToProjectEditScreen(mSelectedProject);
 
                 /***************************  UNKNOWN!!!   ***************************/
                 }else {

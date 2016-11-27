@@ -1,7 +1,14 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 5/23/2016.
+ * Created by Elisabeth Huhn on 5/23/2016.
+ *
+ * This coordinate extends the basic capabilities of Prism4DCoordinateLL
+ * and adds:
+ *
+ * A) returns its type from getCoordinateType as "Pris4DCoordinateNAD83"
+ * B) remembers its coordinate system specific constants, e.g. Dataum
+ *
  */
 
 
@@ -29,20 +36,8 @@ public class Prism4DCoordinateNAD83 extends Prism4DCoordinateLL {
     public static final double sPolarRadiusB = -sEquatorialRadiusA * (sFlattening-1.0);
 
 
-    /********
-     *
-     * Setters and Getters
-     *
-     **********/
-
-
-    /********
-     *
-     * Static functions
-     *
-     **********/
-
-
+    private CharSequence mThisCoordinateType  = Prism4DCoordinate.sCoordinateTypeNAD83;
+    private CharSequence mThisCoordinateClass = Prism4DCoordinate.sCoordinateTypeClassNAD83;
 
     /********
      *
@@ -50,12 +45,54 @@ public class Prism4DCoordinateNAD83 extends Prism4DCoordinateLL {
      *
      **********/
 
+    public  Prism4DCoordinateNAD83(){
+        super.initializeDefaultVariables();
+    }
+
+    /********
+     *
+     * Setters and Getters
+     *
+     **********/
+
+    //This method returns the type of the instance actually instantiated
+    @Override
+    public CharSequence getCoordinateType() { return mThisCoordinateType; }
+    public void         setCoordinateType(){
+        this.mThisCoordinateType = Prism4DCoordinate.sCoordinateTypeNAD83;
+    }
+
+
+    //This method returns the type of the instance as a string for UI display
+    @Override
+    public CharSequence getCoordinateClass(){ return mThisCoordinateClass; }
 
 
 
+    /********
+     *
+     * Static methods
+     *
+     **********/
 
 
+    /********
+     *
+     * Member methods
+     *
+     **********/
 
+    protected void initializeDefaultVariables(){
+        //set all variables with defaults, so that none are null
+        //I know that one does not have to initialize int's etc, but
+        //to be explicit about the initialization, do it anyway
+
+        //initialize all variables common to EN coordinates
+        super.initializeDefaultVariables();
+
+        //initialize all variables from this level
+
+    }
 
 
 }

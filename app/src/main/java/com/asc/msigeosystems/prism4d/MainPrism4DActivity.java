@@ -24,6 +24,7 @@ import static com.asc.msigeosystems.prism4dmockup.R.string.action_global_setting
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_settings;
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_skyplots;
 import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_convert_to_utm;
+import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_general_settings;
 import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_gps_nmea;
 import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_list_nmea;
 import static com.asc.msigeosystems.prism4dmockup.R.string.subtitle_list_satellites;
@@ -86,6 +87,8 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sSettingsTopTag        = "SETTINGS_TOP";
     private static final String sSettingsGlobalTag     = "SETTINGS_GLOBAL";
     private static final String sSettingsProjectDefaultTag = "SETTINGS_PROJECT_DEFAULT";
+    private static final String sSettingsGeneralTag    = "SETTINGS_GENERAL";
+    private static final String sCompassTag            = "COMPASS";
 
     private static final String sSupportTopTag        = "SUPPORT_TOP";
 
@@ -113,14 +116,14 @@ public class MainPrism4DActivity extends AppCompatActivity {
     public Prism4DProject getOpenProject() {return mOpenProject; }
     public void           setOpenProject(Prism4DProject openProject) {
         mOpenProject = openProject;
-        if (mOpenProject == null) {
+        if (mOpenProject != null) {
             mOpenProjectID = openProject.getProjectID();
         } else {
             mOpenProjectID = 0;
         }
     }
 
-   public int  getOpenProjectID()                  { return mOpenProjectID; }
+   public int  getOpenProjectID()                  { return mOpenProject.getProjectID(); }
     public void setOpenProjectID(int openProjectID) { mOpenProjectID = openProjectID; }
 
     public String getOpenProjectIDMessage(){
@@ -594,11 +597,11 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     public void switchToProjectCreateScreen(){
 
         //Gets the project which contains the defaults for all other projects
-        Prism4DProject project = getProjectForCreate();
+        //Prism4DProject project = getProjectForCreate();
         //set the action for the project to create
         Prism4DPath projectPath = new Prism4DPath(Prism4DPath.sCreateTag);
 
-        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, projectPath);
+        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(null, projectPath);
         String tag        = sProjectCreateTag;
         int subTitle      = R.string.subtitle_create_project;
 
@@ -649,6 +652,23 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
 
+    /****
+     * Method to switch fragment to display and existing Project
+     * EMH 11/15/2016
+     */
+    public void switchToProjectEditScreen( Prism4DProject project){
+        //create the path for Edit
+        Prism4DPath path = new Prism4DPath(Prism4DPath.sEditTag);
+
+        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, path);
+        String tag        = sProjectUpdateTag;
+        int subTitle      = R.string.subtitle_maintain_project;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
+
 
     /****
      * Method to switch fragment to show a list of projects to
@@ -672,23 +692,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
 
 
-
-    /****
-     * Method to switch fragment to display and existing Project
-     * EMH 5/10/16
-     */
-    public void switchToProjectUpdateScreen(
-            Prism4DProject project,
-            Prism4DPath path){
-
-        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, path);
-        String tag        = sProjectUpdateTag;
-        int subTitle      = R.string.subtitle_maintain_project;
-
-        switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
-
-    }
 
 
 
@@ -861,8 +864,8 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                                         Prism4DPoint   point){
 
         Fragment fragment =  MainPrism4DPointEditFragment.newInstance(projectID,
-                                                                             pointPath,
-                                                                             point);
+                                                                      pointPath,
+                                                                      point);
         String tag        = sPointEditTag;
         int subTitle      = R.string.subtitle_maintain_point;
 
@@ -1127,6 +1130,16 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
     }
 
+    public void switchToCompassScreen(){
+
+        Fragment fragment = new MainPrism4DCompassFragment();
+        String tag        = sCompassTag;
+        int subTitle      = R.string.subtitle_compass;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
 
 
 
@@ -1144,6 +1157,22 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Fragment fragment = new MainPrism4DTopSettingsFragment();
         String tag        = sSettingsTopTag;
         int subTitle      = action_settings;
+
+        switchScreen(fragment, tag);
+        switchSubtitle(subTitle);
+
+    }
+
+
+    /****
+     * Method to switch fragment to General Settings
+     * EMH 6/7/16
+     */
+    public void switchToGeneralSettingsScreen(){
+
+        Fragment fragment = new MainPrism4DTopSettingsGeneralFragment();
+        String tag        = sSettingsGeneralTag;
+        int subTitle      = subtitle_general_settings;
 
         switchScreen(fragment, tag);
         switchSubtitle(subTitle);
@@ -1177,10 +1206,10 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Prism4DProject project = getDefaultProject();
 
         //This project will always exist, we will only ever want to update it
-        Prism4DPath openPath = new Prism4DPath(Prism4DPath.sOpenTag);
+        Prism4DPath openPath = new Prism4DPath(Prism4DPath.sEditTag);
 
 
-        Fragment fragment = MainPrism4DProjectEditFragment.newInstance(project, openPath);
+        Fragment fragment = MainPrism4DProjectSettingsFragment.newInstance(project, openPath);
         String tag        = sSettingsProjectDefaultTag;
         int subTitle      = R.string.action_project_default_settings;
 
@@ -1246,7 +1275,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         Prism4DPoint point = new Prism4DPoint(
                                 Prism4DPoint.sPointNewID);
 
-        point.setPointDescription(Prism4DPoint.sPointNewDesc);
+        point.setPointFeatureCode(Prism4DPoint.sPointNewDesc);
         return point;
     }
 

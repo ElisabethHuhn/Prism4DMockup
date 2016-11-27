@@ -9,7 +9,7 @@ import android.widget.TextView;
 import java.text.DecimalFormat;
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  */
 public class BaseDataView extends LinearLayout {
     protected Context mContext;
@@ -28,11 +28,11 @@ public class BaseDataView extends LinearLayout {
         setOrientation(LinearLayout.VERTICAL);
         mDescription = new TextView(getContext());
         mDescription.setBackgroundColor(YGPSConstants.dataviewLegendFieldBgColor);
-        mDescription.setGravity(Gravity.LEFT);
+        mDescription.setGravity(Gravity.START);
         mDescription.setTextColor(YGPSConstants.dataviewTextColor);
         mUnits = new TextView(getContext());
         mUnits.setBackgroundColor(YGPSConstants.dataviewLegendFieldBgColor);
-        mUnits.setGravity(Gravity.RIGHT);
+        mUnits.setGravity(Gravity.END);
         mUnits.setTextColor(YGPSConstants.dataviewTextColor);
         mLegend = new LinearLayout(getContext());
         mLegend.setOrientation(LinearLayout.HORIZONTAL);
@@ -40,9 +40,9 @@ public class BaseDataView extends LinearLayout {
     }
 
     protected void addLegend(){
-        mLegend.addView(mDescription, new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.FILL_PARENT,1));
-        mLegend.addView(mUnits, new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.FILL_PARENT,1));
-        addView(mLegend, new LinearLayout.LayoutParams(LinearLayout.LayoutParams.FILL_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
+        mLegend.addView(mDescription, new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,1));
+        mLegend.addView(mUnits, new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,1));
+        addView(mLegend, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT));
     }
 
     public void setUnits(CharSequence text){

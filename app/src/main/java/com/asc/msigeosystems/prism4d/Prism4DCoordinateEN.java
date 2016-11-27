@@ -2,35 +2,40 @@ package com.asc.msigeosystems.prism4d;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.Date;
 
 /**
- * Created by elisabethhuhn on 5/25/2016.
+ * Created by Elisabeth Huhn on 5/25/2016.
  *
- * This class is part of the Coordinate s hierarchy
- * This is the super class of
+ * This class is part of the Coordinate's hierarchy
+ * This is the super class of any Coordinate expressed with
  * Easting/Northing rectangular coordinate systems
+ *
+ * The class knows how to:
+ *   A) store all attributes required of Easting/Northing coordinate systems.
+ *   B) convert from any other coordinate system to this one
+ *
  */
-public class Prism4DCoordinateEN {
+public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
     /*****************************************************/
     /********    Attributes stored in the DB     *********/
     /*****************************************************/
 
-    protected int    mProjectID; //May or may not describe a point
-    protected int    mPointID;
 
-    protected int    mZone;        //1-60
-    protected char   mHemisphere;  //N or S
-    protected double mEasting;
-    protected double mNorthing;
-    protected char   mLatBand;
+    protected int          mProjectID; //May or may not describe a point
+    protected int          mPointID;
 
-    //for now, the only conversion supported is from WGS84 to UTM
-    //// but the datum is set when the subclass coordinate is constructed
+    protected double       mEasting;
+    protected double       mNorthing;
+    protected double       mElevation;
+    protected int          mZone;        //1-60
+    protected char         mHemisphere;  //N or S
+    protected char         mLatBand;
     protected CharSequence mDatum = "WGS84"; //eg WGS84
-    protected double mConvergence; //
-    protected double mScale;
+    protected double       mConvergence; //
+    protected double       mScale;
 
-    protected boolean mValidCoordinate = true;
+    protected boolean      mValidCoordinate = true;
 
     /*****************************************************/
     /********    All other Attributes            *********/
@@ -92,9 +97,11 @@ public class Prism4DCoordinateEN {
 
     public double getEasting()     { return mEasting;  }
     public double getNorthing()    { return mNorthing; }
+    public double getElevation()   { return mElevation; }
 
-    public double getEastingFeet() { return Prism4DConstants.convertMetersToFeet(mEasting);  }
-    public double getNorthingFeet(){ return Prism4DConstants.convertMetersToFeet(mNorthing); }
+    public double getEastingFeet() { return Prism4DConstantsAndUtilities.convertMetersToFeet(mEasting);  }
+    public double getNorthingFeet(){ return Prism4DConstantsAndUtilities.convertMetersToFeet(mNorthing); }
+    public double getElevationFeet(){return Prism4DConstantsAndUtilities.convertMetersToFeet(mElevation);}
 
     public int    getZone()        { return mZone;     }
     public char   getLatBand()     { return mLatBand;  }
@@ -103,12 +110,31 @@ public class Prism4DCoordinateEN {
     public double getConvergence() { return mConvergence; }
     public double getScale()       { return mScale;    }
 
+    public boolean isValidCoordinate() { return mValidCoordinate; }
+
+    public void setEasting(double easting)   { mEasting = easting;  }
+    public void setNorthing(double northing) { mNorthing = northing;}
+    public void setElevation(double elevation) { mElevation = elevation; }
+    public void setZone(int zone)              { mZone = zone;   }
+    public void setHemisphere(char hemisphere) { mHemisphere = hemisphere;}
+    public void setLatBand(char latBand)       { mLatBand = latBand; }
+    public void setDatum(CharSequence datum)   { mDatum = datum;  }
+    public void setConvergence(double convergence) { mConvergence = convergence; }
+    public void setScale(double scale)         { mScale = scale; }
+    public void setValidCoordinate(boolean validCoordinate) { mValidCoordinate = validCoordinate; }
+
     public String toString() {
         return String.format("%s %c %c %s %s", mZone, mHemisphere, mLatBand, mEasting, mNorthing);
     }
 
 
     //default constructor
+    /**************************************************************/
+    /**************************************************************/
+    /*       Vanilla constructor, default values only             */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateEN(){
             initializeDefaultVariables();
         }
@@ -118,13 +144,16 @@ public class Prism4DCoordinateEN {
         //I know that one does not have to initialize int's etc, but
         //to be explicit about the initialization, do it anyway
 
-        mProjectID      = 0; //assume does not describe a point
-        mPointID        = 0;
+        //initialize all variables common to all coordinates
+        super.initializeDefaultVariables();
 
-        mZone        = 0;        //1-60
-        mHemisphere  = 'N';  //N or S
+        //initialize all variables common to EN coordinates
+
+
         mEasting     = 0d;
         mNorthing    = 0d;
+        mZone        = 0;        //1-60
+        mHemisphere  = 'N';  //N or S
         mLatBand     = 'A';
         mValidCoordinate = false;
         mDatum       = "WGS84"; //eg WGS84
@@ -521,10 +550,14 @@ public class Prism4DCoordinateEN {
 
 
         // round to reasonable precision of 6 decimal places - nanometer precision
-        BigDecimal bdx = new BigDecimal(mEasting).setScale(6, RoundingMode.HALF_UP);
+        BigDecimal bdx = new BigDecimal(mEasting).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mEasting = bdx.doubleValue();
 
-        BigDecimal bdy = new BigDecimal(mNorthing).setScale(6, RoundingMode.HALF_UP);
+        BigDecimal bdy = new BigDecimal(mNorthing).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mNorthing = bdy.doubleValue(); // nm precision
 
 
@@ -533,12 +566,16 @@ public class Prism4DCoordinateEN {
         // toDegrees() converts a radians number to degrees
         // degrees = radians * (360 / 2 pi)
         double nuDegrees = nu * (360. / (2. * Math.PI));
-        BigDecimal bdConvergence = new BigDecimal(nuDegrees).setScale(9, RoundingMode.HALF_UP);
+        BigDecimal bdConvergence = new BigDecimal(nuDegrees).
+                                setScale(Prism4DConstantsAndUtilities.sNanometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mConvergence = bdConvergence.doubleValue();
 
 
         //report scale to 12 decimal places
-        BigDecimal bdScale = new BigDecimal(kappa).setScale(12, RoundingMode.HALF_UP);
+        BigDecimal bdScale = new BigDecimal(kappa).
+                                setScale(Prism4DConstantsAndUtilities.sPicometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mScale = bdScale.doubleValue();
 
     }

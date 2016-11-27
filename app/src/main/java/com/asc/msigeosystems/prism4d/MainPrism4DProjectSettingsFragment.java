@@ -48,6 +48,7 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
     private EditText mFCTimeStampInput;
 
     private Button mResetButton;
+    private Button mExitButton;
 
 
 
@@ -72,13 +73,9 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
     private CharSequence mFCTimeStamp       = "NO";
 
 
+    private Prism4DProject mProject;
+    private CharSequence   mProjectPath;
 
-    private int          mProjectID ;
-    private CharSequence mProjectName;
-    private CharSequence mProjectCreateDate;
-    private CharSequence mProjectMaintDate;
-    private CharSequence mProjectDescription;
-    private CharSequence mProjectPath;
 
 
 
@@ -87,26 +84,11 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
             Prism4DProject project,
             Prism4DPath projectPath) {
 
-        Bundle args = new Bundle();
-
-        //It will be some work to make all of the data model serializable
-        //so for now, just pass the project values
-        args.putInt         (Prism4DProject.sProjectIDTag,
-                project.getProjectID());
-        args.putCharSequence(Prism4DProject.sProjectNameTag,
-                project.getProjectName());
-        args.putCharSequence(Prism4DProject.sProjectCreateTag,
-                project.getProjectDateCreated().toString());
-        args.putCharSequence(Prism4DProject.sProjectMaintTag,
-                project.getProjectLastModified().toString());
-        args.putCharSequence(Prism4DProject.sProjectDescTag,
-                project.getProjectDescription());
-        args.putCharSequence(Prism4DPath.sProjectPathTag,
-                projectPath.getPath());
+        Bundle args = Prism4DProject.putProjectInArguments(new Bundle(), project);
+        args = Prism4DPath.putPathInArguments(args, projectPath);
 
 
-        MainPrism4DProjectSettingsFragment fragment =
-                new MainPrism4DProjectSettingsFragment();
+        MainPrism4DProjectSettingsFragment fragment = new MainPrism4DProjectSettingsFragment();
 
         fragment.setArguments(args);
         return fragment;
@@ -122,14 +104,9 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mProjectID          = getArguments().getInt(Prism4DProject.sProjectIDTag);
-        mProjectName        = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
-        mProjectCreateDate  = getArguments().getCharSequence(Prism4DProject.sProjectCreateTag);
-        mProjectMaintDate   = getArguments().getCharSequence(Prism4DProject.sProjectMaintTag);
-        mProjectDescription = getArguments().getCharSequence(Prism4DProject.sProjectDescTag);
-        mProjectPath        = getArguments().getCharSequence(Prism4DPath.sProjectPathTag);
-
-
+        mProject = Prism4DProject.getProjectFromArguments(getArguments());
+        Prism4DPath path = Prism4DPath.getPathFromArguments(getArguments());
+        mProjectPath = path.getPath();
     }
 
 
@@ -218,6 +195,17 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
         mFCTimeStampInput = (EditText) v.findViewById(R.id.fcTimeStampInput);
 
 
+        //Exit Button
+        mExitButton = (Button) v.findViewById(R.id.exitButton);
+        mExitButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+
+                ((MainPrism4DActivity)getActivity()).switchToPopBackstack();
+            }
+        });
+
+
         //Reset Defaults Button
         mResetButton = (Button) v.findViewById(R.id.resetDefaultsButton);
         mResetButton.setOnClickListener(new View.OnClickListener() {
@@ -258,8 +246,8 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
         mFCTimeStamp       = "NO";
 
         //display the new defaults
-        mProjectIDOutput.     setText(String.valueOf(mProjectID));
-        mProjectNameOutput.   setText(String.valueOf(mProjectName));
+        mProjectIDOutput.     setText(String.valueOf(mProject.getProjectID()));
+        mProjectNameOutput.   setText(String.valueOf(mProject.getProjectName()));
         mDistanceUnitsInput.  setText(mDistanceUnits);
         mDecimalDisplayInput. setText(mDecimalDisplay);
         mAngleUnitsInput.     setText(mAngleUnits);

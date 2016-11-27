@@ -53,16 +53,16 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
     }
 
     public void removeItem(int position) {
-        //This list is used locally as well as in the project container,
-        // so we only have to remove it once
-        //TODO Hide this in the projectManager, ie call the projectManager to delete the project from the list
-        mProjectList.remove(position);
+        //The ProjectManager maintains the in memory container of projects as well as the
+        //DB mirror of projects. So need to let the ProjectManager be in charge of
+        //maintaining the list of current projects. So pass the request on
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        projectManager.removeProject(position);
+
         notifyItemRemoved(position);
         //this line below gives you the animation and also updates the
         //list items after the deleted item
         notifyItemRangeChanged(position, getItemCount());
-
-
     }
 
     @Override

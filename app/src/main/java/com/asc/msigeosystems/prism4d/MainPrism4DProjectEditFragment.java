@@ -4,13 +4,17 @@ import android.content.DialogInterface;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -25,7 +29,8 @@ import java.util.Date;
  *
  * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DProjectEditFragment extends Fragment {
+public class MainPrism4DProjectEditFragment extends    Fragment
+                                            implements AdapterView.OnItemSelectedListener{
 
     /**
      * Create variables for all the widgets
@@ -46,6 +51,11 @@ public class MainPrism4DProjectEditFragment extends Fragment {
     private EditText mProjectDescInput;
 
 
+    //private TextView mPointCoordinateTypePrompt;
+    private EditText mProjectCoordTypeOutput;
+
+
+
     private Button mProjectViewSettingsButton;
     private Button mProjectViewExistingButton;
     private Button mProjectListPointsButton;
@@ -53,16 +63,18 @@ public class MainPrism4DProjectEditFragment extends Fragment {
     private Button mProjectExitButton;
 
 
+    /***********************************************************/
+    /******  Coordinate types for Spinner Widgets     **********/
+    /***********************************************************/
+    private String[] mCoordinateTypes;
+    private Spinner  mSpinner;
+
+    private String   mSelectedCoordinateType;
+    private int      mSelectedCoordinateTypePosition;
+
     /***********************************************************************/
     /**********   Member Variables  ****************************************/
     /***********************************************************************/
-
-    private CharSequence mProjectName;
-    private CharSequence mProjectID;
-    private CharSequence mProjectCreateDate;
-    private CharSequence mProjectMaintDate;
-    private CharSequence mProjectDescription;
-
     private Prism4DProject mProjectBeingMaintained;
 
     private boolean      mProjectChanged = false;
@@ -71,28 +83,24 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
 
 
+    //Constructor
+    public MainPrism4DProjectEditFragment() {
+        //for now, we don't need to initialize anything when the fragment
+        //  is first created with this constructor
+    }
+
+
+
     //newInstance() stores the passed parameters in the fragments argument bundle
     public static MainPrism4DProjectEditFragment newInstance(Prism4DProject project,
                                                              Prism4DPath projectPath) {
 
-        Bundle args = new Bundle();
+        Bundle temp = new Bundle();
+        //Put the project into an arguments bundle
+        Bundle args = Prism4DProject.putProjectInArguments(temp, project);
 
-        // TODO: 11/10/2016 Rather than treat dates as char sequences, convert to long milliseconds
-        //It will be some work to make all of the data model serializable
-        //so for now, just pass the project values
-        args.putInt         (Prism4DProject.sProjectIDTag,
-                                                project.getProjectID());
-        args.putCharSequence(Prism4DProject.sProjectNameTag,
-                                                project.getProjectName());
-        args.putCharSequence(Prism4DProject.sProjectCreateTag,
-                                                project.getProjectDateCreated().toString());
-        args.putCharSequence(Prism4DProject.sProjectMaintTag,
-                                                project.getProjectLastModified().toString());
-        args.putCharSequence(Prism4DProject.sProjectDescTag,
-                                                project.getProjectDescription());
-        args.putCharSequence(Prism4DPath.sProjectPathTag,
-                                                projectPath.getPath());
-
+        //put the path into the same bundle
+        args = Prism4DPath.putPathInArguments(args, projectPath);
 
         MainPrism4DProjectEditFragment fragment = new MainPrism4DProjectEditFragment();
 
@@ -100,11 +108,10 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         return fragment;
     }
 
-    //Constructor
-    public MainPrism4DProjectEditFragment() {
-        //for now, we don't need to initialize anything when the fragment
-        //  is first created with this constructor
-    }
+
+    /***********************************************************/
+    /*****     Lifecycle Methods                         *******/
+    /***********************************************************/
 
     //pull the arguments out of the fragment bundle and store in the member variables
     //In this case, prepopulate the path (create/update/etc) and project
@@ -113,30 +120,12 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        int projectID       = getArguments().getInt(Prism4DProject.sProjectIDTag);
+        mProjectBeingMaintained = Prism4DProject.getProjectFromArguments(getArguments());
 
-        mProjectID          = String.valueOf(projectID);
-        mProjectName        = getArguments().getCharSequence(Prism4DProject.sProjectNameTag);
-        mProjectCreateDate  = getArguments().getCharSequence(Prism4DProject.sProjectCreateTag);
-        mProjectMaintDate   = getArguments().getCharSequence(Prism4DProject.sProjectMaintTag);
-        mProjectDescription = getArguments().getCharSequence(Prism4DProject.sProjectDescTag);
-        mProjectPath        = getArguments().getCharSequence(Prism4DPath.   sProjectPathTag);
+        Prism4DPath path        = Prism4DPath.getPathFromArguments(getArguments());
+        mProjectPath            = path.getPath();
 
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        Prism4DProject project = projectManager.getProject(Integer.parseInt(mProjectID.toString().trim()));
-        if (project == null){
-            //don't assign a new Project ID to this instance, or put it in the ProjectManager List
-            project             = new Prism4DProject(mProjectName.toString(), Prism4DProject.sProjectNewID);
-            mProjectID          = String.valueOf(project.getProjectID());
-            mProjectCreateDate  = project.getProjectDateCreated().toString();
-            mProjectMaintDate   = project.getProjectLastModified().toString();
-            mProjectDescription = project.getProjectDescription();
-
-        }
-        mProjectBeingMaintained = project;
-
-
-        //put this info on the screen in initializeUI()
+        //put this info on the screen in initializeUI() after the view has been created
 
     }
 
@@ -154,6 +143,8 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         //Wire up the UI widgets so they can handle events later
         wireWidgets(v);
 
+        wireCoordinateSpinner(v);
+
 
         //If we had any arguments passed, update the screen with them
         initializeUI();
@@ -161,11 +152,13 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         //set the title bar subtitle
         setSubtitle();
 
-
-
         return v;
     }
 
+
+    /***********************************************************/
+    /*****     Initialize                                *******/
+    /***********************************************************/
     private void wireWidgets(View v){
         //For now ignore the text view widgets, as this is just a mockup
         //      for the real screen we'll have to actually fill the fields
@@ -175,7 +168,7 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         mProjectNameInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                setProjectChanged();
+                setProjectChangedFlags();
                 return false;
             }
         });
@@ -187,11 +180,11 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         }
         mProjectIDInput = (EditText) v.findViewById(R.id.projectIDInput);
         //Shouldn't be able to change ID
-        mProjectIDInput.setEnabled(false);
+        mProjectIDInput.setFocusable(false);
         mProjectIDInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                setProjectChanged();
+                setProjectChangedFlags();
                 return false;
             }
 
@@ -199,33 +192,44 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
         //Project Creation Date
         mProjectDateInput = (EditText) v.findViewById(R.id.projectCreationDateInput);
+        mProjectDateInput.setFocusable(false);
+        /*
         mProjectDateInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                setProjectChanged();
+                setProjectChangedFlags();
                 return false;
             }
         });
+        */
 
         //Project Last Modified Date
         mProjectMaintInput = (EditText) v.findViewById(R.id.projectModifiedDateInput);
-        mProjectMaintInput.setOnTouchListener(new View.OnTouchListener() {
+        mProjectMaintInput.setFocusable(false);
+
+        /*
+       mProjectMaintInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                setProjectChanged();
+                setProjectChangedFlags();
                 return false;
             }
         });
+        */
 
         //Project Description
         mProjectDescInput = (EditText) v.findViewById(R.id.projectDescInput);
         mProjectDescInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
-                setProjectChanged();
+                setProjectChangedFlags();
                 return false;
             }
         });
+
+        //Coordinate Type
+       // mProjectCoordTypeOutput = (EditText)v.findViewById(R.id.projectCoordTypeInput);
+        //mProjectCoordTypeOutput.setFocusable(false);
 
 
 
@@ -240,7 +244,7 @@ public class MainPrism4DProjectEditFragment extends Fragment {
                     areYouSureViewSettings();
                 } else {
                     switchToProjectSettings();
-                 }
+                }
 
             }
         });
@@ -258,19 +262,24 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
                 viewProjects();
 
-
-
             }
         });
 
 
         //List Points Button
         mProjectListPointsButton = (Button) v.findViewById(R.id.projectListPointsButton);
-        mProjectListPointsButton.setEnabled(true);
-        mProjectListPointsButton.setTextColor(Color.BLACK);
+        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            mProjectListPointsButton.setEnabled(false);
+            mProjectListPointsButton.setTextColor(Color.GRAY);
+        } else {
+            mProjectListPointsButton.setEnabled(true);
+            mProjectListPointsButton.setTextColor(Color.BLACK);
+        }
+
         mProjectListPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 if (mProjectChanged){
                     //need to ask first about abandoning changes
                     areYouSureListPoints();
@@ -294,10 +303,11 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
                 //The project must have been changed for this button to work
                 if (mProjectChanged) {
-                    saveChanges();
+                    onSave();
 
-                    setProjectSaved();
-                    ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
+                    setProjectSavedFlags();
+                    //For now, stay around after save
+                    //((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
 
                 }
             }
@@ -322,16 +332,93 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         });
     }
 
-    private void initializeUI() {
-        //show the data that came out of the input arguments bundle
-        mProjectIDInput   .setText(mProjectID);
-        mProjectNameInput .setText(mProjectName);
-        mProjectDateInput .setText(mProjectCreateDate);
-        mProjectMaintInput.setText(mProjectMaintDate);
-        mProjectDescInput .setText(mProjectDescription);
+
+    private void wireCoordinateSpinner(View v){
+        //set the default
+        mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeClassUTM;
+
+        //Create the array of spinner choices from the Types of Coordinates defined
+        mCoordinateTypes = new String[]{
+                getString(R.string.enter_coordinate_type),
+                Prism4DCoordinate.sCoordinateTypeWGS84,
+                Prism4DCoordinate.sCoordinateTypeNAD83,
+                Prism4DCoordinate.sCoordinateTypeUTM,
+                Prism4DCoordinate.sCoordinateTypeSPCS };
+
+        //Then initialize the spinner itself
+        mSpinner = (Spinner) v.findViewById(R.id.coordinate_type_spinner);
+
+        // Create an ArrayAdapter using the Activities context AND
+        // the string array and a default spinner layout
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getActivity(),
+                                                          android.R.layout.simple_spinner_item,
+                                                          mCoordinateTypes);
+
+        // Specify the layout to use when the list of choices appears
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        // Apply the adapter to the spinner
+        mSpinner.setAdapter(adapter);
+
+        //attach the listener to the spinner
+        mSpinner.setOnItemSelectedListener(this);
+
+        int temp = mProjectBeingMaintained.getPoints().size();
+        if (temp > 0){
+            //can't change the coordinate type if any points are on the project
+            mSpinner.setEnabled(false);
+            mSpinner.setClickable(false);
+            mSpinner.setBackgroundColor(ContextCompat.getColor(getActivity(), R.color.colorGray));
+        }
+
+
+        //mPointCoordinateTypePrompt = (TextView) v.findViewById(R.id.coordinate_prompt);
+
     }
 
 
+    private void initializeUI() {
+        //show the data that came out of the input arguments bundle
+
+        //a new id is not assigned until the first save
+        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            mProjectIDInput.setText(String.valueOf(Prism4DProject.getPotentialNextID()));
+        } else {
+            mProjectIDInput.setText(String.valueOf(mProjectBeingMaintained.getProjectID()));
+        }
+        mProjectNameInput .setText(mProjectBeingMaintained.getProjectName());
+        mProjectDateInput .setText(mProjectBeingMaintained.getDateString(
+                                                mProjectBeingMaintained.getProjectDateCreated()));
+        mProjectMaintInput.setText(mProjectBeingMaintained.getDateString(
+                                                mProjectBeingMaintained.getProjectLastModified()));
+        mProjectDescInput .setText(mProjectBeingMaintained.getProjectDescription());
+        //mProjectCoordTypeOutput.setText(mProjectBeingMaintained.getProjectCoordinateType());
+        CharSequence spinnerSelection = mProjectBeingMaintained.getProjectCoordinateType();
+        //NOTE: THIS NEXT SECTION MUST BE IN THE SAME ORDER AS THAT WHEN THE SPINNER
+        //IS CREATED. THE ORDERING IS ENFORCED BY THE PROGRAMMER AT CODING TIME
+        //THERE IS NOTHING AUTOMATIC ABOUT THIS HARD CODING
+        //I'm not proud of it, but it works, so.......... be it
+        if (spinnerSelection.equals(Prism4DCoordinate.sCoordinateTypeNAD83)) {
+            mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeClassNAD83;
+            mSelectedCoordinateTypePosition = 2;
+            mSpinner.setSelection(2);
+        } else if (spinnerSelection == Prism4DCoordinate.sCoordinateTypeUTM) {
+            mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeUTM;
+            mSelectedCoordinateTypePosition = 3;
+            mSpinner.setSelection(3);
+        } else if (spinnerSelection == Prism4DCoordinate.sCoordinateTypeSPCS){
+            mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeSPCS;
+            mSelectedCoordinateTypePosition = 4;
+            mSpinner.setSelection(4);
+        } else  { //Use WGS84 as the default
+            mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeWGS84;
+            mSelectedCoordinateTypePosition = 1;
+            mSpinner.setSelection(1);
+            mProjectBeingMaintained.setProjectCoordinateType(mSelectedCoordinateType);
+            setProjectChangedFlags();
+        }
+
+        //mPointCoordinateTypePrompt.setText();
+    }
 
     private void setSubtitle(){
         String msg;
@@ -356,89 +443,56 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
 
 
+    /***********************************************************/
+    /*****     Respond to UI events                      *******/
+    /***********************************************************/
 
-    private void viewProjects(){
-        //what this button does depends upon the path  {create, open, copy}
-        //*********************** CREATE **************************************/
-        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
-            Toast.makeText(getActivity(),
-                    R.string.cant_view_projects,
-                    Toast.LENGTH_SHORT).show();
 
-            //switchToProjectList();
+    /*********************************************/
+    /**********     Spinner Callbacks   **********/
+    /***********************************************************/
 
-        //*********************** OPEN or COPY or EDIT **************************************/
-        } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
-                   (mProjectPath.equals(Prism4DPath.sCopyTag)) ||
-                   (mProjectPath.equals(Prism4DPath.sEditTag)) ) {
-            if (mProjectChanged){
-                //ask the user if should continue
-                areYouSureViewProjects();
+    public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
+        mSelectedCoordinateTypePosition = position;
+        mSelectedCoordinateType = (String) parent.getItemAtPosition(position);
 
-            } else {
-                Toast.makeText(getActivity(),
-                        R.string.project_unchanged,
-                        Toast.LENGTH_SHORT).show();
+        setProjectChangedFlags();
 
-                switchToProjectList();
+        int msg = 0;
+        switch(position){
+            case 1:
+                msg = R.string.wgs84_prompt;
 
-            }
+                break;
+            case 2:
+                msg = R.string.nad83_prompt;
 
-        //*********************** UNKNOWN **************************************/
-        } else {
-            Toast.makeText(getActivity(),
-                    R.string.unrecognized_path_encountered,
-                    Toast.LENGTH_SHORT).show();
-            //todo need to throw an exception here
-            //Notice that we don't leave the screen on this condition
-        }
+                break;
+            case 3:
+                msg = R.string.utm_prompt;
+
+                break;
+            case 4:
+                msg = R.string.spc_prompt;
+
+                break;
+            default:
+                msg = R.string.enter_coordinate_type;
+         }
+
 
     }
 
-    private void setProjectChanged(){
-        mProjectChanged = true;
-
-        //enable the save changes button
-        mProjectSaveChangesButton.setEnabled(true);
-        mProjectSaveChangesButton.setTextColor(Color.BLACK);
-    }
-
-    private void setProjectSaved(){
-        mProjectChanged = false;
-        //enable the enter button as the default is NOT enabled/grayed out
-        //mEnterButton.setText(R.string.enter_to_save_button_label);
-        //mEnterButton.setEnabled(false);
-        //mEnterButton.setTextColor(Color.GRAY);
-
-        mProjectSaveChangesButton.setEnabled(false);
-        mProjectSaveChangesButton.setTextColor(Color.GRAY);
-    }
-
-    //returns null if not found
-    private Prism4DProject findThisProject(){
-
-        //it should be the one we saved coming into the fragment
-        if (mProjectBeingMaintained != null)return mProjectBeingMaintained;
-
-        //      Get the project manager instance
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        //      then use the project manager to get our project
-        Prism4DProject newProject = projectManager.getProject(Integer.valueOf(mProjectID.toString()));
-
-        if (newProject == null){
-            // TODO: 11/7/2016 is throwing an exception the right thing to do here?
-            throw new RuntimeException("Could not find project which must exist");
-
-        }
-        return newProject;
+    public void onNothingSelected(AdapterView<?> parent) {
+        //for now, do nothing
     }
 
 
-    private Prism4DProject saveChanges() {
-        if (mProjectBeingMaintained == null){
-            mProjectBeingMaintained = findThisProject();
-        }
 
+    /************************************/
+    /*****     Save Button        *******/
+    /************************************/
+    private Prism4DProject onSave() {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
 
         /******************* CREATE **************************************/
@@ -447,12 +501,23 @@ public class MainPrism4DProjectEditFragment extends Fragment {
                     R.string.save_new_project,
                     Toast.LENGTH_SHORT).show();
 
-            if (mProjectBeingMaintained != null){
-                //It should have been created earlier with the save changes button
 
-                mProjectBeingMaintained = new Prism4DProject(mProjectNameInput.getText());
+            //returns false if there is something wrong with information on the screen and
+            //the project can not be updated
+            if (updateProjectFromUIFields(mProjectBeingMaintained)) {
+                //need to assign a project ID
+                mProjectBeingMaintained.setProjectID(Prism4DProject.getNextProjectID());
+                //change the ID field label
+                mProjectIDLabel.setText(R.string.project_id_label);
+
                 //put it into the project list
                 projectManager.add(mProjectBeingMaintained);
+                //change the path to edit
+                mProjectPath = Prism4DPath.sEditTag;
+                //enable the list points button
+                mProjectListPointsButton.setEnabled(true);
+                mProjectListPointsButton.setTextColor(Color.BLACK);
+
             }
 
         /************************************** Edit *****************************/
@@ -466,9 +531,13 @@ public class MainPrism4DProjectEditFragment extends Fragment {
             Toast.makeText(getActivity(),
                     R.string.save_existing_project,
                     Toast.LENGTH_SHORT).show();
-            projectManager.update(mProjectBeingMaintained);
 
-        /***************************   COPY **************************************/
+
+            if (updateProjectFromUIFields(mProjectBeingMaintained)){
+                projectManager.update(mProjectBeingMaintained);
+            }
+
+            /***************************   COPY **************************************/
         } else if (mProjectPath.equals(Prism4DPath.sCopyTag)){
             //mProjectBeingMaintained will be null before it is saved for the first time
             //might have been created with the save changes button
@@ -481,9 +550,11 @@ public class MainPrism4DProjectEditFragment extends Fragment {
                     R.string.save_copied_project,
                     Toast.LENGTH_SHORT).show();
 
-            projectManager.add(mProjectBeingMaintained);
+            if (updateProjectFromUIFields(mProjectBeingMaintained)){
+                projectManager.update(mProjectBeingMaintained);
+            }
 
-        /************************* UNKNOWN *******************************************/
+            /************************* UNKNOWN *******************************************/
         } else {
             Toast.makeText(getActivity(),
                     R.string.unrecognized_path_encountered,
@@ -491,21 +562,74 @@ public class MainPrism4DProjectEditFragment extends Fragment {
             throw new RuntimeException(getString(R.string.unrecognized_path_encountered));
 
         }
-        //but regardless of the path,
-        // update the project with the screen attributes
-        mProjectBeingMaintained.setProjectName(mProjectNameInput.getText());
-        // TODO: 11/7/2016 have to do better with date here!!!
-        mProjectBeingMaintained.setProjectDateCreated(new Date());
-        mProjectBeingMaintained.setProjectLastModified(new Date());
-        mProjectBeingMaintained.setProjectDescription(mProjectDescInput.getText());
 
-        //disable the Enter and the Save Changes button
-
+        //update the Last Maintained field
+        mProjectBeingMaintained.setProjectLastModified(new Date().getTime());
+        //and update it on the screen as well
+        initializeUI();
 
         return mProjectBeingMaintained;
     }
 
+    //returns false if there is something wrong with information on the screen
+    private boolean updateProjectFromUIFields(Prism4DProject project){
+        boolean returnCode = true;
+        //show the data that came out of the input arguments bundle
+        project.setProjectID(Integer.valueOf(mProjectIDInput  .getText().toString().trim()));
+        project.setProjectName              (mProjectNameInput.getText().toString().trim());
+        project.setProjectDescription       (mProjectDescInput .getText().toString().trim());
+        //The date fields are not modifiable from this screen
+        //Set the coordinate type
+        if (mSelectedCoordinateType == null){
+            project.setProjectCoordinateType("");
+        }else{
+            project.setProjectCoordinateType(mSelectedCoordinateType);
+        }
+        return returnCode;
 
+    }
+
+
+    /************************************/
+    /*****   List Projects Button  ******/
+    /************************************/
+    private void viewProjects(){
+        //what this button does depends upon the path  {create, open, copy}
+        //*********************** CREATE **************************************/
+        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+            Toast.makeText(getActivity(),
+                    R.string.cant_view_projects,
+                    Toast.LENGTH_SHORT).show();
+
+            //switchToProjectList();
+
+            //*********************** OPEN or COPY or EDIT **************************************/
+        } else if ((mProjectPath.equals(Prism4DPath.sOpenTag)) ||
+                (mProjectPath.equals(Prism4DPath.sCopyTag)) ||
+                (mProjectPath.equals(Prism4DPath.sEditTag)) ) {
+            if (mProjectChanged){
+                //ask the user if should continue
+                areYouSureViewProjects();
+
+            } else {
+                Toast.makeText(getActivity(),
+                        R.string.project_unchanged,
+                        Toast.LENGTH_SHORT).show();
+
+                switchToProjectList();
+
+            }
+
+            //*********************** UNKNOWN **************************************/
+        } else {
+            Toast.makeText(getActivity(),
+                    R.string.unrecognized_path_encountered,
+                    Toast.LENGTH_SHORT).show();
+
+            //Notice that we don't leave the screen on this condition
+        }
+
+    }
 
     //Build and display the alert dialog
     private void areYouSureViewProjects(){
@@ -540,6 +664,11 @@ public class MainPrism4DProjectEditFragment extends Fragment {
                 switchToProjectListProjectsScreen(new Prism4DPath(mProjectPath));
     }
 
+
+
+    /************************************/
+    /*****  Project Settings Button   ***/
+    /************************************/
     //Build and display the alert dialog
     private void areYouSureViewSettings(){
         new AlertDialog.Builder(getActivity())
@@ -572,11 +701,15 @@ public class MainPrism4DProjectEditFragment extends Fragment {
 
     private void switchToProjectSettings(){
 
-        ((MainPrism4DActivity) getActivity()).switchToProjectSettingsScreen(findThisProject(),
+        ((MainPrism4DActivity) getActivity()).switchToProjectSettingsScreen(mProjectBeingMaintained,
                                                                 new Prism4DPath(mProjectPath));
     }
 
 
+
+    /************************************/
+    /***** List POints Button     *******/
+    /************************************/
     //Build and display the alert dialog
     private void areYouSureListPoints(){
 
@@ -606,15 +739,20 @@ public class MainPrism4DProjectEditFragment extends Fragment {
     }
 
     private void switchToListPoints(){
-        //doesn't matter what path we are on, switch to maintain points
-        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-        myActivity.switchToListPointsScreen(findThisProject(),
-                                            new Prism4DPath(Prism4DPath.sShowTag));
+        //cant't do this if we are creating the project
+        //The project must be saved and the path changed to EDIT
+        if (!(mProjectPath.equals(Prism4DPath.sCreateTag))) {
+            MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
+            myActivity.switchToListPointsScreen(mProjectBeingMaintained,
+                                                new Prism4DPath(mProjectPath));
+        }
 
     }
 
 
-
+    /************************************/
+    /*****     Exit Button        *******/
+    /************************************/
     //Build and display the alert dialog
     private void areYouSureExit(){
         new AlertDialog.Builder(getActivity())
@@ -647,6 +785,30 @@ public class MainPrism4DProjectEditFragment extends Fragment {
         ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
 
     }
+
+
+    /***********************************************************/
+    /*****     Maintain State Flags in this Fragment     *******/
+    /***********************************************************/
+    private void setProjectChangedFlags(){
+        mProjectChanged = true;
+
+        //enable the save changes button
+        mProjectSaveChangesButton.setEnabled(true);
+        mProjectSaveChangesButton.setTextColor(Color.BLACK);
+    }
+
+    private void setProjectSavedFlags(){
+        mProjectChanged = false;
+        //enable the enter button as the default is NOT enabled/grayed out
+        //mEnterButton.setText(R.string.enter_to_save_button_label);
+        //mEnterButton.setEnabled(false);
+        //mEnterButton.setTextColor(Color.GRAY);
+
+        mProjectSaveChangesButton.setEnabled(false);
+        mProjectSaveChangesButton.setTextColor(Color.GRAY);
+    }
+
 
 }
 

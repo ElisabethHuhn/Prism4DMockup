@@ -5,12 +5,16 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import com.asc.msigeosystems.prism4d.Prism4DCoordinate;
+import com.asc.msigeosystems.prism4d.Prism4DCoordinateManager;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalData;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalDataManager;
 import com.asc.msigeosystems.prism4d.Prism4DPoint;
 import com.asc.msigeosystems.prism4d.Prism4DPointManager;
 import com.asc.msigeosystems.prism4d.Prism4DProject;
 import com.asc.msigeosystems.prism4d.Prism4DProjectManager;
+
+import java.util.ArrayList;
 
 /**
  * Created by Elisabeth Huhn on 5/18/2016.
@@ -189,12 +193,13 @@ public class Prism4DDatabaseManager {
     //public int getProjectCount() {}
 
     //*********************************** CREATE ********************************
-    public void addProject(Prism4DProject project){
+    public boolean addProject(Prism4DProject project){
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         mDatabaseHelper.add(mDatabase,                               //database to add to
                             Prism4DSqliteOpenHelper.TABLE_PROJECT,   //table to add to
                             null,                                    //nullColumnHack
-                            projectManager.getCVFromProject(project));   //Content Values of the object to add
+                            projectManager.getCVFromProject(project));  //Content Values of the object to add
+        return true;
     }
 
 
@@ -242,25 +247,26 @@ public class Prism4DDatabaseManager {
 
         //get the project row from the DB
         Cursor cursor = mDatabaseHelper.getObject(mDatabase,      //the db to access
-                                            Prism4DSqliteOpenHelper.TABLE_PROJECT,  //table name
-                                            null,                 //get the whole project
-                                            getProjectWhereClause(projectID),      //where clause
-                                            null, null, null, null); //args,group,row grouping,order
+                                                  Prism4DSqliteOpenHelper.TABLE_PROJECT,//table name
+                                                  null,           //get the whole project
+                                                  getProjectWhereClause(projectID),   //where clause
+                                                  null, null, null, null); //args,group,row grouping,order
 
 
 /********************************
- Cursor query (String table, //Table Name
- String[] columns,   //Columns to return, null for all columns
- String where_clause,
- String[] selectionArgs, //replaces ? in the where_clause with these arguments
- String groupBy, //null meanas no grouping
- String having,   //row grouping
- String orderBy)  //null means the default sort order
+ Cursor query (  String table,           //Table Name
+                 String[] columns,       //Columns to return, null for all columns
+                 String where_clause,
+                 String[] selectionArgs, //replaces ? in the where_clause with these arguments
+                 String groupBy,         //null meanas no grouping
+                 String having,          //row grouping
+                 String orderBy)         //null means the default sort order
  *********************************/
 
         //create a project object from the Cursor object
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        return projectManager.getProjectFromCursor(cursor, 0);//get the first row in the cursor
+        //get the first row in the cursor
+        return projectManager.getProjectFromCursor(cursor, 0);
     }
 
 
@@ -272,12 +278,11 @@ public class Prism4DDatabaseManager {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         Prism4DProject        project        = projectManager.getProject(projectID);
 
-        return mDatabaseHelper.update(
-                mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_PROJECT,
-                projectManager.getCVFromProject(project),
-                getProjectWhereClause(projectID),
-                null);  //values that replace ? in where clause
+        return mDatabaseHelper.update(mDatabase,
+                                      Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                                      projectManager.getCVFromProject(project),
+                                      getProjectWhereClause(projectID),
+                                      null);  //values that replace ? in where clause
 
     }
 
@@ -285,12 +290,11 @@ public class Prism4DDatabaseManager {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         int             projectID      = project.getProjectID();
 
-        return mDatabaseHelper.update(
-                mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_PROJECT,
-                projectManager.getCVFromProject(project),
-                getProjectWhereClause(projectID),
-                null);  //values that replace ? in where clause
+        return mDatabaseHelper.update(mDatabase,
+                                      Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                                      projectManager.getCVFromProject(project),
+                                      getProjectWhereClause(projectID),
+                                      null);  //values that replace ? in where clause
 
     }
 
@@ -301,11 +305,10 @@ public class Prism4DDatabaseManager {
     //The return code inidcates how many rows affected
     public int removeProject(int projectID){
 
-        return mDatabaseHelper.remove(
-                mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_PROJECT,
-                getProjectWhereClause(projectID),
-                null);  //values that replace ? in where clause
+        return mDatabaseHelper.remove(  mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                                        getProjectWhereClause(projectID),
+                                        null);  //values that replace ? in where clause
     }
 
 
@@ -331,23 +334,70 @@ public class Prism4DDatabaseManager {
     public void addPoint(Prism4DPoint point){
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
         mDatabaseHelper.add(mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_POINT,
-                null,
-                pointManager.getPointCV(point));
+                            Prism4DSqliteOpenHelper.TABLE_POINT,
+                            null,
+                            pointManager.getPointCV(point));
     }
 
 
     //***********************  Read **********************************
+    //Reads the Points in from the DB,
+    //     and adds them to the project instance passed as an argument
+    //does NOT add these points to the in memory data structures
+    //Returns the number of points read in
+    public int getAllPointsFromDB(Prism4DProject project) {
+        //Do not go to the ProjectManager for the project, as we may be doing a deep copy
+        int projectID = project.getProjectID();
+        if (projectID == 0) return 0;
+
+        //This list will be added to the project after the points are read in
+        ArrayList<Prism4DPoint> pointsList = new ArrayList<>();
+
+        //read in all the points that belong to the project from the DB
+        Cursor cursor = mDatabaseHelper.getObject(  mDatabase,
+                                                    Prism4DSqliteOpenHelper.TABLE_POINT,
+                                                    null,    //get the whole point
+                                                    //Only get the points for this project
+                                                    getPointWhereClause(projectID),
+                                                    null, null, null, null);
+
+        //need the pointManager to convert a point in the Cursor to a point object
+        Prism4DPointManager      pointManager      = Prism4DPointManager.getInstance();
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        //iterate over all the rows in the cursor
+        Prism4DPoint point;
+        int last = cursor.getCount();
+        for (int position = 0; position < last; position++) {
+            point = pointManager.getPointFromCursor(cursor, position);
+            //add the point to the project
+            pointsList.add(point);
+
+            //get the coordinate
+            int coordinateID = point.getHasACoordinateID();
+            //and set it on the point
+            point.setCoordinate(coordinateManager.getCoordinateFromDB(coordinateID, projectID));
+
+        }
+        //put these point instances on the project
+        project.setPoints(pointsList);
+        cursor.close();
+        return last;
+    }
+
+
+
+
     //Reads the Points into memory
     //Returns the number of points read in
     public int getAllPoints(int projectID){
         if (projectID == 0) return 0;
 
         Cursor cursor = mDatabaseHelper.getObject(  mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_POINT,
-                null,    //get the whole point
-                getPointWhereClause(projectID),    //Only get the points for this project
-                null, null, null, null);
+                                                Prism4DSqliteOpenHelper.TABLE_POINT,
+                                                null,    //get the whole point
+                                                getPointWhereClause(projectID), //Only points in this project
+                                                null, null, null, null);
 
         //get the point row from the DB
         /********************************
@@ -418,12 +468,11 @@ public class Prism4DDatabaseManager {
 
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
 
-        return mDatabaseHelper.update(
-                mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_POINT,
-                pointManager.getPointCV(point),
-                getPointWhereClause(point.getPointID(), point.getForProjectID()),
-                null);  //values that replace ? in where clause
+        return mDatabaseHelper.update(mDatabase,
+                                Prism4DSqliteOpenHelper.TABLE_POINT,
+                                pointManager.getPointCV(point),
+                                getPointWhereClause(point.getPointID(), point.getForProjectID()),
+                                null);  //values that replace ? in where clause
 
     }
 
@@ -461,6 +510,141 @@ public class Prism4DDatabaseManager {
 
 
 
+
+
+
+    /************************************************/
+    /*         Coordinate CRUD methods              */
+    /************************************************/
+
+
+
+    //Get count of coordinates
+    //// TODO: 11/1/2016 write this routine if it is needed
+    //public int getCoordinateCount() {}
+
+    //******************************    Create    ***********************
+    public boolean addCoordinate(Prism4DCoordinate coordinate){
+        if (coordinate == null)return false;
+
+        int projectID = coordinate.getProjectID();
+        if (projectID == 0)return false;
+
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(projectID);
+        if (project == null)return false;
+
+        String table = getCoordinateTypeTable(project);
+
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        mDatabaseHelper.add(mDatabase,
+                            table,
+                            null,
+                            coordinateManager.getCoordinateCV(coordinate));
+        return true;
+    }
+
+
+    //***********************  Read **********************************
+
+    //NOTE this routine does NOT add the coordinate to the Project where
+    public Prism4DCoordinate getCoordinateFromDB(int coordinateID, int projectID){
+        if (coordinateID == 0) return null;
+        if (projectID == 0) return null;
+
+        String table = getCoordinateTypeTable(projectID);
+
+        //get the coordinate row from the DB
+        Cursor cursor = mDatabaseHelper.getObject(  mDatabase,     //the db to access
+                                                    table,  //table name
+                                                    null,          //get the whole coordinate
+                                                    getCoordinateWhereClause(coordinateID, projectID), //where clause
+                                                    null, null, null, null);//args, group, row grouping, order
+
+        //create a coordinate object from the Cursor object
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+        return coordinateManager.getCoordinateFromCursor(cursor, 0);//get the first row in the cursor
+    }
+
+
+
+    //********************************    Update   *************************
+
+    public  int updateCoordinate(Prism4DCoordinate coordinate) {
+
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        int projectID = coordinate.getProjectID();
+        if (projectID == 0) return 0;
+
+        String table = getCoordinateTypeTable(projectID);
+
+        return mDatabaseHelper.update(  mDatabase,
+                                        table,
+                                        coordinateManager.getCoordinateCV(coordinate),
+                                        getCoordinateWhereClause(coordinate.getCoordinateID(), projectID),
+                                        null);  //values that replace ? in where clause
+
+    }
+
+
+
+    //*********************************     Delete    ***************************
+    //The return code inidcates how many rows affected
+    public int removeCoordinate(int coordinateID, int projectID){
+
+        String table = getCoordinateTypeTable(projectID);
+
+        return mDatabaseHelper.remove(  mDatabase,
+                                        table,
+                                        getCoordinateWhereClause(coordinateID, projectID),
+                                        null);  //values that replace ? in where clause
+    }
+
+
+    /************************************************/
+    /*        Coordinate specific CRUD  utility         */
+    /************************************************/
+    //This only gets the one coordinate related to this project
+    private String getCoordinateWhereClause(int coordinateID, int projectID){
+        return Prism4DSqliteOpenHelper.COORDINATE_ID + " = '"   +
+                String.valueOf(coordinateID)         + "' AND " +
+                Prism4DSqliteOpenHelper.COORDINATE_PROJECT_ID + " = '" +
+                String.valueOf(projectID)       + "'";
+
+    }
+
+    //This gets all the coordinates related to this project
+    private String getCoordinateWhereClause(int projectID) {
+        return Prism4DSqliteOpenHelper.COORDINATE_PROJECT_ID + " = '" +
+                String.valueOf(projectID) + "'";
+    }
+
+
+    private String getCoordinateTypeTable(Prism4DProject project){
+        //Get the table to read from from the Project
+        CharSequence coordinateType = project.getProjectCoordinateType();
+        String table = Prism4DSqliteOpenHelper.TABLE_COORDINATE_LL; //assume a default
+        if ((coordinateType == Prism4DCoordinate.sCoordinateTypeUTM) ||
+                (coordinateType == Prism4DCoordinate.sCoordinateTypeSPCS)){
+            table = Prism4DSqliteOpenHelper.TABLE_COORDINATE_EN;
+        }
+        return table;
+    }
+
+    private String getCoordinateTypeTable(int projectID){
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(projectID);
+        return getCoordinateTypeTable(project);
+    }
+
+
+
+
+
+
+
     /************************************************/
     /*         Global Data CRUD methods             */
     /************************************************/
@@ -468,10 +652,10 @@ public class Prism4DDatabaseManager {
     //******************************    Create    ***********************
     public void addGlobalData(Prism4DGlobalData globalData){
         Prism4DGlobalDataManager globalDataManager = Prism4DGlobalDataManager.getInstance();
-        mDatabaseHelper.add(mDatabase,                               //database to add to
-                Prism4DSqliteOpenHelper.TABLE_PROJECT,   //table to add to
-                null,                                    //nullColumnHack
-                globalDataManager.getGlobalDataCV(globalData));   //Content Values of the object to add
+        mDatabaseHelper.add(mDatabase,                         //database to add to
+                Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,     //table to add to
+                null,                                          //nullColumnHack
+                globalDataManager.getGlobalDataCV(globalData));//Content Values of the object to add
     }
 
 
@@ -482,10 +666,10 @@ public class Prism4DDatabaseManager {
     public Prism4DGlobalData getGlobalData(){
 
         Cursor cursor = mDatabaseHelper.getObject(  mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,
-                null,    //get the whole object
-                null,   //get all the global data rows
-                null, null, null, null);
+                                                    Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,
+                                                    null,    //get the whole object
+                                                    null,   //get all the global data rows
+                                                    null, null, null, null);
 
 
         //create a globalData object from the Cursor object
@@ -504,11 +688,11 @@ public class Prism4DDatabaseManager {
         Prism4DGlobalDataManager globalDataManager = Prism4DGlobalDataManager.getInstance();
 
         return mDatabaseHelper.update(
-                mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,
-                globalDataManager.getGlobalDataCV(globalData),
-                null,
-                null);  //values that replace ? in where clause
+                                        mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,
+                                        globalDataManager.getGlobalDataCV(globalData),
+                                        null,
+                                        null);  //values that replace ? in where clause
 
     }
 

@@ -207,10 +207,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
                         R.string.cogo_map_check_button_label,
                         Toast.LENGTH_SHORT).show();
 
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToCoordWorkflow();
-                }
+
 
             }
         });
@@ -223,10 +220,13 @@ public class MainPrism4DTopCogoFragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToConvertScreen();
-                }
+                ///for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        //R.string.cogo_map_check_button_label,
+                        R.string.cogo_convert_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+
 
             }
         });

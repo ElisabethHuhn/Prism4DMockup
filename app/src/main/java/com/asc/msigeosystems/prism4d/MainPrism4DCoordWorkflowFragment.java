@@ -27,7 +27,7 @@ import java.util.List;
 /**
  * The Collect Fragment is the UI
  * when the workflow from WGS84 GPS to NAD83 to UTM/State Plane Coordinates
- * Created by elisabethhuhn on 6/15/2016.
+ * Created by Elisabeth Huhn on 6/15/2016.
  */
 public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsStatus.Listener, LocationListener, GpsStatus.NmeaListener {
 
@@ -324,8 +324,8 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
                 //save the raw data
                 //get the nmea container
-                Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
-                nmeaContainer.add(mNmeaData);
+                Prism4DNmeaManager nmeaManager = Prism4DNmeaManager.getInstance();
+                nmeaManager.add(mNmeaData);
             }
 
 
@@ -371,7 +371,8 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
                                                                  nmeaData.getLongitude());
                     if (coordinateWGS84.isValidCoordinate()){
                         //create the WGS coordinate with NMEA data
-                        coordinateWGS84.setTime(nmeaData.getTime());
+                        // TODO: 11/26/2016  time attribute is broken
+                        //coordinateWGS84.setTime(nmeaData.getTime());
                         coordinateWGS84.setElevation(nmeaData.getOrthometricElevation());
                         coordinateWGS84.setGeoid(nmeaData.getGeoid());
                         if (isMeanInProgress){
@@ -615,10 +616,10 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
             mMeanWgs84LongSecondsInput.setText(doubleToUI(meanLongSec));
 
             mMeanWgs84ElevationMetersInput.setText(doubleToUI(meanEle));
-            double feetReading = Prism4DConstants.convertMetersToFeet(truncatePrecision(meanEle));
+            double feetReading = Prism4DConstantsAndUtilities.convertMetersToFeet(truncatePrecision(meanEle));
             mMeanWgs84ElevationFeetInput.setText(doubleToUI(feetReading));
             mMeanWgs84GeoidHeightMetersInput.setText(doubleToUI(meanGeoid));
-            feetReading = Prism4DConstants.convertMetersToFeet(truncatePrecision(meanGeoid));
+            feetReading = Prism4DConstantsAndUtilities.convertMetersToFeet(truncatePrecision(meanGeoid));
             mMeanWgs84GeoidHeightFeetInput.setText(doubleToUI(feetReading));
 
             mMeanWgs84PointsInMeanOutput.setText(String.valueOf(size));
@@ -670,10 +671,9 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
     //truncate digits of precision
     private double truncatePrecision(double reading) {
-        //digits of precision
-        int digOfPrec = 6;
 
-        BigDecimal bd = new BigDecimal(reading).setScale(digOfPrec, RoundingMode.HALF_UP);
+        BigDecimal bd = new BigDecimal(reading).
+                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision, RoundingMode.HALF_UP);
         return bd.doubleValue();
     }
 

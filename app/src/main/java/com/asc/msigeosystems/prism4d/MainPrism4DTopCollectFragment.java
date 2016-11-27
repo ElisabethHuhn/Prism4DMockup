@@ -2,6 +2,7 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +24,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
+    private TextView mScreenLabel;
 
     //Matrix Buttons
     private Button mPointsButton;
@@ -80,6 +82,12 @@ public class MainPrism4DTopCollectFragment extends Fragment {
     }
 
     private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
 
         //Measure Points Button
         mPointsButton = (Button) v.findViewById(R.id.row1Button1);

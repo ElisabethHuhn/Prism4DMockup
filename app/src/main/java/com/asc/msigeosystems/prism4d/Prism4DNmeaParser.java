@@ -5,7 +5,7 @@ import java.util.Map;
 
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  *
  * copied from https://gist.github.com/javisantana/1326141
  * and modified:

@@ -49,7 +49,7 @@
 
             <!-- Row: NMEA Sentence -->
             <TableRow
-
+                android:id="@+id/nmeaSentenceTableRowLabel"
                 android:layout_height="wrap_content"
                 android:layout_width="match_parent"
                 android:layout_gravity="center_horizontal"
@@ -98,6 +98,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotTimeLabel"
+                    android:labelFor="@+id/skyplotTimeOutput"
                     android:text="@string/skyplot_time_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -111,7 +112,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotTimeOutput"
+                    android:id="@id/skyplotTimeOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -139,6 +140,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLatitudeLabel"
+                    android:labelFor="@+id/skyplotLatitudeOutput"
                     android:text="@string/skyplot_latitude_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -152,7 +154,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLatitudeOutput"
+                    android:id="@id/skyplotLatitudeOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -180,6 +182,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLongitudeLabel"
+                    android:labelFor="@+id/skyplotLongitudeOutput"
                     android:text="@string/skyplot_longitude_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -193,7 +196,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLongitudeOutput"
+                    android:id="@id/skyplotLongitudeOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -221,6 +224,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotOrthometricElevationLabel"
+                    android:labelFor="@+id/skyplotOrthometricElevationOutput"
                     android:text="@string/skyplot_orthometric_elevation_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -234,7 +238,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotOrthometricElevationOutput"
+                    android:id="@id/skyplotOrthometricElevationOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -262,6 +266,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotGeoidLabel"
+                    android:labelFor="@+id/skyplotGeoidOutput"
                     android:text="@string/skyplot_geoid_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -275,7 +280,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotGeoidOutput"
+                    android:id="@id/skyplotGeoidOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -303,6 +308,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotEllipsoidElevationLabel"
+                    android:labelFor="@+id/skyplotEllipsoidElevationOutput"
                     android:text="@string/skyplot_ellipsoid_elevation_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -316,7 +322,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotEllipsoidElevationOutput"
+                    android:id="@id/skyplotEllipsoidElevationOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -344,6 +350,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLocalizationLabel"
+                    android:labelFor="@+id/skyplotLocalizationOutput"
                     android:text="@string/skyplot_localization_file_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -357,7 +364,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLocalizationOutput"
+                    android:id="@id/skyplotLocalizationOutput"
                     android:text="@string/skyplot_localization_file"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -385,6 +392,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLocalEastingLabel"
+                    android:labelFor="@+id/skyplotLocalEastingOutput"
                     android:text="@string/skyplot_local_easting_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -398,7 +406,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLocalEastingOutput"
+                    android:id="@id/skyplotLocalEastingOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -426,6 +434,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLocalNorthingLabel"
+                    android:labelFor="@+id/skyplotLocalNorthingOutput"
                     android:text="@string/skyplot_local_northing_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -439,7 +448,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLocalNorthingOutput"
+                    android:id="@id/skyplotLocalNorthingOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -467,6 +476,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotLocalElevationLabel"
+                    android:labelFor="@+id/skyplotLocalElevationOutput"
                     android:text="@string/skyplot_local_elevation_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -480,7 +490,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotLocalElevationOutput"
+                    android:id="@id/skyplotLocalElevationOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -533,6 +543,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotStatusLabel"
+                    android:labelFor="@+id/skyplotStatusOutput"
                     android:text="@string/skyplot_status_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -546,7 +557,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotStatusOutput"
+                    android:id="@id/skyplotStatusOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -573,6 +584,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotSatellitesLabel"
+                    android:labelFor="@+id/skyplotSatellitesOutput"
                     android:text="@string/skyplot_satellites_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -587,7 +599,7 @@
                     />
 
                 <TextView
-                    android:id="@+id/skyplotSatellitesOutput"
+                    android:id="@id/skyplotSatellitesOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -614,6 +626,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotHdopLabel"
+                    android:labelFor="@+id/skyplotHdopOutput"
                     android:text="@string/skyplot_hdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -627,7 +640,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotHdopOutput"
+                    android:id="@id/skyplotHdopOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -654,6 +667,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotVdopLabel"
+                    android:labelFor="@+id/skyplotVdopOutput"
                     android:text="@string/skyplot_vdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -667,7 +681,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotVdopOutput"
+                    android:id="@id/skyplotVdopOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -695,6 +709,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotTdopLabel"
+                    android:labelFor="@+id/skyplotTdopOutput"
                     android:text="@string/skyplot_tdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -708,7 +723,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotTdopOutput"
+                    android:id="@id/skyplotTdopOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -735,6 +750,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotPdopLabel"
+                    android:labelFor="@+id/skyplotPdopOutput"
                     android:text="@string/skyplot_pdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -748,7 +764,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotPdopOutput"
+                    android:id="@id/skyplotPdopOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -775,6 +791,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotGdopLabel"
+                    android:labelFor="@+id/skyplotGdopOutput"
                     android:text="@string/skyplot_gdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -788,7 +805,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotGdopOutput"
+                    android:id="@id/skyplotGdopOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -815,6 +832,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotHrmsLabel"
+                    android:labelFor="@+id/skyplotHrmsOutput"
                     android:text="@string/skyplot_hrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -828,7 +846,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotHrmsOutput"
+                    android:id="@id/skyplotHrmsOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -856,6 +874,7 @@
                 >
                 <TextView
                     android:id="@+id/skyplotVrmsLabel"
+                    android:labelFor="@+id/skyplotVrmsOutput"
                     android:text="@string/skyplot_vrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
@@ -869,7 +888,7 @@
                     android:background="@color/colorScreenBackground"
                     />
                 <TextView
-                    android:id="@+id/skyplotVrmsOutput"
+                    android:id="@id/skyplotVrmsOutput"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"

@@ -1,7 +1,9 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 6/1/2016.
+ * Created by Elisabeth Huhn on 6/1/2016.
+ *
+ * Example of Skyplot as a placeholder
  */
 
 import android.Manifest;
@@ -18,6 +20,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.content.ContextCompat;
 import android.view.Menu;
+import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
@@ -104,26 +107,26 @@ public class YGPS extends Activity implements Listener, LocationListener {
         mPositionView = (SatellitePositionView) findViewById(R.id.positionview);
         mSignalView   = (SatelliteSignalView)   findViewById(R.id.signalview);
 
-        mGpsState = (GPSStateView) findViewById(R.id.gpsstate);
-        mLatitude =   getField(R.id.latitude,  "Latitude", "degrees");
-        mLongitude =  getField(R.id.longitude, "Longitude","degrees");
+        mGpsState     = (GPSStateView) findViewById(R.id.gpsstate);
+        mLatitude     = getField(R.id.latitude,  "Latitude", "degrees");
+        mLongitude    = getField(R.id.longitude, "Longitude","degrees");
 
-        mAccuracy =   getField(R.id.accuracy,  "Accuracy", "m");
-        mAltitude =   getField(R.id.altitude,  "Altitude", "m", "#.#");
-        mSpeed =      getField(R.id.speed,     "Speed",    "kmh", "#.###");
-        mBearing =    getField(R.id.bearing,   "Bearing",  "degrees");
+        mAccuracy     = getField(R.id.accuracy,  "Accuracy", "m");
+        mAltitude     = getField(R.id.altitude,  "Altitude", "m", "#.#");
+        mSpeed        = getField(R.id.speed,     "Speed",    "kmh", "#.###");
+        mBearing      = getField(R.id.bearing,   "Bearing",  "degrees");
 
-        mTime =       getDateField(R.id.time,       "GPS Time",    "");
-        mDeviceTime = getDateField(R.id.devicetime, "Device Time", "");
+        mTime         = getDateField(R.id.time,       "GPS Time",    "");
+        mDeviceTime   = getDateField(R.id.devicetime, "Device Time", "");
 
-        mSatInSky =   getField(R.id.satinsky,  "Sat in Sky", "");
-        mSatInFix =   getField(R.id.satinfix,  "Sat in Fix", "");
+        mSatInSky     = getField(R.id.satinsky,  "Sat in Sky", "");
+        mSatInFix     = getField(R.id.satinfix,  "Sat in Fix", "");
 
-        mTtff =       getField(R.id.ttff,      "Time to first fix",   "ms");
-        mTslf =       getField(R.id.tslf,      "Time since last fix", "mmm:ss");
+        mTtff         = getField(R.id.ttff,      "Time to first fix",   "ms");
+        mTslf         = getField(R.id.tslf,      "Time since last fix", "mmm:ss");
 
 
-        mHandler = new Handler();
+        mHandler        = new Handler();
         mLastFixUpdater = new LastFixUpdater();
         mHandler.post(mLastFixUpdater);
 
@@ -152,18 +155,16 @@ public class YGPS extends Activity implements Listener, LocationListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        boolean supRetVal = super.onCreateOptionsMenu(menu);
-        return supRetVal;
+        return super.onCreateOptionsMenu(menu);
     }
 
     @Override
     public void onPause() {
         super.onPause();
         //If we don't currently have permission, bail
-        if (
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED ||
-                        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                                != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                                 != PackageManager.PERMISSION_GRANTED){return;}
 
         //shut down the listeners
@@ -175,11 +176,10 @@ public class YGPS extends Activity implements Listener, LocationListener {
     protected void onResume() {
         super.onResume();
         //If we don't currently have permission, bail
-        if (
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-        ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED){return;}
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED){return;}
 
         //start up the listeners
         mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
@@ -197,9 +197,8 @@ public class YGPS extends Activity implements Listener, LocationListener {
     //*************** Listener Callback Routines *****************//
     //        Called by OS when a Listener condition is met       //
     //************************************************************//
-
-
-
+    //           GPS Status Callbacks                            //
+    //************************************************************//
     @Override
     public void onProviderDisabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
@@ -251,7 +250,7 @@ public class YGPS extends Activity implements Listener, LocationListener {
 
         //save the raw data
         //get the nmea container
-        Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
+        Prism4DNmeaManager nmeaContainer = Prism4DNmeaManager.getInstance();
         nmeaContainer.add(mNmeaData);
     }
 
@@ -269,32 +268,39 @@ public class YGPS extends Activity implements Listener, LocationListener {
 
     //Update the UI with satellite status info from GPS
     protected void setGpsStatus(){
+
         if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
-            //location manager is enabled,
-            //update the UI with info from GPS
-            mGpsStatus = mLocationManager.getGpsStatus(mGpsStatus);
-
-            //get satellite data from GPS
-            Iterable<GpsSatellite> sats = mGpsStatus.getSatellites();
-            int inSky = 0;
-            int inFix = 0;
-            for (GpsSatellite s : sats){
-                inSky += 1;
-                if (s.usedInFix()){
-                    inFix += 1;
+            try {
+                //location manager is enabled,
+                //update the UI with info from GPS
+                mGpsStatus = mLocationManager.getGpsStatus(mGpsStatus);
+                //get satellite data from GPS
+                Iterable<GpsSatellite> sats = mGpsStatus.getSatellites();
+                int inSky = 0;
+                int inFix = 0;
+                for (GpsSatellite s : sats){
+                    inSky += 1;
+                    if (s.usedInFix()){
+                        inFix += 1;
+                    }
                 }
+
+                //update the UI with the GPS info
+                mSatInSky.setData(inSky);
+                //indicate whether the position is fixed (locked) or not
+                mSatInFix.setData(inFix);
+                if (inFix > 0){
+                    mGpsState.stateLock();
+                } else {
+                    mGpsState.stateOn();
+                }
+                mTtff.setData(mGpsStatus.getTimeToFirstFix());
+            } catch (SecurityException e) {
+                Toast.makeText(this, "GPS must be enabled", Toast.LENGTH_SHORT).show();
+
             }
 
-            //update the UI with the GPS info
-            mSatInSky.setData(inSky);
-            //indicate whether the position is fixed (locked) or not
-            mSatInFix.setData(inFix);
-            if (inFix > 0){
-                mGpsState.stateLock();
-            } else {
-                mGpsState.stateOn();
-            }
-            mTtff.setData(mGpsStatus.getTimeToFirstFix());
+
 
         } else {
             //location manager is not enabled, u

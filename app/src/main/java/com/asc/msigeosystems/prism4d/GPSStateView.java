@@ -6,7 +6,7 @@ import android.util.AttributeSet;
 import com.asc.msigeosystems.prism4dmockup.R;
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  */
 public class GPSStateView extends IconView {
 

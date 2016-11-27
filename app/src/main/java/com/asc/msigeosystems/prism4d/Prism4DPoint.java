@@ -1,5 +1,7 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.os.Bundle;
+
 /**
  * Created by Elisabeth Huhn on 5/15/2016.
  *
@@ -20,7 +22,7 @@ public class Prism4DPoint {
     public static final String sPointEastingTag    = "POINT_EASTING";
     public static final String sPointNorthingTag   = "POINT_NORTHING";
     public static final String sPointElevationTag  = "POINT_ELEVATION";
-    public static final String sPointDescTag       = "POINT_DESCRIPTION";
+    public static final String sPointFCTag         = "POINT_FEATURE_CODE";
     public static final String sPointNotesTag      = "POINT_NOTES";
 
     public static final int    sPointDefaultsID   = -1;
@@ -49,21 +51,71 @@ public class Prism4DPoint {
     private int          mForProjectID;
     private int          mHasACoordinateID;
 
-    private CharSequence mPointDescription;
+    private CharSequence mPointFeatureCode;
     private CharSequence mPointNotes;
 
-    //Actual location of point is given by Coordinates
-    private Prism4DCoordinateNAD83 mNad83Coordinate;
-    private Prism4DCoordinateWGS84 mWgs84Coordinate;
-    private Prism4DCoordinateUTM   mUtmCoordinate;
-    private Prism4DCoordinateSPCS  mSpcsCoordinate;
+    //Actual location of point is given by Coordinate
+    private Prism4DCoordinate mCoordinate;
 
 
 
-    /*************************************/
-    /*         Static Methods            */
-    /*************************************/
 
+    /****************************************************************/
+    /*               Static Methods                                 */
+    /****************************************************************/
+
+    public static Bundle putPointInArguments(Bundle args, int projectID, Prism4DPoint point) {
+
+        args.putInt         (Prism4DPoint.sPointProjectIDTag, projectID);
+        if (point == null){
+            //This  happens when the point is being created by this fragment on save
+            args.putInt(Prism4DPoint.sPointIDTag,0);
+        } else {
+            args.putInt(Prism4DPoint.sPointIDTag, point.getPointID());
+        }
+        //assume all other attributes exist on the point being managed by the PointManager
+        return args;
+    }
+
+
+    public static Prism4DPoint getPointFromArguments(Bundle args) {
+        Prism4DPoint point;
+        int projectID = args.getInt (Prism4DPoint.sPointProjectIDTag);
+        int pointID   = args.getInt (Prism4DPoint.sPointIDTag);
+
+        //If we are on the Create Path, we won't have a point here
+        if (pointID != 0) {
+            Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+                                point        = pointManager.getPoint(projectID, pointID);
+
+            if (point == null) {
+                throw new RuntimeException("PointID " + String.valueOf(point) +
+                        " in ProjectID " + String.valueOf(projectID) +
+                        " does NOT exist. Can not edit");
+            }
+        } else {
+            //there is no existing point, it is being created
+
+            //Start with an empty point with default values
+            point = new Prism4DPoint();
+            //set the bogus point ID
+            point.setPointID(0);
+            //save the project ID
+            point.setForProjectID(projectID);
+        }
+
+        return point;
+    }
+
+
+    public String convertToCDF() {
+        return String.valueOf(this.getPointID()) + ", " +
+                this.getPointFeatureCode()       + ", " +
+                this.getPointNotes()             + ", " +
+                //have to add in coordinates here
+                "plus coordinate positions "      +
+                System.getProperty("line.separator");
+    }
 
     /*************************************/
     /*         CONSTRUCTORS              */
@@ -90,7 +142,7 @@ public class Prism4DPoint {
 
         this.mForProjectID     = specialPointID;
         this.mPointID          = specialPointID ;
-        this.mPointDescription = "A special point";
+        this.mPointFeatureCode = "A special point";
     }
 
     public Prism4DPoint() {
@@ -114,13 +166,14 @@ public class Prism4DPoint {
     public int getHasACoordinateID()                    {return mHasACoordinateID; }
     public void setHasACoordinateID(int isACoordinateID) { mHasACoordinateID = isACoordinateID; }
 
-    public CharSequence getPointDescription() { return mPointDescription;  }
-    public void setPointDescription(CharSequence description) { mPointDescription = description;  }
+    public CharSequence getPointFeatureCode() { return mPointFeatureCode;  }
+    public void setPointFeatureCode(CharSequence description) { mPointFeatureCode = description;  }
 
     public CharSequence getPointNotes() {  return mPointNotes;   }
     public void setPointNotes(CharSequence notes) { mPointNotes = notes;   }
 
-
+    public Prism4DCoordinate getCoordinate()                { return mCoordinate;  }
+    public void setCoordinate(Prism4DCoordinate coordinate) { mCoordinate = coordinate; }
 
     /*****************************************************/
     /********    Private Member Methods          *********/
@@ -130,14 +183,10 @@ public class Prism4DPoint {
         this.mForProjectID     = 0;
         this.mPointID          = 0;
         this.mHasACoordinateID = 0;
-        this.mPointDescription = "";
+        this.mPointFeatureCode = "";
         this.mPointNotes       = "";
 
-        this.mNad83Coordinate  = null;
-        this.mWgs84Coordinate  = null;
-        this.mUtmCoordinate    = null;
-        this.mSpcsCoordinate   = null;
-
+        this.mCoordinate       = null;
     }
 
 }

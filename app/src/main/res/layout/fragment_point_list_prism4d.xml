@@ -17,7 +17,7 @@
         <!-- rest of the screen -->
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             >
             <!--title line for point list -->
@@ -45,7 +45,7 @@
                     android:layout_marginEnd="8dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
                 <!-- Point ID 6-->
@@ -58,11 +58,12 @@
                     android:layout_marginEnd="8dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
                 <!-- Easting 10-->
                 <TextView
+                    android:id="@+id/easting_label"
                     android:text="@string/point_row_easting_label"
 
                     android:layout_height="wrap_content"
@@ -71,11 +72,12 @@
                     android:layout_marginEnd="8dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
                 <!-- Northing 10-->
                 <TextView
+                    android:id="@+id/northing_label"
                     android:text="@string/point_row_northing_label"
 
                     android:layout_height="wrap_content"
@@ -84,7 +86,7 @@
                     android:layout_marginEnd="8dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
                 <!-- Elevation 10-->
@@ -97,20 +99,20 @@
                     android:layout_marginEnd="8dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
                 <!-- Description 15-->
                 <TextView
-                    android:text="@string/point_row_description_label"
+                    android:text="@string/point_row_feature_code_label"
 
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
-                    android:layout_weight="15"
+                    android:layout_weight="5"
                     android:layout_marginEnd="16dp"
 
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
+
                     />
 
             </LinearLayout>

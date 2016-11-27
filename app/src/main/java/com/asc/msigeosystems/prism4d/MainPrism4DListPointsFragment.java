@@ -13,6 +13,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -31,17 +34,23 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
     private static final String TAG = "LIST_POINTS_FRAGMENT";
     /**
-     * Create variables for all the widgets
-     *  although in the mockup, most will be statically defined in the xml
+     * Create variables for widgets
+     *
      */
+
+    private TextView            mEastingLabel;
+    private TextView            mNorthingLabel;
 
     private List<Prism4DPoint>  mPointList = new ArrayList<>();
     private RecyclerView        mRecyclerView;
     private Prism4DPointAdapter mAdapter;
 
+    private int                 mCoordinateWidgetType;
+
 
 
     private int          mProjectID;
+    private Prism4DPoint mPoint;
 
 
 
@@ -71,12 +80,9 @@ public class MainPrism4DListPointsFragment extends Fragment {
                                                             Prism4DPath pointPath){
 
         Bundle args = new Bundle();
-
-        //It will be some work to make all of the data model serializable
-        //so for now, just pass the point values
-        //For now, the only thing to pass is the path type itself
-        args.putInt         (Prism4DProject.sProjectIDTag,   projectID);
-        args.putCharSequence(Prism4DPath   .sPointPathTag,   pointPath.getPath());
+        //don't need the entire project object, just it's id
+        args.putInt         (Prism4DProject.sProjectIDTag,    projectID);
+        Prism4DPath.putPathInArguments(args, pointPath);
 
         MainPrism4DListPointsFragment fragment = new MainPrism4DListPointsFragment();
 
@@ -89,9 +95,10 @@ public class MainPrism4DListPointsFragment extends Fragment {
 
         super.onCreate(savedInstanceState);
 
-        mProjectID   = getArguments().getInt         (Prism4DProject.sProjectIDTag);
-        mPointPath   = getArguments().getCharSequence(Prism4DPath   .sPointPathTag);
+        mProjectID   = getArguments().getInt(Prism4DProject.sProjectIDTag);
 
+        Prism4DPath path  = Prism4DPath.getPathFromArguments(getArguments());
+        mPointPath   = path.getPath();
     }
 
 
@@ -100,9 +107,12 @@ public class MainPrism4DListPointsFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
-          //1) Inflate the layout for this fragment
+        //1) Inflate the layout for this fragment
         View v = inflater.inflate
                 (R.layout.fragment_point_list_prism4d, container, false);
+
+
+        wireWidgets(v);
 
         initializeRecyclerView(v);
 
@@ -112,6 +122,40 @@ public class MainPrism4DListPointsFragment extends Fragment {
         return v;
     }
 
+    private void wireWidgets(View v){
+         //Need a header line for the list, but attributes of coordinate are different
+        //depending upon the type of coordinate: Latitude/Longitude or Easting/Northing
+        mCoordinateWidgetType = getCoordinateTypeFromProject();
+
+        if (mCoordinateWidgetType == Prism4DCoordinate.sLLWidgets) {
+            mEastingLabel = (TextView) v.findViewById(R.id.easting_label);
+            mNorthingLabel = (TextView) v.findViewById(R.id.northing_label);
+
+            mEastingLabel.setText(R.string.point_row_latitude_label);
+            mNorthingLabel.setText(R.string.point_row_longitude_label);
+        }
+
+    }
+
+    private int getCoordinateTypeFromProject(){
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(mProjectID);
+
+        CharSequence coordinateType = project.getProjectCoordinateType();
+
+        int returnCode = Prism4DCoordinate.sUNKWidgets;
+
+        if (!coordinateType.equals(null)){
+            if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84) ||
+                    coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83) ){
+                returnCode = Prism4DCoordinate.sLLWidgets;
+            } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM) ||
+                    coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS) ){
+                returnCode = Prism4DCoordinate.sENWidgets;
+            }
+        }
+        return returnCode;
+    }
 
     private void initializeRecyclerView(View v){
 
@@ -193,6 +237,12 @@ public class MainPrism4DListPointsFragment extends Fragment {
         } else if (path.equals(sDeleteTag)){
             subtitle = R.string.subtitle_delete_point;
 
+        } else if (path.equals(Prism4DPath.sEditTag)) {
+            subtitle = R.string.subtitle_edit_point;
+
+        } else if (path.equals(Prism4DPath.sShowTag)) {
+            subtitle = R.string.subtitle_show_point;
+
         } else {
             //todo probably need to throw an exception
             subtitle = R.string.subtitle_unknown_error;
@@ -238,16 +288,6 @@ public class MainPrism4DListPointsFragment extends Fragment {
                     myActivity.switchToEditPointScreen( mProjectID,
                                                         new Prism4DPath(mPointPath),
                                                         mSelectedPoint );
-
-                }else {
-
-                    //todo need to throw an unrecognized path exception
-                    Toast.makeText(getActivity(),
-                            R.string.unrecognized_path_encountered,
-                            Toast.LENGTH_SHORT).show();
-
-                    //for now, go home
-                    myActivity.switchToHomeScreen();
 
                 }
 

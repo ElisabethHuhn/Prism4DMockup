@@ -2,10 +2,12 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -14,7 +16,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * The Maps Fragment is the top level selection UI for map features
  *
  * when the user is 
- * Created by elisabethhuhn on 5/132016.
+ * Created by Elisabeth Huhn on 5/132016.
  */
 public class MainPrism4DTopMapsFragment extends Fragment {
 
@@ -23,6 +25,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
+    private TextView mScreenLabel;
 
     //Matrix Buttons
     private Button mGoogleMapsButton;
@@ -54,6 +57,18 @@ public class MainPrism4DTopMapsFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+
+        return v;
+    }
+
+    private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
 
         //Google Maps Button
         mGoogleMapsButton = (Button) v.findViewById(R.id.row1Button1);
@@ -209,9 +224,6 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //      so do nothing in the footer
 
 
-
-
-        return v;
     }
 }
 

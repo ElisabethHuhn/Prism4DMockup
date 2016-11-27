@@ -33,15 +33,20 @@ public class Prism4DGlobalData {
     /*************************************/
     /*         Static Methods            */
     /*************************************/
+    //generate a guaranteed unique ID
+    public static int getUniqueID(){
+        return (int) (System.currentTimeMillis() & 0xfffffff);
+    }
+
 
 
     /*************************************/
     /*         CONSTRUCTORS              */
-
     /*************************************/
-
-
-    /*****************************************************/
+    public Prism4DGlobalData() {
+        this.globalDataID = getUniqueID();
+    }
+/*****************************************************/
     /********    Constructors                    *********/
     /*****************************************************/
 

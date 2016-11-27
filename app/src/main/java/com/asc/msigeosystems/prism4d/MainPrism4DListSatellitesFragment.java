@@ -164,7 +164,7 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
     //Add some code to improve the recycler view
     //Here is the interface for event handlers for Click and LongClick
     public interface ClickListener {
-        void onClick(View view, int position);
+        void onClick    (View view, int position);
 
         void onLongClick(View view, int position);
     }

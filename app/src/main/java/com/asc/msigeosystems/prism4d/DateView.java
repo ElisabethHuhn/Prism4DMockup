@@ -5,7 +5,7 @@ import android.text.format.Time;
 import android.util.AttributeSet;
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  */
 public class DateView extends DataView {
 

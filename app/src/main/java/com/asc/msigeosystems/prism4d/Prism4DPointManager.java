@@ -84,11 +84,38 @@ public class Prism4DPointManager {
         ArrayList<Prism4DPoint> pointList = getProjectPointsList(projectID);
 
         return pointList.size();
-
     }
 
-
     //***********************  CREATE **************************************
+
+    //This routine not only adds to the in memory list, but also to the DB
+    //If the project is NOT already in memory list, it is added, else it is updated
+    //It is added/updated in the DB regardless
+    public boolean add(Prism4DProject project, Prism4DPoint newPoint){
+        boolean returnCode = false;
+
+        if ((project == null) || (newPoint == null)) return returnCode;
+
+        ArrayList<Prism4DPoint> pointsList = project.getPoints();
+
+        if (pointsList == null){
+            pointsList = new ArrayList<>();
+            project.setPoints(pointsList);
+        }
+
+        //determine whether the project already exists in the list
+        int position = findPointPosition(pointsList, newPoint.getPointID());
+        if (position == POINT_NOT_FOUND) {
+            returnCode = addToProject (project, newPoint, true);
+        } else {
+            returnCode = update (project, newPoint);
+        }
+
+        return returnCode;
+
+    }//end public add()
+
+
 
     //A point that is from the DB needs to be incorporated into memory version
     public boolean addFromDB(Prism4DPoint point){
@@ -115,6 +142,18 @@ public class Prism4DPointManager {
             //So the point was in the DB, but not in memory
             //just add it to the project array
             points.add(point);
+
+            //Now need to check if any coordinates exist for this point in the DB
+            int coordinateID = point.getHasACoordinateID();
+
+            //if so, read it in and record the coordinate on the point
+            if (coordinateID != 0) {
+                Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+                Prism4DCoordinate coordinate =
+                        coordinateManager.getCoordinateFromDB(coordinateID, projectID);
+                point.setCoordinate(coordinate);
+            }
+
         } else {
             //It existed in memory AND in the db
 /*
@@ -137,7 +176,8 @@ public class Prism4DPointManager {
     //This routine not only adds to the in memory list,
     // but has an argument, that if true,  also adds to the DB
     //returns FALSE if for any reason the point can not be added
-    //Use this is you already have the Project object in hand
+    //ALSO deals with the coordinate on the point
+    //Use this if you already have the Project object in hand
     public boolean addToProject(Prism4DProject project, Prism4DPoint newPoint, boolean addToDB){
         //  Can not add a point to a project who does not exist
         if ((project == null) || (newPoint == null)) return false;
@@ -162,17 +202,21 @@ public class Prism4DPointManager {
 
         //determine whether the point already exists in the list
         int atPosition = findPointPosition(pointList, newPoint.getPointID());
-        if (atPosition == POINT_NOT_FOUND){//The point does not already exist. Add it
+        if (atPosition == POINT_NOT_FOUND){
+            //The point does not already exist. Add it
             pointList.add(newPoint);
             if (addToDB) {
                 //  Add the point to the DB
                 databaseManager.addPoint(newPoint);
+
             }
-        } else { //The point does exist, Update it
+        } else {
+            //The point does exist, Update it
             Prism4DPoint listPoint = pointList.get(atPosition);
 
             //update the list instance with the attributes from the new point being added
             //copy the point attributes, but not the ID
+            // TODO: 11/25/2016 maybe need to do a deep copy here
             copyPointAttributes(newPoint, listPoint, false);
 
             if (addToDB) {
@@ -180,6 +224,18 @@ public class Prism4DPointManager {
                 databaseManager.updatePoint(newPoint);
             }
         }
+
+        //if the point has a coordinate, deal with it too
+        Prism4DCoordinate coordinate = newPoint.getCoordinate();
+        if (coordinate != null){
+            Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+            if (coordinateManager.addToPoint(newPoint, coordinate, addToDB)){
+                //What do we do when something is wrong with the coordinate
+                // TODO: 11/25/2016 What do we do when something is wrong???
+                return false;
+            }
+        }
+
 
         return true;
     }
@@ -223,32 +279,32 @@ public class Prism4DPointManager {
 
         //get all medications in the DB that are linked to this Project
         Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-        return databaseManager.getAllPoints(projectID);
+        return databaseManager.getAllPointsFromDB(project);
     }
 
 
 
     //***********************  UPDATE **************************************
 
-    //This routine not only replaces in the in memory list, but also in the DB
-    public void update(Prism4DProject project, Prism4DPoint point){
+    //This routine not only updates the point on the project, but also in the DB
+    public boolean update(Prism4DProject project, Prism4DPoint point){
         //The update functionality already exists in add
         //    as a Point can only appear once
         //The third parameter indicates whether to affect DB
-        addToProject(project, point, true);
+        return addToProject(project, point, true);
     }//end public update()
 
 
 
     //This routine not only replaces in the in memory list, but also in the DB
-    public void update(int projectID, Prism4DPoint point){
+    public boolean update(int projectID, Prism4DPoint point){
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         Prism4DProject project = projectManager.getProject(projectID);
 
         //The update functionality already exists in add
         //    as a Point can only appear once
         //The third parameter indicates whether to affect DB
-        addToProject(project, point, true);
+        return addToProject(project, point, true);
     }//end public update()
 
     //***********************  DELETE **************************************
@@ -304,8 +360,8 @@ public class Prism4DPointManager {
     //NOTE it is a RunTimeException to call this routine if the list is null or empty
     private int findPointPosition(ArrayList<Prism4DPoint> pointList, int pointID){
         Prism4DPoint point;
-        int position        = 0;
-        int last            = pointList.size();
+        int          position = 0;
+        int          last     = pointList.size();
 
         //Determine whether an instance of the point is already in the list
         //NOTE that if list is empty, while doesn't loop even once
@@ -325,44 +381,22 @@ public class Prism4DPointManager {
 
     //***********************  COPY **************************************
 
-    //copies all the points from one project to another proejct
-    void copyProjectPoints(int fromProjectID, int toProjectID){
-        //iterate through the point list, counting the points with the project ID
-        Prism4DPoint fromPoint;
-        Prism4DPoint toPoint;
-        int pointProjectID;
-        Prism4DProjectManager projectsManager = Prism4DProjectManager.getInstance();
 
-        Prism4DProject       fromProject = projectsManager.getProject(fromProjectID);
-        Prism4DProject       toProject   = projectsManager.getProject(toProjectID);
-
-        ArrayList<Prism4DPoint> fromPointList = fromProject.getPoints();
-        ArrayList<Prism4DPoint> toPointList   = new ArrayList<>();
-        toProject.setPoints(toPointList);
-
-        for (int i = 0; i < fromPointList.size(); i++) {
-
-            fromPoint = fromPointList.get(i);
-
-            pointProjectID = fromPoint.getForProjectID();
-            if ((pointProjectID == fromProjectID)) {
-                //create a new point and copy over all the fields
-                toPoint = new Prism4DPoint(toProject);
-                copyPointAttributes(fromPoint, toPoint, true);
-                toPointList.add(toPoint);
-
-            }
-        }
-    }
-
+    //This routine does a shallow copy of attributes,
+    //    i.e. if an attribute changes later, it will change on both instances
+    //Does not affect Project ID field, but will copy PointID if last parameter is true
+    //A better choice would be the deep copy method
     public void copyPointAttributes(Prism4DPoint fromPoint, Prism4DPoint toPoint, boolean copyID){
+
         if (copyID){
             toPoint.setPointID(fromPoint.getPointID());
         }
 
         toPoint.setHasACoordinateID(fromPoint.getHasACoordinateID());
-        toPoint.setPointDescription(fromPoint.getPointDescription());
+        toPoint.setPointFeatureCode(fromPoint.getPointFeatureCode());
         toPoint.setPointNotes      (fromPoint.getPointNotes());
+        toPoint.setCoordinate      (fromPoint.getCoordinate());
+
     }
 
 
@@ -377,8 +411,9 @@ public class Prism4DPointManager {
         values.put(Prism4DSqliteOpenHelper.POINT_ID,               point.getPointID());
         values.put(Prism4DSqliteOpenHelper.POINT_FOR_PROJECT_ID,   point.getForProjectID());
         values.put(Prism4DSqliteOpenHelper.POINT_ISA_COORDINATE_ID,point.getHasACoordinateID());
-        values.put(Prism4DSqliteOpenHelper.POINT_DESCRIPTION,      point.getPointDescription().toString());
+        values.put(Prism4DSqliteOpenHelper.POINT_FEATURE_CODE,     point.getPointFeatureCode().toString());
         values.put(Prism4DSqliteOpenHelper.POINT_NOTES,            point.getPointNotes().toString());
+        //Doesn't insert coordinate object here, just the ID above
 
         return values;
     }
@@ -400,77 +435,19 @@ public class Prism4DPointManager {
         Prism4DPoint point = new Prism4DPoint(); //filled with defaults
 
         cursor.moveToPosition(position);
-        point.setPointID         (cursor.getInt   (cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_ID)));
-        point.setForProjectID    (cursor.getInt   (cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_FOR_PROJECT_ID)));
-        point.setHasACoordinateID(cursor.getInt   (cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_ISA_COORDINATE_ID)));
+        point.setPointID         (cursor.getInt   (
+                                  cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_ID)));
+        point.setForProjectID    (cursor.getInt   (
+                                  cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_FOR_PROJECT_ID)));
+        point.setHasACoordinateID(cursor.getInt   (
+                                  cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_ISA_COORDINATE_ID)));
 
-        point.setPointDescription(cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_DESCRIPTION)));
-        point.setPointNotes      (cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_NOTES)));
+        point.setPointFeatureCode(cursor.getString(
+                                  cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_FEATURE_CODE)));
+        point.setPointNotes      (cursor.getString(
+                                  cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_NOTES)));
 
         return point;
-    }
-
-
-
-    //Mock up some points for now
-    private void preparePointDataset() {
-        //Points get created for projects
-        //get the singleton container
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        List<Prism4DProject> projectList = projectManager.getProjectList();
-        Prism4DProject project;
-
-        //for each project, create some dummy points
-        for (int i = 0; i < projectList.size(); i++) {
-            project = projectList.get(i);
-            if (project.getPoints().size() < 1) {
-                addSomePoints(project);
-            }
-        }
-        if (projectList.size() == 0) {
-            //create at least one dummy project
-            int projectID = 2001;
-
-            project = new Prism4DProject("Boston Subdivision", projectID);
-            projectList.add(project);
-            addSomePoints(project);
-            //todo need to throw an exception here
-        }
-
-    }
-
-
-
-    public void addSomePoints(Prism4DProject project){
-
-        // add some points for the indicated project
-        //Stone Mountain
-        Prism4DPoint point = new Prism4DPoint(project);
-
-        point.setPointDescription("Stone Mountain");
-        project.getPoints().add(point);
-
-        //Beuford
-        point = new Prism4DPoint(project);
-
-        point.setPointDescription("Beauford");
-        project.getPoints().add(point);
-
-        //Canton
-        point = new Prism4DPoint(project);
-
-        point.setPointDescription("A Canton");
-        project.getPoints().add(point);
-
-
-        //Canton
-        point = new Prism4DPoint(project);
-
-        point.setPointDescription("B Canton");
-        project.getPoints().add(point);
-
-
-
     }
 
 }

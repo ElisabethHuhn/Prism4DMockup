@@ -1,12 +1,15 @@
 package com.asc.msigeosystems.prism4d;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -14,7 +17,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
 /**
  * The Stakeout Fragment is the top level selection UI
  * for stakeout functions
- * Created by elisabethhuhn on 4/13/2016.
+ * Created by Elisabeth Huhn on 4/13/2016.
  */
 public class MainPrism4DTopSkyplotsFragment extends Fragment {
 
@@ -23,6 +26,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
+    private TextView mScreenLabel;
 
     //Matrix Buttons
 
@@ -64,6 +68,12 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
     }
 
     private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
 
 
         //Skyplots Button
@@ -89,7 +99,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //Sat Info Button
         mSatInfoButton = (Button) v.findViewById(R.id.row1Button2);
         mSatInfoButton.setText(R.string.skyplot_satinfo_button_label);
-        mSatInfoButton.setText(R.string.skyplot_list_satellites);
+
         mSatInfoButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_612_qcposition, 0, 0);
         mSatInfoButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -111,7 +121,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //QC Position Button
         mQcPositionButton = (Button) v.findViewById(R.id.row1Button3);
         mQcPositionButton.setText(R.string.skyplot_qc_position_button_label);
-        mQcPositionButton.setText(R.string.skyplot_nmea_activity);
+
         //the order of images here is left, top, right, bottom
         mQcPositionButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_613_qcpositions, 0, 0);
         mQcPositionButton.setOnClickListener(new View.OnClickListener() {
@@ -122,8 +132,6 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
                         R.string.skyplot_qc_position_button_label,
                         Toast.LENGTH_SHORT).show();
 
-                Intent intent = new Intent(getActivity(), Prism4DGPSActivity.class);
-                startActivity(intent);
 
 
             }
@@ -170,6 +178,9 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
                         R.string.skyplot_compass_button_label,
                         Toast.LENGTH_SHORT).show();
 
+                ((MainPrism4DActivity)getActivity()).switchToCompassScreen();
+
+
             }
         });
 
@@ -184,13 +195,14 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
 
                 //for now, just put up a toast that the button was pressed
                 Toast.makeText(getActivity(),
-                        R.string.skyplot_reference_button_label,
+                        R.string.skyplot_geocasching_button_label,
                         Toast.LENGTH_SHORT).show();
+                /*
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
                 if (myActivity != null) {
                     myActivity.switchToListNmeaScreen();
                 }
-
+*/
 
             }
         });
@@ -240,6 +252,11 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_noaa_button_label,
                         Toast.LENGTH_SHORT).show();
+
+                String url = "http://www.swpc.noaa.gov/";
+                Intent i = new Intent(Intent.ACTION_VIEW);
+                i.setData(Uri.parse(url));
+                startActivity(i);
 
             }
         });

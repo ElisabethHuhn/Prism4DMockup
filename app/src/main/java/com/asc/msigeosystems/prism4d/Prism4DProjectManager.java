@@ -79,6 +79,8 @@ public class Prism4DProjectManager {
 
 
     //This routine not only adds to the in memory list, but also to the DB
+    //If the project is NOT already in memory list, it is added, else it is updated
+    //It is added/updated in the DB regardless
     public void add(Prism4DProject newProject){
 
         if (mProjectList == null){
@@ -86,7 +88,7 @@ public class Prism4DProjectManager {
         }
 
         //determine whether the project already exists in the list
-        int position = getProjectPosition(newProject.getProjectID());
+        int position = findProjectPosition(newProject.getProjectID());
         if (position == PROJECT_NOT_FOUND) {
             addProject (newProject, true);
         } else {
@@ -97,13 +99,13 @@ public class Prism4DProjectManager {
 
     //This routine ONLY adds to in memory list. It's coming from the DB
     public void addFromDB(Prism4DProject newProject){
-        //determine if already in list
+        //determine if list exists yet
         if (mProjectList == null){
             mProjectList = new ArrayList<>();
         }
 
         //determine whether the project already exists
-        int position = getProjectPosition(newProject.getProjectID());
+        int position = findProjectPosition(newProject.getProjectID());
         if (position == PROJECT_NOT_FOUND) {
             addProject (newProject, false);
             //Need to check if any points exist in the DB belonging to this project
@@ -112,34 +114,38 @@ public class Prism4DProjectManager {
         } else {
             updateProject (newProject, position, false);
         }
-    }//end public add()
+    }//end public addFromDB()
 
 
     //The routine that actually adds the instance to in memory list and
     // potentially (third boolean parameter) to the DB
-    private void addProject(Prism4DProject newProject, boolean addToDBToo){
-        mProjectList.add(newProject);
+    private boolean addProject(Prism4DProject newProject, boolean addToDBToo){
+        //Add project to memory list
+        if (!mProjectList.add(newProject)){
+            return false;
+        }
 
         if (addToDBToo){
 
+            //add project to DB
             Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            databaseManager.addProject(newProject);
-
-            //also have to deal with any Points on the project
-            //add any points to the DB
-            //The ASSUMPTION is that if it didn't exist in memory, it doesn't exist in the DB
-            //This is perhaps a risky assumption.......
-            // TODO: 11/2/2016 Determine if add project assumption is too risky
-
-            ArrayList<Prism4DPoint> points = newProject.getPoints();
-            if (points != null){
-                for (int position = 0; position < points.size(); position++) {
-                    databaseManager.addPoint(points.get(position));
-                }
-
-            }
+            if (!databaseManager.addProject(newProject)) return false;
         }
 
+        //Now deal with any points on the project
+        ArrayList<Prism4DPoint> points = newProject.getPoints();
+        if (points != null){
+            Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+
+            for (int position = 0; position < points.size(); position++) {
+                if (!pointManager.addToProject(newProject, points.get(position), addToDBToo)){
+                    return false;
+                }
+            }
+
+        }
+
+        return true;
     }
 
 
@@ -161,32 +167,38 @@ public class Prism4DProjectManager {
     //Get the project matching the passed project ID
     //from the projects stored in the database
     public Prism4DProject getProject(int projectID) {
-        int atPosition = getProjectPosition(projectID);
+        int atPosition = findProjectPosition(projectID);
 
         if (atPosition == PROJECT_NOT_FOUND) {
 
             //attempt to read the DB before giving up
-            Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            Prism4DProject project = databaseManager.getProject(projectID);
+            Prism4DProject project = getProjectFromDB(projectID);
 
             if (project != null) {
                 //if a matching project was in the DB, add it to RAM
                 mProjectList.add(project);
+
                 //and go get the points for this person
                 Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
                 pointManager.getPointsFromDB(project);
             }
             return project;
         }
-
         return (mProjectList.get(atPosition));
     }
 
+    //Returns null if it's not in the DB
+    public Prism4DProject getProjectFromDB (int projectID){
+        //Ignore the in memory list, just go straight to the DB
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        return databaseManager.getProject(projectID);
+    }
 
-    //returns the position of the project instance that matches the argument projectEmailAddr
+
+    //returns the position of the project instance that matches the argument project
     //returns constant = PROJECT_NOT_FOUND if the project is not in the list
     //NOTE it is a RunTimeException to call this routine if the list is null or empty
-    private int getProjectPosition(int projectID){
+    private int findProjectPosition(int projectID){
         Prism4DProject project;
         int position        = 0;
         int last            = mProjectList.size();
@@ -230,7 +242,9 @@ public class Prism4DProjectManager {
 
         //update the list instance with the attributes from the new project being added
         //        don't copy the ID
+        // TODO: 11/27/2016 Need to think hard about whether a shallow copy is sufficient here 
         copyProjectAttributes (newProject, listProject, false);
+        
 
         if (addToDBToo) {
             // update the project already in the DB
@@ -276,14 +290,79 @@ public class Prism4DProjectManager {
     /********* Translation Utility Methods  *****/
     /********************************************/
 
+    public Prism4DProject deepCopyProject(Prism4DProject fromProject){
+
+        //This method of deep copy only works if the most current copy of the
+        //project exists in the DB.
+        //This assumption is often valid, as in ListProjects. The only way a project
+        //  can appear in the UI List is if is the most current copy of the object
+
+        //do a deep copy of the project by reading in the
+        //DB version of the project
+        Prism4DProject toProject = getProjectFromDB(fromProject.getProjectID());
+
+        //do a deep copy of the points on this project is to read them in from the DB
+        Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+        //This not only reads in the points from the DB, it adds those points to
+        //    the pointsList on the project
+        //The return value is not what is important here, it's the side effect of reading
+        //    all the points in from the DB and adding them to memory
+        int numbPoints = pointManager.getPointsFromDB(toProject);
+
+        //set the new project ID on the toProject
+        int toProjectID   = Prism4DProject  .getNextProjectID();
+        toProject.setProjectID(toProjectID);
+
+        //update the date created and date last maintained
+        toProject.setProjectDateCreated(new Date().getTime());
+        toProject.setProjectLastModified(new Date().getTime());
+
+        //the coordinate type is OK as read in from the DB, it does not need to be touched
+
+        //change the pointIDs and the projectID's on the points of the project
+        Prism4DPoint toPoint;
+        ArrayList<Prism4DPoint> toPointList   = toProject.getPoints();
+
+        //initialize the first point ID
+        toProject.initializePointID();
+
+        //iterate through the point list, changing the IDs
+        int last = toPointList.size();
+        for (int position = 0; position < last; position++) {
+
+            //set the forProjectID on the point to the new projectID
+            toPoint = toPointList.get(position);
+            toPoint.setForProjectID(toProjectID);
+
+            //and assign a new point id to this point
+            toPoint.setPointID(toProject.getNextPointID());
+
+            //add the new point to the list on the project AND to the db
+            //pointManager.addToProject(toProject, toPoint, true);
+
+            //  give the coordinate on the point a new ID
+            int toCoordinateID = Prism4DCoordinate.getNextCoordinateID();
+            toPoint.getCoordinate().setCoordinateID(toCoordinateID);
+            toPoint.setHasACoordinateID(toCoordinateID);
+
+        }
+        return toProject;
+    }
+
+
+
+
     public void copyProjectAttributes(Prism4DProject fromProject, Prism4DProject toProject, boolean copyID){
         if (copyID){
             toProject.setProjectID(fromProject.getProjectID());
         }
-        toProject.setProjectName        (fromProject.getProjectName());
-        toProject.setProjectDateCreated (fromProject.getProjectDateCreated());
-        toProject.setProjectLastModified(fromProject.getProjectLastModified());
-        toProject.setProjectDescription (fromProject.getProjectDescription());
+        toProject.setProjectName          (fromProject.getProjectName());
+        toProject.setProjectDateCreated   (fromProject.getProjectDateCreated());
+        toProject.setProjectLastModified  (fromProject.getProjectLastModified());
+        toProject.setProjectDescription   (fromProject.getProjectDescription());
+        toProject.setProjectCoordinateType(fromProject.getProjectCoordinateType());
+
+        // TODO: 11/25/2016 This must also deal with points and coordinates on points
     }
 
 
@@ -292,16 +371,18 @@ public class Prism4DProjectManager {
         //convert the Prism4DProject object into a ContentValues object containing a project
         ContentValues cvProject = new ContentValues();
         //put(columnName, value);
-        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_ID,              project.getProjectID());
-        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_NAME,            project.getProjectName().toString());
-
-        // TODO: 11/3/2016 Check the date conversions are correct
-        //long millisecondDate = project.getProjectDateCreated().getTime();
-        //The two lines that are Date objects in memory, become milliseconds in the DB
-        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_CREATED,         project.getProjectDateCreated().getTime());
-        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED, project.getProjectLastModified().getTime());
-
-        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION,     project.getProjectDescription().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_ID,
+                                                project.getProjectID());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_NAME,
+                                                project.getProjectName().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_CREATED,
+                                                String.valueOf(project.getProjectDateCreated()));
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED,
+                                                String.valueOf(project.getProjectLastModified()));
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION,
+                                                project.getProjectDescription().toString());
+        cvProject.put(Prism4DSqliteOpenHelper.PROJECT_COORDINATE_TYPE,
+                                                project.getProjectCoordinateType().toString());
 
         return cvProject;
     }
@@ -324,22 +405,20 @@ public class Prism4DProjectManager {
         Prism4DProject project = new Prism4DProject(); //filled with defaults, no ID is assigned
 
         cursor.moveToPosition(position);
-        project.setProjectID           (cursor.getInt  (cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_ID)));
-        project.setProjectName         (cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_NAME)));
-        
-        //Need to convert int into Date format
-        //DB stores date in milliseconds. Must convert this format to Date
-        // TODO: 11/3/2016 convert milliseconds from the cursor into Date in the project
-        long millisecondsDate = cursor.getInt(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_CREATED));
-        Date theDate = new Date(millisecondsDate);
-        project.setProjectDateCreated  (theDate);
-        
-        millisecondsDate = cursor.getInt(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED));
-        theDate = new Date(millisecondsDate);
-        project.setProjectLastModified (theDate);
-        
-        project.setProjectDescription  (cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION)));
-
+        project.setProjectID(
+                cursor.getInt  (cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_ID)));
+        project.setProjectName(
+                cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_NAME)));
+        project.setProjectDateCreated(
+                Long.parseLong(cursor.getString(
+                               cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_CREATED))));
+        project.setProjectLastModified(
+                Long.parseLong(cursor.getString(
+                               cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_LAST_MAINTAINED))));
+        project.setProjectDescription(
+                cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_DESCRIPTION)));
+        project.setProjectCoordinateType(
+                cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_COORDINATE_TYPE)));
 
         return project;
     }
@@ -350,102 +429,5 @@ public class Prism4DProjectManager {
     /********* General Utility Methods      *****/
     /********************************************/
 
-    //Mock up some projects for now
-    private void prepareProjectDataset(){
-        //no use doing anything if the Adapter is not created yet
-
-        if (mProjectList.size() > 0){
-            return;
-        }
-
-        Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-
-        Prism4DProject project = new Prism4DProject("Cambridge Subdivision", 1001);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Jones Creek",   1002);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Hampton South", 1003);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Johns Creek",   1004);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Macon Airport", 1005);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("MSI Demo",      1006);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Roswell",       1007);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Cambridge Subdivision 2", 1008);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Jones Creek 2",   1009);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Hampton South 2", 1010);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Johns Creek 2",   1011);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Macon Airport 2", 1012);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("MSI Demo 2",      1013);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Roswell 2",       1014);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Cambridge Subdivision 3", 1015);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Jones Creek 3",   1016);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Hampton South 3", 1017);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Johns Creek 3",   1018);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Macon Airport 3", 1019);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("MSI Demo 3",      1020);
-        add(project);
-        pointManager.addSomePoints(project);
-
-        project = new Prism4DProject("Roswell 3",       1021);
-        add(project);
-        pointManager.addSomePoints(project);
-
-
-
-    }
 
 }

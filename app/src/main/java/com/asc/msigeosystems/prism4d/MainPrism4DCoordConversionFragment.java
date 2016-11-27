@@ -65,9 +65,6 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
 
 
-
-
-
     public MainPrism4DCoordConversionFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
@@ -150,13 +147,12 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
                                                       mLongDigDegInput.getText().toString());
 
         if (!mCoordinateWGS84.isValidCoordinate()) {
-            mCoordinateWGS84 = new Prism4DCoordinateWGS84(
-                    mLatDegInput.getText(),
-                    mLatMinInput.getText(),
-                    mLatSecInput.getText(),
-                    mLongDegInput.getText(),
-                    mLongMinInput.getText(),
-                    mLongSecInput.getText());
+            mCoordinateWGS84 = new Prism4DCoordinateWGS84(mLatDegInput.getText(),
+                                                          mLatMinInput.getText(),
+                                                          mLatSecInput.getText(),
+                                                          mLongDegInput.getText(),
+                                                          mLongMinInput.getText(),
+                                                          mLongSecInput.getText());
             if (!mCoordinateWGS84.isValidCoordinate()){
                 Toast.makeText(getActivity(),
                         R.string.coordinate_try_again,
@@ -280,7 +276,8 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
             mUtmNmEastingFOutput.setText(String.valueOf(temp));
 
             temp = utmCoordinate.getNorthingFeet();
-            bdTemp = new BigDecimal(temp).setScale(6, RoundingMode.HALF_UP);
+            bdTemp = new BigDecimal(temp).setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                                   RoundingMode.HALF_UP);
             temp = bdTemp.doubleValue();
 
             mUtmNmNorthingFOutput.setText(String.valueOf(temp ));

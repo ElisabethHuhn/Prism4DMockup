@@ -1,5 +1,7 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.os.Bundle;
+
 /**
  * Created by Elisabeth Huhn on 5/13/2016.
  *
@@ -24,11 +26,40 @@ public class Prism4DPath {
     //stores the path of this instance
     private CharSequence mPath;
 
-    //constructor
+    //
+    /****************************************************************/
+    /*               Constructor                                 */
+    /****************************************************************/
     public Prism4DPath(CharSequence path) {
         this.mPath = path;
     }
 
-    public CharSequence getPath()                  { return mPath; }
-    public void         setPath(CharSequence path) {  mPath = path; }
+    /****************************************************************/
+    /*               Static Methods                                 */
+    /****************************************************************/
+
+    public static Bundle putPathInArguments(Bundle args, Prism4DPath projectPath) {
+
+        args.putCharSequence(Prism4DPath.sProjectPathTag, projectPath.getPath());
+        return args;
+    }
+
+
+    public static Prism4DPath getPathFromArguments(Bundle args) {
+        return new Prism4DPath(args.getCharSequence(Prism4DPath.sProjectPathTag));
+    }
+
+
+    /****************************************************************/
+    /*              Setters and Getters                             */
+    /****************************************************************/
+
+        public CharSequence getPath()                  { return mPath; }
+        public void         setPath(CharSequence path) {  mPath = path; }
+
+
+    /****************************************************************/
+    /*               Member Methods                                 */
+    /****************************************************************/
+
 }

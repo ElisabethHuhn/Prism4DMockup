@@ -11,7 +11,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
 import java.util.List;
 
 /**
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
  * patterned after Prism4DProjectAdapter
  */
 public class Prism4DNmeaAdapter extends RecyclerView.Adapter<Prism4DNmeaAdapter.MyViewHolder> {
@@ -43,7 +43,17 @@ public class Prism4DNmeaAdapter extends RecyclerView.Adapter<Prism4DNmeaAdapter.
         return new MyViewHolder(itemView);
     }
 
+    //Usually only the itemManager can control what is in the list, but in this case,
+    //The NMEA data is not stored to the DB, so we can add it here
+    public void addItem(Prism4DNmea nemaSentence){
+        mNmeaList.add(nemaSentence);
+        //notifyDataSetChanged();
+        notifyItemInserted(mNmeaList.size()-1);
+        notifyItemRangeChanged(getItemCount(), getItemCount());
+    }
+
     public void removeItem(int position) {
+        //If there ever is a NmeaManager, pass this request on to the manager
         mNmeaList.remove(position);
         notifyItemRemoved(position);
     }

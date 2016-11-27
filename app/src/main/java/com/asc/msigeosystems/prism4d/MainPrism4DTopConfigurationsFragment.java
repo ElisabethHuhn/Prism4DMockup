@@ -2,10 +2,12 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -13,7 +15,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
 /**
  * The Configurations Fragment is the top level selection UI
  * for stakeout functions
- * Created by elisabethhuhn on 5/1/2016.
+ * Created by Elisabeth Huhn on 5/1/2016.
  */
 public class MainPrism4DTopConfigurationsFragment extends Fragment {
 
@@ -22,6 +24,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
      *  although in the mockup, most will be statically defined in the xml
      */
 
+    private TextView mScreenLabel;
 
     //Matrix Buttons
     private Button mEquipmentButton;
@@ -53,6 +56,17 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+        return v;
+    }
+
+    private void wireWidgets(View v){
+        //Tell the user which project is open
+        mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
+        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
+        mScreenLabel.setBackgroundColor(color);
+
 
         //Equipment Button
         mEquipmentButton = (Button) v.findViewById(R.id.row1Button1);
@@ -85,6 +99,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.config_communications_button_label,
                         Toast.LENGTH_SHORT).show();
+                ((MainPrism4DActivity)getActivity()).switchToListNmeaScreen();
 
             }
         });
@@ -210,8 +225,6 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //  Esc and Enter buttons are NOT enabled on the collect screen
         //so we can ignore the footer for now
 
-
-        return v;
     }
 }
 

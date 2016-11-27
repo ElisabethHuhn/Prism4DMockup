@@ -1,81 +1,84 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    tools:context="com.asc.msigeosystems.prism4d.MainPrism4DActivity"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
+<ScrollView
+    xmlns:android = "http://schemas.android.com/apk/res/android"
+    xmlns:tools   = "http://schemas.android.com/tools"
+    tools:context = "com.asc.msigeosystems.prism4d.MainPrism4DActivity"
+
+    android:layout_width  = "match_parent"
+    android:layout_height = "match_parent"
+    android:fillViewport  = "true"
+
     android:background="@color/colorScreenBackground"
     android:orientation="vertical"
     >
 
+
+
     <!-- Everything on the screen has to scroll horizontally -->
     <HorizontalScrollView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:fillViewport="true"
-        >
+        android:layout_width  = "match_parent"
+        android:layout_height = "wrap_content"
+          >
         <!-- rest of the screen -->
         <LinearLayout
-            android:orientation="vertical"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
-
-            <LinearLayout
-
-                android:orientation="horizontal"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                android:focusable="false"
-                android:clickable="false"
-
-                android:paddingTop="@dimen/interum_vertical"
-
-                android:background="@color/colorScreenBackground"
+                android:orientation   = "vertical"
+                android:layout_width  = "wrap_content"
+                android:layout_height = "wrap_content"
                 >
 
-                <!-- NMEA Sentence title line -->
-                <TextView
-                    android:text="@string/skyplot_nmea_list_title"
+                <!-- Title Line -->
+                <LinearLayout
 
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="5"
-                    android:layout_marginEnd="8dp"
 
-                    android:textColor="@color/colorTextBlack"
+                    android:focusable="false"
+                    android:clickable="false"
+
+                    android:paddingTop="@dimen/interum_vertical"
+
                     android:background="@color/colorScreenBackground"
-                    />
+                    >
+
+                    <!-- NMEA Sentence title line -->
+                    <TextView
+                        android:text="@string/skyplot_nmea_list_title"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="5"
+                        android:layout_marginEnd="8dp"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+
+                </LinearLayout>
+
+
+                <!-- recycler view of the nmea sentences -->
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:fillViewport="true"
+                    >
+
+                    <!-- Recycler View containing the list of nmea sentences -->
+                    <android.support.v7.widget.RecyclerView
+                        android:id="@+id/nmeaList"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        >
+
+                    </android.support.v7.widget.RecyclerView>
+
+                </LinearLayout>
+
 
             </LinearLayout>
 
-
-            <!-- recycler view of the nmea sentences -->
-            <ScrollView
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:fillViewport="true"
-                >
-
-                <!-- Recycler View containing the list of nmea sentences -->
-                <android.support.v7.widget.RecyclerView
-                    android:id="@+id/nmeaList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    >
-
-                </android.support.v7.widget.RecyclerView>
-
-            </ScrollView>
-
-
-        </LinearLayout>
-
     </HorizontalScrollView>
 
-    <!-- The Footer will be as standard as possible -->
-    <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
 
-
-</LinearLayout>
+</ScrollView>
 

@@ -1,24 +1,38 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
+import android.widget.EditText;
+
+import com.asc.msigeosystems.prism4dmockup.R;
+
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 
 /**
- * Created by elisabethhuhn on 6/17/2016.
+ * Created by Elisabeth Huhn on 6/17/2016.
+ *
+ * This class is part of the Coordinate's hierarchy
+ * This is the super class of any Coordinate expressed with
+ * Latitude / Longitude spherical surface coordinate systems
+ *
+ *
+ * The class knows how to:
+ *   A) store all attributes required of Latitude / Longitude coordinate systems.
+ *   B) convert from any other coordinate system to this one
+ *   C) convert swapping between DD and DMS formats of Latitude / Longitude
+ *
  */
 
 
-public class Prism4DCoordinateLL {
-    //This class holds raw coordinates and is responsible for swapping DD to DMS format
+public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
+    //
 
     /*****************************************************/
     /********    Attributes stored in the DB     *********/
     /*****************************************************/
 
-    protected int    mProjectID; //May or may not describe a point
-    protected int    mPointID;
-
-    protected double mTime; //time coordinate taken
+    protected long   mTime; //time coordinate taken in milliseconds
 
     //Latitude in DD and DMS formats
     protected double mLatitude;
@@ -40,17 +54,167 @@ public class Prism4DCoordinateLL {
 
     protected boolean mValidCoordinate = true;
 
+
+    /*****************************************************/
+    /********    Static Conversion Utilities     *********/
+    /*****************************************************/
+
+    //last parameter indicates whether latitude (true) or longitude (false)
+    public static boolean convertDDtoDMS(Context  context,
+                                         EditText tudeDDInput,
+                                         EditText tudeDInput,
+                                         EditText tudeMInput,
+                                         EditText tudeSInput,
+                                         boolean  isLatitude) {
+
+        String tudeString = tudeDDInput.getText().toString().trim();
+        if (tudeString.isEmpty()) {
+            tudeString = context.getString(R.string.zero_decimal_string);
+            tudeDDInput.setText(tudeString);
+        }
+
+        double tude = Double.parseDouble(tudeString);
+
+        //The user inputs have to be within range to be
+        if (   (isLatitude   && ((tude < -90.0) || (tude >= 90.0)))  || //Latitude
+             ((!isLatitude)  && ((tude < -180.) || (tude >= 180.)))) {  //Longitude
+
+            tudeDInput.setText(R.string.zero_decimal_string);
+            tudeMInput.setText(R.string.zero_decimal_string);
+            tudeSInput.setText(R.string.zero_decimal_string);
+            return false;
+        }
+
+        //check sign of tude
+        boolean isTudePos = true;
+        int tudeColor= R.color.colorPosNumber;
+        if (tude < 0) {
+            //tude is negative, remember this and work with the absolute value
+            tude = Math.abs(tude);
+            isTudePos = false;
+            tudeColor = R.color.colorNegNumber;
+        }
+
+        //strip out the decimal parts of tude
+        int tudeDegree = (int) tude;
+
+        double degree = tudeDegree;
+
+        //digital degrees minus degrees will be decimal minutes plus seconds
+        //converting to int strips out the seconds
+        double minuteSec = tude - degree;
+        double minutes = minuteSec * 60.;
+        int tudeMinute = (int) minutes;
+        double minuteOnly = (double) tudeMinute;
+
+        //start with the DD, subtract out Degrees, subtract out Minutes
+        //convert the remainder into whole seconds
+        double tudeSecond = (tude - degree - (minuteOnly / 60.)) * (60. * 60.);
+        //tudeSecond = (tude - minutes) * (60. *60.);
+
+        //If tude was negative before, restore it to negative
+        if (!isTudePos) {
+            tude       = 0. - tude;
+            tudeDegree = 0 - tudeDegree;
+            tudeMinute = 0 - tudeMinute;
+            tudeSecond = 0. - tudeSecond;
+        }
+
+        //truncate to a reasonable number of decimal digits
+        BigDecimal bd = new BigDecimal(tudeSecond).
+                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                         RoundingMode.HALF_UP);
+        tudeSecond = bd.doubleValue();
+
+        //show the user the result
+        tudeDInput.setText(String.valueOf(tudeDegree));
+        tudeMInput.setText(String.valueOf(tudeMinute));
+        tudeSInput.setText(String.valueOf(tudeSecond));
+
+        tudeDDInput.setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeDInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeMInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeSInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+
+        return true;
+    }
+
+
+
+    //last parameter indicates whether latitude (true) or longitude (false)
+    public static boolean convertDMStoDD(Context  context,
+                                         EditText tudeDDInput,
+                                         EditText tudeDInput,
+                                         EditText tudeMInput,
+                                         EditText tudeSInput,
+                                         boolean  isLatitude){
+
+        //String tudeString = tudeDDInput.getText().toString().trim();
+        String tudeDString = tudeDInput.getText().toString().trim();
+        String tudeMString = tudeMInput.getText().toString().trim();
+        String tudeSString = tudeSInput.getText().toString().trim();
+
+        if ((tudeDString == null)||(tudeDString == "")){
+            tudeDString = context.getString(R.string.zero_decimal_string);
+        }
+
+        //double tude = Double.parseDouble(tudeString);
+        int    tudeD = Integer.parseInt(tudeDString);
+        int    tudeM = Integer.parseInt(tudeMString);
+        double tudeS = Double.parseDouble(tudeSString);
+
+        if (((isLatitude) && ((tudeD <   -90) || (tudeD >=   90))) ||
+            ((isLatitude) && ((tudeM <   -60) || (tudeM >    60))) ||
+            ((isLatitude) && ((tudeS <   -60.)|| (tudeS >    60.)))||
+           ((!isLatitude) && ((tudeD <  -180) || (tudeD >=  180))) ||
+           ((!isLatitude) && ((tudeM <   -60) || (tudeM >    60))) ||
+           ((!isLatitude) && ((tudeS <   -60.)|| (tudeS >    60.)))) {
+
+            tudeDDInput.setText(R.string.zero_decimal_string);
+            return false;
+        }
+
+        boolean isTudePos = true;
+        int tudeColor = R.color.colorPosNumber;
+        if ((tudeD < 0) || (tudeM < 0) || (tudeS < 0)){
+            isTudePos = false;
+            tudeD = Math.abs(tudeD);
+            tudeM = Math.abs(tudeM);
+            tudeS = Math.abs(tudeS);
+            tudeColor = R.color.colorNegNumber;
+        }
+
+        double degrees = (double)tudeD;
+        double minutes = (double)tudeM ;
+        double seconds =         tudeS ;
+        double tude =  degrees + (minutes/ 60.) + (seconds/ (60.*60.));
+
+
+        if (!isTudePos) {
+            tude  = 0. - tude;
+        }
+
+        tudeDDInput.setText(String.valueOf(tude));
+
+        tudeDDInput.setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeDInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeMInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+        tudeSInput .setTextColor(ContextCompat.getColor(context, tudeColor));
+
+        return true;
+    }
+
+
+
+
     /********
      *
      * Setters and Getters
      *
      **********/
 
-    public int  getProjectID()              { return mProjectID; }
-    public void setProjectID(int projectID) { mProjectID = projectID; }
-
-    public int  getPointID()            { return mPointID; }
-    public void setPointID(int pointID) { mPointID = pointID; }
+    public long getTime()              {  return mTime;    }
+    public void setTime(long time)     {  mTime = time;  }
 
     public double getLatitude()        { return mLatitude;        }
     public void setLatitude(double latitude) { mLatitude = latitude; }
@@ -80,18 +244,16 @@ public class Prism4DCoordinateLL {
 
     public double getElevation()       {  return mElevation;   }
     public void setElevation(double elevation) { mElevation = elevation;   }
-    public double getElevationFeet() {return Prism4DConstants.convertMetersToFeet(mElevation); }
+    public double getElevationFeet() {return Prism4DConstantsAndUtilities.convertMetersToFeet(mElevation); }
 
     public double getGeoid()           {  return mGeoid; }
-    public double getGeoidFeet() { return Prism4DConstants.convertMetersToFeet(mGeoid);}
+    public double getGeoidFeet() { return Prism4DConstantsAndUtilities.convertMetersToFeet(mGeoid);}
     public void setGeoid(double geoid) { mGeoid = geoid;  }
 
+    public void    setValidCoordinate(boolean validCoordinate){ this.mValidCoordinate = validCoordinate;}
     public boolean isValidCoordinate() {
         return mValidCoordinate;
     }
-
-    public double getTime()            {  return mTime;    }
-    public void setTime(double time)          {  mTime = time;  }
 
     /********
      *
@@ -106,6 +268,12 @@ public class Prism4DCoordinateLL {
      * Constructors
      *
      **********/
+    /**************************************************************/
+    /**************************************************************/
+    /*       Vanilla constructor, default values only             */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateLL() {
         //set all variables to their defaults
         initializeDefaultVariables();
@@ -115,10 +283,11 @@ public class Prism4DCoordinateLL {
         //I know that one does not have to initialize int's etc, but
         //to be explicit about the initialization, do it anyway
 
-        mProjectID      = 0; //assume does not describe a point
-        mPointID        = 0;
+        //initialize all variables common to all coordinates
+        super.initializeDefaultVariables();
 
-        mTime           = 0d; //time coordinate taken
+        //initialize all variables common to EN coordinates
+        mTime           = 0; //time coordinate taken
 
         //Latitude in DD and DMS formats
         mLatitude       = 0d;
@@ -141,12 +310,28 @@ public class Prism4DCoordinateLL {
         mValidCoordinate = false;
     }
 
+    /**************************************************************/
+    /**************************************************************/
+    /*                                                            */
+    /*       Create the LL Coordinate with Lat / Long             */
+    /*     Automatically convert DD to DMS values as well         */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateLL(double latitude, double longitude) {
-        initializeDefaultVariables();;
+        initializeDefaultVariables();
         latLongDD(latitude, longitude);
     }
 
 
+    /**************************************************************/
+    /**************************************************************/
+    /*                                                            */
+    /*      Create the LL Coordinate with Lat DMS / Long DMS      */
+    /*      Automatically convert DMS to DD values as well        */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateLL(int latitudeDegree,
                                int latitudeMinute,
                                double latitudeSecond,
@@ -163,12 +348,33 @@ public class Prism4DCoordinateLL {
                 longitudeSecond);
     }
 
+
+    /**************************************************************/
+    /**************************************************************/
+    /*                                                            */
+    /*       Create the LL Coordinate with Lat / Long Strings     */
+    /*       Automatically convert to numbers AND                 */
+    /*        convert DD to DMS values as well                    */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateLL(CharSequence latitudeString, CharSequence longitudeString) {
         initializeDefaultVariables();
         latLongDDStrings(latitudeString, longitudeString);
     }
 
 
+
+    /**************************************************************/
+    /**************************************************************/
+    /*                                                            */
+    /*      Create the LL Coordinate with                         */
+    /*         Lat DMS / Long DMS String values                   */
+    /*      Automatically convert to number AND                   */
+    /*         convert DMS to DD values as well                   */
+    /*                                                            */
+    /**************************************************************/
+    /**************************************************************/
     public Prism4DCoordinateLL(CharSequence latitudeDegreeString,
                                CharSequence latitudeMinuteString,
                                CharSequence latitudeSecondString,
@@ -177,11 +383,11 @@ public class Prism4DCoordinateLL {
                                CharSequence longitudeSecondString) {
         initializeDefaultVariables();
         latLongDMSStrings(latitudeDegreeString,
-                 latitudeMinuteString,
-                 latitudeSecondString,
-                 longitudeDegreeString,
-                 longitudeMinuteString,
-                 longitudeSecondString);
+                          latitudeMinuteString,
+                          latitudeSecondString,
+                          longitudeDegreeString,
+                          longitudeMinuteString,
+                          longitudeSecondString);
     }
 
     /***************
@@ -305,7 +511,9 @@ public class Prism4DCoordinateLL {
             mLatitudeSecond = 0. - mLatitudeSecond;
         }
         //truncate to a reasonable number of decimal digits
-        BigDecimal bd = new BigDecimal(mLatitudeSecond).setScale(5, RoundingMode.HALF_UP);
+        BigDecimal bd = new BigDecimal(mLatitudeSecond).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mLatitudeSecond = bd.doubleValue();
 
         //
@@ -338,7 +546,9 @@ public class Prism4DCoordinateLL {
             mLongitudeSecond = 0. - mLongitudeSecond;
         }
         //truncate to a reasonable number of decimal digits
-        bd = new BigDecimal(mLongitudeSecond).setScale(5, RoundingMode.HALF_UP);
+        bd = new BigDecimal(mLongitudeSecond).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mLongitudeSecond = bd.doubleValue();
         return true;
     }
@@ -370,15 +580,15 @@ public class Prism4DCoordinateLL {
             mLatitudeSecond = Math.abs(mLatitudeSecond);
         }
         if (mLongitudeDegree < 0){
-            isLatPos = false;
+            isLongPos = false;
             mLongitudeDegree = Math.abs(mLongitudeDegree);
         }
         if (mLongitudeMinute < 0){
-            isLatPos = false;
+            isLongPos = false;
             mLongitudeMinute = Math.abs(mLongitudeMinute);
         }
         if (mLongitudeSecond < 0){
-            isLatPos = false;
+            isLongPos = false;
             mLongitudeSecond = Math.abs(mLongitudeSecond);
         }
 
@@ -398,7 +608,7 @@ public class Prism4DCoordinateLL {
             mLatitudeMinute = 0  - mLatitudeMinute;
             mLatitudeSecond = 0. - mLatitudeSecond;
         }
-        if (!isLatPos) {
+        if (!isLongPos) {
             mLongitude       = 0. - mLongitude;
             mLongitudeDegree = 0  - mLongitudeDegree;
             mLongitudeMinute = 0  - mLongitudeMinute;

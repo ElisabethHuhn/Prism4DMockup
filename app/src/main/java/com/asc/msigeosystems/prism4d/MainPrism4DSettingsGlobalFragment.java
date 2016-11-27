@@ -61,7 +61,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         mUnitsButton = (Button) v.findViewById(R.id.row1Button1);
         mUnitsButton.setText(R.string.setting_units_button_label);
         //the order of images here is left, top, right, bottom
-        mUnitsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mUnitsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mUnitsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -80,7 +80,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         mFormatsButton = (Button) v.findViewById(R.id.row1Button2);
         mFormatsButton.setText(R.string.setting_formats_button_label);
         //the order of images here is left, top, right, bottom
-        mFormatsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mFormatsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mFormatsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -96,7 +96,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Tolerances Button
         mTolerancesButton = (Button) v.findViewById(R.id.row3Button3);
         mTolerancesButton.setText(R.string.setting_tolerances_button_label);
-        mTolerancesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mTolerancesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mTolerancesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -112,7 +112,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Datums Button
         mDatumsButton = (Button) v.findViewById(R.id.row1Button3);
         mDatumsButton.setText(R.string.setting_datums_button_label);
-        mDatumsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mDatumsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mDatumsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -127,7 +127,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Projections Button
         mProjectionsButton = (Button) v.findViewById(R.id.row2Button1);
         mProjectionsButton.setText(R.string.setting_projections_button_label);
-        mProjectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mProjectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mProjectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -143,7 +143,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Geoid Models Button
         mGeoidModelButton = (Button) v.findViewById(R.id.row2Button2);
         mGeoidModelButton.setText(R.string.setting_geoid_models_button_label);
-        mGeoidModelButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mGeoidModelButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mGeoidModelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -159,7 +159,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //General Button
         mGeneralButton = (Button) v.findViewById(R.id.row2Button3);
         mGeneralButton.setText(R.string.setting_general_button_label);
-        mGeneralButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mGeneralButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mGeneralButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -175,7 +175,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Localizations Button
         mLocalizationsButton = (Button) v.findViewById(R.id.row3Button1);
         mLocalizationsButton.setText(R.string.setting_localizations_button_label);
-        mLocalizationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mLocalizationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mLocalizationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
@@ -191,7 +191,7 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //Survey Styles Button
         mSurveyStylesButton = (Button) v.findViewById(R.id.row3Button2);
         mSurveyStylesButton.setText(R.string.setting_survey_styles_button_label);
-        mSurveyStylesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_settings, 0, 0);
+        mSurveyStylesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_008_settings, 0, 0);
         mSurveyStylesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){

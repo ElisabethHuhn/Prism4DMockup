@@ -6,10 +6,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-import com.asc.msigeosystems.prism4d.Prism4DProject;
-
-import java.util.ArrayList;
-
 /**
  * Created by Elisabeth Huhn on 7/9/2016.
  * This class makes all the actual calls to the DB
@@ -64,18 +60,21 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String PROJECT_CREATED =         "project_created";
     public static final String PROJECT_LAST_MAINTAINED = "project_last_maintained";
     public static final String PROJECT_DESCRIPTION =     "project_description";
+    public static final String PROJECT_COORDINATE_TYPE = "project_coordinate_type";
 
 
     //create project table
     //NOTE: Dates are stored as long, NOT as a Date.
     //      The conversion is done when CV is created and when Cursor is translated
-    private static final String CREATE_TABLE_PROJECT = "CREATE TABLE " + TABLE_PROJECT +"(" +
+    private static final String CREATE_TABLE_PROJECT = "CREATE TABLE " +
+            TABLE_PROJECT           + "("            +
             KEY_ID                  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PROJECT_ID              + " INTEGER, "   +
             PROJECT_NAME            + " TEXT, "      +
-            PROJECT_CREATED         + " INTEGER, "   +
-            PROJECT_LAST_MAINTAINED + " INTEGER, "   +
+            PROJECT_CREATED         + " TEXT, "      +
+            PROJECT_LAST_MAINTAINED + " TEXT, "      +
             PROJECT_DESCRIPTION     + " TEXT, "      +
+            PROJECT_COORDINATE_TYPE + " TEXT, "      +
             KEY_CREATED_AT          + " DATETIME"    + ")";
 
     /*****************************************************/
@@ -104,7 +103,8 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
 
     //create project settings table
-    private static final String CREATE_TABLE_PROJECT_SETTINGS = "CREATE TABLE " + TABLE_PROJECT_SETTINGS +"(" +
+    private static final String CREATE_TABLE_PROJECT_SETTINGS = "CREATE TABLE " +
+            TABLE_PROJECT_SETTINGS           + "("           +
             KEY_ID                           + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PROJECT_SETTINGS_ID              + " INTEGER, "  +
             PROJECT_SETTINGS_DISTANCE_UNITS  + " TEXT, "     +
@@ -134,25 +134,20 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     //Point Column Names
     public static final String POINT_ID             = "point_id";
     public static final String POINT_FOR_PROJECT_ID = "point_project_id";
-    public static final String POINT_ISA_COORDINATE_ID =  "point_coordinate";
-    public static final String POINT_EASTING        = "point_easting";
-    public static final String POINT_NORTHING       = "point_northing";
-    public static final String POINT_ELEVATION      = "point_elevation";
-    public static final String POINT_DESCRIPTION    = "point_description";
+    public static final String POINT_ISA_COORDINATE_ID =  "point_coordinate_ID";
+    public static final String POINT_FEATURE_CODE   = "point_feature_code";
     public static final String POINT_NOTES          = "point_notes";
 
 
 
     //create point table
-    private static final String CREATE_TABLE_POINT = "CREATE TABLE " + TABLE_POINT +"(" +
+    private static final String CREATE_TABLE_POINT = "CREATE TABLE " +
+            TABLE_POINT             + "("          +
             KEY_ID                  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             POINT_ID                + " INTEGER, " +
             POINT_FOR_PROJECT_ID    + " INTEGER, " +
             POINT_ISA_COORDINATE_ID + " INTEGER, " +
-            POINT_EASTING           + " INTEGER, " +
-            POINT_NORTHING          + " INTEGER, " +
-            POINT_ELEVATION         + " INTEGER, " +
-            POINT_DESCRIPTION       + " TEXT, "    +
+            POINT_FEATURE_CODE      + " TEXT, "    +
             POINT_NOTES             + " TEXT, "    +
             KEY_CREATED_AT          + " INTEGER"   + ")";
 
@@ -161,12 +156,15 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /*****************************************************/
 
     //Coordinate EN column names
-    public static final String COORDINATE_EN_PROJECT_ID = "coordinate_en_project_id";
-    public static final String COORDINATE_EN_POINT_ID   = "coordinate_en_point_id";
-    public static final String COORDINATE_EN_ZONE       = "coordinate_en_zone";        //1-60
-    public static final String COORDINATE_EN_HEMISPHERE = "coordinate_en_hemisphere";  //N or S
+    public static final String COORDINATE_ID            = "coordinate_id";
+    public static final String COORDINATE_PROJECT_ID    = "coordinate_project_id";
+    public static final String COORDINATE_POINT_ID      = "coordinate_point_id";
+    public static final String COORDINATE_TYPE          = "coordinate_type";
     public static final String COORDINATE_EN_EASTING    = "coordinate_en_easting";
     public static final String COORDINATE_EN_NORTHING   = "coordinate_en_northing";
+    public static final String COORDINATE_EN_ELEVATION  = "coordinate_en_elevation";
+    public static final String COORDINATE_EN_ZONE       = "coordinate_en_zone";        //1-60
+    public static final String COORDINATE_EN_HEMISPHERE = "coordinate_en_hemisphere";  //N or S
     public static final String COORDINATE_EN_LATBAND    = "coordinate_en_latband";
     public static final String COORDINATE_EN_DATUM      = "coordinate_en_datum";       //eg WGS84
     public static final String COORDINATE_EN_CONVERGENCE = "coordinate_en_convergence" ; //
@@ -175,14 +173,18 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
 
     //create project table
-    private static final String CREATE_TABLE_COORDINATE_EN = "CREATE TABLE " + TABLE_COORDINATE_EN +"(" +
+    private static final String CREATE_TABLE_COORDINATE_EN = "CREATE TABLE " +
+            TABLE_COORDINATE_EN             + "("            +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COORDINATE_EN_PROJECT_ID        + " INTEGER, " +
-            COORDINATE_EN_POINT_ID          + " INTEGER, " +
-            COORDINATE_EN_ZONE              + " INTEGER, "   +
-            COORDINATE_EN_HEMISPHERE        + " TEXT, "      +
+            COORDINATE_ID                   + " INTEGER, "   +
+            COORDINATE_PROJECT_ID           + " INTEGER, "   +
+            COORDINATE_POINT_ID             + " INTEGER, "   +
+            COORDINATE_TYPE + " TEXT, "      +
             COORDINATE_EN_EASTING           + " REAL, "      +
             COORDINATE_EN_NORTHING          + " REAL, "      +
+            COORDINATE_EN_ELEVATION         + " REAL, "      +
+            COORDINATE_EN_ZONE              + " INTEGER, "   +
+            COORDINATE_EN_HEMISPHERE        + " TEXT, "      +
             COORDINATE_EN_LATBAND           + " TEXT, "      +
             COORDINATE_EN_DATUM             + " TEXT, "      +
             COORDINATE_EN_CONVERGENCE       + " REAL, "      +
@@ -196,17 +198,17 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /********    LL Coordinates        *******************/
     /*****************************************************/
 
-
-
-
     //Coordinate LL column names
-    public static final String COORDINATE_LL_PROJECT_ID        = "coordinate_ll_project_id";
-    public static final String COORDINATE_LL_POINT_ID          = "coordinate_ll_point_id";
+
+    //public static final String COORDINATE_ID                = "coordinate_id";
+    //public static final String COORDINATE_PROJECT_ID         = "coordinate_project_id";
+    //public static final String COORDINATE_POINT_ID           = "coordinate_point_id";
+    //public static final String COORDINATE_TYPE      = "coordinate_type";
     public static final String COORDINATE_LL_TIME              = "coordinate_ll_time";
-    public static final String COORDINATE_LL_LATITUDE         = "coordinate_ll_latitude";
-    public static final String COORDINATE_LL_LATITUDE_DEGREE  = "coordinate_ll_latitude_degree";
-    public static final String COORDINATE_LL_LATITUDE_MINUTE  = "coordinate_ll_latitude_minute";
-    public static final String COORDINATE_LL_LATITUDE_SECOND  = "coordinate_ll_latitude_second";
+    public static final String COORDINATE_LL_LATITUDE          = "coordinate_ll_latitude";
+    public static final String COORDINATE_LL_LATITUDE_DEGREE   = "coordinate_ll_latitude_degree";
+    public static final String COORDINATE_LL_LATITUDE_MINUTE   = "coordinate_ll_latitude_minute";
+    public static final String COORDINATE_LL_LATITUDE_SECOND   = "coordinate_ll_latitude_second";
     public static final String COORDINATE_LL_LONGITUDE         = "coordinate_ll_longitude";
     public static final String COORDINATE_LL_LONGITUDE_DEGREE  = "coordinate_ll_longitude_degree";
     public static final String COORDINATE_LL_LONGITUDE_MINUTE  = "coordinate_ll_longitude_minute";
@@ -217,10 +219,13 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
 
     //create project table
-    private static final String CREATE_TABLE_COORDINATE_LL = "CREATE TABLE " + TABLE_COORDINATE_LL +"(" +
+    private static final String CREATE_TABLE_COORDINATE_LL = "CREATE TABLE " +
+            TABLE_COORDINATE_LL             + "("          +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
-            COORDINATE_LL_PROJECT_ID        + " INTEGER, " +
-            COORDINATE_LL_POINT_ID          + " INTEGER, " +
+            COORDINATE_ID                   + " INTEGER, " +
+            COORDINATE_PROJECT_ID           + " INTEGER, " +
+            COORDINATE_POINT_ID             + " INTEGER, " +
+            COORDINATE_TYPE + " TEXT, "    +
             COORDINATE_LL_TIME              + " REAL"      +
             COORDINATE_LL_LATITUDE          + " REAL"      +
             COORDINATE_LL_LATITUDE_DEGREE   + " INTEGER"   +
@@ -253,7 +258,8 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String GLOBAL_DATA_NEXT_PROJECT_ID = "global_data_next_project_id";
 
     //create project table
-    private static final String CREATE_TABLE_GLOBAL_DATA = "CREATE TABLE " + TABLE_GLOBAL_DATA +"(" +
+    private static final String CREATE_TABLE_GLOBAL_DATA = "CREATE TABLE " +
+            TABLE_GLOBAL_DATA               + "("          +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             GLOBAL_DATA_ID                  + " INTEGER, " +
             GLOBAL_DATA_NEXT_PROJECT_ID     + " INTEGER, " +
@@ -274,7 +280,6 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /*****************************************************/
 
     private Context mContext;
-    private SQLiteDatabase mDatabase;
 
 
     /*****************************************************/
@@ -357,7 +362,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /* The same routine will do for all data types  */
     /************************************************/
 
-    //***************************8CREATE*************************************
+    //*************************** CREATE *************************************
     public void add(SQLiteDatabase db,
                     String   table,
                     String   nullColumnHack,
@@ -378,12 +383,12 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
                             String   orderBy){
         /********************************
          Cursor query (String table, //Table Name
-         String[] columns,   //Columns to return, null for all columns
-         String where_clause,
-         String[] selectionArgs, //replaces ? in the where_clause with these arguments
-         String groupBy, //null meanas no grouping
-         String having,   //row grouping
-         String orderBy)  //null means the default sort order
+                         String[] columns,   //Columns to return, null for all columns
+                         String where_clause,
+                         String[] selectionArgs, //replaces ? in the where_clause with these arguments
+                         String groupBy, //null meanas no grouping
+                         String having,   //row grouping
+                         String orderBy)  //null means the default sort order
          *********************************/
         return (db.query(table, columns, where_clause, selectionArgs, groupBy, having, orderBy));
     }
@@ -395,8 +400,11 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
                        ContentValues  cv,          //Column names and new values
                        String         where_clause,//null updates all rows
                        String[]       where_args ){ //values that replace ? in where clause
-        //update(String table, ContentValues values, String whereClause, String[] whereArgs)
-        //Any ? in the where_clause are replaced with arguments
+        //update  (String        table,
+                // ContentValues values,
+                // String        whereClause,
+                // String[]      whereArgs) //Any ? in the where_clause are replaced with arguments
+
         return (db.update(table, cv, where_clause, where_args));
     }
 
@@ -407,6 +415,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
                        String         where_clause,//null updates all rows
                        String[]       where_args ){ //values that replace ? in where clause
 
+        //Actually, this is just a pass through to the delete method
         return (delete(db, table, where_clause, where_args));
     }
 
@@ -424,6 +433,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /************************************************/
     /*      Object Specific CRUD routines           */
     /*     Each Class has it's own routine          */
+    /*     in it's manager                          */
     /************************************************/
 
 }

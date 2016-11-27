@@ -164,8 +164,8 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment implements GpsStatu
         }
 */
         if (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
-                != PackageManager.PERMISSION_GRANTED ||
-                ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED){return v;}
 
         mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
@@ -317,8 +317,8 @@ public void onNmeaReceived(long timestamp, String nmea) {
 
             //save the raw data
             //get the nmea container
-            Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
-            nmeaContainer.add(mNmeaData);
+            Prism4DNmeaManager nmeaManager = Prism4DNmeaManager.getInstance();
+            nmeaManager.add(mNmeaData);
         }
 
 

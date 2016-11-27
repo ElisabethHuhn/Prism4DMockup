@@ -25,6 +25,7 @@
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
+
         />
 
     <!-- Point ID -->
@@ -38,19 +39,64 @@
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
+
         />
 
-    <!-- Description -->
+    <!-- Easting 10-->
     <TextView
-        android:id="@+id/pointRowDescription"
+        android:id="@+id/pointRowEasting"
 
         android:layout_height="wrap_content"
         android:layout_width="0dp"
-        android:layout_weight="15"
+        android:layout_weight="10"
+        android:layout_marginEnd="8dp"
+
+        android:textColor="@color/colorTextBlack"
+        android:background="@color/colorWhite"
+
+        />
+
+    <!-- Northing 10-->
+    <TextView
+        android:id="@+id/pointRowNorthing"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="10"
+        android:layout_marginEnd="8dp"
+
+        android:textColor="@color/colorTextBlack"
+        android:background="@color/colorWhite"
+
+        />
+
+    <!-- Elevation 10-->
+    <TextView
+        android:id="@+id/pointRowElevation"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="10"
+        android:layout_marginEnd="8dp"
+
+        android:textColor="@color/colorTextBlack"
+        android:background="@color/colorWhite"
+
+        />
+
+
+    <!-- Feature Code -->
+    <TextView
+        android:id="@+id/pointRowFeatureCode"
+
+        android:layout_height="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="5"
         android:layout_marginEnd="16dp"
 
         android:textColor="@color/colorTextBlack"
         android:background="@color/colorWhite"
+
         />
 
 </LinearLayout>

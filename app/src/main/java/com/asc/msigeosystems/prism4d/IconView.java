@@ -7,7 +7,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 /**
- * Created by elisabethhuhn on 6/2/2016.
+ * Created by Elisabeth Huhn on 6/2/2016.
  */
 public class IconView extends BaseDataView {
 
@@ -31,9 +31,9 @@ public class IconView extends BaseDataView {
         mDataWrapper.setOrientation(HORIZONTAL);
         mDataWrapper.setBackgroundColor(YGPSConstants.dataviewTextFieldBgColor);
 
-        mDataWrapper.addView(mData, new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.FILL_PARENT,10000));
-        mDataWrapper.addView(mDummy, new LinearLayout.LayoutParams(0,LinearLayout.LayoutParams.FILL_PARENT,1));
-        addView(mDataWrapper, new LinearLayout.LayoutParams(LayoutParams.FILL_PARENT, LayoutParams.WRAP_CONTENT));
+        mDataWrapper.addView(mData, new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,10000));
+        mDataWrapper.addView(mDummy, new LinearLayout.LayoutParams(0, LayoutParams.MATCH_PARENT,1));
+        addView(mDataWrapper, new LinearLayout.LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
         addLegend();
     }
 

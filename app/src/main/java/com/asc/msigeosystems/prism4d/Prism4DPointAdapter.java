@@ -14,18 +14,20 @@ import java.util.List;
  * Created by Elisabeth Huhn on 5/15/2016.
  * patterned after Prism4DProjectAdapter
  * The Adapter manages the connection between
- *  - The data store of Projects (either in memory or on DB)
- *  - Lists of projects on the UI
+ *  - The data store of Points
+ *  - Lists of Point on the UI
  *
- *  Adapters follow a pattern which is defined in the design documents
+ *  Adapters follow a pattern. This adapter follows the pattern
  */
 public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapter.MyViewHolder> {
+    private static String no_coordinate = "No Location";
 
     private List<Prism4DPoint> mPointList;
 
     //implement the ViewHolder as an inner class
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        public TextView projectID, pointID, pointEasting, pointNorthing, pointElevation, pointDescription;
+        public TextView projectID,    pointID,
+                        pointEasting, pointNorthing, pointElevation, pointFeatureCode;
 
         public MyViewHolder(View v) {
             super(v);
@@ -33,9 +35,9 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
             projectID        = (TextView) v.findViewById(R.id.pointRowProjectID);
             pointID          = (TextView) v.findViewById(R.id.pointRowPointID);
             pointEasting     = (TextView) v.findViewById(R.id.pointRowEasting);
-            pointNorthing    = (TextView) v.findViewById(R.id.pointRowNorthing);
+            pointNorthing    = (TextView) v.findViewById(R.id.pointRowNorthing) ;
             pointElevation   = (TextView) v.findViewById(R.id.pointRowElevation);
-            pointDescription = (TextView) v.findViewById(R.id.pointRowDescription);
+            pointFeatureCode = (TextView) v.findViewById(R.id.pointRowFeatureCode);
         }
 
     } //end inner class MyViewHolder
@@ -73,15 +75,36 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
 
             holder.projectID       .setText(String.valueOf(point.getForProjectID()));
             holder.pointID         .setText(String.valueOf(point.getPointID()));
+            holder.pointFeatureCode.setText(point.getPointFeatureCode().toString());
 
-            holder.pointDescription.setText(point.getPointDescription().toString());
+            Prism4DCoordinate coordinate = point.getCoordinate();
+            if (coordinate == null){
+                holder.pointEasting.setText(no_coordinate);
+                holder.pointNorthing.setText(no_coordinate);
+                holder.pointElevation.setText(no_coordinate);
+            }else {
+                CharSequence coordinateType = coordinate.getCoordinateType();
+                if ((coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84)) ||
+                    (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83))){
+                    holder.pointEasting.setText(String.valueOf(((Prism4DCoordinateLL)coordinate).getLatitude()));
+                    holder.pointNorthing.setText(String.valueOf(((Prism4DCoordinateLL)coordinate).getLongitude()));
+                    holder.pointElevation.setText(String.valueOf(((Prism4DCoordinateLL)coordinate).getElevation()));
+                }else {
+                    holder.pointEasting.setText(String.valueOf(((Prism4DCoordinateEN)coordinate).getEasting()));
+                    holder.pointNorthing.setText(String.valueOf(((Prism4DCoordinateEN)coordinate).getNorthing()));
+                    holder.pointElevation.setText(String.valueOf(((Prism4DCoordinateEN)coordinate).getElevation()));
+                }
+            }
 
         } else {
 
             holder.projectID       .setText(R.string.no_points);
             holder.pointID         .setText("");
+            holder.pointFeatureCode.setText("");
+            holder.pointEasting.setText(no_coordinate);
+            holder.pointNorthing.setText(no_coordinate);
+            holder.pointElevation.setText(no_coordinate);
 
-            holder.pointDescription.setText("");
         }
 
     }

@@ -1,5 +1,6 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -11,6 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
+
+import java.util.ArrayList;
+
+import static android.R.id.message;
 
 /**
  * The Project Fragment is the UI
@@ -186,11 +191,8 @@ public class MainPrism4DTopProjectFragment extends Fragment {
                             new Prism4DPath(Prism4DPath.sShowTag));
                 }
 
-
-
-                ///for now, tell the user to go to maintain project screen
                 Toast.makeText(getActivity(),
-                        R.string.list_points_button_label,
+                        R.string.project_not_open_to_list_points,
                         Toast.LENGTH_LONG).show();
             }
         });
@@ -220,9 +222,12 @@ public class MainPrism4DTopProjectFragment extends Fragment {
             public void onClick(View v){
 
                 ///for now, just put up a toast that the button was pressed
+                /*
                 Toast.makeText(getActivity(),
                         R.string.exchange_button_label,
                         Toast.LENGTH_SHORT).show();
+                */
+                onExchange();
 
             }
         });
@@ -231,6 +236,54 @@ public class MainPrism4DTopProjectFragment extends Fragment {
 
         //FOOTER WIDGETS
 
+    }
+
+    private void onExchange(){
+        MainPrism4DActivity myActivity = (MainPrism4DActivity)getActivity();
+        Prism4DProject openProject = myActivity.getOpenProject();
+        if (openProject == null){
+            Toast.makeText(getActivity(),R.string.no_project_open,Toast.LENGTH_SHORT).show();
+            return;
+        }
+        ArrayList pointsList = openProject.getPoints();
+        if (pointsList == null){
+            Toast.makeText(getActivity(),R.string.no_points_in_project,Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        int last = pointsList.size();
+        if (last == 0){
+            Toast.makeText(getActivity(),R.string.no_points_in_project,Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        String subject = getString(R.string.exchange_subject) + " " + openProject.getProjectName();
+        String message = getString(R.string.email_message_prologue_1) +
+                         " "+ openProject.getProjectName() + " "+
+                         getString(R.string.email_message_prologue_2)+
+                         System.getProperty("line.separator")+
+                         System.getProperty("line.separator")+
+                         System.getProperty("line.separator");
+
+        message = message + openProject.convertToCDF() ;
+        message = message +
+                    System.getProperty("line.separator")+
+                    System.getProperty("line.separator")+
+                    System.getProperty("line.separator");
+
+        Prism4DPoint point;
+
+
+        for (int i = 0; i < last; i++) {
+            point = (Prism4DPoint) pointsList.get(i);
+            message = message + point.convertToCDF();
+        }
+
+        Intent emailApp = new Intent(Intent.ACTION_SEND);
+        emailApp.putExtra(Intent.EXTRA_SUBJECT, subject);
+        emailApp.putExtra(Intent.EXTRA_TEXT, message);
+        emailApp.setType("message/rfc822");
+        startActivity(Intent.createChooser(emailApp, "Send Email Via"));
     }
 }
 

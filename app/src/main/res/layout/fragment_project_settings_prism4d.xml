@@ -747,13 +747,32 @@
                     style="?android:attr/buttonBarButtonStyle"
                     android:id="@+id/resetDefaultsButton"
                     android:text="@string/reset_defaults_button_label"
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
 
+                    android:paddingStart="5dp"
+                    android:paddingEnd="5dp"
 
                     android:background="@color/colorGrayer"
                     android:textColor="@color/colorTextBlack"
-                    />
+                />
+
+
+                <Button
+                    style="?android:attr/buttonBarButtonStyle"
+                    android:id="@+id/exitButton"
+                    android:text="@string/exit_button_label"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+
+                    android:paddingStart = "5dp"
+                    android:paddingEnd   = "5dp"
+
+                    android:background="@color/colorGrayer"
+                    android:textColor="@color/colorTextBlack"
+                />
 
             </TableRow>
 

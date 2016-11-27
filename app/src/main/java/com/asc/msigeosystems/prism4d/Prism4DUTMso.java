@@ -1011,10 +1011,14 @@ public class Prism4DUTMso
         // ------------
 
         // round to reasonable precision of 6 decimal places - nanometer precision
-        BigDecimal bdx = new BigDecimal(mEasting).setScale(6, RoundingMode.HALF_UP);
+        BigDecimal bdx = new BigDecimal(mEasting).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mEasting = bdx.doubleValue();
 
-        BigDecimal bdy = new BigDecimal(mNorthing).setScale(6, RoundingMode.HALF_UP);
+        BigDecimal bdy = new BigDecimal(mNorthing).
+                                setScale(Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mNorthing = bdy.doubleValue(); // nm precision
 
 
@@ -1023,12 +1027,16 @@ public class Prism4DUTMso
         // toDegrees() converts a radians number to degrees
         // degrees = radians * (360 / 2 pi)
         double nuDegrees = nu * (360. / (2. * Math.PI));
-        BigDecimal bdConvergence = new BigDecimal(nuDegrees).setScale(9, RoundingMode.HALF_UP);
+        BigDecimal bdConvergence = new BigDecimal(nuDegrees).
+                                setScale(Prism4DConstantsAndUtilities.sNanometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mConvergence = bdConvergence.doubleValue();
 
 
         //report scale to 12 decimal places
-        BigDecimal bdScale = new BigDecimal(kappa).setScale(12, RoundingMode.HALF_UP);
+        BigDecimal bdScale = new BigDecimal(kappa).
+                                setScale(Prism4DConstantsAndUtilities.sPicometerDigitsOfPrecision,
+                                         RoundingMode.HALF_UP);
         mScale = bdScale.doubleValue();
 
 

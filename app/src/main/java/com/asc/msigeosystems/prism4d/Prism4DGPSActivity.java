@@ -1,7 +1,9 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 6/1/2016.
+ * Created by Elisabeth Huhn on 6/1/2016.
+ *
+ * GPS example
  */
 
 import android.Manifest;
@@ -294,7 +296,7 @@ public class Prism4DGPSActivity  extends Activity implements GpsStatus.Listener,
     @Override
     public void onNmeaReceived(long timestamp, String nmea) {
         //todo maybe need to do something with the timestamp
-        String tempString = nmea;
+        //String tempString = nmea; //debug. If you see this, remove it
         try {
             //create an object with all the fields from the string
             mNmeaData = mNmeaParser.parse(nmea);
@@ -305,8 +307,8 @@ public class Prism4DGPSActivity  extends Activity implements GpsStatus.Listener,
 
                 //save the raw data
                 //get the nmea container
-                Prism4DNmeaContainer nmeaContainer = Prism4DNmeaContainer.getInstance();
-                nmeaContainer.add(mNmeaData);
+                Prism4DNmeaManager nmeaManager = Prism4DNmeaManager.getInstance();
+                nmeaManager.add(mNmeaData);
             }
 
 
