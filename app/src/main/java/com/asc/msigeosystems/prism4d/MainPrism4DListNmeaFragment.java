@@ -190,6 +190,7 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
     @Override
     public void onResume() {
         super.onResume();
+        setSubtitle();
         //If we don't currently have permission, bail
         if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
                         != PackageManager.PERMISSION_GRANTED ||
@@ -236,14 +237,24 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
     public void onNmeaReceived (long timestamp, String nmea){
 
         //create an object with all the fields from the string
+        //The parser updates the satellite list.
         mNmeaData = mNmeaParser.parse(nmea);
         if (mNmeaData != null) {
-            mNmeaList.add(mNmeaData);
+
+            mNmeaList.add(0, mNmeaData);
+
             //mRecyclerView.getAdapter().notifyDataSetChanged();
             //notify item inserted rather than data set changed
             //why this makes a difference, I don't know. But the other doesn't scroll
+
+            //end of list
             mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
             mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount());
+
+            //start of list
+            //mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
+            //mRecyclerView.smoothScrollToPosition(0);
+
         }
 
 
@@ -345,6 +356,12 @@ public class MainPrism4DListNmeaFragment extends Fragment implements GpsStatus.L
 
 
     //************************ Utilities *************************//
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_list_nmea);
+    }
+
 
     //executed when an item in the list is selected
     private void onSelect(int position){

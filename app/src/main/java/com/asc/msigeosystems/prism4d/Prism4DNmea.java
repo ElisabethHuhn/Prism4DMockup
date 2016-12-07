@@ -4,7 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by elisabethhuhn on 5/15/2016.
+ * Created by Elisabeth Huhn on 5/15/2016.
+ * Represents a NMEA sentence
  */
 public class Prism4DNmea {
 
@@ -259,6 +260,44 @@ public class Prism4DNmea {
     public Prism4DNmea(CharSequence nmeaSentence) {
         //save the raw sentence
         mNmeaSentence = nmeaSentence;
+
+    }
+
+    public Prism4DNmea(){
+        initializeDefaultData();
+    }
+    private void initializeDefaultData(){
+        mNmeaType = "GPGGA"; //e.g. GLL, GGA, etc.
+        mTime = 0d ;//UTC time: milliseconds since 1/1/1970
+
+        //Position
+        mLatitude = 0d ;
+        mLongitude = 0d ;
+        mEllipsoidalElevation = 0d ;
+        mGeoid = 0d ;
+        mOrthometricElevation = 0d ;
+        mLocalization = 0d ;
+        mLocalNorthing = 0d ;
+        mLocalEasting = 0d ;
+        mLocalElevation = 0d ;
+
+        //Satellites in view information
+        mSatelliteStatus = 0;
+        mSatellites = 0;
+        //mSatelliteList = new ArrayList<>(); //already initialized above
+
+        //Quality of fix Information
+        mHdop = 0d ;
+        mVdop = 0d ;
+        mTdop = 0d ;
+        mPdop = 0d ;
+        mGdop = 0d ;
+        mHrms = 0d ;
+        mVrms = 0d ;
+
+
+        mQuality =0;
+        mFixed = false;
 
     }
 }

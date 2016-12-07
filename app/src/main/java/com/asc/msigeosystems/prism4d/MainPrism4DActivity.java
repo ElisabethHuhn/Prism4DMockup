@@ -16,6 +16,8 @@ import android.view.MenuItem;
 import com.asc.msigeosystems.prism4d.database.Prism4DDatabaseManager;
 import com.asc.msigeosystems.prism4dmockup.R;
 
+import java.util.ArrayList;
+
 import static com.asc.msigeosystems.prism4d.Prism4DPath.sDeleteTag;
 import static com.asc.msigeosystems.prism4d.Prism4DPath.sShowTag;
 import static com.asc.msigeosystems.prism4dmockup.R.string.action_cogo;
@@ -46,13 +48,16 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
     private static final String sHomeTag               = "HOME";//HOME screen fragment
 
+    private static final String sOpenProjectIDTag      = "OPEN_PROJECT_ID";
+    private static final String sCurrentFragmentTag    = "CURRENT_FRAGMENT";
+
     private static final String sProjectTopTag         = "PROJECT_TOP";
     private static final String sProjectCreateTag      = "PROJECT_CREATE_TOP";
     private static final String sProjectOpenTag        = "PROJECT_OPEN";
     //private static final String sProjectCopyTag        = "PROJECT_COPY";
     private static final String sProjectEditTag        = "PROJECT_EDIT";
     private static final String sProjectUpdateTag      = "PROJECT_UPDATE";
-    private static final String sProjectDeleteTag      = "PROJECT_DELETE";
+    //private static final String sProjectDeleteTag      = "PROJECT_DELETE";
     private static final String sProjectSettingsTag    = "PROJECT_SETTINGS";
 
     private static final String sPointTopTag           = "POINT_TOP";
@@ -60,7 +65,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
     private static final String sPointOpenTag          = "POINT_OPEN";
     private static final String sPointCopyTag          = "POINT_COPY";
     private static final String sPointEditTag          = "POINT_EDIT";
-    private static final String sPointUpdateTag        = "POINT_UPDATE";
+    //private static final String sPointUpdateTag        = "POINT_UPDATE";
     private static final String sPointDeleteTag        = "POINT_DELETE";
     private static final String sPointShowTag          = "POINT_SHOW";
     //private static final String sPointSettingsTag      = "POINT_SETTINGS";
@@ -100,8 +105,10 @@ public class MainPrism4DActivity extends AppCompatActivity {
     /**********   Member Variables  ****************************************/
     /***********************************************************************/
 
+    //Variables that need to be saved/restored on re-configure
     private int            mOpenProjectID;
     private Prism4DProject mOpenProject;
+    private String         mCurrentFragment;
 
 
 
@@ -123,7 +130,12 @@ public class MainPrism4DActivity extends AppCompatActivity {
         }
     }
 
-   public int  getOpenProjectID()                  { return mOpenProject.getProjectID(); }
+   public int  getOpenProjectID() {
+       if (mOpenProject != null) {
+           return mOpenProject.getProjectID();
+       }
+       return 0;
+   }
     public void setOpenProjectID(int openProjectID) { mOpenProjectID = openProjectID; }
 
     public String getOpenProjectIDMessage(){
@@ -145,6 +157,13 @@ public class MainPrism4DActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
+        //only need to do this stuff the first time through, not on reconfigure
+        //if (savedInstanceState == null) {
+
+
         setContentView(R.layout.activity_main_prism4_dmockup);
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -152,7 +171,6 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
 
         //set up fragments
-        android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
         Fragment fragment = fm.findFragmentById(R.id.fragment_container);
 
         if (fragment == null) {
@@ -160,7 +178,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
             // the fragment needs to be the home screen
             fragment = new MainPrism4DTopHomeFragment();
             fm.beginTransaction()
-                    .add(R.id.fragment_container, fragment)
+                    .add(R.id.fragment_container, fragment, sHomeTag)
                     .commit();
         }
 
@@ -174,6 +192,22 @@ public class MainPrism4DActivity extends AppCompatActivity {
         //initialize the database here for the whole application
         Prism4DDatabaseManager.initializeInstance(this);
 
+        //} //else {
+           /*
+           onRestoreInstanceState(savedInstanceState);
+            //We are returning from a reorientation, so do what is necessary to recreate
+           Fragment fragment =  fm.findFragmentByTag(mCurrentFragment);
+           if (!fragment.isInLayout()) {
+               //the fragment wasn't in the layout, so recreate it
+               fm.beginTransaction()
+                       .add(R.id.fragment_container, fragment, mCurrentFragment)
+                       .commit();
+           }
+
+       }
+ */
+
+
 /****************** For now, comment out the floating action button
  FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
  fab.setOnClickListener(new View.OnClickListener() {
@@ -184,6 +218,44 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 });
  ****************/
     }
+
+/*
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        int openProjectID = getOpenProjectID();
+
+        //IT's ok if there is no project open. ID will be zero in that case
+        outState.putInt(sOpenProjectIDTag, openProjectID);
+
+        outState.putString(sCurrentFragmentTag, mCurrentFragment);
+
+
+    }
+
+
+    //called when restoring state.
+    //only called if the bundle is not null
+    public void onRestoreInstanceState(Bundle savedInstanceState){
+        if (savedInstanceState != null){
+            //if there is no project open, the ID will be zero
+            int openProjectID = savedInstanceState.getInt(sOpenProjectIDTag);
+            mOpenProjectID = openProjectID;
+            if (openProjectID != 0) {
+                Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+
+                //getting a list of projects reads in  the DB
+                ArrayList<Prism4DProject> projectList = projectManager.getProjectList();
+                Prism4DProject openProject = projectManager.getProject(openProjectID);
+                setOpenProject(openProject);
+            }
+            mCurrentFragment = savedInstanceState.getString(sCurrentFragmentTag);
+        }
+
+    }
+
+
+*/
+
 
     private void GpsStuff() {
 
@@ -250,6 +322,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         }
     }
 
+    //Callbacks for permission requests
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            @NonNull String permissions[], @NonNull int[] grantResults) {
@@ -368,8 +441,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
 
-
-
     /**************************************************************************
      * The following methods switch the fragment being displayed by this activity
      * In the future, need to refactor. Seen BNR page 171 for suggestions
@@ -443,6 +514,10 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/20/16
      */
     private void switchScreen(Fragment toFragment, String tag) {
+
+        //save the current fragment tag
+        mCurrentFragment = tag;
+
         //Need the Fragment Manager to do the swap for us
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
 
@@ -1265,18 +1340,5 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
         return project;
     }
 
-    private Prism4DProject getProjectForCreate(){
-        Prism4DProject project = new Prism4DProject(Prism4DProject.sProjectNewName);
-        project.setProjectDescription(Prism4DProject.sProjectNewDesc);
-        return project;
-    }
-
-    private Prism4DPoint getPointForCreate(){
-        Prism4DPoint point = new Prism4DPoint(
-                                Prism4DPoint.sPointNewID);
-
-        point.setPointFeatureCode(Prism4DPoint.sPointNewDesc);
-        return point;
-    }
 
 }

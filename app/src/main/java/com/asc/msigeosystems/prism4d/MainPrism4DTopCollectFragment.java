@@ -81,6 +81,16 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle() {
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(R.string.subtitle_collect);
+    }
+
     private void wireWidgets(View v){
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
@@ -97,11 +107,21 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         mPointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Switch the fragment to the collect with maps fragment.
-                // But the switching happens on the container Activity
+                //Location source must also be defined
+                // TODO: 12/2/2016 define how location source will be identified in configurations
+                //Can only collect points if a project is open
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
+                Prism4DProject openProject = myActivity.getOpenProject();
+                if (openProject != null) {
+                    //Switch the fragment to the collect with maps fragment.
+                    // But the switching happens on the container Activity
                     myActivity.switchToCollectPointsScreen();
+                } else {
+                    //Tell the user a project must be open
+                    Toast.makeText(getActivity(),
+                                   R.string.collect_project_must_be_open,
+                                   Toast.LENGTH_SHORT)
+                            .show();
                 }
             }
         });

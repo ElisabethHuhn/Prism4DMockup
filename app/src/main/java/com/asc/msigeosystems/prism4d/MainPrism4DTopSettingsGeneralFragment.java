@@ -71,6 +71,15 @@ public class MainPrism4DTopSettingsGeneralFragment extends Fragment {
         return v;
     }
 
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity()).switchSubtitle(R.string.subtitle_general_settings);
+    }
+
     private void wireWidgets(View v){
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
@@ -185,8 +194,7 @@ public class MainPrism4DTopSettingsGeneralFragment extends Fragment {
             @Override
             public void onClick(View v){
 
-                //Intent intent = new Intent(getActivity(), com.asc.msigeosystems.prism4d.MainPrism4DCompassActivity.class);
-                //startActivity(intent);
+
             }
         });
 

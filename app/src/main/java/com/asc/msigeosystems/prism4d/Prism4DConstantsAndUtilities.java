@@ -1,6 +1,9 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.LocationManager;
 import android.support.v4.content.ContextCompat;
 import android.widget.EditText;
 
@@ -191,6 +194,8 @@ public class Prism4DConstantsAndUtilities {
 
         return true;
     }
+
+
 
 
 

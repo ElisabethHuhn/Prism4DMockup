@@ -51,7 +51,9 @@ public class Prism4DCoordinateWGS84 extends Prism4DCoordinateLL {
      *
      **********/
 
-    public Prism4DCoordinateWGS84(){super.initializeDefaultVariables();}
+    public Prism4DCoordinateWGS84(){
+        super.initializeDefaultVariables();
+    }
 
     public Prism4DCoordinateWGS84(double latitude, double longitude) {
 

@@ -110,6 +110,15 @@ public class MainPrism4DCompassFragment extends Fragment
         return v;
     }
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setSubtitle();
+    }
+
+
+
     private void wireWidgets(View v){
         //wire up the widgets
 
@@ -260,19 +269,43 @@ public class MainPrism4DCompassFragment extends Fragment
     /*************************************************************************/
     @Override
     public void onSensorChanged(SensorEvent event) {
+        /*
+        if (evt.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+            gravSensorVals = lowPass(evt.values.clone(), gravSensorVals);
+        } else if (evt.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
+            magSensorVals = lowPass(evt.values.clone(), magSensorVals);
+        }
+
+        if (gravSensorVals != null && magSensorVals != null) {
+            SensorManager.getRotationMatrix(RTmp, I, gravSensorVals, magSensorVals);
+            int rotation = Compatibility.getRotation(this);
+            if (rotation == 1) {
+                SensorManager.remapCoordinateSystem(RTmp, SensorManager.AXIS_X, SensorManager.AXIS_MINUS_Z, Rot);
+            } else {
+                SensorManager.remapCoordinateSystem(RTmp, SensorManager.AXIS_Y, SensorManager.AXIS_MINUS_Z, Rot);
+            }
+
+            SensorManager.getOrientation(Rot, results);
+            UIARView.azimuth = (float)(((results[0]*180)/Math.PI)+180);
+            UIARView.pitch = (float)(((results[1]*180/Math.PI))+90);
+            UIARView.roll = (float)(((results[2]*180/Math.PI)));
+            radarMarkerView.postInvalidate();
+        }
+        */
+
         boolean accelOrMagnetic = false;
 
         // get accelerometer data
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             // we need to use a low pass lowPassFilter to make data mSmoothed
-            mSmoothed = lowPassFilter(event.values, mGravity);
+            mSmoothed = lowPass(event.values, mGravity);
             mGravity[0] = mSmoothed[0];
             mGravity[1] = mSmoothed[1];
             mGravity[2] = mSmoothed[2];
             accelOrMagnetic = true;
 
         } else if (event.sensor.getType() == Sensor.TYPE_MAGNETIC_FIELD) {
-            mSmoothed = lowPassFilter(event.values, mGeomagnetic);
+            mSmoothed = lowPass(event.values, mGeomagnetic);
             mGeomagnetic[0] = mSmoothed[0];
             mGeomagnetic[1] = mSmoothed[1];
             mGeomagnetic[2] = mSmoothed[2];
@@ -312,7 +345,17 @@ public class MainPrism4DCompassFragment extends Fragment
     /*************************************************************************/
     /*          Utilities                                                    */
     /*************************************************************************/
+    static final float ALPHA = 0.15f;
 
+    protected float[] lowPass( float[] input, float[] output ) {
+        if ( output == null ) return input;
+        for ( int i=0; i<input.length; i++ ) {
+            output[i] = output[i] + ALPHA * (input[i] - output[i]);
+        }
+        return output;
+    }
+
+    //This is written for the accelerometer, but the algorithm is the same for the compass
     private float[] lowPassFilter(float[] eventValues, float[] pastValues ) {
         // alpha is calculated as t / (t + dT)
         // with t, the low-pass filter's time-constant

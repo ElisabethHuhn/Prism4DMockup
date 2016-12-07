@@ -1,10 +1,11 @@
 package com.asc.msigeosystems.prism4d;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
- * Created by elisabethhuhn on 5/18/2016.
+ * Created by Elisabeth Huhn on 5/18/2016.
  */
 public class Prism4DSatelliteManager {
 
@@ -25,9 +26,8 @@ public class Prism4DSatelliteManager {
 
         sSatelliteList = new ArrayList<>();
 
-        //This is where we would read the list from the database
-        //but for now, just make up some data
-        prepareSatelliteDataset();
+       //Get the satellite data from GPS
+        //prepareSatelliteDataset();
     }
 
 
@@ -57,6 +57,10 @@ public class Prism4DSatelliteManager {
         while (foundIt = removeSat(satellite)){};
 
         sSatelliteList.add(satellite);
+
+        //Then sort the list according to satellite ID
+        Collections.sort(sSatelliteList, new ComparatorOfSatellites());
+
 
     }
 

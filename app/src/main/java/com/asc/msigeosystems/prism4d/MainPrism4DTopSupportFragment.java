@@ -54,6 +54,23 @@ public class MainPrism4DTopSupportFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
+
+        return v;
+    }
+
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle() {
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(R.string.subtitle_support);
+    }
+
+    private void wireWidgets(View v){
 
         mManualsButton = (Button) v.findViewById(R.id.row1Button1);
         mManualsButton.setText(R.string.support_manuals_button_label);
@@ -233,7 +250,6 @@ public class MainPrism4DTopSupportFragment extends Fragment {
         //so we can ignore the footer for now
 
 
-        return v;
     }
 }
 

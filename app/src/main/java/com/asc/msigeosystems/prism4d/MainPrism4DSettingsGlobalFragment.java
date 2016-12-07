@@ -15,7 +15,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
  * for Global Settings for the app
  * Note that each of the other screens has the potential for
  * local settings which are not covered here
- * Created by elisabethhuhn on 5/1/2016.
+ * Created by Elisabeth Huhn on 5/1/2016.
  */
 public class MainPrism4DSettingsGlobalFragment extends Fragment {
 
@@ -56,7 +56,24 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
 
 
         //Wire up the UI widgets so they can handle events later
+        wireWidgets(v);
 
+        return v;
+    }
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_global_settings);
+    }
+
+    private void wireWidgets(View v){
         //Units Button
         mUnitsButton = (Button) v.findViewById(R.id.row1Button1);
         mUnitsButton.setText(R.string.setting_units_button_label);
@@ -214,8 +231,8 @@ public class MainPrism4DSettingsGlobalFragment extends Fragment {
         //so we can ignore the footer for now
 
 
-        return v;
     }
+
 }
 
 

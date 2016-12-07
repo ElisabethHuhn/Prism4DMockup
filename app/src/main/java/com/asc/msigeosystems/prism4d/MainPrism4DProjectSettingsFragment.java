@@ -132,6 +132,19 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
 
     }//end CreateView
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_project_settings);
+    }
+
+
     private void wireWidgets(View v){
 
         //Project ID

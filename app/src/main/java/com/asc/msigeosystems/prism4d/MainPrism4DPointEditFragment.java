@@ -267,11 +267,22 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
 
 
     /***********************************************************/
     /**********     Initialization                   ***********/
     /***********************************************************/
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_edit_point);
+    }
 
     private void wireWidgets(View v){
 
@@ -1063,28 +1074,13 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
 
 
-    private int getCoordinateTypeFromProject(){
+    private int getCoordinateTypeFromProject() {
         //show the data that came out of the input arguments bundle
         int projectID = mPointBeingMaintained.getForProjectID();
-
-        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        Prism4DProject project = projectManager.getProject(projectID);
-
-        CharSequence coordinateType = project.getProjectCoordinateType();
-
-        int returnCode = Prism4DCoordinate.sUNKWidgets;
-
-        if (!coordinateType.equals(null)){
-            if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84) ||
-                coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83) ){
-                returnCode = Prism4DCoordinate.sLLWidgets;
-            } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM) ||
-                       coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS) ){
-                returnCode = Prism4DCoordinate.sENWidgets;
-            }
-        }
-        return returnCode;
+        return Prism4DCoordinate.getCoordinateTypeFromProjectID(projectID);
     }
+
+
 
     private CharSequence getFullCoordTypeFromProject(){
         //show the data that came out of the input arguments bundle

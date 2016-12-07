@@ -183,6 +183,7 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment implements GpsStatu
     @Override
     public void onResume() {
         super.onResume();
+        setSubtitle();
         //If we don't currently have permission, bail
         if (
             ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
@@ -197,6 +198,14 @@ public class MainPrism4DGpsFromNmeaFragment extends Fragment implements GpsStatu
 
         setGpsStatus();
     }
+
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_gps_nmea);
+    }
+
+
 
     @Override
     public void onStop(){

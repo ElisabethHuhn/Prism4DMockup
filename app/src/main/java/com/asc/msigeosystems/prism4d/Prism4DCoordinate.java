@@ -44,6 +44,43 @@ public abstract class Prism4DCoordinate {
         return (int) (System.currentTimeMillis() & 0xfffffff);
     }
 
+    /*******************************************************************/
+    /*      Return codes are static int's:                             */
+    /*                       Prism4DCoordinate.sUNKWidgets             */
+    /*                       Prism4DCoordinate.sLLWidgets              */
+    /*                       Prism4DCoordinate.sENWidgets              */
+    /*******************************************************************/
+    public static int getCoordinateTypeFromProjectID(int projectID){
+
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(projectID);
+
+        CharSequence coordinateType = project.getProjectCoordinateType();
+
+        int returnCode = Prism4DCoordinate.sUNKWidgets;
+
+        if (!coordinateType.equals(null)){
+            if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84) ||
+                    coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83) ){
+                returnCode = Prism4DCoordinate.sLLWidgets;
+            } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM) ||
+                    coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS) ){
+                returnCode = Prism4DCoordinate.sENWidgets;
+            }
+        }
+        return returnCode;
+    }
+
+    public static CharSequence getCoordTypeFromProjectID(int projectID){
+
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(projectID);
+
+        return project.getProjectCoordinateType();
+
+    }
+
+
     /***********************************************************/
     /*****    Setters and Getters for common variables   *******/
     /***********************************************************/

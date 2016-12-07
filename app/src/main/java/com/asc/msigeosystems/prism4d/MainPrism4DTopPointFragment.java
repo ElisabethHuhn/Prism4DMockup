@@ -92,6 +92,17 @@ public class MainPrism4DTopPointFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle() {
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(R.string.subtitle_points);
+    }
+
+
     private void wireWidgets(View v){
 
 

@@ -155,6 +155,12 @@ public class MainPrism4DProjectEditFragment extends    Fragment
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
 
     /***********************************************************/
     /*****     Initialize                                *******/

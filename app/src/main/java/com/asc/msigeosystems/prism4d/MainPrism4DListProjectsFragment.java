@@ -105,6 +105,12 @@ public class MainPrism4DListProjectsFragment extends Fragment {
             return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
 
     /**********************************************************/
     //      Utility Functions used in handling events         //

@@ -19,7 +19,7 @@ import java.math.RoundingMode;
 /**
  * The Collect Fragment is the UI
  * when the user is making point measurements in the field
- * Created by elisabethhuhn on 4/13/2016.
+ * Created by Elisabeth Huhn on 4/13/2016.
  */
 public class MainPrism4DCoordConversionFragment extends Fragment {
 
@@ -82,6 +82,19 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
 
         return v;
     }
+
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_coordinate_conversion);
+    }
+
 
     private void wireWidgets(View v){
         //Wire up the UI widgets so they can handle events later
@@ -239,12 +252,13 @@ public class MainPrism4DCoordConversionFragment extends Fragment {
     private boolean convertStackOverflow() {
         try {
             //create a new WGS84 object from the Lat / Long coordinates
-            WGS84 latlong = new WGS84(mCoordinateWGS84.getLatitude(),
-                    mCoordinateWGS84.getLongitude());
+            Prism4DCoordinateWGS84 latlong = new Prism4DCoordinateWGS84(
+                                                                    mCoordinateWGS84.getLatitude(),
+                                                                    mCoordinateWGS84.getLongitude());
 
             //Now convert the coordinates into UTM
             //There is not very robust exception handling in this class
-            UTM utmCoordinates = new UTM(latlong);
+            Prism4DCoordinateUTM utmCoordinates = new Prism4DCoordinateUTM(latlong);
 
             mUtmSOOutput.setText(utmCoordinates.toString());
             return true;

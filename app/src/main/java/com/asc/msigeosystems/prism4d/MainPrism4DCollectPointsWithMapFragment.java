@@ -95,6 +95,15 @@ public class MainPrism4DCollectPointsWithMapFragment extends Fragment {
     }
 
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        ((MainPrism4DActivity)getActivity()).switchSubtitle(R.string.subtitle_collect_points);
+    }
+
+
+
+
     private void wireWidgets(View v) {
 
         //For now ignore the text view widgets, as this is just a mockup
@@ -110,10 +119,8 @@ public class MainPrism4DCollectPointsWithMapFragment extends Fragment {
 
                 //Switch the fragment to the collect without maps fragment.
                 // But the switching happens on the container Activity
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null){
-                    myActivity.switchToCollectPointsScreen();
-                }
+                ((MainPrism4DActivity) getActivity()).switchToCollectPointsScreen();
+
 
             }
         });

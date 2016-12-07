@@ -1,8 +1,15 @@
 package com.asc.msigeosystems.prism4d;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.pm.PackageManager;
+import android.location.GpsStatus;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -23,7 +30,10 @@ import java.util.List;
  * when the user can see the satellites visible to GPS
  * Created by Elisabeth Huhn on 5/15/2016.
  */
-public class MainPrism4DListSatellitesFragment extends Fragment {
+public class MainPrism4DListSatellitesFragment extends Fragment implements  GpsStatus.Listener,
+                                                                            LocationListener,
+                                                                            GpsStatus.NmeaListener{
+
 
     private static final String TAG = "LIST_PROJECTS_FRAGMENT";
     /**
@@ -45,6 +55,9 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
     private int                     mSelectedPosition;
 
     private CharSequence            mSatellitePath;
+    private LocationManager         mLocationManager;
+    private Prism4DNmea             mNmeaData;
+    private Prism4DNmeaParser       mNmeaParser = new Prism4DNmeaParser();
 
 
     /**********************************************************/
@@ -59,8 +72,6 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
     }
 
 
-
-
     //set up the recycler view
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,6 +84,17 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
         initializeRecyclerView(v);
 
         ((MainPrism4DActivity) getActivity()).switchSubtitle(getString(R.string.subtitle_list_satellites));
+
+        //turn on GPS and start listening for satellites
+        //Make sure we have the proper GPS permissions before starting
+        //If we don't currently have permission, bail
+        if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED)){return v;}
+
+        mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+
 
         return v;
     }
@@ -143,9 +165,161 @@ public class MainPrism4DListSatellitesFragment extends Fragment {
 
     }
 
+
+    /************************************************************************/
+    //                Fragment Lifecycle Functions                          //
+    /***********************************************************************/
+
+    //Ask for location events to start
+    @Override
+    public void onResume() {
+        super.onResume();
+        setSubtitle();
+
+        //If we don't currently have permission, bail
+        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+                ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED){return;}
+
+        //ask the Location Manager to start sending us updates
+        mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
+        //mLocationManager.addGpsStatusListener(this);
+        mLocationManager.addNmeaListener(this);
+
+        setGpsStatus();
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+    }
+
+    //Ask for location events to stop
+    @Override
+    public void onPause() {
+        super.onPause();
+        //If we don't currently have permission, bail
+        if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+                        != PackageManager.PERMISSION_GRANTED)){return;}
+
+        mLocationManager.removeGpsStatusListener(this);
+        //mLocationManager.removeUpdates(this);
+        mLocationManager.removeNmeaListener(this);
+    }
+
+
+    //*************** Listener Callback Routines *****************//
+    //        Called by OS when a Listener condition is met       //
+    //************************************************************//
+
+    /**********************************************************************/
+    /*           GPS NEMA Callback                                        */
+    /**********************************************************************/
+    @Override
+    public void onNmeaReceived (long timestamp, String nmea) {
+
+        //create an object with all the fields from the string
+        //The parser updataes the satellite list
+        mNmeaData = mNmeaParser.parse(nmea);
+        if (mNmeaData != null) {
+
+            int temp = 1; //so the debugger can stop somewhere
+            temp++;
+            //Actually need to check that this is a satellite sentence
+            temp++;
+            /*
+            mNmeaList.add(mNmeaData);
+                        */
+            mRecyclerView.getAdapter().notifyDataSetChanged();
+            //notify item inserted rather than data set changed
+            //why this makes a difference, I don't know. But the other doesn't scroll
+            mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
+            mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount());
+
+
+        }
+    }
+
+    /**********************************************************************/
+    /*           GPS Location Callbacks                                     */
+    /**********************************************************************/
+
+    @Override
+    public void onProviderDisabled(String provider) {
+        if (LocationManager.GPS_PROVIDER.equals(provider)){
+            setGpsStatus();
+        }
+    }
+
+    @Override
+    public void onProviderEnabled(String provider) {
+        if (LocationManager.GPS_PROVIDER.equals(provider)){
+            setGpsStatus();
+        }
+    }
+
+    @Override
+    public void onStatusChanged(String provider, int status, Bundle extras) {
+        if (!LocationManager.GPS_PROVIDER.equals(provider)){
+            return;
+        }
+        setGpsStatus();
+    }
+
+
+    //OS calls this callback when
+    // a change has been detected in GPS satellite status
+
+    /**********************************************************************/
+    /*           GPS Status Callback                                      */
+    /**********************************************************************/
+    // The state is one of:
+    //      GPS_EVENT_STARTED,
+    //      GPS_EVENT_STOPPED,
+    //      GPS_EVENT_FIRST_FIX ,
+    //      GPS_EVENT_SATELLITE_STATUS
+    @Override
+    public void onGpsStatusChanged(int state) {
+        setGpsStatus();
+    }
+
+    //OS calls this callback when the location has changed
+    /**********************************************************************/
+    /*           GPS Location Callback                                    */
+    /**********************************************************************/
+    @Override
+    public void onLocationChanged(Location loc) {
+
+    }
+
+
+
+    //*********************** End of Callbacks *******************//
+    //*********************** GPS Utilities *************************//
+
+
+    //Update the UI with satellite status info from GPS
+    protected void setGpsStatus(){
+        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
+            //for now, do nothing
+            //but leave the if stmt so we can set breakpoint
+        }
+    }
+
+
     /**********************************************************/
     //      Utility Functions used in handling events         //
     /**********************************************************/
+
+
+    private void setSubtitle(){
+        ((MainPrism4DActivity)getActivity())
+                .switchSubtitle(R.string.subtitle_list_satellites);
+    }
+
 
     //called from onClick(), executed when a satellite is selected
     private void onSelect(int position){

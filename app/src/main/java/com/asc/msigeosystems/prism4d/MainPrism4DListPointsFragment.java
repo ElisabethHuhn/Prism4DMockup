@@ -122,6 +122,13 @@ public class MainPrism4DListPointsFragment extends Fragment {
         return v;
     }
 
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle(mPointPath);
+
+    }
+
     private void wireWidgets(View v){
          //Need a header line for the list, but attributes of coordinate are different
         //depending upon the type of coordinate: Latitude/Longitude or Easting/Northing

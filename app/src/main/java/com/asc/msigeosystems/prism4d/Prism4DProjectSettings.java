@@ -1,7 +1,8 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 5/7/2016.
+ * Created by Elisabeth Huhn on 5/7/2016.
+ * Settings that govern how the App behaves
  */
 public class Prism4DProjectSettings {
 
@@ -34,157 +35,106 @@ public class Prism4DProjectSettings {
      * Setters and Getters
      *
      ********/
-    public int getmProjectID() {
+    public int getProjectID() {
         return mProjectID;
     }
-
-    public void setmProjectID(int mProjectID) {
-        this.mProjectID = mProjectID;
+    public void setProjectID(int projectID) {
+        this.mProjectID = projectID;
     }
 
-    public CharSequence getmDistanceUnits() {
+    public CharSequence getDistanceUnits() {
         return mDistanceUnits;
     }
+    public void setDistanceUnits(CharSequence distanceUnits) {this.mDistanceUnits = distanceUnits;}
 
-    public void setmDistanceUnits(CharSequence mDistanceUnits) {
-        this.mDistanceUnits = mDistanceUnits;
-    }
-
-    public CharSequence getmDecimalDisplay() {
+    public CharSequence getDecimalDisplay() {
         return mDecimalDisplay;
     }
+    public void setDecimalDisplay(CharSequence decimalDisplay) {mDecimalDisplay = decimalDisplay; }
 
-    public void setmDecimalDisplay(CharSequence mDecimalDisplay) {
-        this.mDecimalDisplay = mDecimalDisplay;
-    }
-
-    public CharSequence getmAngleUnits() {
+    public CharSequence getAngleUnits() {
         return mAngleUnits;
     }
+    public void setAngleUnits(CharSequence angleUnits) { mAngleUnits = angleUnits; }
 
-    public void setmAngleUnits(CharSequence mAngleUnits) {
-        this.mAngleUnits = mAngleUnits;
-    }
-
-    public CharSequence getmAngleDisplay() {
+    public CharSequence getAngleDisplay() {
         return mAngleDisplay;
     }
+    public void setAngleDisplay(CharSequence angleDisplay) { mAngleDisplay = angleDisplay; }
 
-    public void setmAngleDisplay(CharSequence mAngleDisplay) {
-        this.mAngleDisplay = mAngleDisplay;
-    }
-
-    public CharSequence getmGridDirection() {
+    public CharSequence getGridDirection() {
         return mGridDirection;
     }
+    public void setGridDirection(CharSequence gridDirection) { mGridDirection = gridDirection; }
 
-    public void setmGridDirection(CharSequence mGridDirection) {
-        this.mGridDirection = mGridDirection;
-    }
-
-    public double getmScaleFactor() {
+    public double getScaleFactor() {
         return mScaleFactor;
     }
+    public void setScaleFactor(double scaleFactor) {mScaleFactor = scaleFactor;   }
 
-    public void setmScaleFactor(double mScaleFactor) {
-        this.mScaleFactor = mScaleFactor;
-    }
-
-    public boolean ismSeaLevel() {
+    public boolean isSeaLevel() {
         return mSeaLevel;
     }
+    public void setSeaLevel(boolean seaLevel) { mSeaLevel = seaLevel;  }
 
-    public void setmSeaLevel(boolean mSeaLevel) {
-        this.mSeaLevel = mSeaLevel;
-    }
-
-    public boolean ismRefraction() {
+    public boolean isRefraction() {
         return mRefraction;
     }
+    public void setRefraction(boolean refraction) { mRefraction = refraction;}
 
-    public void setmRefraction(boolean mRefraction) {
-        this.mRefraction = mRefraction;
-    }
-
-    public CharSequence getmDatum() {
+    public CharSequence getDatum() {
         return mDatum;
     }
+    public void setDatum(CharSequence datum) { mDatum = datum; }
 
-    public void setmDatum(CharSequence mDatum) {
-        this.mDatum = mDatum;
-    }
-
-    public CharSequence getmProjection() {
+    public CharSequence getProjection() {
         return mProjection;
     }
+    public void setProjection(CharSequence projection) { mProjection = projection; }
 
-    public void setmProjection(CharSequence mProjection) {
-        this.mProjection = mProjection;
-    }
-
-    public CharSequence getmZone() {
+    public CharSequence getZone() {
         return mZone;
     }
+    public void setZone(CharSequence zone) {  mZone = zone; }
 
-    public void setmZone(CharSequence mZone) {
-        this.mZone = mZone;
-    }
-
-    public CharSequence getmCoordinateDisplay() {
+    public CharSequence getCoordinateDisplay() {
         return mCoordinateDisplay;
     }
-
-    public void setmCoordinateDisplay(CharSequence mCoordinateDisplay) {
-        this.mCoordinateDisplay = mCoordinateDisplay;
+    public void setCoordinateDisplay(CharSequence coordinateDisplay) {
+        mCoordinateDisplay = coordinateDisplay;
     }
 
-    public CharSequence getmGeoidModel() {
+    public CharSequence getGeoidModel() {
         return mGeoidModel;
     }
+    public void setGeoidModel(CharSequence geoidModel) { mGeoidModel = geoidModel; }
 
-    public void setmGeoidModel(CharSequence mGeoidModel) {
-        this.mGeoidModel = mGeoidModel;
-    }
-
-    public CharSequence getmStartingPointID() {
+    public CharSequence getStartingPointID() {
         return mStartingPointID;
     }
-
-    public void setmStartingPointID(CharSequence mStartingPointID) {
-        this.mStartingPointID = mStartingPointID;
+    public void setStartingPointID(CharSequence startingPointID) {
+        mStartingPointID = startingPointID;
     }
 
-    public boolean ismAlphanumeric() {
+    public boolean isAlphanumeric() {
         return mAlphanumeric;
     }
+    public void setAlphanumeric(boolean alphanumeric) { mAlphanumeric = alphanumeric; }
 
-    public void setmAlphanumeric(boolean mAlphanumeric) {
-        this.mAlphanumeric = mAlphanumeric;
-    }
-
-    public CharSequence getmFeatureCodes() {
+    public CharSequence getFeatureCodes() {
         return mFeatureCodes;
     }
+    public void setFeatureCodes(CharSequence featureCodes) { mFeatureCodes = featureCodes; }
 
-    public void setmFeatureCodes(CharSequence mFeatureCodes) {
-        this.mFeatureCodes = mFeatureCodes;
-    }
-
-    public CharSequence getmFCControlFile() {
+    public CharSequence getFCControlFile() {
         return mFCControlFile;
     }
+    public void setFCControlFile(CharSequence fcControlFile){mFCControlFile = fcControlFile;}
 
-    public void setmFCControlFile(CharSequence mFCControlFile) {
-        this.mFCControlFile = mFCControlFile;
-    }
-
-    public boolean ismFCTimeStamp() {
+    public boolean isFCTimeStamp() {
         return mFCTimeStamp;
     }
-
-    public void setmFCTimeStamp(boolean mFCTimeStamp) {
-        this.mFCTimeStamp = mFCTimeStamp;
-    }
+    public void setFCTimeStamp(boolean fcTimeStamp) {mFCTimeStamp = fcTimeStamp;}
 
     /*
      *

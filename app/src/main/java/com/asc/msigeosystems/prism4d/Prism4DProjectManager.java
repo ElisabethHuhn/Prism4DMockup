@@ -60,9 +60,6 @@ public class Prism4DProjectManager {
 
         //The DB isn't read in until the first time a project is accessed
 
-        // TODO: 8/28/2016 Remember to delete the canned data before release
-        //but for now, just make up some data
-        //prepareProjectDataset();
     }
 
 

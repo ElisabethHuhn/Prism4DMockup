@@ -31,17 +31,19 @@ import java.util.List;
  */
 public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsStatus.Listener, LocationListener, GpsStatus.NmeaListener {
 
-    private GpsStatus mGpsStatus = null;
     private static Prism4DNmeaParser mNmeaParser = new Prism4DNmeaParser();
-    int counter = 0;
-    private Prism4DNmea mNmeaData; //latest nmea sentence received
-    private LocationManager     mLocationManager;
-    private Location            mCurLocation;
+    private LocationManager          mLocationManager;
+    private Prism4DNmea              mNmeaData; //latest nmea sentence received
+    private GpsStatus                mGpsStatus = null;
+    private Location                 mCurLocation;
 
-    private boolean isMeanInProgress = false;
+    //Data that must survive a reconfigure
+            int     counter = 0;
+
+    private boolean isMeanInProgress   = false;
     private boolean isFirstPointInMean = false;
-    private boolean isLastPointInMean = false;
-    private boolean isGpsOn = true;
+    private boolean isLastPointInMean  = false;
+    private boolean isGpsOn            = true;
 
     private Prism4DCoordinateWGS84 mMeanCoordinateWGS84;
 
@@ -189,6 +191,11 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         super.onResume();
 
         startGps();
+        setSubtitle();
+    }
+
+    private void setSubtitle() {
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(R.string.subtitle_workflow);
     }
 
     @Override
@@ -258,10 +265,10 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
 
 
-//******************************************************************//
-//             Location Listener Callbacks                          //
-//            Called by the OS to handle GPS events                 //
-//******************************************************************//
+    //******************************************************************//
+    //             Location Listener Callbacks                          //
+    //            Called by the OS to handle GPS events                 //
+    //******************************************************************//
 
     // called when the GPS provider is turned off
     // (i.e. user turning off the GPS on the phone)
@@ -308,9 +315,9 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
 
     //******************************************************************//
-//             NMEA Listener Callbacks                              //
-//            Called by the OS to handle GPS events                 //
-//******************************************************************//
+    //             NMEA Listener Callbacks                              //
+    //            Called by the OS to handle GPS events                 //
+    //******************************************************************//
     @Override
     public void onNmeaReceived(long timestamp, String nmea) {
         //todo maybe need to do something with the timestamp

@@ -1,7 +1,8 @@
 package com.asc.msigeosystems.prism4d;
 
 /**
- * Created by elisabethhuhn on 5/7/2016.
+ * Created by Elisabeth Huhn on 5/7/2016.
+ * Represents a satellite from GPS data
  */
 public class Prism4DSatellite {
 

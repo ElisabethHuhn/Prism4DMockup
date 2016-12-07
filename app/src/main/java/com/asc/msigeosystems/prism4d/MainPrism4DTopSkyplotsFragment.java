@@ -67,6 +67,19 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         return v;
     }
 
+
+    @Override
+    public void onResume(){
+        super.onResume();
+        setSubtitle();
+    }
+
+    private void setSubtitle() {
+        ((MainPrism4DActivity) getActivity()).switchSubtitle(R.string.subtitle_skyplots);
+    }
+
+
+
     private void wireWidgets(View v){
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
