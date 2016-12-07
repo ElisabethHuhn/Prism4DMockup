@@ -742,41 +742,50 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
 
         //   o Get the next Test Data Point
         Prism4DTestLocationDataManager testLocationDataManager = Prism4DTestLocationDataManager.getInstance();
-        testLocationDataManager.get(mTestDataCounter);
+        mTestData = testLocationDataManager.get(mTestDataCounter);
         mTestDataCounter++;
         if (mTestDataCounter >= mTestDataMax)mTestDataCounter = 0;
 
         //Convert the Test Data Point to GPS digital degrees
-        Prism4DCoordinateWGS84 wgsCoordinate =
-                    new Prism4DCoordinateWGS84(mTestData.getLatitudeDegrees(),
-                                               mTestData.getLatitudeMinutes(),
-                                               mTestData.getLatitudeSeconds(),
-                                               mTestData.getLongitudeDegrees(),
-                                               mTestData.getLongitudeMinutes(),
-                                               mTestData.getLatitudeSeconds());
-        if (!wgsCoordinate.isValidCoordinate()){
+        if (mTestData == null) {
             startGps();
-            Toast.makeText(getActivity(),R.string.test_data_invalid,Toast.LENGTH_SHORT).show();
+            Toast.makeText(getActivity(), R.string.test_data_invalid, Toast.LENGTH_SHORT).show();
             throw new RuntimeException(getString(R.string.test_data_invalid));
+
+        } else {
+            Prism4DCoordinateWGS84 wgsCoordinate =
+                    new Prism4DCoordinateWGS84(mTestData.getLatitudeDegrees(),
+                            mTestData.getLatitudeMinutes(),
+                            mTestData.getLatitudeSeconds(),
+                            mTestData.getLongitudeDegrees(),
+                            mTestData.getLongitudeMinutes(),
+                            mTestData.getLatitudeSeconds());
+            wgsCoordinate.setElevation(mTestData.getElevation());
+            if (!wgsCoordinate.isValidCoordinate()) {
+                startGps();
+                Toast.makeText(getActivity(), R.string.test_data_invalid, Toast.LENGTH_SHORT).show();
+                throw new RuntimeException(getString(R.string.test_data_invalid));
+            }
+
+            //update the screen with the location
+            //build a nmeaData with the TestData location
+            mNmeaData = new Prism4DNmea();
+            //mNmeaData.setNmeaType("GGA");//set to GPGGA when initialized
+            mNmeaData.setLatitude(wgsCoordinate.getLatitude());
+            mNmeaData.setLongitude(wgsCoordinate.getLongitude());
+            mNmeaData.setOrthometricElevation(wgsCoordinate.getElevation());
+
+            //double check conversion to northing/easting
+            Prism4DCoordinateUTM utmCoordinate = new Prism4DCoordinateUTM(wgsCoordinate);
+            double tempTestNorthing = mTestData.getNorthing();
+            double tempUTMNorthing = utmCoordinate.getNorthing();
+            double tempTestEasting = mTestData.getEasting();
+            double tempUTMEasting = utmCoordinate.getEasting();
+
+            int temp = 0;
+            //update screen with the faked nmea data
+            updateNmeaUI(mNmeaData);
         }
-
-        //update the screen with the location
-        //build a nmeaData with the TestData location
-        mNmeaData = new Prism4DNmea();
-        //mNmeaData.setNmeaType("GGA");//set to GPGGA when initialized
-        mNmeaData.setLatitude(wgsCoordinate.getLatitude());
-        mNmeaData.setLongitude(wgsCoordinate.getLongitude());
-
-        //double check conversion to northing/easting
-        Prism4DCoordinateUTM utmCoordinate = new Prism4DCoordinateUTM(wgsCoordinate);
-        double tempTestNorthing = mTestData.getNorthing();
-        double tempUTMNorthing  = utmCoordinate.getNorthing();
-        double tempTestEasting  = mTestData.getEasting();
-        double tempUTMEasting   = utmCoordinate.getEasting();
-
-        int temp = 0;
-        //update screen with the faked nmea data
-        updateNmeaUI(mNmeaData);
 
 
     }
