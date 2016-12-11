@@ -64,22 +64,14 @@ public class Prism4DCoordinateWGS84 extends Prism4DCoordinateLL {
     }
 
 
-    public Prism4DCoordinateWGS84(int latitudeDegree,
-                                  int latitudeMinute,
-                                  double latitudeSecond,
-                                  int longitudeDegree,
-                                  int longitudeMinute,
-                                  double longitudeSecond) {
+    public Prism4DCoordinateWGS84(int latitudeDegree,  int latitudeMinute,  double latitudeSecond,
+                                  int longitudeDegree, int longitudeMinute, double longitudeSecond){
 
         //initialize all variables to their defaults
         super.initializeDefaultVariables();
 
-        latLongDMS( latitudeDegree,
-                    latitudeMinute,
-                    latitudeSecond,
-                    longitudeDegree,
-                    longitudeMinute,
-                    longitudeSecond);
+        latLongDMS( latitudeDegree,  latitudeMinute,  latitudeSecond,
+                    longitudeDegree, longitudeMinute, longitudeSecond);
     }
 
     public Prism4DCoordinateWGS84(CharSequence latitudeString, CharSequence longitudeString) {

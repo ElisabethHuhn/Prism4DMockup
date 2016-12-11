@@ -250,11 +250,14 @@ public class MainPrism4DListProjectsFragment extends Fragment {
 
                 /***************************  OPEN   ***************************/
                 if (mProjectPath.equals(Prism4DPath.sOpenTag)){
+                    Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+
                     //Save the opened project id up in the Activity
-                    myActivity.setOpenProject  (mSelectedProject);
+                    constantsAndUtilities.setOpenProject  (mSelectedProject);
 
                     Toast.makeText(getActivity(),
-                                   myActivity.getOpenProjectIDMessage(),
+                                   constantsAndUtilities.getOpenProjectIDMessage(getActivity()),
                                    Toast.LENGTH_SHORT).show();
 
                     //switch back to the Home Screen
@@ -327,10 +330,13 @@ public class MainPrism4DListProjectsFragment extends Fragment {
         Prism4DProjectAdapter myAdapter = (Prism4DProjectAdapter) mRecyclerView.getAdapter();
         myAdapter.removeItem(mSelectedPosition);
 
-        MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-        int openProjectID = myActivity.getOpenProjectID();
+        Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+
+        int openProjectID = constantsAndUtilities.getOpenProjectID();
         if (openProjectID == mSelectedProject.getProjectID()){
-            myActivity.setOpenProject(null);
+
+            constantsAndUtilities.setOpenProject(null);
         }
 
 
@@ -340,7 +346,7 @@ public class MainPrism4DListProjectsFragment extends Fragment {
                 message,
                 Toast.LENGTH_SHORT).show();
 
-         myActivity.popToTopProjectScreen();
+        ((MainPrism4DActivity) getActivity()).popToTopProjectScreen();
 
     }
 

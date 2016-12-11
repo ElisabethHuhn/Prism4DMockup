@@ -1,6 +1,8 @@
 package com.asc.msigeosystems.prism4d;
 
 import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -72,6 +74,7 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
     private static final String sCollectTopTag         = "COLLECT_TOP";
     private static final String sCollectPointsTag      = "COLLECT_POINTS";
+    public  static final int    sCollectPointsRequestCode  = 1;
     private static final String sCollectPointsMapTag   = "COLLECT_POINTS_MAP";
 
     private static final String sStakeoutTopTag        = "STAKEOUT_TOP";
@@ -99,6 +102,10 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
     private static final String sConversionTag         = "CONVERSION";
 
+    public static final String sDestinationFragmentKey = "DESTINATION_KEY";
+    public static final String sPopToBackStackTag     = "POP_TO_BACKSTACK";
+
+
 
 
     /***********************************************************************/
@@ -106,8 +113,6 @@ public class MainPrism4DActivity extends AppCompatActivity {
     /***********************************************************************/
 
     //Variables that need to be saved/restored on re-configure
-    private int            mOpenProjectID;
-    private Prism4DProject mOpenProject;
     private String         mCurrentFragment;
 
 
@@ -120,36 +125,6 @@ public class MainPrism4DActivity extends AppCompatActivity {
     /**********   Setters and Getters  *************************************/
     /***********************************************************************/
 
-    public Prism4DProject getOpenProject() {return mOpenProject; }
-    public void           setOpenProject(Prism4DProject openProject) {
-        mOpenProject = openProject;
-        if (mOpenProject != null) {
-            mOpenProjectID = openProject.getProjectID();
-        } else {
-            mOpenProjectID = 0;
-        }
-    }
-
-   public int  getOpenProjectID() {
-       if (mOpenProject != null) {
-           return mOpenProject.getProjectID();
-       }
-       return 0;
-   }
-    public void setOpenProjectID(int openProjectID) { mOpenProjectID = openProjectID; }
-
-    public String getOpenProjectIDMessage(){
-        if (mOpenProject != null){
-            //A project is open
-            return getString(R.string.project_opened_1) + " " +
-                    String.valueOf(getOpenProjectID())  + " " +
-                    getOpenProject().getProjectName()   + " " +
-                    getString(R.string.project_opened_2);
-        } else {
-            return getString(R.string.no_project_open);
-        }
-
-    }
 
     /***********************************************************************/
     /**********   Lifecycle Methods  ***************************************/
@@ -450,6 +425,34 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      ****************************************************************************/
 
 
+    /**********************************************************************
+     * Screen switching as a result of response from invoked Activity
+     **********************************************************************/
+
+    //This method is invoked when a child Activity sends back a response
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent dataIntent) {
+        super.onActivityResult(requestCode, resultCode, dataIntent);
+        switch(requestCode) {
+            case (sCollectPointsRequestCode) : {
+                if (resultCode == Activity.RESULT_OK) {
+                    if (dataIntent != null) {
+                        // TODO Extract the data returned from the child Activity.
+                        String destinationTag = dataIntent.getStringExtra(sDestinationFragmentKey);
+                        if (!destinationTag.isEmpty()){
+                            if (destinationTag.equals(sPopToBackStackTag)){
+                                switchToPopBackstack();
+                            }
+
+                        }
+                    }
+                }
+                break;
+            }
+        }
+    }
+
+
     /******
      * Order of the screens is:
      * Home
@@ -467,9 +470,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     /*******************************************
      * Screen switching utilities
      *******************************************/
-
-
-
 
     /***
      * Switch to the fragment that is on the top of the backstack
@@ -969,7 +969,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
     }
 
     /****
-     * Method to switch fragment to top level collect screen
+     * Method to switch fragment to  collect points screen
      * EMH 4/13/16
      */
     public void switchToCollectPointsScreen(){
@@ -979,23 +979,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 
         switchScreen(fragment, tag);
 
-
-    }
-
-
-    /****
-     * Method to switch fragment to top level collect screen
-     *                      with map behind the drawing area
-     * EMH 4/13/16
-     */
-    public void switchToCollectPointsWithMapScreen(){
-
-        Fragment fragment = new MainPrism4DCollectPointsWithMapFragment();
-        String tag        = sCollectPointsMapTag;
-        int subTitle      = R.string.action_measure_points;
-
-        switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
 
     }
 

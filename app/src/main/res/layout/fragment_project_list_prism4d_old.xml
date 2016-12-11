@@ -145,7 +145,7 @@
     </HorizontalScrollView>
 
     <!-- Only buttons in the Footer on the Projects list page -->
-    <!-- <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/> -->
+    <!-- <include layout="@layout/element_footer_buttons_inclusion_prism4d"/> -->
 
 </ScrollView>
 

@@ -108,7 +108,9 @@ public class MainPrism4DTopPointFragment extends Fragment {
 
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
-        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                      Prism4DConstantsAndUtilities.getInstance();
+        mScreenLabel.setText(constantsAndUtilities.getOpenProjectIDMessage(getActivity()));
         int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
         mScreenLabel.setBackgroundColor(color);
 

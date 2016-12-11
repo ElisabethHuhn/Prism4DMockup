@@ -656,8 +656,6 @@
 
     </LinearLayout>
 
-    <!-- The Footer will be as standard as possible -->
-    <!--  <include layout="@layout/fragment_footer_inclusion_prism4d"/>  -->
 
 </ScrollView>
 

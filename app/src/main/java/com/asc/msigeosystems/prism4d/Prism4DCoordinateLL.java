@@ -154,7 +154,7 @@ public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
         String tudeMString = tudeMInput.getText().toString().trim();
         String tudeSString = tudeSInput.getText().toString().trim();
 
-        if ((tudeDString == null)||(tudeDString == "")){
+        if (tudeDString.isEmpty()){
             tudeDString = context.getString(R.string.zero_decimal_string);
         }
 
@@ -402,12 +402,9 @@ public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
         mValidCoordinate = convertDDToDMS ();
     }
 
-    protected void latLongDMS(int latitudeDegree,
-                              int latitudeMinute,
-                              double latitudeSecond,
-                              int longitudeDegree,
-                              int longitudeMinute,
-                              double longitudeSecond) {
+    protected void latLongDMS(int latitudeDegree,  int latitudeMinute,  double latitudeSecond,
+                              int longitudeDegree, int longitudeMinute, double longitudeSecond) {
+
         this.mLatitudeDegree = latitudeDegree;
         this.mLatitudeMinute = latitudeMinute;
         this.mLatitudeSecond = latitudeSecond;
@@ -489,8 +486,7 @@ public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
 
         //strip out the decimal parts of mLatitude
         mLatitudeDegree = (int) mLatitude;
-        int temp = mLatitudeDegree;
-        double degree = temp;
+        double degree = mLatitudeDegree;
 
         //digital degrees minus degrees will be decimal minutes plus seconds
         //converting to int strips out the seconds

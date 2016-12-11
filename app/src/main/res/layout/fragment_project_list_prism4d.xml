@@ -1,4 +1,4 @@
-<ScrollView
+<HorizontalScrollView
     xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:tools   = "http://schemas.android.com/tools"
     tools:context = "com.asc.msigeosystems.prism4d.MainPrism4DActivity"
@@ -11,13 +11,10 @@
     android:orientation=  "vertical"
     >
 
-    <HorizontalScrollView
-        android:layout_width  = "match_parent"
-        android:layout_height = "wrap_content"
-        >
-        <LinearLayout
+
+    <LinearLayout
             android:layout_width  = "wrap_content"
-            android:layout_height = "wrap_content"
+            android:layout_height = "match_parent"
             android:orientation   = "vertical"
             >
 
@@ -46,7 +43,7 @@
             <!-- rest of the screen -->
             <LinearLayout
                 android:orientation=  "vertical"
-                android:layout_width= "wrap_content"
+                android:layout_width= "match_parent"
                 android:layout_height="match_parent"
                 >
                 <!-- title line, must match data_project_list_row.xml -->
@@ -122,7 +119,7 @@
                 </LinearLayout>
 
                 <!--recycler view for the list of projects-->
-                <LinearLayout
+                <ScrollView
                     android:layout_width= "match_parent"
                     android:layout_height="match_parent"
                     android:fillViewport= "true"
@@ -137,17 +134,17 @@
 
                     </android.support.v7.widget.RecyclerView>
 
-                </LinearLayout>
+                </ScrollView>
 
             </LinearLayout>
 
         </LinearLayout>
-    </HorizontalScrollView>
+
 
     <!-- Only buttons in the Footer on the Projects list page -->
-    <!-- <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/> -->
+    <!-- <include layout="@layout/element_footer_buttons_inclusion_prism4d"/> -->
 
-</ScrollView>
+</HorizontalScrollView>
 
 
 

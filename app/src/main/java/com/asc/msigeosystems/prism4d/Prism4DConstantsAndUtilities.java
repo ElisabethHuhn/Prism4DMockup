@@ -11,6 +11,7 @@ import com.asc.msigeosystems.prism4dmockup.R;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.util.ArrayList;
 
 /**
  * Created by Elisabeth Huhn on 6/13/2016.
@@ -112,6 +113,38 @@ public class Prism4DConstantsAndUtilities {
      *
      **********/
 
+    /************************************/
+    /********* Static Constants *********/
+    /************************************/
+
+
+    /************************************/
+    /********* Static Variables *********/
+    /************************************/
+    private static Prism4DConstantsAndUtilities ourInstance ;
+
+
+    /************************************/
+    /********* Member Variables *********/
+    /************************************/
+
+    private Prism4DProject mOpenProject;
+
+
+
+    /************************************/
+    /********* Static Methods   *********/
+    /************************************/
+    public static Prism4DConstantsAndUtilities getInstance() {
+        if (ourInstance == null){
+            ourInstance = new Prism4DConstantsAndUtilities();
+
+        }
+        return ourInstance;
+    }
+
+
+
     public static double convertMetersToFeet(double meters) {
         //function converts Feet to Meters.
         //truncate to a reasonable number of decimal digits
@@ -193,6 +226,44 @@ public class Prism4DConstantsAndUtilities {
         }
 
         return true;
+    }
+
+
+
+    /************************************/
+    /********* Constructors     *********/
+    /************************************/
+    private Prism4DConstantsAndUtilities() {
+
+    }
+
+
+    /************************************/
+    /********* Setters/Getters  *********/
+    /************************************/
+
+
+    public Prism4DProject getOpenProject() {return mOpenProject; }
+    public void           setOpenProject(Prism4DProject openProject) {mOpenProject = openProject; }
+
+    public int  getOpenProjectID() {
+        if (mOpenProject != null) {
+            return mOpenProject.getProjectID();
+        }
+        return 0;
+    }
+
+    public String getOpenProjectIDMessage(Context context){
+        if (mOpenProject != null){
+            //A project is open
+            return context.getString(R.string.project_opened_1) + " " +
+                    String.valueOf(getOpenProjectID())  + " " +
+                    getOpenProject().getProjectName()   + " " +
+                    context.getString(R.string.project_opened_2);
+        } else {
+            return context.getString(R.string.no_project_open);
+        }
+
     }
 
 

@@ -76,7 +76,9 @@ public class MainPrism4DTopCogoFragment extends Fragment {
     private void wireWidgets(View v){
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
-        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+        mScreenLabel.setText(constantsAndUtilities.getOpenProjectIDMessage(getActivity()));
         int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
         mScreenLabel.setBackgroundColor(color);
 
@@ -91,15 +93,16 @@ public class MainPrism4DTopCogoFragment extends Fragment {
             public void onClick(View v) {
 
                 //A project must be open to add points to it
-                MainPrism4DActivity myActivity = (MainPrism4DActivity)getActivity();
-                Prism4DProject project = myActivity.getOpenProject();
+                Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+                Prism4DProject project = constantsAndUtilities.getOpenProject();
                 if (project == null){
                     //Tell the user that a project must be open first
                     Toast.makeText(getActivity(),
                             R.string.cogo_project_must_be_open,
                             Toast.LENGTH_SHORT).show();
                 } else {
-                    myActivity.switchToPointCreateScreen(project);
+                    ((MainPrism4DActivity)getActivity()).switchToPointCreateScreen(project);
                 }
             }
         });

@@ -12,6 +12,7 @@ import android.location.LocationManager;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,93 +23,127 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.MapView;
+import com.google.android.gms.maps.OnMapReadyCallback;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.maps.model.Polyline;
+import com.google.android.gms.maps.model.PolylineOptions;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+
+
 
 /**
  * The Collect Fragment is the UI
  * when the user is making point measurements in the field
  * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DCollectPointsFragment extends Fragment implements GpsStatus.Listener,
+public class MainPrism4DCollectPointsFragment extends Fragment implements //OnMapReadyCallback,
+                                                                          GpsStatus.Listener,
                                                                           LocationListener,
                                                                           GpsStatus.NmeaListener {
 
-    /**
-     * Create variables for all the widgets
-     *  although in the mockup, most will be statically defined in the xml
-     */
+    private static String TAG = "CollectPointsFragment";
 
-
-    //Buttons on left margin of screen
-    private Button mMapsButton;
+    /*******************************************/
+    /****     variables for UI widgets      ****/
+    /*******************************************/
+    //Buttons to activate UI stuff
     private Button mPictureButton;
     private Button mNotesButton;
 
-    //Widgets below drawing area
+    //Widgets dealing with the map
+    private Button      mMapsButton;
     private ImageButton mZoomInButton;
     private ImageButton mZoomOutButton;
     private ImageButton mZoomExtButton;
-    private TextView mScaleFactorField;
+    private TextView    mScaleFactorField;
 
-    //Widgets to left of drawing area
-    private Button mCurrentPositionButton;
+    //Widgets dealing with location and creation of points
+    private Button   mCurrentPositionButton;
     private TextView mPointIDField;
     private TextView mCurrentNorthingPositionField;
     private TextView mCurrentEastingPositionField;
     private TextView mCurrentElevationField;
     private EditText mCurrentFunctionCodeField;
     private EditText mCurrentHeightField;
-    private Button mStorePositionButton;
-    private Button mOffsetPositionButton;
-    private Button mAveragePositionButton;
+    private Button   mStorePositionButton;
+    private Button   mOffsetPositionButton;
+    private Button   mAveragePositionButton;
 
 
     //footer
     //footer left button
-    private Button mEscButton;
+    private Button   mEscButton;
     //footer row 1
     private TextView mCurrentProjectField;
     //footer row 2
     private TextView mModelField;
     private TextView mSnField;
     //footer row 3
-    private TextView mTrackingField;
-    private TextView mModeField;
-    //footer row 4
     private TextView mHdopField;
+    private TextView mHrmsField;
+    //footer row 4
     private TextView mVdopField;
+    private TextView mVrmsField;
     //footer row 5
-    private TextView mRmsField;
     private TextView mPdopField;
+    private TextView mGdopField;
     //footer right button
-    private Button mEnterButton;
+    private Button   mEnterButton;
 
 
+    /*******************************************/
+    /****     variables for processing      ****/
+    /*******************************************/
+
+    //variables needed to keep track of location
     private LocationManager     mLocationManager;
     private Location            mCurLocation;
     private Prism4DNmea         mNmeaData;     //latest nmea sentence received
     private Prism4DNmeaParser   mNmeaParser = new Prism4DNmeaParser();
     private GpsStatus           mGpsStatus = null;
+    private boolean             isGpsOn = true;
 
 
+    //variables for the meaning process
     private boolean isMeanInProgress = false;
     private boolean isFirstPointInMean = false;
     private boolean isLastPointInMean = false;
-    private boolean isGpsOn = true;
 
 
-
+    //Coordinates and Points variablese
     private Prism4DCoordinateWGS84 mMeanCoordinateWGS84;
-
     private List<Prism4DCoordinateWGS84> mMeanWgs84List;
 
     //Test Data
     private int                     mTestDataCounter = 0;
     private Prism4DTestLocationData mTestData;
     private int                     mTestDataMax = 13;
+
+
+    //variables for the map
+
+    private MapView      mMapView;
+    private GoogleMap    mMap;
+    private float        mMapZoom;
+    private LatLng       mLastPoint;
+    private int          mPointsPlotted;
+
+    private PolylineOptions mLineContainer;
+    private Polyline        myLine;
+
+    private LatLngBounds.Builder mZoomBuilder;
+    private LatLngBounds         mZoomBounds;
+
 
 
     /**********************************************************************/
@@ -130,11 +165,17 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
         //Inflate the layout for this fragment
         View v = inflater.inflate(R.layout.fragment_collect_points_prism4d, container, false);
 
+        //update the view with the mapsView
+       // addMapsView(v);
+        //and then initialize it
+        initializeMaps(savedInstanceState, v);
 
-        //Wire up the UI widgets so they can handle events later
+        //Wire up the other UI widgets so they can handle events later
         wireWidgets(v);
 
-        CharSequence projectName = ((MainPrism4DActivity)getActivity()).getOpenProject().getProjectName();
+        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
+        CharSequence projectName = constantsAndUtilities.getOpenProject().getProjectName();
+
         //Inform the user of the name of the open project
         mCurrentProjectField.setText("Current File: "+projectName);
 
@@ -144,36 +185,88 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
         setSubtitle();
 
         initializeTestData();
-
         return v;
-    }
-
-
-    private void setSubtitle() {
-        ((MainPrism4DActivity)getActivity()).switchSubtitle(R.string.subtitle_collect_points);
-    }
-
-    private void initializeTestData(){
-        mTestDataCounter = 0;
     }
 
     //Ask for location events to start
     @Override
+    public void onStart(){
+        if (mMapView != null){
+            mMapView.onStart();
+        }
+        super.onStart();
+    }
+
+    @Override
     public void onResume() {
+        if (mMapView != null){
+            mMapView.onResume();
+        }
+
         super.onResume();
+
         setSubtitle();
 
         startGps();
-    }
+     }
 
 
     //Ask for location events to stop
     @Override
     public void onPause() {
+
+        if (mMapView != null){
+            mMapView.onPause();
+        }
         super.onPause();
 
         stopGps();
     }
+
+    @Override
+    public void onStop(){
+        if (mMapView != null){
+            mMapView.onStop();
+        }
+        super.onStop();
+    }
+
+
+    @Override
+    public void onDestroy(){
+        try {
+            if (mMapView != null){
+                mMapView.onDestroy();
+            }
+        } catch (Exception e) {
+            Log.e(TAG, getString(R.string.collect_points_destroy_error), e);
+        }
+        super.onDestroy();
+
+    }
+
+    @Override
+    public void onLowMemory(){
+
+        if (mMapView != null){
+            mMapView.onLowMemory();
+        }
+        super.onLowMemory();
+
+    }
+
+/*
+    @Override
+    public void onSaveInstanceState(Bundle outState){
+        if (mMapView != null){
+            mMapView.onSaveInstanceState(outState);
+        }
+        super.onSaveInstanceState(outState);
+    }
+*/
+    //********************************************************//
+    //***************  GPS Routines    ***********************//
+    //********************************************************//
 
     private void initializeGPS(){
 
@@ -335,7 +428,9 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
             String type = nmeaData.getNmeaType().toString();
             if (type != null){
 
-                int openProjectID = ((MainPrism4DActivity)getActivity()).getOpenProjectID();
+                Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+                int openProjectID = constantsAndUtilities.getOpenProjectID();
                 //project has to be open
                 if (openProjectID == 0) return;
                 int coordinateType = Prism4DCoordinate.getCoordinateTypeFromProjectID(openProjectID);
@@ -433,14 +528,15 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
                    // mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
                    /// mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
                     //TODO rest of satellite data
-                } else if (type.contains("GSA")) {
+                } */
+                else if (type.contains("GSA")) {
                     //mNmeaSentenceOutput.setText(nmeaData.getNmeaSentence());
                     //mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-                    mPdopField.setText(Double.toString(nmeaData.getPdop()));
-                    mHdopField.setText(Double.toString(nmeaData.getHdop()));
-                    mVdopField.setText(Double.toString(nmeaData.getVdop()));
+                    mPdopField.setText("PDop: "+Double.toString(nmeaData.getPdop()));
+                    mHdopField.setText("HDop: "+Double.toString(nmeaData.getHdop()));
+                    mVdopField.setText("VDop: "+Double.toString(nmeaData.getVdop()));
                 }
-                */
+
 
             } else {
                 //there was an exception processing the NMEA Sentence
@@ -506,17 +602,133 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
     }
 
 
+    //***********************************************************//
+    //***********  Maps Callback and other Maps routines   ******//
+    //***********************************************************//
 
+    /**
+     * Manipulates the map once available.
+     * This callback is triggered when the map is ready to be used.
+     * This is where we can add markers or lines, add listeners or move the camera. In this case,
+     * we just add a marker near Sydney, Australia.
+     * If Google Play services is not installed on the device, the user will be prompted to install
+     * it inside the SupportMapFragment. This method will only be triggered once the user has
+     * installed Google Play services and returned to the app.
+     */
+    /*
+    @Override
+    public void onMapReady(GoogleMap googleMap) {
+        mMap = googleMap;
+
+        // Add a marker in Sydney and move the camera
+        LatLng sydney = new LatLng(-34, 151);
+        mMap.addMarker(new MarkerOptions().position(sydney).title("Marker in Sydney"));
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(sydney));
+    }
+*/
+/*
+    private void addMapsView(View v){
+
+        //Determine the width and height needed
+        LinearLayout currentPositionContainer =
+                                    (LinearLayout)v.findViewById(R.id.current_position_container);
+        int cpWidth  = currentPositionContainer.getWidth();
+        int cpHeight = currentPositionContainer.getHeight();
+
+        LinearLayout drawingButtonsContainer =
+                                    (LinearLayout) v.findViewById(R.id.drawing_buttons_container);
+        int dbWidth  = drawingButtonsContainer.getWidth();
+        int dbHeight = drawingButtonsContainer.getHeight();
+
+        int mapsWidth  = dbWidth;
+        int mapsHeight = cpHeight - dbHeight;
+
+        //we need the inflater and the LinearLayout container for the maps
+        LayoutInflater layoutInflater = (LayoutInflater) LayoutInflater.from(getActivity());
+        //Get the LinearLayout which will contain the coordinates
+        LinearLayout mapsContainer = (LinearLayout) v.findViewById(R.id.maps_container);
+
+        //inflate the map and attach to the maps container
+        View mapsLayou = layoutInflater.inflate(R.layout.element_maps_view,
+                                                mapsContainer,
+                                                true);
+
+
+    }
+*/
+    private void initializeMaps(Bundle savedInstanceState, View v){
+        //Full fragment initialization was this:
+
+        // Gets the MapView from the XML layout and creates it
+        mMapView = (MapView) v.findViewById(R.id.map_view);
+        //we need to be the one stepping the map through it's lifecycle, not the system
+        //  so pass the creation event on to the map
+        mMapView.onCreate(savedInstanceState);
+
+        // Gets to GoogleMap from the MapView and does initialization stuff
+
+        //onMapReadyCallback is triggered when the map is ready to be used
+        //                   is called when the map is ready for initialization
+        mMapView.getMapAsync(new OnMapReadyCallback() {
+            @Override
+            public void onMapReady(GoogleMap googleMap) {
+                mMap = googleMap;
+
+                //current location control depends upon permissions
+                boolean locEnabled = false;
+                if (ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                                                            == PackageManager.PERMISSION_GRANTED ||
+                    ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.ACCESS_FINE_LOCATION)
+                                                            == PackageManager.PERMISSION_GRANTED) {
+
+                    //locEnabled = true;
+
+                }
+
+                mMap.getUiSettings().setMyLocationButtonEnabled(locEnabled);
+                mMap.setMyLocationEnabled(locEnabled);
+
+                mMap.getUiSettings().setZoomControlsEnabled(true);
+                mMap.setIndoorEnabled(false);
+                mMap.setBuildingsEnabled(false);
+                mMap.getUiSettings().setCompassEnabled(true);
+                mMap.getUiSettings().setMapToolbarEnabled(false);
+                mMap.getUiSettings().setScrollGesturesEnabled(true);
+                mMap.getUiSettings().setTiltGesturesEnabled(false);
+                mMap.getUiSettings().setRotateGesturesEnabled(true);
+
+
+                mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+
+                // TODO: 12/10/2016 make the minZoomLevel a constant somewhere
+                int minZoomLevel = 8;
+                //Make sure we don't zoom in too close
+                mMap.setMinZoomPreference(minZoomLevel);
+            }
+        });
+
+
+
+    }
+
+
+
+    //***************************************************************//
+    //*********   Other Initialization Methods   ********************//
+    //***************************************************************//
+    private void setSubtitle() {
+        ((MainPrism4DActivity)getActivity()).switchSubtitle(R.string.subtitle_collect_points);
+    }
+
+    private void initializeTestData(){
+        mTestDataCounter = 0;
+    }
 
 
     private void wireWidgets(View v){
-
-
-
-        //ON THE LEFT PORTION OF THE MAIN DRAWING AREA
-
-
-
+        //Current Postion Block of fields and buttons
         mCurrentPositionButton = (Button) v.findViewById(R.id.currentPositionButton);
         mCurrentPositionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -537,86 +749,7 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
         mCurrentHeightField           = (EditText)v.findViewById(R.id.currentHeightField);
 
 
-        //maps Button
-        mMapsButton = (Button) v.findViewById(R.id.mapsButtonCollect);
-        mMapsButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
 
-
-                ((MainPrism4DActivity) getActivity()).switchToCollectPointsWithMapScreen();
-
-            }
-        });
-
-        //picture (as in camera or video) Button
-        mPictureButton = (Button) v.findViewById(R.id.pictureButton);
-        mPictureButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.picture_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //notes Button
-        mNotesButton = (Button) v.findViewById(R.id.notesButton);
-        mNotesButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.notes_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //UNDER THE DRAWING AREA
-        //ZOOMIN Button
-        mZoomInButton = (ImageButton) v.findViewById(R.id.zoomInButton);
-        mZoomInButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.zoom_in_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //ZOOMOUT Button
-        mZoomOutButton = (ImageButton) v.findViewById(R.id.zoomOutButton);
-        mZoomOutButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.zoom_out_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-        //ZOOM ext Button
-        mZoomExtButton = (ImageButton) v.findViewById(R.id.zoomExtButton);
-        mZoomExtButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v){
-                //for now, just put up a toast that the button was pressed
-                Toast.makeText(getActivity(),
-                        R.string.zoom_ext_button_label,
-                        Toast.LENGTH_SHORT).show();
-
-            }
-        });
-
-
-        //WIDGETS TO THE RIGHT OF THE MAIN DRAWING AREA
         //Store position button
         mStorePositionButton = (Button) v.findViewById(R.id.storePositionButton);
         mStorePositionButton.setOnClickListener(new View.OnClickListener() {
@@ -657,27 +790,113 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
         });
 
 
+        //maps Button
+        mMapsButton = (Button) v.findViewById(R.id.mapsButtonCollect);
+        mMapsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+
+                int mapType = mMap.getMapType();
+                if (mapType == GoogleMap.MAP_TYPE_TERRAIN){
+                    mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+                } else {
+                    mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                }
+
+
+            }
+        });
+
+        //picture (as in camera or video) Button
+        mPictureButton = (Button) v.findViewById(R.id.pictureButton);
+        mPictureButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                //for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.picture_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+        //notes Button
+        mNotesButton = (Button) v.findViewById(R.id.notesButton);
+        mNotesButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                //for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.notes_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+            }
+        });
+
+
+        //ZOOMIN Button
+        mZoomInButton = (ImageButton) v.findViewById(R.id.zoomInButton);
+        mZoomInButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                //for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.zoom_in_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+                mMap.animateCamera(CameraUpdateFactory.zoomIn());
+
+            }
+        });
+
+        //ZOOMOUT Button
+        mZoomOutButton = (ImageButton) v.findViewById(R.id.zoomOutButton);
+        mZoomOutButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                //for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.zoom_out_button_label,
+                        Toast.LENGTH_SHORT).show();
+
+
+                mMap.animateCamera(CameraUpdateFactory.zoomOut());
+            }
+        });
+
+        //ZOOM ext Button
+        mZoomExtButton = (ImageButton) v.findViewById(R.id.zoomExtButton);
+        mZoomExtButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                //for now, just put up a toast that the button was pressed
+                Toast.makeText(getActivity(),
+                        R.string.zoom_ext_button_label,
+                        Toast.LENGTH_SHORT).show();
+                zoomToFit();
+
+            }
+        });
+
+
         //FOOTER WIDGETS
 
-        //  unlike the home screen
-        //  Esc and Enter buttons are enabled on the collect screen
 
-
-
-
-
+        //Footer fields with status and quality info about GPS source
         mCurrentProjectField  = (TextView)v.findViewById(R.id.currentProjectField);
 
-        mModeField            = (TextView)v.findViewById(R.id.modelField);
+        mModelField           = (TextView)v.findViewById(R.id.modelField);
         mSnField              = (TextView)v.findViewById(R.id.snField);
-        mTrackingField        = (TextView)v.findViewById(R.id.trackingField);
-        mModeField            = (TextView)v.findViewById(R.id.modeField);
-        mHdopField = (TextView)v.findViewById(R.id.horizField);
-        mVdopField = (TextView)v.findViewById(R.id.vertField);
-        mRmsField             = (TextView)v.findViewById(R.id.rmsField);
-        mPdopField            = (TextView)v.findViewById(R.id.pdopField);
+        mHdopField            = (TextView)v.findViewById(R.id.hdop_field);
+        mVdopField            = (TextView)v.findViewById(R.id.vdop_field);
+        mPdopField            = (TextView)v.findViewById(R.id.pdop_field);
+        mGdopField            = (TextView)v.findViewById(R.id.gdop_field);
+        mHrmsField            = (TextView)v.findViewById(R.id.hrms_field);
+        mVrmsField            = (TextView)v.findViewById(R.id.vrms_field);
 
 
+        //  Esc and Enter buttons are enabled on the collect screen
 
         //Esc Button
         mEscButton = (Button) v.findViewById(R.id.escButton);
@@ -754,12 +973,10 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
 
         } else {
             Prism4DCoordinateWGS84 wgsCoordinate =
-                    new Prism4DCoordinateWGS84(mTestData.getLatitudeDegrees(),
-                            mTestData.getLatitudeMinutes(),
-                            mTestData.getLatitudeSeconds(),
-                            mTestData.getLongitudeDegrees(),
-                            mTestData.getLongitudeMinutes(),
-                            mTestData.getLatitudeSeconds());
+                    new Prism4DCoordinateWGS84 (
+                            mTestData.getLatitudeDegrees(),  mTestData.getLatitudeMinutes(),  mTestData.getLatitudeSeconds(),
+                            mTestData.getLongitudeDegrees(), mTestData.getLongitudeMinutes(), mTestData.getLongitudeSeconds());
+
             wgsCoordinate.setElevation(mTestData.getElevation());
             if (!wgsCoordinate.isValidCoordinate()) {
                 startGps();
@@ -771,24 +988,92 @@ public class MainPrism4DCollectPointsFragment extends Fragment implements GpsSta
             //build a nmeaData with the TestData location
             mNmeaData = new Prism4DNmea();
             //mNmeaData.setNmeaType("GGA");//set to GPGGA when initialized
-            mNmeaData.setLatitude(wgsCoordinate.getLatitude());
+            mNmeaData.setLatitude (wgsCoordinate.getLatitude());
             mNmeaData.setLongitude(wgsCoordinate.getLongitude());
             mNmeaData.setOrthometricElevation(wgsCoordinate.getElevation());
 
             //double check conversion to northing/easting
             Prism4DCoordinateUTM utmCoordinate = new Prism4DCoordinateUTM(wgsCoordinate);
             double tempTestNorthing = mTestData.getNorthing();
-            double tempUTMNorthing = utmCoordinate.getNorthing();
-            double tempTestEasting = mTestData.getEasting();
-            double tempUTMEasting = utmCoordinate.getEasting();
+            double tempUTMNorthing  = utmCoordinate.getNorthing();
+            double tempTestEasting  = mTestData.getEasting();
+            double tempUTMEasting   = utmCoordinate.getEasting();
 
-            int temp = 0;
+            // TODO: 12/10/2016 get rid of these debug statements 
+            //check the different values of elevation
+            double tempElevation    = mTestData.getElevation();
+            tempElevation           = wgsCoordinate.getElevation();
+            tempElevation           = utmCoordinate.getElevation();
+
             //update screen with the faked nmea data
             updateNmeaUI(mNmeaData);
+
+            String markerName = getString(R.string.collect_points_test_marker) +
+                                          " " + String.valueOf(mTestDataCounter);
+
+            double latitude = wgsCoordinate.getLatitude();
+            double longitude = wgsCoordinate.getLongitude();
+            //update the maps
+            LatLng myPoint = new LatLng(latitude, longitude);
+            mMap.addMarker(new MarkerOptions().position(myPoint)
+                                              .title(markerName)
+                                              .icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE)));
+
+            //CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
+            //get zoom level from the mpa
+            mMapZoom = mMap.getCameraPosition().zoom;
+
+            CameraUpdate myZoom = CameraUpdateFactory.newLatLngZoom(myPoint, 15);
+            mMap.animateCamera(myZoom);
+
+            //add the new point to the line
+            if (mLineContainer == null){
+                mLineContainer = new PolylineOptions();
+            }
+            mLineContainer.add(myPoint).add(myPoint).width(25).color(Color.BLUE).geodesic(true);
+            myLine = mMap.addPolyline(mLineContainer);
+            //The way to find out how many points we've processed so far
+            //myLine.getPoints().size();
+
+            //now update the zoom boundary around the set of points
+            if (mZoomBuilder == null){
+                mZoomBuilder = new LatLngBounds.Builder();
+                mPointsPlotted = 0;
+            }
+            mZoomBuilder = mZoomBuilder.include(myPoint);
+            //update the zoom to fit bounds
+            mZoomBounds = mZoomBuilder.build();
+            mPointsPlotted++;
+
+            zoomToFit();
+        }
+    }
+
+    private void zoomToFit(){
+        // TODO: 12/10/2016 make markerPadding and forceZoomAfter constants somewhere
+        int markerPadding = 50;
+        int forceZoomAfter = 2;
+
+        //only zoom after the first couple of points have been plotted
+        if (mPointsPlotted > forceZoomAfter) {
+            CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(mZoomBounds, markerPadding);
+            mMap.animateCamera(cu);
         }
 
-
     }
+
+    private double getScaleFactorMetersPerPixel(){
+
+        //float latitude = mMap.getCenter.lat();
+        LatLng center = mMap.getCameraPosition().target;
+        double latitude = center.latitude;
+        double latRadians = latitude * (Math.PI / 180);
+        float zoom = mMap.getCameraPosition().zoom;
+        double metersPerPixel = 156543.03392 * Math.cos(latRadians) / Math.pow(2, zoom);
+        return metersPerPixel;
+    }
+
+
 }
 
 

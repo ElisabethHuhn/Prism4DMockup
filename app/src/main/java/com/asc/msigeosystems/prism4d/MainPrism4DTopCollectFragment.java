@@ -94,7 +94,9 @@ public class MainPrism4DTopCollectFragment extends Fragment {
     private void wireWidgets(View v){
         //Tell the user which project is open
         mScreenLabel = (TextView) v.findViewById(R.id.matrix_screen_label);
-        mScreenLabel.setText(((MainPrism4DActivity) getActivity()).getOpenProjectIDMessage());
+        Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+        mScreenLabel.setText(constantsAndUtilities.getOpenProjectIDMessage(getActivity()));
         int color = ContextCompat.getColor(getActivity(), R.color.colorWhite);
         mScreenLabel.setBackgroundColor(color);
 
@@ -111,7 +113,11 @@ public class MainPrism4DTopCollectFragment extends Fragment {
                 // TODO: 12/2/2016 define how location source will be identified in configurations
                 //Can only collect points if a project is open
                 MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                Prism4DProject openProject = myActivity.getOpenProject();
+
+                Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                         Prism4DConstantsAndUtilities.getInstance();
+
+                Prism4DProject openProject = constantsAndUtilities.getOpenProject();
                 if (openProject != null) {
                     //Switch the fragment to the collect with maps fragment.
                     // But the switching happens on the container Activity

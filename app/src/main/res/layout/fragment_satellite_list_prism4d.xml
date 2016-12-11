@@ -17,7 +17,7 @@
         <!-- rest of the screen -->
         <LinearLayout
             android:orientation="vertical"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             >
             <!-- title line -->
@@ -116,7 +116,7 @@
     </HorizontalScrollView>
 
     <!-- Only buttons in the Footer on the Projects list page -->
-    <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
+    <include layout="@layout/element_footer_buttons_inclusion_prism4d"/>
 
 </LinearLayout>
 

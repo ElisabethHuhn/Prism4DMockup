@@ -96,7 +96,7 @@
                     android:layout_weight="1" />
             </TableRow>
 
-            <!-- Row 3 with 2 columns for Tracking, Mode -->
+            <!-- Row 3 with 2 columns for HDOP and HRMS -->
             <TableRow
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
@@ -104,8 +104,8 @@
                 android:layout_gravity="center_vertical"
                 android:layout_weight="1">
                 <TextView
-                    android:id="@+id/trackingField"
-                    android:text="@string/tracking_label"
+                    android:id="@+id/hdop_field"
+                    android:text="@string/hdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -115,8 +115,8 @@
                     android:textColor="@color/colorTextBlack"
                     />
                 <TextView
-                    android:id="@+id/modeField"
-                    android:text="@string/mode_label"
+                    android:id="@+id/hrms_field"
+                    android:text="@string/hrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -127,7 +127,7 @@
                     />
             </TableRow>
 
-            <!-- Row 4 with 5 columns for H, V -->
+            <!-- Row 4 with 5 columns for VDOP, VRMS -->
             <TableRow
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
@@ -136,8 +136,8 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/horizField"
-                    android:text="@string/horiz_label"
+                    android:id="@+id/vdop_field"
+                    android:text="@string/vdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -147,8 +147,8 @@
                     android:textColor="@color/colorTextBlack"
                     />
                 <TextView
-                    android:id="@+id/vertField"
-                    android:text="@string/vert_label"
+                    android:id="@+id/vrms_field"
+                    android:text="@string/vrms_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -159,7 +159,8 @@
                     />
             </TableRow>
 
-            <!-- Row 5 with 2 columns for RMS, and PDOP -->
+            <!-- Row 5 with 2 columns for PDOP and GDOP-->
+            <!-- no room for TDOP -->
             <TableRow
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
@@ -168,8 +169,8 @@
                 android:layout_weight="1">
 
                 <TextView
-                    android:id="@+id/rmsField"
-                    android:text="@string/rms_label"
+                    android:id="@+id/pdop_field"
+                    android:text="@string/pdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"
@@ -179,8 +180,8 @@
                     android:textColor="#000000"
                     />
                 <TextView
-                    android:id="@+id/pdopField"
-                    android:text="@string/pdop_label"
+                    android:id="@+id/gdop_field"
+                    android:text="@string/gdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"

@@ -140,7 +140,7 @@
     </HorizontalScrollView>
 
      <!-- Only buttons in the Footer  -->
-    <include layout="@layout/fragment_footer_buttons_inclusion_prism4d"/>
+    <include layout="@layout/element_footer_buttons_inclusion_prism4d"/>
 
 </LinearLayout>
 
