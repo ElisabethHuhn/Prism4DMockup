@@ -55,12 +55,12 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /*****************************************************/
 
     //Project Column Names
-    public static final String PROJECT_ID =              "project_id";
-    public static final String PROJECT_NAME =            "project_name";
-    public static final String PROJECT_CREATED =         "project_created";
-    public static final String PROJECT_LAST_MAINTAINED = "project_last_maintained";
-    public static final String PROJECT_DESCRIPTION =     "project_description";
-    public static final String PROJECT_COORDINATE_TYPE = "project_coordinate_type";
+    public static final String PROJECT_ID =              "proj_id";
+    public static final String PROJECT_NAME =            "proj_name";
+    public static final String PROJECT_CREATED =         "proj_created";
+    public static final String PROJECT_LAST_MAINTAINED = "proj_last_maintained";
+    public static final String PROJECT_DESCRIPTION =     "proj_description";
+    public static final String PROJECT_COORDINATE_TYPE = "proj_coordinate_type";
 
 
     //create project table
@@ -82,24 +82,33 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /*****************************************************/
 
     //Project Settings Column Names
-    public static final String PROJECT_SETTINGS_ID                = "project_settings_id";
-    public static final String PROJECT_SETTINGS_DISTANCE_UNITS    = "project_settings_distance_units";
-    public static final String PROJECT_SETTINGS_DECIMAL_DISPLAY   = "project_settings_decimal_display";
-    public static final String PROJECT_SETTINGS_ANGLE_UNITS       = "project_settings_angle_units";
-    public static final String PROJECT_SETTINGS_GRID_DIRECTION    = "project_settings_grid_direction";
-    public static final String PROJECT_SETTINGS_SCALE_FACTOR      = "project_settings_scale_factor";
-    public static final String PROJECT_SETTINGS_SEA_LEVEL         = "project_settings_sea_level";
-    public static final String PROJECT_SETTINGS_REFRACTION        = "project_settings_refraction";
-    public static final String PROJECT_SETTINGS_DATUM             = "project_settings_datum";
-    public static final String PROJECT_SETTINGS_PROJECTION        = "project_settings_projection";
-    public static final String PROJECT_SETTINGS_ZONE              = "project_settings_zone";
-    public static final String PROJECT_SETTINGS_SPC_SCALE_FACTOR  = "project_settings_spc_scale_factor";
-    public static final String PROJECT_SETTINGS_GEOID_MODEL       = "project_settings_geoid_model";
-    public static final String PROJECT_SETTINGS_STARTING_POINT_ID = "project_settings_starting_point_id";
-    public static final String PROJECT_SETTINGS_ALPHANUMERIC      = "project_settings_alphanumeric";
-    public static final String PROJECT_SETTINGS_FEATURE_CODES     = "project_settings_feature_codes";
-    public static final String PROJECT_SETTINGS_FC_CONTROL_FILE   = "project_settings_fc_control_file";
-    public static final String PROJECT_SETTINGS_FC_TIMESTAMP      = "project_settings_fc_timestamp";
+    public static final String PROJECT_SETTINGS_ID                = "projset_id";
+    /*
+    public static final String PROJECT_SETTINGS_DISTANCE_UNITS    = "projset_distance_units";
+    public static final String PROJECT_SETTINGS_DECIMAL_DISPLAY   = "projset_decimal_display";
+    public static final String PROJECT_SETTINGS_ANGLE_UNITS       = "projset_angle_units";
+    public static final String PROJECT_SETTINGS_ANGLE_DISPLAY     = "projset_angle_display";
+    public static final String PROJECT_SETTINGS_GRID_DIRECTION    = "projset_grid_direction";
+    public static final String PROJECT_SETTINGS_SCALE_FACTOR      = "projset_scale";
+    public static final String PROJECT_SETTINGS_SEA_LEVEL         = "projset_sealevel";
+    public static final String PROJECT_SETTINGS_REFRACTION        = "projset_refraction";
+    public static final String PROJECT_SETTINGS_DATUM             = "projset_datum";
+    public static final String PROJECT_SETTINGS_PROJECTION        = "projset_projection";
+    public static final String PROJECT_SETTINGS_ZONE              = "projset_zone";
+    public static final String PROJECT_SETTINGS_COORDINATE_DISPLAY= "projset_coord_display";
+    public static final String PROJECT_SETTINGS_SPC_SCALE_FACTOR  = "projset_spc_scale";
+    public static final String PROJECT_SETTINGS_GEOID_MODEL       = "projset_geoid_model";
+    public static final String PROJECT_SETTINGS_STARTING_POINT_ID = "projset_starting_point_id";
+    public static final String PROJECT_SETTINGS_ALPHANUMERIC      = "projset_alphanumeric";
+    public static final String PROJECT_SETTINGS_FEATURE_CODES     = "projset_feature_codes";
+    public static final String PROJECT_SETTINGS_FC_CONTROL_FILE   = "projset_fc_control_file";
+    public static final String PROJECT_SETTINGS_FC_TIMESTAMP      = "projset_fc_timestamp";
+    */
+    public static final String PROJECT_SETTINGS_MEANING_METHOD    = "projset_meaning_method";
+    public static final String PROJECT_SETTINGS_MEANING_NUMBER    = "projset_meaning_number";
+    public static final String PROJECT_SETTINGS_LOCATION_PRECISION = "projset_location_precision";
+    public static final String PROJECT_SETTINGS_STDDEV_PRECISION  = "projset_stddev_precision";
+
 
 
     //create project settings table
@@ -107,6 +116,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             TABLE_PROJECT_SETTINGS           + "("           +
             KEY_ID                           + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
             PROJECT_SETTINGS_ID              + " INTEGER, "  +
+            /*
             PROJECT_SETTINGS_DISTANCE_UNITS  + " TEXT, "     +
             PROJECT_SETTINGS_DECIMAL_DISPLAY + " TEXT, "     +
             PROJECT_SETTINGS_ANGLE_UNITS     + " TEXT, "     +
@@ -117,13 +127,20 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             PROJECT_SETTINGS_DATUM           + " TEXT, "     +
             PROJECT_SETTINGS_PROJECTION      + " TEXT, "     +
             PROJECT_SETTINGS_ZONE            + " TEXT, "     +
+            PROJECT_SETTINGS_COORDINATE_DISPLAY + " TEXT, "  +
             PROJECT_SETTINGS_SPC_SCALE_FACTOR + " REAL, "    +
             PROJECT_SETTINGS_GEOID_MODEL     + " TEXT, "     +
-            PROJECT_SETTINGS_STARTING_POINT_ID + " INTEGER, " +
+            PROJECT_SETTINGS_STARTING_POINT_ID + " INTEGER, "+
             PROJECT_SETTINGS_ALPHANUMERIC    + " INTEGER, "  + //BOOLEAN  no-0/1-yes
             PROJECT_SETTINGS_FEATURE_CODES   + " TEXT, "     +
             PROJECT_SETTINGS_FC_CONTROL_FILE + " TEXT, "     +
             PROJECT_SETTINGS_FC_TIMESTAMP    + " INTEGER, "  + //BOOLEAN  no-0/1-yes
+            */
+            PROJECT_SETTINGS_MEANING_METHOD      + " INTEGER, "  +
+            PROJECT_SETTINGS_MEANING_NUMBER      + " INTEGER, "  +
+            PROJECT_SETTINGS_LOCATION_PRECISION  + " INTEGER, "  +
+            PROJECT_SETTINGS_STDDEV_PRECISION    + " INTEGER, "  +
+
             KEY_CREATED_AT                   + " INTEGER "  + ")";
 
 
@@ -137,6 +154,12 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String POINT_ISA_COORDINATE_ID =  "point_coordinate_ID";
     public static final String POINT_FEATURE_CODE   = "point_feature_code";
     public static final String POINT_NOTES          = "point_notes";
+    public static final String POINT_HDOP           = "point_hdop";
+    public static final String POINT_VDOP           = "point_vdop";
+    public static final String POINT_TDOP           = "point_tdop";
+    public static final String POINT_PDOP           = "point_pdop";
+    public static final String POINT_HRMS           = "point_hrms";
+    public static final String POINT_VRMS           = "point_vrms";
 
 
 
@@ -149,6 +172,12 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             POINT_ISA_COORDINATE_ID + " INTEGER, " +
             POINT_FEATURE_CODE      + " TEXT, "    +
             POINT_NOTES             + " TEXT, "    +
+            POINT_HDOP              + " REAL, "    +
+            POINT_VDOP              + " REAL, "    +
+            POINT_TDOP              + " REAL, "    +
+            POINT_PDOP              + " REAL, "    +
+            POINT_HRMS              + " REAL, "    +
+            POINT_VRMS              + " REAL, "    +
             KEY_CREATED_AT          + " INTEGER"   + ")";
 
     /*****************************************************/
@@ -156,20 +185,20 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /*****************************************************/
 
     //Coordinate EN column names
-    public static final String COORDINATE_ID            = "coordinate_id";
-    public static final String COORDINATE_PROJECT_ID    = "coordinate_project_id";
-    public static final String COORDINATE_POINT_ID      = "coordinate_point_id";
-    public static final String COORDINATE_TYPE          = "coordinate_type";
-    public static final String COORDINATE_EN_EASTING    = "coordinate_en_easting";
-    public static final String COORDINATE_EN_NORTHING   = "coordinate_en_northing";
-    public static final String COORDINATE_EN_ELEVATION  = "coordinate_en_elevation";
-    public static final String COORDINATE_EN_ZONE       = "coordinate_en_zone";        //1-60
-    public static final String COORDINATE_EN_HEMISPHERE = "coordinate_en_hemisphere";  //N or S
-    public static final String COORDINATE_EN_LATBAND    = "coordinate_en_latband";
-    public static final String COORDINATE_EN_DATUM      = "coordinate_en_datum";       //eg WGS84
-    public static final String COORDINATE_EN_CONVERGENCE = "coordinate_en_convergence" ; //
-    public static final String COORDINATE_EN_SCALE      = "coordinate_en_scale";
-    public static final String COORDINATE_EN_VALID_COORDINATE = "coordinate_en_valid_coordinate";
+    public static final String COORDINATE_ID            = "coord_id";
+    public static final String COORDINATE_PROJECT_ID    = "coord_project_id";
+    public static final String COORDINATE_POINT_ID      = "coord_point_id";
+    public static final String COORDINATE_TYPE          = "coord_type";
+    public static final String COORDINATE_EN_EASTING    = "coord_en_easting";
+    public static final String COORDINATE_EN_NORTHING   = "coord_en_northing";
+    public static final String COORDINATE_EN_ELEVATION  = "coord_en_elevation";
+    public static final String COORDINATE_EN_ZONE       = "coord_en_zone";        //1-60
+    public static final String COORDINATE_EN_HEMISPHERE = "coord_en_hemisphere";  //N or S
+    public static final String COORDINATE_EN_LATBAND    = "coord_en_latband";
+    public static final String COORDINATE_EN_DATUM      = "coord_en_datum";       //eg WGS84
+    public static final String COORDINATE_EN_CONVERGENCE = "coord_en_convergence" ; //
+    public static final String COORDINATE_EN_SCALE      = "coord_en_scale";
+    public static final String COORDINATE_EN_VALID_COORDINATE = "coord_en_valid_coordinate";
 
 
     //create project table
@@ -200,22 +229,22 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
     //Coordinate LL column names
 
-    //public static final String COORDINATE_ID                = "coordinate_id";
-    //public static final String COORDINATE_PROJECT_ID         = "coordinate_project_id";
-    //public static final String COORDINATE_POINT_ID           = "coordinate_point_id";
-    //public static final String COORDINATE_TYPE      = "coordinate_type";
-    public static final String COORDINATE_LL_TIME              = "coordinate_ll_time";
-    public static final String COORDINATE_LL_LATITUDE          = "coordinate_ll_latitude";
-    public static final String COORDINATE_LL_LATITUDE_DEGREE   = "coordinate_ll_latitude_degree";
-    public static final String COORDINATE_LL_LATITUDE_MINUTE   = "coordinate_ll_latitude_minute";
-    public static final String COORDINATE_LL_LATITUDE_SECOND   = "coordinate_ll_latitude_second";
-    public static final String COORDINATE_LL_LONGITUDE         = "coordinate_ll_longitude";
-    public static final String COORDINATE_LL_LONGITUDE_DEGREE  = "coordinate_ll_longitude_degree";
-    public static final String COORDINATE_LL_LONGITUDE_MINUTE  = "coordinate_ll_longitude_minute";
-    public static final String COORDINATE_LL_LONGITUDE_SECOND  = "coordinate_ll_longitude_second";
-    public static final String COORDINATE_LL_ELEVATION         = "coordinate_ll_elevation" ;
-    public static final String COORDINATE_LL_GEOID             = "coordinate_ll_geoid";
-    public static final String COORDINATE_LL_VALID_COORDINATE  = "coordinate_ll_valid_coordinate";
+    //public static final String COORDINATE_ID                 = "coord_id";
+    //public static final String COORDINATE_PROJECT_ID         = "coord_project_id";
+    //public static final String COORDINATE_POINT_ID           = "coord_point_id";
+    //public static final String COORDINATE_TYPE               = "coord_type";
+    public static final String COORDINATE_LL_TIME              = "coord_ll_time";
+    public static final String COORDINATE_LL_LATITUDE          = "coord_ll_latitude";
+    public static final String COORDINATE_LL_LATITUDE_DEGREE   = "coord_ll_latitude_degree";
+    public static final String COORDINATE_LL_LATITUDE_MINUTE   = "coord_ll_latitude_minute";
+    public static final String COORDINATE_LL_LATITUDE_SECOND   = "coord_ll_latitude_second";
+    public static final String COORDINATE_LL_LONGITUDE         = "coord_ll_longitude";
+    public static final String COORDINATE_LL_LONGITUDE_DEGREE  = "coord_ll_longitude_degree";
+    public static final String COORDINATE_LL_LONGITUDE_MINUTE  = "coord_ll_longitude_minute";
+    public static final String COORDINATE_LL_LONGITUDE_SECOND  = "coord_ll_longitude_second";
+    public static final String COORDINATE_LL_ELEVATION         = "coord_ll_elevation" ;
+    public static final String COORDINATE_LL_GEOID             = "coord_ll_geoid";
+    public static final String COORDINATE_LL_VALID_COORDINATE  = "coord_ll_valid_coordinate";
 
 
     //create project table
@@ -225,7 +254,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_ID                   + " INTEGER, " +
             COORDINATE_PROJECT_ID           + " INTEGER, " +
             COORDINATE_POINT_ID             + " INTEGER, " +
-            COORDINATE_TYPE + " TEXT, "    +
+            COORDINATE_TYPE                 + " TEXT, "    +
             COORDINATE_LL_TIME              + " REAL"      +
             COORDINATE_LL_LATITUDE          + " REAL"      +
             COORDINATE_LL_LATITUDE_DEGREE   + " INTEGER"   +

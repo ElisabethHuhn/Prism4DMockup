@@ -56,7 +56,6 @@ public class Prism4DNmea {
     public CharSequence getNmeaSentence() {
         return mNmeaSentence;
     }
-
     public void setNmeaSentence(CharSequence nmeaSentence) {
         this.mNmeaSentence = nmeaSentence;
     }
@@ -64,103 +63,90 @@ public class Prism4DNmea {
     public CharSequence getNmeaType() {
         return mNmeaType;
     }
-
-    public void setNmeaType(CharSequence type) {
+    public void         setNmeaType(CharSequence type) {
         mNmeaType = type;
     }
 
     public double getTime() {
         return mTime;
     }
-
-    public void setTime(double time) {
+    public void   setTime(double time) {
         mTime = time;
     }
 
     public double getLatitude() {
         return mLatitude;
     }
-
-    public void setLatitude(double latitude) {
+    public void   setLatitude(double latitude) {
         mLatitude = latitude;
     }
 
     public double getLongitude() {
         return mLongitude;
     }
-
-    public void setLongitude(double longitude) {
+    public void   setLongitude(double longitude) {
         mLongitude = longitude;
     }
 
     public double getEllipsoidalElevation() {
         return mEllipsoidalElevation;
     }
-
-    public void setEllipsoidalElevation(double ellipsoidalElevation) {
+    public void   setEllipsoidalElevation(double ellipsoidalElevation) {
         mEllipsoidalElevation = ellipsoidalElevation;
     }
 
     public double getGeoid() {
         return mGeoid;
     }
-
-    public void setGeoid(double geoid) {
+    public void   setGeoid(double geoid) {
         mGeoid = geoid;
     }
 
     public double getOrthometricElevation() {
         return mOrthometricElevation;
     }
-
-    public void setOrthometricElevation(double orthometricElevation) {
+    public void   setOrthometricElevation(double orthometricElevation) {
         mOrthometricElevation = orthometricElevation;
     }
 
     public double getLocalization() {
         return mLocalization;
     }
-
-    public void setLocalization(double localization) {
+    public void   setLocalization(double localization) {
         mLocalization = localization;
     }
 
     public double getLocalNorthing() {
         return mLocalNorthing;
     }
-
-    public void setLocalNorthing(double localNorthing) {
+    public void   setLocalNorthing(double localNorthing) {
         mLocalNorthing = localNorthing;
     }
 
     public double getLocalEasting() {
         return mLocalEasting;
     }
-
-    public void setLocalEasting(double localEasting) {
+    public void   setLocalEasting(double localEasting) {
         mLocalEasting = localEasting;
     }
 
     public double getLocalElevation() {
         return mLocalElevation;
     }
-
-    public void setLocalElevation(double localElevation) {
+    public void   setLocalElevation(double localElevation) {
         mLocalElevation = localElevation;
     }
 
-    public int getSatelliteStatus() {
+    public int  getSatelliteStatus() {
         return mSatelliteStatus;
     }
-
     public void setSatelliteStatus(int satelliteStatus) {
         mSatelliteStatus = satelliteStatus;
     }
 
-    public int getSatellites() {
+    public int  getSatellites() {
         return mSatellites;
     }
-
     public void setSatellites(int satellites) {
         mSatellites = satellites;
     }
@@ -168,7 +154,6 @@ public class Prism4DNmea {
     public List<Prism4DSatellite> getSatelliteList() {
         return mSatelliteList;
     }
-
     public void setSatelliteList(List<Prism4DSatellite> satelliteList) {
         mSatelliteList = satelliteList;
     }
@@ -176,7 +161,6 @@ public class Prism4DNmea {
     public Prism4DSatellite getSatellite(int position) {
         return mSatelliteList.get(position);
     }
-
     public void setSatellite(Prism4DSatellite satellite) {
         mSatelliteList.add(satellite);
     }
@@ -186,63 +170,55 @@ public class Prism4DNmea {
     public double getHdop() {
         return mHdop;
     }
-
-    public void setHdop(double hdop) {
+    public void   setHdop(double hdop) {
         mHdop = hdop;
     }
 
     public double getVdop() {
         return mVdop;
     }
-
-    public void setVdop(double vdop) {
+    public void   setVdop(double vdop) {
         mVdop = vdop;
     }
 
     public double getTdop() {
         return mTdop;
     }
-
-    public void setTdop(double tdop) {
+    public void   setTdop(double tdop) {
         mTdop = tdop;
     }
 
     public double getPdop() {
         return mPdop;
     }
-
-    public void setPdop(double pdop) {
+    public void   setPdop(double pdop) {
         mPdop = pdop;
     }
 
     public double getGdop() {
         return mGdop;
     }
-
-    public void setGdop(double gdop) {
+    public void   setGdop(double gdop) {
         mGdop = gdop;
     }
 
     public double getHrms() {
         return mHrms;
     }
-
-    public void setHrms(double hrms) {
+    public void   setHrms(double hrms) {
         mHrms = hrms;
     }
 
     public double getVrms() {
         return mVrms;
     }
-
-    public void setVrms(double vrms) {
+    public void   setVrms(double vrms) {
         mVrms = vrms;
     }
 
-    public int getQuality() {
+    public int  getQuality() {
         return mQuality;
     }
-
     public void setQuality(int quality) {
         mQuality = quality;
     }
@@ -250,8 +226,7 @@ public class Prism4DNmea {
     public boolean isFixed() {
         return mFixed;
     }
-
-    public void setFixed(boolean fixed) {
+    public void    setFixed(boolean fixed) {
         mFixed = fixed;
     }
 

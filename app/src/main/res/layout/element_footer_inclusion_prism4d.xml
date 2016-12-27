@@ -37,7 +37,7 @@
 
             android:gravity="center"
             android:layout_gravity="center_horizontal|bottom"
-            android:layout_weight="5"
+            android:layout_weight="8"
 
             android:shrinkColumns="0,1"
             android:stretchColumns="0,1"
@@ -180,8 +180,8 @@
                     android:textColor="#000000"
                     />
                 <TextView
-                    android:id="@+id/gdop_field"
-                    android:text="@string/gdop_label"
+                    android:id="@+id/tdop_field"
+                    android:text="@string/tdop_label"
                     android:layout_height="wrap_content"
                     android:layout_width="0dp"
                     android:layout_weight="1"

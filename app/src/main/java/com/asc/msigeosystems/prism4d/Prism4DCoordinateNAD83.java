@@ -49,6 +49,16 @@ public class Prism4DCoordinateNAD83 extends Prism4DCoordinateLL {
         super.initializeDefaultVariables();
     }
 
+    public Prism4DCoordinateNAD83(Prism4DCoordinateWGS84 wsg84Coordinate) {
+
+        // TODO: 12/14/2016 complete conversion from WSG84 to NAD83
+    }
+
+
+
+
+
+
     /********
      *
      * Setters and Getters

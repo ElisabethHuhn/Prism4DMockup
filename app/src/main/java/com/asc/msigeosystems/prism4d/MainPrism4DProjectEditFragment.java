@@ -512,7 +512,16 @@ public class MainPrism4DProjectEditFragment extends    Fragment
             //the project can not be updated
             if (updateProjectFromUIFields(mProjectBeingMaintained)) {
                 //need to assign a project ID
-                mProjectBeingMaintained.setProjectID(Prism4DProject.getNextProjectID());
+                int projectID = Prism4DProject.getNextProjectID();
+                mProjectBeingMaintained.setProjectID(projectID);
+                //Make the Project Settings ID match the project ID
+                Prism4DProjectSettings projectSettings = mProjectBeingMaintained.getSettings();
+                if (projectSettings == null){
+                    projectSettings = new Prism4DProjectSettings(projectID);
+
+                } else {
+                    projectSettings.setProjectID(projectID);
+                }
                 //change the ID field label
                 mProjectIDLabel.setText(R.string.project_id_label);
 
@@ -641,6 +650,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
     private void areYouSureViewProjects(){
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.abandon_title)
+                .setIcon(R.drawable.ground_station_icon)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.continue_abandon_changes,
                         new DialogInterface.OnClickListener() {
@@ -679,6 +689,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
     private void areYouSureViewSettings(){
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.abandon_title)
+                .setIcon(R.drawable.ground_station_icon)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.continue_abandon_changes,
                         new DialogInterface.OnClickListener() {
@@ -721,6 +732,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
 
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.abandon_title)
+                .setIcon(R.drawable.ground_station_icon)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.continue_abandon_changes,
                         new DialogInterface.OnClickListener() {
@@ -763,6 +775,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
     private void areYouSureExit(){
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.abandon_title)
+                .setIcon(R.drawable.ground_station_icon)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.continue_abandon_changes,
                         new DialogInterface.OnClickListener() {

@@ -57,6 +57,16 @@ public class Prism4DPoint {
     //Actual location of point is given by Coordinate
     private Prism4DCoordinate mCoordinate;
 
+    //Quality fields
+    private double      mHdop;
+    private double      mVdop;
+    private double      mTdop;
+    private double      mPdop;
+    private double      mGdop;
+    private double      mHrms;
+    private double      mVrms;
+
+
 
 
 
@@ -108,11 +118,18 @@ public class Prism4DPoint {
     }
 
 
+    //Convert point to comma delimited file for exchange
     public String convertToCDF() {
         return String.valueOf(this.getPointID()) + ", " +
                 this.getPointFeatureCode()       + ", " +
                 this.getPointNotes()             + ", " +
-                //have to add in coordinates here
+                this.getHdop()                   + ", " +
+                this.getVdop()                   + ", " +
+                this.getTdop()                   + ", " +
+                this.getPdop()                   + ", " +
+                this.getHrms()                   + ", " +
+                this.getVrms()                   + ", " +
+                //todo 12/13/2016 have to add in coordinates here
                 "plus coordinate positions "      +
                 System.getProperty("line.separator");
     }
@@ -175,6 +192,62 @@ public class Prism4DPoint {
     public Prism4DCoordinate getCoordinate()                { return mCoordinate;  }
     public void setCoordinate(Prism4DCoordinate coordinate) { mCoordinate = coordinate; }
 
+    public double getHdop() {
+        return mHdop;
+    }
+
+    public void setHdop(double hdop) {
+        mHdop = hdop;
+    }
+
+    public double getVdop() {
+        return mVdop;
+    }
+
+    public void setVdop(double vdop) {
+        mVdop = vdop;
+    }
+
+    public double getTdop() {
+        return mTdop;
+    }
+
+    public void setTdop(double tdop) {
+        mTdop = tdop;
+    }
+
+    public double getPdop() {
+        return mPdop;
+    }
+
+    public void setPdop(double pdop) {
+        mPdop = pdop;
+    }
+
+    public double getGdop() {
+        return mGdop;
+    }
+
+    public void setGdop(double gdop) {
+        mGdop = gdop;
+    }
+
+    public double getHrms() {
+        return mHrms;
+    }
+
+    public void setHrms(double hrms) {
+        mHrms = hrms;
+    }
+
+    public double getVrms() {
+        return mVrms;
+    }
+
+    public void setVrms(double vrms) {
+        mVrms = vrms;
+    }
+
     /*****************************************************/
     /********    Private Member Methods          *********/
     /*****************************************************/
@@ -187,6 +260,14 @@ public class Prism4DPoint {
         this.mPointNotes       = "";
 
         this.mCoordinate       = null;
+        this.mHdop = 0d;
+        this.mVdop = 0d;
+        this.mTdop = 0d;
+        this.mPdop = 0d;
+        this.mGdop = 0d;
+        this.mHrms = 0d;
+        this.mVrms = 0d;
+
     }
 
 }

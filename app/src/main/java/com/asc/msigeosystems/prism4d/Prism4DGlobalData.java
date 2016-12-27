@@ -23,8 +23,10 @@ public class Prism4DGlobalData {
     /*************************************/
     /*    Member (instance) Variables    */
     /*************************************/
-    private int globalDataID;
-    private int nextProjectID;
+    private int mGlobalDataID;
+    private int mNextProjectID;
+
+
 
     /*****************************************************/
     /********    Attributes stored in the DB     *********/
@@ -44,7 +46,7 @@ public class Prism4DGlobalData {
     /*         CONSTRUCTORS              */
     /*************************************/
     public Prism4DGlobalData() {
-        this.globalDataID = getUniqueID();
+        this.mGlobalDataID = getUniqueID();
     }
 /*****************************************************/
     /********    Constructors                    *********/
@@ -55,13 +57,13 @@ public class Prism4DGlobalData {
     /********    Setters and Getters             *********/
     /*****************************************************/
 
-    public int  getGlobalDataID()                  {return globalDataID; }
-    public void setGlobalDataID(int globalDataID) {this.globalDataID = globalDataID;}
+    public int  getGlobalDataID()                  {return mGlobalDataID; }
+    public void setGlobalDataID(int globalDataID) {this.mGlobalDataID = globalDataID;}
 
 
     public int  getNextProjectID() {
-        int returnCode = nextProjectID;
-        nextProjectID++; //increment for next use
+        int returnCode = mNextProjectID;
+        mNextProjectID++; //increment for next use
         //write it out to the DB
         Prism4DGlobalDataManager globalDataManager = Prism4DGlobalDataManager.getInstance();
         globalDataManager.updateGlobalData(this);
@@ -70,12 +72,12 @@ public class Prism4DGlobalData {
     }
 
     public int getPotentialNextID(){
-        return nextProjectID;
+        return mNextProjectID;
     }
 
     //This routine is only used by the DB Manager, so we don't get into an infinite loop
-    public int  getForDBNextProjectID ()            {return nextProjectID;}
-    public void setNextProjectID(int nextProjectID) { this.nextProjectID = nextProjectID; }
+    public int  getForDBNextProjectID ()            {return mNextProjectID;}
+    public void setNextProjectID(int nextProjectID) { this.mNextProjectID = nextProjectID; }
 
 
 

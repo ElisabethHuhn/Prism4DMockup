@@ -55,6 +55,21 @@ public class Prism4DCoordinateWGS84 extends Prism4DCoordinateLL {
         super.initializeDefaultVariables();
     }
 
+    public Prism4DCoordinateWGS84(Prism4DCoordinateUTM coordinateUTM){
+        // TODO: 12/27/2016 finish the conversion from UTM to WGS
+        super.initializeDefaultVariables();
+    }
+
+    public Prism4DCoordinateWGS84(Prism4DCoordinateNAD83 coordinateNAD83){
+        // TODO: 12/27/2016 finish conversion from NAD to WGS
+        super.initializeDefaultVariables();
+    }
+
+    public Prism4DCoordinateWGS84(Prism4DCoordinateSPCS coordinateSPCS){
+        // TODO: 12/27/2016 finish conversion from SPCS to WGS 
+        super.initializeDefaultVariables();
+    }
+
     public Prism4DCoordinateWGS84(double latitude, double longitude) {
 
         //initialize all variables to their defaults

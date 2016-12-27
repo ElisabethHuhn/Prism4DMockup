@@ -249,6 +249,244 @@
 
                 </TableRow>
 
+                <!-- Row: Quality: HDOP -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointHdopInput"
+                        android:text="@string/hdop_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointHdopInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+                <!-- Row: Quality: VDOP -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointVdopInput"
+                        android:text="@string/vdop_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointVdopInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+                <!-- Row: Quality: TDOP -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointTdopInput"
+                        android:text="@string/tdop_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointTdopInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+                <!-- Row: Quality: PDOP -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointPdopInput"
+                        android:text="@string/pdop_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointPdopInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+                <!-- Row: Quality: HRMS -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointHrmsInput"
+                        android:text="@string/hrms_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointHrmsInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+                <!-- Row: Quality: VRMS -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointVrmsInput"
+                        android:text="@string/vrms_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointVrmsInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
 
 
                 <!-- Row 7: Exit, View Existing Points, Save Changes Buttons -->

@@ -48,6 +48,12 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     private EditText mPointIDInput;
     private EditText mPointFeatureCodeInput;
     private EditText mPointNotesInput;
+    private EditText mPointHdopInput;
+    private EditText mPointVdopInput;
+    private EditText mPointTdopInput;
+    private EditText mPointPdopInput;
+    private EditText mPointHrmsInput;
+    private EditText mPointVrmsInput;
 
 
     private TextView mPointCoordinateTypeLabel;
@@ -327,6 +333,78 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         });
 
 
+        //Point Quality HDOP
+        mPointHdopInput = (EditText) v.findViewById(R.id.pointHdopInput);
+        mPointHdopInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Quality VDOP
+        mPointVdopInput = (EditText) v.findViewById(R.id.pointVdopInput);
+        mPointVdopInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Quality TDOP
+        mPointTdopInput = (EditText) v.findViewById(R.id.pointTdopInput);
+        mPointTdopInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Quality PDOP
+        mPointPdopInput = (EditText) v.findViewById(R.id.pointPdopInput);
+        mPointPdopInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Quality HRMS
+        mPointHrmsInput = (EditText) v.findViewById(R.id.pointHrmsInput);
+        mPointHrmsInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Quality VRMS
+        mPointVrmsInput = (EditText) v.findViewById(R.id.pointVrmsInput);
+        mPointVrmsInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
         //Coordinate type
         mPointCoordinateTypeLabel = (TextView)v.findViewById(R.id.coordinate_label);
 
@@ -336,7 +414,13 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         mPointExitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
-                ((MainPrism4DActivity)getActivity()).popToTopCogoScreen();
+                if (mPointPath.equals(Prism4DPath.sEditFromMaps)){
+                    //pop back to the Collect Points Screen
+                    ((MainPrism4DActivity)getActivity()).
+                                                popToScreen(MainPrism4DActivity.sCollectPointsTag);
+                } else {
+                    ((MainPrism4DActivity) getActivity()).popToTopCogoScreen();
+                }
             }
         });
 
@@ -344,8 +428,9 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
         //View Existing Points Button
         mPointViewExistingButton = (Button) v.findViewById(R.id.pointViewExistingButton);
-        if (mPointPath.equals(Prism4DPath.sCreateTag)){
-            //disable the button on the create path
+        if ((mPointPath.equals(Prism4DPath.sCreateTag)) ||
+            (mPointPath.equals(Prism4DPath.sEditFromMaps)))    {
+            //disable the button on the create path OR the edit from maps path
             mPointViewExistingButton.setEnabled(false);
             mPointViewExistingButton.setTextColor(Color.GRAY);
         }
@@ -399,6 +484,21 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                                           InputType.TYPE_NUMBER_FLAG_SIGNED);
 
 
+        //Can't change the coordinate if coming from maps
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)){
+            mPointLatitudeDDInput.setFocusable(false);
+            mPointLatitudeDDInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLatitudeDInput.setFocusable(false);
+            mPointLatitudeDInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLatitudeMInput.setFocusable(false);
+            mPointLatitudeMInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLatitudeSInput.setFocusable(false);
+            mPointLatitudeSInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+        }
 
 
         mPointLatitudeDDInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -519,6 +619,20 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                                             InputType.TYPE_NUMBER_FLAG_SIGNED);
 
 
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)){
+            mPointLongitudeDDInput.setFocusable(false);
+            mPointLongitudeDDInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLongitudeDInput.setFocusable(false);
+            mPointLongitudeDInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLongitudeMInput.setFocusable(false);
+            mPointLongitudeMInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLongitudeSInput.setFocusable(false);
+            mPointLongitudeSInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+        }
 
 
         mPointLongitudeDDInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
@@ -637,6 +751,16 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 InputType.TYPE_NUMBER_FLAG_SIGNED);
 
 
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
+
+            mPointElevationMetersInput.setFocusable(false);
+            mPointElevationMetersInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointElevationFeetInput.setFocusable(false);
+            mPointElevationFeetInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
 
         mPointElevationMetersInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -691,7 +815,16 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 InputType.TYPE_NUMBER_FLAG_DECIMAL |
                 InputType.TYPE_NUMBER_FLAG_SIGNED);
 
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
 
+            mPointGeoidMetersInput.setFocusable(false);
+            mPointGeoidMetersInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointGeoidFeetInput.setFocusable(false);
+            mPointGeoidFeetInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
 
         mPointGeoidMetersInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
@@ -750,8 +883,8 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         label.setText(getString(R.string.easting_label));
         mPointEastingMetersInput = (EditText)field_container.findViewById(R.id.metersOutput);
         mPointEastingMetersInput.setInputType(InputType.TYPE_CLASS_NUMBER |
-                                                InputType.TYPE_NUMBER_FLAG_DECIMAL |
-                                                InputType.TYPE_NUMBER_FLAG_SIGNED);
+                                              InputType.TYPE_NUMBER_FLAG_DECIMAL |
+                                              InputType.TYPE_NUMBER_FLAG_SIGNED);
         mPointEastingMetersInput.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             public void onFocusChange(View v, boolean hasFocus) {
                 if(!hasFocus) {
@@ -796,6 +929,18 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 }
             }
         });
+
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
+
+            mPointEastingMetersInput.setFocusable(false);
+            mPointEastingMetersInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointEastingFeetInput.setFocusable(false);
+            mPointEastingFeetInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
+
 
 
         field_container = v.findViewById(R.id.northingContainer);
@@ -847,6 +992,18 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 }
             }
         });
+
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
+
+            mPointNorthingMetersInput.setFocusable(false);
+            mPointNorthingMetersInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointNorthingFeetInput.setFocusable(false);
+            mPointNorthingFeetInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
+
 
 
         field_container = v.findViewById(R.id.elevationContainer);
@@ -901,6 +1058,16 @@ public class MainPrism4DPointEditFragment extends Fragment  {
             }
         });
 
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
+
+            mPointENElevationMetersInput.setFocusable(false);
+            mPointENElevationMetersInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointENElevationFeetInput.setFocusable(false);
+            mPointENElevationFeetInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
 
 
 
@@ -916,6 +1083,29 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         mPointDatumInput       = (EditText) field_container.findViewById(R.id.datumOutput);
         mPointConvergenceInput = (EditText) field_container.findViewById(R.id.convergenceOutput);
         mPointScaleFactorInput = (EditText) field_container.findViewById(R.id.scaleFactorOutput);
+
+        if (mPointPath.equals(Prism4DPath.sEditFromMaps)) {
+
+            mPointZoneInput.setFocusable(false);
+            mPointZoneInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointHemisphereInput.setFocusable(false);
+            mPointHemisphereInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointLatbandInput.setFocusable(false);
+            mPointLatbandInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointDatumInput.setFocusable(false);
+            mPointDatumInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointConvergenceInput.setFocusable(false);
+            mPointConvergenceInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+            mPointScaleFactorInput.setFocusable(false);
+            mPointScaleFactorInput.setBackgroundColor(
+                    ContextCompat.getColor(getActivity(), R.color.colorGray));
+
+        }
 
     }
 
@@ -1167,7 +1357,8 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
         //now add the point to memory and db
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-        pointManager.addToProject(project, mPointBeingMaintained, true);
+        boolean addToDBToo = true;
+        pointManager.addToProject(project, mPointBeingMaintained, addToDBToo);
 
         //from now on we are editing the point, not creating it
         mPointPath = Prism4DPath.sEditTag;
@@ -1354,6 +1545,7 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     private void areYouSureListPoints(){
         new AlertDialog.Builder(getActivity())
                 .setTitle(R.string.abandon_title)
+                .setIcon(R.drawable.ground_station_icon)
                 .setMessage(R.string.are_you_sure)
                 .setPositiveButton(R.string.continue_abandon_changes,
                         new DialogInterface.OnClickListener() {

@@ -91,6 +91,11 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
     private TextView mMeanWgs84LatMinutesInput;
     private TextView mMeanWgs84LatSecondsInput;
 
+    private TextView mMeanWgs84LatitudeInput2;
+    private TextView mMeanWgs84LatDegreesInput2;
+    private TextView mMeanWgs84LatMinutesInput2;
+    private TextView mMeanWgs84LatSecondsInput2;
+
     private TextView mMeanWgs84LongitudeInput;
     private TextView mMeanWgs84LongDegreesInput;
     private TextView mMeanWgs84LongMinutesInput;
@@ -105,8 +110,9 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
     private TextView mMeanWgs84LongSigmaOutput;
     private TextView mMeanWgs84ElevSigmaOutput;
 
-
-
+    private TextView mMeanWgs84LatSigmaOutput2;
+    private TextView mMeanWgs84LongSigmaOutput2;
+    private TextView mMeanWgs84ElevSigmaOutput2;
 
 
 
@@ -379,6 +385,8 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
                     if (coordinateWGS84.isValidCoordinate()){
                         //create the WGS coordinate with NMEA data
                         // TODO: 11/26/2016  time attribute is broken
+                        //NMEA time is HHMMSS
+                        //Coordinate time is milliseconds since 1970
                         //coordinateWGS84.setTime(nmeaData.getTime());
                         coordinateWGS84.setElevation(nmeaData.getOrthometricElevation());
                         coordinateWGS84.setGeoid(nmeaData.getGeoid());
@@ -386,15 +394,19 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
                             mMeanWgs84List.add(coordinateWGS84);
                             //calculate mean, and update screen
                             updateMeanWGS();
+                            updateMeanedWGS();
                             if (isFirstPointInMean){
-                                clearMean();
+                                clearMeanUI();
                                 mMeanWgs84StartTimeOutput.setText(
-                                        String.valueOf(coordinateWGS84.getTime()));
+                                        //String.valueOf(coordinateWGS84.getTime()));
+                                        String.valueOf(nmeaData.getTime()));
                                 isFirstPointInMean = false;
                             }
                             if (isLastPointInMean){
                                 mMeanWgs84EndTimeOutput.setText(
-                                        String.valueOf(coordinateWGS84.getTime()));
+                                        //todo fix time
+                                        //String.valueOf(coordinateWGS84.getTime()));
+                                        String.valueOf(nmeaData.getTime()));
                                 isMeanInProgress = false;
 
 
@@ -408,36 +420,7 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
                             }
                         }
                         //update the screen with the latest NMEA update
-                        mGpsWgs84TimeOutput.
-                                setText(Double.toString(coordinateWGS84.getTime()));
-
-                        mGpsWgs84LatitudeInput.
-                                setText(doubleToUI(coordinateWGS84.getLatitude()));
-                        mGpsWgs84LatDegreesInput.
-                                setText(doubleToUI(coordinateWGS84.getLatitudeDegree()));
-                        mGpsWgs84LatMinutesInput.
-                                setText(doubleToUI(coordinateWGS84.getLatitudeMinute()));
-                        mGpsWgs84LatSecondsInput.
-                                setText(doubleToUI(coordinateWGS84.getLatitudeSecond()));
-
-                        mGpsWgs84LongitudeInput.
-                                setText(doubleToUI(coordinateWGS84.getLongitude()));
-                        mGpsWgs84LongDegreesInput.
-                                setText(doubleToUI(coordinateWGS84.getLongitudeDegree()));
-                        mGpsWgs84LongMinutesInput.
-                                setText(doubleToUI(coordinateWGS84.getLongitudeMinute()));
-                        mGpsWgs84LongSecondsInput.
-                                setText(doubleToUI(coordinateWGS84.getLongitudeSecond()));
-
-                        mGpsWgs84ElevationMetersInput.
-                                setText(doubleToUI(coordinateWGS84.getElevation()));
-                        mGpsWgs84GeoidHeightMetersInput.
-                                setText(doubleToUI(coordinateWGS84.getGeoid()));
-                        mGpsWgs84ElevationFeetInput.
-                                setText(doubleToUI(coordinateWGS84.getElevationFeet()));
-                        mGpsWgs84GeoidHeightFeetInput.
-                                setText(doubleToUI(coordinateWGS84.getGeoidFeet()));
-                        //fixed or quality
+                        updateUIWithNmea(coordinateWGS84, nmeaData);
                     }
                 }
 
@@ -471,9 +454,45 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
     }
 
 
+    private void updateUIWithNmea(Prism4DCoordinateWGS84 coordinateWGS84, Prism4DNmea nmeaData){
+        mGpsWgs84TimeOutput.
+                //todo fix time between nmea and coordinate WGS84
+                //setText(Double.toString(coordinateWGS84.getTime()));
+                        setText(Double.toString(nmeaData.getTime()));
+
+        mGpsWgs84LatitudeInput.
+                setText(doubleToUI(coordinateWGS84.getLatitude()));
+        mGpsWgs84LatDegreesInput.
+                setText(doubleToUI(coordinateWGS84.getLatitudeDegree()));
+        mGpsWgs84LatMinutesInput.
+                setText(doubleToUI(coordinateWGS84.getLatitudeMinute()));
+        mGpsWgs84LatSecondsInput.
+                setText(doubleToUI(coordinateWGS84.getLatitudeSecond()));
+
+        mGpsWgs84LongitudeInput.
+                setText(doubleToUI(coordinateWGS84.getLongitude()));
+        mGpsWgs84LongDegreesInput.
+                setText(doubleToUI(coordinateWGS84.getLongitudeDegree()));
+        mGpsWgs84LongMinutesInput.
+                setText(doubleToUI(coordinateWGS84.getLongitudeMinute()));
+        mGpsWgs84LongSecondsInput.
+                setText(doubleToUI(coordinateWGS84.getLongitudeSecond()));
+
+        mGpsWgs84ElevationMetersInput.
+                setText(doubleToUI(coordinateWGS84.getElevation()));
+        mGpsWgs84GeoidHeightMetersInput.
+                setText(doubleToUI(coordinateWGS84.getGeoid()));
+        mGpsWgs84ElevationFeetInput.
+                setText(doubleToUI(coordinateWGS84.getElevationFeet()));
+        mGpsWgs84GeoidHeightFeetInput.
+                setText(doubleToUI(coordinateWGS84.getGeoidFeet()));
+        //fixed or quality
+
+    }
 
     private void updateMeanWGS(){
         int size= mMeanWgs84List.size();
+
 
         double meanLat = 0.;
         double meanLatDeg = 0.;
@@ -495,10 +514,10 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         double rLatMin = 0.;
         double rLatSec = 0.;
 
-        double rLong = 0.;
-        double rLongDeg = 0.;
-        double rLongMin = 0.;
-        double rLongSec = 0.;
+        double rLng = 0.;
+        double rLngDeg = 0.;
+        double rLngMin = 0.;
+        double rLngSec = 0.;
 
         double rEle = 0.;
         double rGeoid = 0.;
@@ -568,16 +587,16 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
                         ((meanLatSec - mMeanWgs84List.get(i).getLatitudeSecond()) *
                          (meanLatSec - mMeanWgs84List.get(i).getLatitudeSecond()));
 
-                rLong    = rLong    + (
+                rLng    = rLng    + (
                         (meanLong    - mMeanWgs84List.get(i).getLongitude())*
                         (meanLong    - mMeanWgs84List.get(i).getLongitude()));
-                rLongDeg = rLongDeg +
+                rLngDeg = rLngDeg +
                         ((meanLongDeg - mMeanWgs84List.get(i).getLongitudeDegree())*
                          (meanLongDeg - mMeanWgs84List.get(i).getLongitudeDegree()));
-                rLongMin = rLongMin +
+                rLngMin = rLngMin +
                         ((meanLongMin - mMeanWgs84List.get(i).getLongitudeMinute())*
                          (meanLongMin - mMeanWgs84List.get(i).getLongitudeMinute()));
-                rLongSec = rLongSec +
+                rLngSec = rLngSec +
                         ((meanLongSec - mMeanWgs84List.get(i).getLongitudeSecond())*
                          (meanLongSec - mMeanWgs84List.get(i).getLongitudeSecond()));
 
@@ -599,11 +618,11 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
             sigmaLatSec = Math.sqrt(rLatSec  / sizeD);
              ***/
 
-            sigmaLong    = Math.sqrt(rLong    / sizeD);
+            sigmaLong    = Math.sqrt(rLng    / sizeD);
             /***
-            sigmaLongDeg = Math.sqrt(rLongDeg / sizeD);
-            sigmaLongMin = Math.sqrt(rLongMin / sizeD);
-            sigmaLongSec = Math.sqrt(rLongSec / sizeD);
+            sigmaLongDeg = Math.sqrt(rLngDeg / sizeD);
+            sigmaLongMin = Math.sqrt(rLngMin / sizeD);
+            sigmaLongSec = Math.sqrt(rLngSec / sizeD);
              ***/
 
             sigmaEle     = Math.sqrt(rEle     / sizeD);
@@ -644,6 +663,183 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
         }
     }
+
+    private void updateMeanedWGS(){
+        int size= mMeanWgs84List.size();
+        Prism4DCoordinateTag meanCoordinate     = new Prism4DCoordinateTag();
+        Prism4DCoordinateTag residuals          = new Prism4DCoordinateTag();
+        Prism4DCoordinateTag sigma              = new Prism4DCoordinateTag();
+        double tempMeanD;
+        int    meanTempI;
+
+        //assure that we have enough readings to calculate mean
+        if (size > 1){
+            //calculate the mean
+            //Step one - Sum of each member in the list
+            for (int i = 0; i<size; i++){
+                tempMeanD = meanCoordinate.getLatitude() + mMeanWgs84List.get(i).getLatitude();
+                meanCoordinate.setLatitude(tempMeanD);
+                /*
+                meanTempI = meanCoordinate.getLatitudeDegree() + mMeanWgs84List.get(i).getLatitudeDegree();
+                meanCoordinate.setLatitudeDegree(meanTempI);
+                meanTempI = meanCoordinate.getLatitudeMinute() + mMeanWgs84List.get(i).getLatitudeMinute();
+                meanCoordinate.setLatitudeMinute(meanTempI);
+                tempMeanD = meanCoordinate.getLatitudeSecond() + mMeanWgs84List.get(i).getLatitudeSecond();
+                meanCoordinate.setLatitudeSecond(tempMeanD);
+*/
+                tempMeanD = meanCoordinate.getLongitude() + mMeanWgs84List.get(i).getLongitude();
+                meanCoordinate.setLongitude(tempMeanD);
+    /*
+                meanTempI = meanCoordinate.getLongitudeDegree() + mMeanWgs84List.get(i).getLongitudeDegree();
+                meanCoordinate.setLongitudeDegree(meanTempI);
+                meanTempI = meanCoordinate.getLongitudeMinute() + mMeanWgs84List.get(i).getLongitudeMinute();
+                meanCoordinate.setLongitudeMinute(meanTempI);
+                tempMeanD = meanCoordinate.getLongitudeSecond() + mMeanWgs84List.get(i).getLongitudeSecond();
+                meanCoordinate.setLongitudeSecond(tempMeanD);
+*/
+                tempMeanD = meanCoordinate.getElevation() + mMeanWgs84List.get(i).getElevation();
+                meanCoordinate.setElevation(tempMeanD);
+                tempMeanD = meanCoordinate.getGeoid() + mMeanWgs84List.get(i).getGeoid();
+                meanCoordinate.setGeoid(tempMeanD);
+
+            }
+            //Step two: devide by the number in the list
+            double sizeD = (double)size;
+
+            tempMeanD = meanCoordinate.getLatitude() / sizeD;
+            meanCoordinate.setLatitude(tempMeanD);
+/*
+            meanTempI = meanCoordinate.getLatitudeDegree() / size;
+            meanCoordinate.setLatitudeDegree(meanTempI);
+            meanTempI = meanCoordinate.getLatitudeMinute() / size;
+            meanCoordinate.setLatitudeMinute(meanTempI);
+            tempMeanD = meanCoordinate.getLatitudeSecond() / sizeD;
+            meanCoordinate.setLatitudeSecond(tempMeanD);
+*/
+
+            meanCoordinate.setLongitude((meanCoordinate.getLongitude() / sizeD));
+/*
+            meanTempI = meanCoordinate.getLongitudeDegree() / size;
+
+            meanCoordinate.setLongitudeDegree(meanTempI);
+            meanTempI = meanCoordinate.getLongitudeMinute() / size;
+            meanCoordinate.setLongitudeMinute(meanTempI);
+            tempMeanD = meanCoordinate.getLongitudeSecond() / sizeD;
+            meanCoordinate.setLongitudeSecond(tempMeanD);
+*/
+            tempMeanD = meanCoordinate.getElevation() / sizeD;
+            meanCoordinate.setElevation(tempMeanD);
+            tempMeanD = meanCoordinate.getGeoid() / sizeD;
+            meanCoordinate.setGeoid(tempMeanD);
+
+            //calculate the variance of the squared residuals
+            //Step three: sum( (mean - reading) squared  )
+            for (int i = 0; i<size; i++){
+
+                tempMeanD = meanCoordinate.getLatitude()      - mMeanWgs84List.get(i).getLatitude();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLatitude      (residuals.getLatitude()+ tempMeanD);
+/*
+                tempMeanD = meanCoordinate.getLatitudeDegree() - mMeanWgs84List.get(i).getLatitudeDegree();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLatitudeDegree(residuals.getLatitudeDegree() + tempMeanD);
+
+
+                tempMeanD = meanCoordinate.getLatitudeMinute() - mMeanWgs84List.get(i).getLatitudeMinute();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLatitudeMinute(residuals.getLatitudeMinute()+ tempMeanD);
+
+
+                tempMeanD = meanCoordinate.getLatitudeSecond() - mMeanWgs84List.get(i).getLatitudeSecond();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLatitudeSecond(residuals.getLatitudeSecond()+ tempMeanD);
+*/
+
+
+                tempMeanD = meanCoordinate.getLongitude() - mMeanWgs84List.get(i).getLongitude();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLongitude(residuals.getLongitude() + tempMeanD);
+/*
+                tempMeanD = meanCoordinate.getLongitudeDegree() - mMeanWgs84List.get(i).getLongitudeDegree();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLongitudeDegree(residuals.getLongitudeDegree()+ tempMeanD);
+
+                tempMeanD = meanCoordinate.getLongitudeMinute() - mMeanWgs84List.get(i).getLongitudeMinute();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLongitudeMinute(residuals.getLongitudeMinute()+ tempMeanD);
+
+                tempMeanD = meanCoordinate.getLongitudeSecond() - mMeanWgs84List.get(i).getLongitudeSecond();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setLongitudeSecond(residuals.getLongitudeSecond()+ tempMeanD);
+*/
+                tempMeanD = meanCoordinate.getElevation() - mMeanWgs84List.get(i).getElevation();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setElevation(residuals.getElevation() + tempMeanD);
+
+
+                tempMeanD = meanCoordinate.getGeoid() - mMeanWgs84List.get(i).getGeoid();
+                tempMeanD = tempMeanD * tempMeanD;
+                residuals.setGeoid(residuals.getGeoid()+ tempMeanD);
+            }
+
+            //Step 3: residual = sum of [(mean - reading) squared]
+            //step 3.5 mean of residuals = sum / # of readings
+            //Step 4: sqrt of (mean of the residuals)
+
+            //Treat readings as sample of a larger population
+            //so take sample mean (i.e. divide by size - 1
+            sizeD = sizeD - 1.0;
+            meanCoordinate.setLatitudeStdDev(Math.sqrt(residuals.getLatitude() / sizeD));
+
+            meanCoordinate.setLongitudeStdDev(Math.sqrt(residuals.getLongitude()/ sizeD));
+
+            meanCoordinate.setElevationStdDev(Math.sqrt(residuals.getElevation()/ sizeD));
+            //sigma.setGeoid          (Math.sqrt(residuals.getGeoid()           / sizeD));
+
+            updateUIWithMean(meanCoordinate, size);
+
+            if (isLastPointInMean){
+                //create the coordinate object with the mean
+                mMeanCoordinateWGS84 = new Prism4DCoordinateWGS84(meanCoordinate.getLatitude(),
+                                                                  meanCoordinate.getLongitude());
+                mMeanCoordinateWGS84.setElevation(meanCoordinate.getElevation());
+                mMeanCoordinateWGS84.setGeoid(meanCoordinate.getGeoid());
+            }
+
+        }
+    }
+
+
+    private void updateUIWithMean(Prism4DCoordinateTag meanCoordinate,
+                                  int                         size){
+
+        //show the mean and standard deviation on the screen
+        mMeanWgs84LatitudeInput2  .setText(doubleToUI(meanCoordinate.getLatitude()));
+        mMeanWgs84LatDegreesInput2.setText(doubleToUI(meanCoordinate.getLatitudeDegree()));
+        mMeanWgs84LatMinutesInput2.setText(doubleToUI(meanCoordinate.getLatitudeMinute()));
+        mMeanWgs84LatSecondsInput2.setText(doubleToUI(meanCoordinate.getLatitudeSecond()));
+/***
+        mMeanWgs84LongitudeInput  .setText(doubleToUI(meanCoordinate.getLongitude()));
+        mMeanWgs84LongDegreesInput.setText(doubleToUI(meanCoordinate.getLongitudeDegree()));
+        mMeanWgs84LongMinutesInput.setText(doubleToUI(meanCoordinate.getLongitudeMinute()));
+        mMeanWgs84LongSecondsInput.setText(doubleToUI(meanCoordinate.getLongitudeSecond()));
+
+        mMeanWgs84ElevationMetersInput.setText(doubleToUI(meanCoordinate.getElevation()));
+        double feetReading = Prism4DConstantsAndUtilities.convertMetersToFeet
+                                                (truncatePrecision(meanCoordinate.getElevation()));
+        mMeanWgs84ElevationFeetInput.setText(doubleToUI(feetReading));
+        mMeanWgs84GeoidHeightMetersInput.setText(doubleToUI(meanCoordinate.getGeoid()));
+        feetReading = Prism4DConstantsAndUtilities.convertMetersToFeet
+                                                    (truncatePrecision(meanCoordinate.getGeoid()));
+        mMeanWgs84GeoidHeightFeetInput.setText(doubleToUI(feetReading));
+
+        mMeanWgs84PointsInMeanOutput.setText(String.valueOf(size));
+***/
+        mMeanWgs84LatSigmaOutput2.setText(doubleToUI(meanCoordinate.getLatitudeStdDev()));
+        mMeanWgs84LongSigmaOutput2.setText(doubleToUI(meanCoordinate.getLongitudeStdDev()));
+        mMeanWgs84ElevSigmaOutput2.setText(doubleToUI(meanCoordinate.getElevationStdDev()));
+    }
+
 
 
     private boolean convertKarney(){
@@ -714,6 +910,11 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         mMeanWgs84LatDegreesInput = (TextView) v.findViewById(R.id.meanWgs84LatDegreesInput);
         mMeanWgs84LatMinutesInput = (TextView) v.findViewById(R.id.meanWgs84LatMinutesInput);
         mMeanWgs84LatSecondsInput = (TextView) v.findViewById(R.id.meanWgs84LatSecondsInput);
+        //Mean Latitude
+        mMeanWgs84LatitudeInput2   = (TextView) v.findViewById(R.id.meanWgs84LatitudeInput2);
+        mMeanWgs84LatDegreesInput2 = (TextView) v.findViewById(R.id.meanWgs84LatDegreesInput2);
+        mMeanWgs84LatMinutesInput2 = (TextView) v.findViewById(R.id.meanWgs84LatMinutesInput2);
+        mMeanWgs84LatSecondsInput2 = (TextView) v.findViewById(R.id.meanWgs84LatSecondsInput2);
 
         //Mean Longitude
         mMeanWgs84LongitudeInput   = (TextView) v.findViewById(R.id.meanWgs84LongitudeInput);
@@ -741,6 +942,11 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         mMeanWgs84LatSigmaOutput = (TextView)v.findViewById(R.id.meanWgs84LatSigmaOutput);
         mMeanWgs84LongSigmaOutput= (TextView)v.findViewById(R.id.meanWgs84LongSigmaOutput);
         mMeanWgs84ElevSigmaOutput= (TextView)v.findViewById(R.id.meanWgs84ElevSigmaOutput);
+
+        //Mean Standard Deviations
+        mMeanWgs84LatSigmaOutput2 = (TextView)v.findViewById(R.id.meanWgs84LatSigmaOutput2);
+        mMeanWgs84LongSigmaOutput2= (TextView)v.findViewById(R.id.meanWgs84LongSigmaOutput2);
+        mMeanWgs84ElevSigmaOutput2= (TextView)v.findViewById(R.id.meanWgs84ElevSigmaOutput2);
 
 
         //NAD83 Latitude
@@ -990,7 +1196,7 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         mGpsWgs84LongMinutesInput   .setText("");
         mGpsWgs84LongSecondsInput   .setText("");
 
-        clearMean();
+        clearMeanUI();
 
         mUtmZoneOutput.          setText(R.string.utm_zone_label);
         mUtmLatbandOutput.       setText(R.string.utm_latband_label);
@@ -1003,7 +1209,7 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
         setLongColorPos();
     }
 
-    private void clearMean(){
+    private void clearMeanUI(){
         mMeanWgs84StartTimeOutput   .setText("");
         mMeanWgs84EndTimeOutput     .setText("");
         mMeanWgs84PointsInMeanOutput.setText("");

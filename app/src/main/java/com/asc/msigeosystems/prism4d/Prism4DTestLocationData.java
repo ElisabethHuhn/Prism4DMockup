@@ -14,6 +14,7 @@ public class Prism4DTestLocationData {
     private int    mLongitudeDegrees;
     private int    mLongitudeMinutes;
     private double mLongitudeSeconds;
+    private double mGeoid;
     private double mNorthing;
     private double mEasting;
     private double mElevation;
@@ -56,6 +57,9 @@ public class Prism4DTestLocationData {
 
     public double getLongitudeSeconds()                 { return mLongitudeSeconds; }
     public void   setLongitudeSeconds(double longitude) { mLongitudeSeconds = longitude; }
+
+    public double getGeoid()                     {   return mGeoid;    }
+    public void   setGeoid(double geoid)         {     mGeoid = geoid;    }
 
     public double getNorthing()                  { return mNorthing; }
     public void   setNorthing(double northing)   { mNorthing = northing; }

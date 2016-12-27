@@ -292,6 +292,7 @@ public class MainPrism4DTopProjectFragment extends Fragment {
 
         Prism4DPoint point;
 
+        // TODO: 12/23/2016 Do we need to include project settings? for now, no
 
         for (int i = 0; i < last; i++) {
             point = (Prism4DPoint) pointsList.get(i);

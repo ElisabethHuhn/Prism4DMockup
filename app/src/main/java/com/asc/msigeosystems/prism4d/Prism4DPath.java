@@ -22,6 +22,7 @@ public class Prism4DPath {
     public static final String sDeleteTag = "DELETE";
     public static final String sEditTag   = "EDIT";
     public static final String sShowTag   = "SHOW";
+    public static final String sEditFromMaps = "EDITfromMAPS";
 
     //stores the path of this instance
     private CharSequence mPath;

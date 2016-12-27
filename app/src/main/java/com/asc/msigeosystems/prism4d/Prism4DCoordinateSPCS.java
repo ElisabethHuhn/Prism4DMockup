@@ -23,6 +23,10 @@ public class Prism4DCoordinateSPCS extends Prism4DCoordinateEN {
 
     public Prism4DCoordinateSPCS() {super.initializeDefaultVariables(); }
 
+    public Prism4DCoordinateSPCS(Prism4DCoordinateWGS84 wsg84Coordinate){
+        // TODO: 12/14/2016 complete conversion from WSG84 to SPCS
+    }
+
 /****************************************************************
 
  //Conversion Routines are called by the constructors

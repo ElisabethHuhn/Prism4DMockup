@@ -73,6 +73,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-45.78961);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (422303.2210);
         testData.setEasting         (701908.4840);
         testData.setElevation       (513.100);
@@ -88,6 +89,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-39.86394);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (422262.3854);
         testData.setEasting         (702060.8845);
         testData.setElevation       (513.100);
@@ -104,6 +106,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-35.52681);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (422150.8205);
         testData.setEasting         (702172.4494);
         testData.setElevation       (513.100);
@@ -122,6 +125,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-33.94034);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421998.4200);
         testData.setEasting         (702213.2850);
         testData.setElevation       (513.100);
@@ -137,6 +141,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-35.52951);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421846.0195);
         testData.setEasting         (702172.4494);
         testData.setElevation       (513.100);
@@ -153,6 +158,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-39.86838);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421734.4546);
         testData.setEasting         (702060.8845);
         testData.setElevation       (513.100);
@@ -170,6 +176,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-45.79436);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421693.6190);
         testData.setEasting         (701908.4840);
         testData.setElevation       (513.100);
@@ -186,6 +193,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-51.71970);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421734.4546);
         testData.setEasting         (701756.0835);
         testData.setElevation       (513.100);
@@ -202,6 +210,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-56.05683);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421846.0195);
         testData.setEasting         (701644.5186);
         testData.setElevation       (513.100);
@@ -219,6 +228,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-57.64363);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421998.4200);
         testData.setEasting         (701603.6830);
         testData.setElevation       (513.100);
@@ -236,6 +246,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-56.05479);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (422150.8205);
         testData.setEasting         (701644.5186);
         testData.setElevation       (513.100);
@@ -253,6 +264,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-51.71592);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (422262.3854);
         testData.setEasting         (701756.0835);
         testData.setElevation       (513.100);
@@ -269,6 +281,7 @@ public class Prism4DTestLocationDataManager {
         testData.setLongitudeDegrees(-84);
         testData.setLongitudeMinutes(-8);
         testData.setLongitudeSeconds(-45.79198);
+        testData.setGeoid           (-26.0);
         testData.setNorthing        (421998.4200);
         testData.setEasting         (701908.4840);
         testData.setElevation       (513.100);

@@ -56,6 +56,8 @@ public class Prism4DProjectAdapter extends RecyclerView.Adapter<Prism4DProjectAd
         //The ProjectManager maintains the in memory container of projects as well as the
         //DB mirror of projects. So need to let the ProjectManager be in charge of
         //maintaining the list of current projects. So pass the request on
+        //The Project Manager will take care of deleting all subobjects from the DB as well
+        //  as from memory
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         projectManager.removeProject(position);
 

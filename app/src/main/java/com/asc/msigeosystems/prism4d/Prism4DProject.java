@@ -106,6 +106,7 @@ public class Prism4DProject  {
     private void initializeDefaultVariables(){
         this.mProjectID    = Prism4DProject.getNextProjectID();
         initializeNoID();
+        //mSettings.setProjectID(mProjectID);
     }
 
     private void initializeNoID(){
@@ -114,15 +115,15 @@ public class Prism4DProject  {
         this.mDescription  = "";
         this.mDateCreated  = new Date().getTime();
         this.mLastModified = new Date().getTime();
-        this.mCoordinateType = Prism4DCoordinate.sCoordinateTypeClassUTM;
+        this.mCoordinateType = Prism4DCoordinate.sCoordinateTypeClassWGS84;
+        // TODO: 12/23/2016 Should we add in a default settings object here? 
+        //this.mSettings     = new Prism4DProjectSettings();
         this.mPoints       = new ArrayList<>();
         //initialize the default starting ID for points
         initializePointID();
     }
 
-    public void initializePointID(){
-        mNextPointID = Prism4DProject.sFirstPointID;
-    }
+    public void initializePointID(){ mNextPointID = Prism4DProject.sFirstPointID; }
     /**********************************************/
     //Setters and Getters
     /**********************************************/
@@ -151,6 +152,10 @@ public class Prism4DProject  {
     public int  getProjectID()        { return mProjectID; }
     public void setProjectID(int id) {
         this.mProjectID = id;
+        Prism4DProjectSettings projectSettings = this.getSettings();
+        if (projectSettings != null) {
+            projectSettings.setProjectID(id);
+        }
     }
 
 
@@ -288,6 +293,20 @@ public class Prism4DProject  {
     /*************************************/
     /*          Member Methods           */
     /*************************************/
+
+    public Prism4DPoint getPoint(int pointID){
+        Prism4DPoint point;
+        int last = mPoints.size();
+        for(int position = 0; position < last; position++){
+            point = mPoints.get(position);
+            if (point.getPointID() == pointID)return point;
+        }
+        return null;
+    }
+
+
+
+
     public String getProjectDateCreatedString() {
         return getDateString(mDateCreated);
     }

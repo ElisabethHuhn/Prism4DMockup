@@ -6,6 +6,12 @@ package com.asc.msigeosystems.prism4d;
  */
 public class Prism4DProjectSettings {
 
+    public static final int sMeanByTime = 0;
+    public static final int sMeanByNumber = 1;
+
+
+
+
 
     //If Project ID = -1, these are the global defaults for Project Settings
     private int          mProjectID; //The project these settings belong to
@@ -28,6 +34,13 @@ public class Prism4DProjectSettings {
     private CharSequence mFeatureCodes;
     private CharSequence mFCControlFile;
     private boolean      mFCTimeStamp;
+
+    private int          mMeaningMethod = sMeanByNumber;
+    private int          mMeaningNumber; //either the number of readings or the number of seconds
+    //Digits of precision are for the UI only. Underlying numbers are not truncated
+    // TODO: 12/13/2016 Should underlying values be truncated to precision digits? 
+    private int          mLocationPrecision; //# digits of precision for locations eg Lat/Long or N/E
+    private int          mStdDevPrecision;//precision of standard deviations
 
 
     /********
@@ -136,6 +149,18 @@ public class Prism4DProjectSettings {
     }
     public void setFCTimeStamp(boolean fcTimeStamp) {mFCTimeStamp = fcTimeStamp;}
 
+    public int getMeaningMethod() {  return mMeaningMethod; }
+    public void setMeaningMethod(int meaningMethod) { mMeaningMethod = meaningMethod; }
+
+    public int getMeaningNumber() { return mMeaningNumber;}
+    public void setMeaningNumber(int meaningNumber) {  mMeaningNumber = meaningNumber; }
+
+    public int getLocationPrecision() {       return mLocationPrecision; }
+    public void setLocationPrecision(int locationPrecision) {mLocationPrecision = locationPrecision; }
+
+    public int getStdDevPrecision() {       return mStdDevPrecision; }
+    public void setStdDevPrecision(int stdDevPrecision) {mStdDevPrecision = stdDevPrecision; }
+
     /*
      *
      * Constructor
@@ -145,6 +170,11 @@ public class Prism4DProjectSettings {
     //this creates a new instance with values defined by global defaults
     public Prism4DProjectSettings() {
         setDefaults();
+    }
+
+    public Prism4DProjectSettings(int projectID){
+        setDefaults();
+        mProjectID = projectID;
     }
 
     /*
@@ -174,5 +204,48 @@ public class Prism4DProjectSettings {
         mFeatureCodes    = "RHM2";
         mFCControlFile   = "CP2";
         mFCTimeStamp     = false;
+
+        mMeaningMethod   = sMeanByNumber;
+        mMeaningNumber   = 180;
+        mLocationPrecision = Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision;
+        mStdDevPrecision   = Prism4DConstantsAndUtilities.sMicrometerDigitsOfPrecision;
     }
+    public String convertToCDF(){
+
+        String msg =
+                String.valueOf(this.getProjectID()) + ", " +
+                this.getDistanceUnits()             + ", " +
+                this.getDecimalDisplay()            + ", " +
+                this.getAngleUnits()                + ", " +
+                this.getAngleDisplay()              + ", " +
+                this.getGridDirection()             + ", " +
+                String.valueOf(this.getScaleFactor())  + ", ";
+                if (isSeaLevel()){        msg = msg + "true, "; }
+                else {                    msg = msg + "false, ";}
+                if (isRefraction()){      msg = msg + "true, "; }
+                else {                    msg = msg + "false, ";}
+        msg = msg +
+                this.getDatum()                     + ", " +
+                this.getProjection()                + ", " +
+                this.getZone()                      + ", " +
+                this.getCoordinateDisplay()         + ", " +
+                this.getGeoidModel()                + ", " +
+                this.getStartingPointID()           + ", " ;
+                if (isAlphanumeric()){    msg = msg + "true, "; }
+                else {                    msg = msg + "false, ";}
+        msg = msg +
+                this.getFeatureCodes()              + ", " +
+                this.getFCControlFile()             + ", " ;
+                if (isFCTimeStamp()){     msg = msg + "true, "; }
+                else {                    msg = msg + "false, ";}
+        msg = msg +
+                String.valueOf(this.getMeaningMethod() )      + ", " +
+                String.valueOf(this.getMeaningNumber() )      + ", " +
+                String.valueOf(this.getLocationPrecision() )  + ", " +
+                String.valueOf(this.getStdDevPrecision() )    + ", " ;
+
+                System.getProperty("line.separator");
+        return msg;
+    }
+
 }

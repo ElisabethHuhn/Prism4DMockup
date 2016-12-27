@@ -298,25 +298,58 @@
     <!-- Menu Items -->
 
     <!-- Button Labels -->
-    <string name="zoom_in_button_label">Zoom In</string>
+    <string name="zoom_in_button_label" >Zoom In</string>
     <string name="zoom_out_button_label">Zoom Out</string>
     <string name="zoom_ext_button_label">Extended Zoom</string>
-    <string name="picture_button_label">Picture</string>
-    <string name="notes_button_label">Notes</string>
+    <string name="picture_button_label" >Picture</string>
+    <string name="notes_button_label"   >Notes</string>
 
 
     <!-- Text View Labels (initial text displayed) -->
-    <string name="scale_factor_label">SF:  |___1,000 ft_____|</string>
-    <string name="point_id_label">PT:   12533</string>
-    <string name="current_northing_label">N: 1,384,506.48</string>
-    <string name="current_easting_label">E: 2,302,844.75</string>
+    <string name="scale_factor_label"     >SF:  |___1,000 ft_____|</string>
+    <string name="point_id_label"         >PT:</string>
+    <string name="current_northing_label" >N: 1,384,506.48</string>
+    <string name="current_easting_label"  >E: 2,302,844.75</string>
     <string name="current_elevation_label">ELE:   1,683.08</string>
-    <string name="function_code_label">FC: CL1</string>
-    <string name="current_height_label">HT:  6.56</string>
-    <string name="current_position_label">Current Position</string>
-    <string name="store_position_label">Store Position</string>
-    <string name="offset_position_label">Offset Position</string>
-    <string name="ave_position_label">Average Position</string>
+    <string name="function_code_label"    >FC:</string>
+    <string name="current_height_label"   >HT:</string>
+    <string name="current_position_label" >Current Position</string>
+    <string name="store_position_label"   >Store Position</string>
+    <string name="offset_position_label"  >Offset Position</string>
+    <string name="ave_position_label"     >Average Position</string>
+    <string name="show_all_points_label"  >Show All Points</string>
+    <string name="enter_notes"            >Enter Notes for Point</string>
+
+    <!-- Information Window on markers for collect points -->
+    <string name="iwcp_number_raw"        ># Raw Readings: </string>
+    <string name="iwcp_number_meaned"     ># Meaned Readings: </string>
+    <string name="iwcp_number_fixed"      ># Fixed Readings: </string>
+    <string name="iwcp_number_valid"      ># Valid Readings: </string>
+    <string name="iwcp_of"                > out of </string>
+    <string name="iwcp_satellites"        ># Satellites in Fix</string>
+    <string name="iwcp_project_id_label"  >Project</string>
+    <string name="iwcp_point_id_label"    >Point</string>
+    <string name="iwcp_easting_label"     >Easting</string>
+    <string name="iwcp_northing_label"    >Northing</string>
+    <string name="iwcp_latitude_label"    >Latitude</string>
+    <string name="iwcp_longitude_label"   >Longitude</string>
+    <string name="iwcp_elevation_label"   >Elevation</string>
+    <string name="iwcp_sd_easting_label"  >Std Dev Easting</string>
+    <string name="iwcp_sd_northing_label" >Std Dev Northing</string>
+    <string name="iwcp_sd_latitude_label" >Std Dev Latitude</string>
+    <string name="iwcp_sd_longitude_label">Std Dev Longitude</string>
+    <string name="iwcp_sd_elevation_label">Std Dev Elevation</string>
+    <string name="iwcp_hrms_label"        >HRMS</string>
+    <string name="iwcp_vrms_label"        >VRMS</string>
+    <string name="iwcp_feature_code_label">FC</string>
+    <string name="iwcp_notes_label"       >Notes</string>
+
+    <string name="point_actions"          >Actions on this Point:</string>
+    <string name="gps_not_running"        >GPS not running</string>
+    <string name="map_touched"            >Map touched at </string>
+    <string name="no_point_at_marker"     >No Point saved at marker</string>
+    <string name="apply_offset"           >Apply Offset to:</string>
+    <string name="enter_offsets"          >Enter Offset Position:</string>
 
     <!-- Content Descriptions for images -->
     <string name="drawing_pad_content_description">Screen area rendering points layout</string>
@@ -324,9 +357,14 @@
     <string name="zoom_out_contentdescription">Select to zoom out or condensing the drawing area</string>
     <string name="zoom_ext_contentdescription">Select to zoom to size to fit the drawing area</string>
 
-    <string name="collect_points_current_project">"Current Project: "</string>
-    <string name="collect_points_test_marker"    >Marker Number </string>
-    <string name="collect_points_destroy_error"  >Error attempting to destroy mapsView, ignored</string>
+    <string name="collect_points_current_project"   >"Current Project: "</string>
+    <string name="collect_points_test_marker"       >Marker Number </string>
+    <string name="collect_points_provisional_marker">Provisional Marker</string>
+    <string name="collect_points_destroy_error">Error attempting to destroy mapsView, ignored</string>
+    <string name="no_camera_on_this_device"     >No camera on this device</string>
+    <string name="need_permission_to_take_pictures">Need permission to take pictures</string>
+    <string name="try_camera_again"                >Try Camera Again</string>
+    <string name="unable_to_create_picture_file">Unable to create picture file</string>
 
 
     <!--      NEW SCREEN                  -->
@@ -531,8 +569,8 @@
 
     <!-- Text View Labels (initial text displayed) -->
     <string name="filename_label">Current File: Cambridge_16021002</string>
-    <string name="model_label">Model: Trimble Leap</string>
-    <string name="sn_label">S/N: L505O00176</string>
+    <string name="model_label">Model: </string>
+    <string name="sn_label">S/N:</string>
     <string name="hdop_label">HDOP: </string>
     <string name="vdop_label">VDOP: </string>
     <string name="tdop_label">TDOP: </string>
@@ -615,6 +653,7 @@
     <!-- Edit View Fields (initial text displayed) -->
     <string name="latitude_input_label">Enter Latitude decimal number  </string>
     <string name="longitude_input_label">Enter Longitude decimal number </string>
+    <string name="elevation_input_label">Enter Elevation decimal number</string>
 
     <!-- Prompts -->
     <string name="gps_wgs84_prompt">Current GPS Position: WGS84</string>
@@ -677,7 +716,7 @@
     <string name="cancel">Cancel</string>
 
 
-    <!-- (Screen Name) Screen Strings -->
+    <!-- Collect Points Info Window  -->
     <!-- Menu Items -->
 
     <!-- Button Labels -->
