@@ -2,7 +2,6 @@ package com.asc.msigeosystems.prism4d;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.Date;
 
 /**
  * Created by Elisabeth Huhn on 5/25/2016.
@@ -35,20 +34,20 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
     protected double       mConvergence; //
     protected double       mScale;
 
-    protected boolean      mValidCoordinate = true;
 
     /*****************************************************/
     /********    All other Attributes            *********/
     /*****************************************************/
     //Conversion Constants
-    protected double mEquatorialRadiusA;
-    protected double mPolarRadiusB;
+            //set at the subclass level
+    protected double mEquatorialRadiusA = 6378137.0;
+    protected double mPolarRadiusB      = 6356752.314245; //polar semi axis;
 
     protected double a = mEquatorialRadiusA; //equatorialRadiusA;
     protected double b = mPolarRadiusB;      //polarRadiusB;
 
     //double flatteningF = (equatorialRadiusA-polarRadiusB)/equatorialRadiusA;
-    protected double flatteningF ;
+    protected double flatteningF  = 1/298.257223563; //0.0033528107 WGS numbers;
     //double flatteningF = 1/298.257223563; //0.0033528107 WGS numbers
 
     //mean radius = sqrt (equatorialRadius * polarRadius)
@@ -59,7 +58,22 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
     protected double e ;
     protected double ee ;
 
-    protected double n;
+    protected double n, n1, n2, n3, n4, n5, n6;
+    protected double a1dot1, a1dot2, a1dot3, a1dot4, a1dot5, a1dot6;
+    protected double         a2dot2, a2dot3, a2dot4, a2dot5, a2dot6;
+    protected double                 a3dot3, a3dot4, a3dot5, a3dot6;
+    protected double                         a4dot4, a4dot5, a4dot6;
+    protected double                                 a5dot5, a5dot6;
+    protected double                                         a6dot6;
+
+    /*
+    protected double alpha[] = {a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6, //alpha[0]
+            a2dot2 - a2dot3 + a2dot4 + a2dot5 - a2dot6,//alpha[1]
+            a3dot3 - a3dot4 + a3dot5 + a3dot6,//alpha[2]
+            a4dot4 - a4dot5 + a4dot6,//alpha[3]
+            a5dot5 - a5dot6,//alpha[4]
+            a6dot6};//alpha5]
+*/
 
     protected double A ;
 
@@ -110,7 +124,6 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
     public double getConvergence() { return mConvergence; }
     public double getScale()       { return mScale;    }
 
-    public boolean isValidCoordinate() { return mValidCoordinate; }
 
     public void setEasting(double easting)   { mEasting = easting;  }
     public void setNorthing(double northing) { mNorthing = northing;}
@@ -121,7 +134,6 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
     public void setDatum(CharSequence datum)   { mDatum = datum;  }
     public void setConvergence(double convergence) { mConvergence = convergence; }
     public void setScale(double scale)         { mScale = scale; }
-    public void setValidCoordinate(boolean validCoordinate) { mValidCoordinate = validCoordinate; }
 
     public String toString() {
         return String.format("%s %c %c %s %s", mZone, mHemisphere, mLatBand, mEasting, mNorthing);
@@ -196,8 +208,31 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
         if ((lat < -80.0)|| (lat > 84.) ){
             throw new IllegalArgumentException();
         }
+        //Legal range of the longitude is -180 to +180
+        if ((longi <-180.) || (longi > 180.)){
+            throw new IllegalArgumentException();
+        }
+        //Longitude -180/+180 is the International Date Line
+        // Date Line -180  through the Americas to 0 Greenwich
+        // through Europe to 180 date line
+
+        //longitude which is between -180 and -0
+        // <0 (or negative) is (in Asian hemisphere)
+        // between international date line and Greenwich
+        // zones 31 to 60
+
+        //longitudes between +0 and +180
+        // > 0 (or positive) are in American hemisphere
+        // between Greenwich and International Date Line
+        // zones 1 to 30
 
 
+        setConstants();
+
+
+        // phi    φ = latitude
+        // lamda  λ = longitude
+        //
         //phi φ is Latitude in radians ( +/- from equator)
         // degrees = radians * (360. / 2. pi)
         // radians = degrees * (2. pi / 360.)
@@ -212,24 +247,8 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
             mHemisphere = 'S';
         }
 
-        //Legal range of the longitude is -180 to +180
-        if ((longi <-180.) || (longi > 180.)){
-            throw new IllegalArgumentException();
-        }
 
-        //Longitude -180/+180 is the International Date Line
-        // Date Line -180  through the Americas to 0 Greenwich
-        // through Europe to 180 date line
 
-        //longitude which is between -180 and -0
-        // <0 (or negative) is (in Asian hemisphere)
-        // between international date line and Greenwich
-        // zones 31 to 60
-
-        //longitudes between +0 and +180
-        // > 0 (or positive) are in American hemisphere
-        // between Greenwich and International Date Line
-        // zones 1 to 30
 
         //Calculate the longitude zone
         //  then the longitude of the central meridian of that zone
@@ -284,11 +303,6 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
         double longRad = (longi * Math.PI/180.) - zoneCentralMeridanRad;
 
 
-        // phi   = latitude
-        // lamda = longitude
-        //
-
-        setConstants();
 
         // ---- easting, northing: Karney 2011 Eq 7-14, 29, 35:
 
@@ -340,80 +354,6 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
         double sigma = Math.sinh( e * atanh ) ; //Karney (9)
 
 
-        //alpha α is one-based array (6th order Krüger expressions)
-        //The number of terms used in the series calculations below
-        //double n = (equatorialRadiusA - polarRadiusB)/ (equatorialRadiusA+polarRadiusB);
-        double n2 = n*n; //.0000028197
-        double n3 = n*n2;//.0000000047
-        double n4 = n*n3;
-        double n5 = n*n4;
-        double n6 = n*n5;
-        //double n7 = n*n6; //6 terms are sufficient. Accuracy lost in 7 and 8
-        //double n8 = n*n7;
-
-
-        double a1dot1 = (1.0/2.0)*n;
-        double a1dot2 = (2.0/3.0)*n2;
-        double a1dot3 = (5.0/16.0)*n3;
-        double a1dot4 = (41.0/180.0)*n4;
-        double a1dot5 = (127.0/288.0)*n5;
-        double a1dot6 = (7891.0/37800.0)*n6;
-        //double a1dot7 = (72161/387072)*n7;
-        //double a1dot8 = (18975107/50803200)*n8;
-
-
-        double a2dot2 = (13.0/48.0)*n2;
-        double a2dot3 = (3/5.0)    *n3;
-        double a2dot4 = (557.0/1440.0) *n4;
-        double a2dot5 = (281.0/630.0)     *n5;
-        double a2dot6 = (1983433.0/1935360.0)*n6;
-        //double a2dot7 = (13769.0/28800.0)      *n7;
-        //double a2dot8 = (148003883.0/174182400.0)*n8;
-
-
-        double a3dot3 = (61.0/240.0)*n3;
-        double a3dot4 = (103.0/140.0)*n4;
-        double a3dot5 = (15061.0/26880.0)*n5;
-        double a3dot6 = (167603.0/181440.0)*n6;
-        //double a3dot7 = (67102379.0/29030400.0)*n7;
-        //double a3dot8 = (79682431.0/79833600.0) *n8;
-
-
-        double a4dot4 = (49561.0/161280.0)*n4;
-        double a4dot5 = (179.0/168.0)*n5;
-        double a4dot6 = (6601661.0/7257600.0)*n6;
-        //double a4dot7 = (97445.0/49896.00)*n7;
-        //double a4dot8 = (40176129013.0/7664025600.0)*n8; //does this need to be truncated?
-
-
-        double a5dot5 = (34729.0/80640.0)*n5;
-        double a5dot6 = (3418889.0/1995840.0)*n6;
-        //double a5dot7 = (14644087.0/9123840.0)*n7;
-        //double a5dot8 = (2605413599.0/622702080.0)*n8;
-
-
-        double a6dot6 = (212378941.0/319334400.0)*n6;
-        //double a6dot7 = (30705481.0/10378368.0)*n7;
-        //double a6dot8 = (175214326799.0/58118860800.0)*n8;
-
-
-        //double a7dot7 = (1522256789.0/1383782400.0)*n7;
-        //double a7dot8 = (16759934899.0/3113510400.0)*n8;
-
-
-        //double a8dot8 = (1424729850961.0/743921418240.0)*n8; //Horner form
-
-
-        //Karney (12) takes it to n4, (35) to n8
-        double alpha[] = {a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6,//alpha[0]
-
-                a2dot2 - a2dot3 + a2dot4 + a2dot5 - a2dot6,//alpha[1]
-                a3dot3 - a3dot4 + a3dot5 + a3dot6,//alpha[2]
-                a4dot4 - a4dot5 + a4dot6,//alpha[3]
-                a5dot5 - a5dot6,//alpha[4]
-                a6dot6};//alpha5]
-
-
         //tau prime τʹ  Karney (7)
         //var τʹ = τ*Math.sqrt(1+σ*σ) - σ*Math.sqrt(1+τ*τ);
         //Karney (7)
@@ -442,6 +382,14 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
 
         double termz = Math.sqrt((z * z) + 1.);
         double etaPrime = Math.log(z + termz);
+
+        //Karney (12) takes it to n4, (35) to n8
+        double alpha[] = {a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6, //alpha[0]
+                a2dot2 - a2dot3 + a2dot4 + a2dot5 - a2dot6,//alpha[1]
+                a3dot3 - a3dot4 + a3dot5 + a3dot6,//alpha[2]
+                a4dot4 - a4dot5 + a4dot6,//alpha[3]
+                a5dot5 - a5dot6,//alpha[4]
+                a6dot6};//alpha5]
 
 
         //xi ξ = ξʹ
@@ -617,16 +565,83 @@ public abstract class  Prism4DCoordinateEN extends Prism4DCoordinate {
 
 
 
+        //alpha α is one-based array (6th order Krüger expressions)
+        //The number of terms used in the series calculations below
+        //double n = (equatorialRadiusA - polarRadiusB)/ (equatorialRadiusA+polarRadiusB);
+        n2 = n*n; //.0000028197
+        n3 = n*n2;//.0000000047
+        n4 = n*n3;
+        n5 = n*n4;
+        n6 = n*n5;
+        //double n7 = n*n6; //6 terms are sufficient. Accuracy lost in 7 and 8
+        //double n8 = n*n7;
+
+
+        a1dot1 = (1.0/2.0)*n;
+        a1dot2 = (2.0/3.0)*n2;
+        a1dot3 = (5.0/16.0)*n3;
+        a1dot4 = (41.0/180.0)*n4;
+        a1dot5 = (127.0/288.0)*n5;
+        a1dot6 = (7891.0/37800.0)*n6;
+        //double a1dot7 = (72161/387072)*n7;
+        //double a1dot8 = (18975107/50803200)*n8;
+
+
+        a2dot2 = (13.0/48.0)*n2;
+        a2dot3 = (3/5.0)    *n3;
+        a2dot4 = (557.0/1440.0) *n4;
+        a2dot5 = (281.0/630.0)     *n5;
+        a2dot6 = (1983433.0/1935360.0)*n6;
+        //double a2dot7 = (13769.0/28800.0)      *n7;
+        //double a2dot8 = (148003883.0/174182400.0)*n8;
+
+
+        a3dot3 = (61.0/240.0)*n3;
+        a3dot4 = (103.0/140.0)*n4;
+        a3dot5 = (15061.0/26880.0)*n5;
+        a3dot6 = (167603.0/181440.0)*n6;
+        //double a3dot7 = (67102379.0/29030400.0)*n7;
+        //double a3dot8 = (79682431.0/79833600.0) *n8;
+
+
+        a4dot4 = (49561.0/161280.0)*n4;
+        a4dot5 = (179.0/168.0)*n5;
+        a4dot6 = (6601661.0/7257600.0)*n6;
+        //double a4dot7 = (97445.0/49896.00)*n7;
+        //double a4dot8 = (40176129013.0/7664025600.0)*n8; //does this need to be truncated?
+
+
+        a5dot5 = (34729.0/80640.0)*n5;
+        a5dot6 = (3418889.0/1995840.0)*n6;
+        //double a5dot7 = (14644087.0/9123840.0)*n7;
+        //double a5dot8 = (2605413599.0/622702080.0)*n8;
+
+
+        a6dot6 = (212378941.0/319334400.0)*n6;
+        //double a6dot7 = (30705481.0/10378368.0)*n7;
+        //double a6dot8 = (175214326799.0/58118860800.0)*n8;
+
+
+        //double a7dot7 = (1522256789.0/1383782400.0)*n7;
+        //double a7dot8 = (16759934899.0/3113510400.0)*n8;
+
+
+        //double a8dot8 = (1424729850961.0/743921418240.0)*n8; //Horner form
+
+/*
+        //Karney (12) takes it to n4, (35) to n8
+        double alpha[] = {a1dot1 - a1dot2 + a1dot3 + a1dot4 - a1dot5 + a1dot6, //alpha[0]
+                                   a2dot2 - a2dot3 + a2dot4 + a2dot5 - a2dot6,//alpha[1]
+                                            a3dot3 - a3dot4 + a3dot5 + a3dot6,//alpha[2]
+                                                     a4dot4 - a4dot5 + a4dot6,//alpha[3]
+                                                              a5dot5 - a5dot6,//alpha[4]
+                                                                       a6dot6};//alpha5]
+
+*/
 
         //scale the result to give the transverse Mercator easting and northing
         // UTM scale on the central meridian
          K0 = 0.9996;
-
-
-
-
-
-
 
 
 

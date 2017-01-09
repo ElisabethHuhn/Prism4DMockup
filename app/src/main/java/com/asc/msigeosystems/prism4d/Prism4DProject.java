@@ -2,7 +2,6 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 
-import java.io.Serializable;
 import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,7 +65,8 @@ public class Prism4DProject  {
     //The coordinate type governs the type for all the points in the project
     //Once the first point is saved, this can no longer be saved.
     private CharSequence mCoordinateType;
-    private ArrayList<Prism4DPoint> mPoints;
+    private ArrayList<Prism4DPoint>   mPoints;
+    private ArrayList<Prism4DPicture> mPictures;
 
 
 
@@ -119,6 +119,7 @@ public class Prism4DProject  {
         // TODO: 12/23/2016 Should we add in a default settings object here? 
         //this.mSettings     = new Prism4DProjectSettings();
         this.mPoints       = new ArrayList<>();
+        this.mPictures     = new ArrayList<>();
         //initialize the default starting ID for points
         initializePointID();
     }
@@ -141,6 +142,13 @@ public class Prism4DProject  {
         mNextPointID = mNextPointID + 1;
         return mNextPointID;
 */
+    }
+
+    //This tells what the next point ID might be, but doesn't consume the ID
+    public int getPotentialNextPointID() {
+        // TODO: 11/6/2016 need to figure out what to do about point ids
+        return (int) (System.currentTimeMillis() & 0xfffffff);
+
     }
 
 
@@ -179,10 +187,10 @@ public class Prism4DProject  {
     public void                    setPoints(ArrayList<Prism4DPoint> points) {mPoints = points;  }
 
     public Prism4DProjectSettings getSettings()                                {return mSettings; }
-    public void                 setSettings(Prism4DProjectSettings settings) {mSettings = settings;}
+    public void                   setSettings(Prism4DProjectSettings settings) {mSettings = settings;}
 
-
-
+    public ArrayList<Prism4DPicture> getPictures() {  return mPictures; }
+    public void setPictures(ArrayList<Prism4DPicture> pictures) {mPictures = pictures;  }
 
     /*************************************/
     /*          Static Methods           */
@@ -294,6 +302,7 @@ public class Prism4DProject  {
     /*          Member Methods           */
     /*************************************/
 
+    //returns null if the point is not found on the project
     public Prism4DPoint getPoint(int pointID){
         Prism4DPoint point;
         int last = mPoints.size();
@@ -346,6 +355,23 @@ public class Prism4DProject  {
             return 0;
         }
     }
+
+    public boolean addPicture(Prism4DPicture picture){
+        return getPictures().add(picture);
+    }
+
+    public boolean addPoint (Prism4DPoint point){
+        return getPoints().add(point);
+    }
+
+    public int getSize(){
+        return getPoints().size();
+    }
+
+    public boolean removePoint(Prism4DPoint point){
+        return mPoints.remove(point);
+    }
+
 
 
 }

@@ -58,6 +58,10 @@ public class Prism4DPointAdapter extends RecyclerView.Adapter<Prism4DPointAdapte
     public void removeItem(int position, int projectID) {
         Prism4DPoint point = mPointList.get(position);
 
+        //remove the pictures from the point
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        projectManager.removePicturesFromPoint(point);
+
         //Can't maintain the project's point list directly
         //Have to ask the pointManager to do it
         Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();

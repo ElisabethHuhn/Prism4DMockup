@@ -1,3 +1,4 @@
+<!-- Everything on the screen has to scroll horizontally -->
 <HorizontalScrollView
     xmlns:android = "http://schemas.android.com/apk/res/android"
     xmlns:tools   = "http://schemas.android.com/tools"
@@ -39,7 +40,6 @@
                 />
 
 
-            <!-- Everything on the screen has to scroll horizontally -->
             <!-- rest of the screen -->
             <LinearLayout
                 android:orientation=  "vertical"

@@ -47,6 +47,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_POINT =            "Point";
     public static final String TABLE_COORDINATE_EN =    "CoordinateEN";
     public static final String TABLE_COORDINATE_LL =    "CoordinateLL";
+    public static final String TABLE_PICTURE =          "Picture";
     public static final String TABLE_GLOBAL_DATA   =    "GlobalData";
 
 
@@ -152,6 +153,9 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String POINT_ID             = "point_id";
     public static final String POINT_FOR_PROJECT_ID = "point_project_id";
     public static final String POINT_ISA_COORDINATE_ID =  "point_coordinate_ID";
+    public static final String POINT_OFFSET_DISTANCE =  "point_offset_distance";
+    public static final String POINT_OFFSET_HEADING =  "point_offset_heading";
+    public static final String POINT_OFFSET_ELEVATION =  "point_offset_elevation";
     public static final String POINT_FEATURE_CODE   = "point_feature_code";
     public static final String POINT_NOTES          = "point_notes";
     public static final String POINT_HDOP           = "point_hdop";
@@ -170,6 +174,9 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             POINT_ID                + " INTEGER, " +
             POINT_FOR_PROJECT_ID    + " INTEGER, " +
             POINT_ISA_COORDINATE_ID + " INTEGER, " +
+            POINT_OFFSET_DISTANCE   + " REAL, "    +
+            POINT_OFFSET_HEADING    + " REAL, "    +
+            POINT_OFFSET_ELEVATION  + " REAL, "    +
             POINT_FEATURE_CODE      + " TEXT, "    +
             POINT_NOTES             + " TEXT, "    +
             POINT_HDOP              + " REAL, "    +
@@ -180,6 +187,8 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             POINT_VRMS              + " REAL, "    +
             KEY_CREATED_AT          + " INTEGER"   + ")";
 
+
+
     /*****************************************************/
     /********   EN Coordinates        ********************/
     /*****************************************************/
@@ -189,6 +198,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_PROJECT_ID    = "coord_project_id";
     public static final String COORDINATE_POINT_ID      = "coord_point_id";
     public static final String COORDINATE_TYPE          = "coord_type";
+    public static final String COORDINATE_VALID_COORD   = "coord_valid_coord";//BOOLEAN  no-0/1-yes
     public static final String COORDINATE_EN_EASTING    = "coord_en_easting";
     public static final String COORDINATE_EN_NORTHING   = "coord_en_northing";
     public static final String COORDINATE_EN_ELEVATION  = "coord_en_elevation";
@@ -198,7 +208,6 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_EN_DATUM      = "coord_en_datum";       //eg WGS84
     public static final String COORDINATE_EN_CONVERGENCE = "coord_en_convergence" ; //
     public static final String COORDINATE_EN_SCALE      = "coord_en_scale";
-    public static final String COORDINATE_EN_VALID_COORDINATE = "coord_en_valid_coordinate";
 
 
     //create project table
@@ -208,7 +217,8 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_ID                   + " INTEGER, "   +
             COORDINATE_PROJECT_ID           + " INTEGER, "   +
             COORDINATE_POINT_ID             + " INTEGER, "   +
-            COORDINATE_TYPE + " TEXT, "      +
+            COORDINATE_TYPE                 + " INTEGER, "   +
+            COORDINATE_VALID_COORD          + " INTEGER, "   +
             COORDINATE_EN_EASTING           + " REAL, "      +
             COORDINATE_EN_NORTHING          + " REAL, "      +
             COORDINATE_EN_ELEVATION         + " REAL, "      +
@@ -218,7 +228,6 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_EN_DATUM             + " TEXT, "      +
             COORDINATE_EN_CONVERGENCE       + " REAL, "      +
             COORDINATE_EN_SCALE             + " REAL, "      +
-            COORDINATE_EN_VALID_COORDINATE  + " INTEGER, "   +
             KEY_CREATED_AT                  + " DATETIME"  + ")";
 
 
@@ -233,18 +242,19 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     //public static final String COORDINATE_PROJECT_ID         = "coord_project_id";
     //public static final String COORDINATE_POINT_ID           = "coord_point_id";
     //public static final String COORDINATE_TYPE               = "coord_type";
+    //public static final String COORDINATE_VALID_COORD        = "coord_valid_coord";//BOOLEAN  no-0/1-yes
+
     public static final String COORDINATE_LL_TIME              = "coord_ll_time";
     public static final String COORDINATE_LL_LATITUDE          = "coord_ll_latitude";
-    public static final String COORDINATE_LL_LATITUDE_DEGREE   = "coord_ll_latitude_degree";
-    public static final String COORDINATE_LL_LATITUDE_MINUTE   = "coord_ll_latitude_minute";
-    public static final String COORDINATE_LL_LATITUDE_SECOND   = "coord_ll_latitude_second";
+    //public static final String COORDINATE_LL_LATITUDE_DEGREE   = "coord_ll_latitude_degree";
+    //public static final String COORDINATE_LL_LATITUDE_MINUTE   = "coord_ll_latitude_minute";
+    //public static final String COORDINATE_LL_LATITUDE_SECOND   = "coord_ll_latitude_second";
     public static final String COORDINATE_LL_LONGITUDE         = "coord_ll_longitude";
-    public static final String COORDINATE_LL_LONGITUDE_DEGREE  = "coord_ll_longitude_degree";
-    public static final String COORDINATE_LL_LONGITUDE_MINUTE  = "coord_ll_longitude_minute";
-    public static final String COORDINATE_LL_LONGITUDE_SECOND  = "coord_ll_longitude_second";
+    //public static final String COORDINATE_LL_LONGITUDE_DEGREE  = "coord_ll_longitude_degree";
+    //public static final String COORDINATE_LL_LONGITUDE_MINUTE  = "coord_ll_longitude_minute";
+    //public static final String COORDINATE_LL_LONGITUDE_SECOND  = "coord_ll_longitude_second";
     public static final String COORDINATE_LL_ELEVATION         = "coord_ll_elevation" ;
     public static final String COORDINATE_LL_GEOID             = "coord_ll_geoid";
-    public static final String COORDINATE_LL_VALID_COORDINATE  = "coord_ll_valid_coordinate";
 
 
     //create project table
@@ -254,21 +264,51 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_ID                   + " INTEGER, " +
             COORDINATE_PROJECT_ID           + " INTEGER, " +
             COORDINATE_POINT_ID             + " INTEGER, " +
-            COORDINATE_TYPE                 + " TEXT, "    +
-            COORDINATE_LL_TIME              + " REAL"      +
-            COORDINATE_LL_LATITUDE          + " REAL"      +
-            COORDINATE_LL_LATITUDE_DEGREE   + " INTEGER"   +
-            COORDINATE_LL_LATITUDE_MINUTE   + " INTEGER"   +
-            COORDINATE_LL_LATITUDE_SECOND   + " REAL"      +
-            COORDINATE_LL_LONGITUDE         + " REAL"      +
-            COORDINATE_LL_LONGITUDE_DEGREE  + " INTEGER"   +
-            COORDINATE_LL_LONGITUDE_MINUTE  + " INTEGER"   +
-            COORDINATE_LL_LONGITUDE_SECOND  + " REAL"      +
-            COORDINATE_LL_ELEVATION         + " REAL"      +
-            COORDINATE_LL_GEOID             + " REAL"      +
-            COORDINATE_LL_VALID_COORDINATE  + " INTEGER"   +
-            KEY_CREATED_AT                  + " DATETIME"  + ")";
+            COORDINATE_TYPE                 + " INTEGER, " +
+            COORDINATE_VALID_COORD          + " INTEGER, " +
 
+            COORDINATE_LL_TIME              + " REAL, "    +
+            COORDINATE_LL_LATITUDE          + " REAL, "    +
+     /*
+            COORDINATE_LL_LATITUDE_DEGREE   + " INTEGER, " +
+            COORDINATE_LL_LATITUDE_MINUTE   + " INTEGER, " +
+            COORDINATE_LL_LATITUDE_SECOND   + " REAL, "    +
+    */
+            COORDINATE_LL_LONGITUDE         + " REAL, "    +
+    /*
+            COORDINATE_LL_LONGITUDE_DEGREE  + " INTEGER, " +
+            COORDINATE_LL_LONGITUDE_MINUTE  + " INTEGER, " +
+            COORDINATE_LL_LONGITUDE_SECOND  + " REAL, "    +
+    */
+            COORDINATE_LL_ELEVATION         + " REAL, "    +
+            COORDINATE_LL_GEOID             + " REAL, "    +
+            KEY_CREATED_AT                  + " DATETIME " + ")";
+
+
+    /*****************************************************/
+    /************ Picture File   *************************/
+    /*****************************************************/
+
+    //Project Column Names
+    public static final String PICTURE_ID =         "pict_id";
+    public static final String PICTURE_PROJECT_ID = "pict_project_id";
+    public static final String PICTURE_POINT_ID =   "pict_point_id";
+    public static final String PICTURE_PATH_NAME =  "pict_path_name";
+    public static final String PICTURE_FILE_NAME =  "pict_file_name";
+
+
+    //create project table
+    //NOTE: Dates are stored as long, NOT as a Date.
+    //      The conversion is done when CV is created and when Cursor is translated
+    private static final String CREATE_TABLE_PICTURE = "CREATE TABLE " +
+            TABLE_PICTURE           + "("            +
+            KEY_ID                  + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            PICTURE_ID              + " TEXT, "      +
+            PICTURE_PROJECT_ID      + " INTEGER, "   +
+            PICTURE_POINT_ID        + " INTEGER, "   +
+            PICTURE_PATH_NAME       + " TEXT, "      +
+            PICTURE_FILE_NAME       + " TEXT, "      +
+            KEY_CREATED_AT          + " DATETIME"    + ")";
 
 
     /*****************************************************/
@@ -339,12 +379,15 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db){
+        int returnCode = 0;
         //create the tables using the pre-defined SQL
         db.execSQL(CREATE_TABLE_PROJECT);
         db.execSQL(CREATE_TABLE_PROJECT_SETTINGS);
         db.execSQL(CREATE_TABLE_POINT);
-        db.execSQL(CREATE_TABLE_COORDINATE_EN);
+
         db.execSQL(CREATE_TABLE_COORDINATE_LL);
+        db.execSQL(CREATE_TABLE_COORDINATE_EN);
+        db.execSQL(CREATE_TABLE_PICTURE);
         db.execSQL(CREATE_TABLE_GLOBAL_DATA);
     }
 
@@ -392,12 +435,12 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     /************************************************/
 
     //*************************** CREATE *************************************
-    public void add(SQLiteDatabase db,
+    public long add(SQLiteDatabase db,
                     String   table,
                     String   nullColumnHack,
                     ContentValues  values){
         // Inserting Rows
-        db.insert(table, null, values);
+        return db.insert(table, null, values);
         //db.close(); //never close the db instance. Just leave the connection open
     }
 
@@ -446,6 +489,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
         //Actually, this is just a pass through to the delete method
         return (delete(db, table, where_clause, where_args));
+
     }
 
 

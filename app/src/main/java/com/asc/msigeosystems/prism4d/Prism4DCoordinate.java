@@ -16,6 +16,12 @@ public abstract class Prism4DCoordinate {
     public static final String sCoordinateTypeUTM   = "UTM";
     public static final String sCoordinateTypeSPCS  = "SPCS";
 
+    public static final int sCoordinateDBTypeUnknown = -1;
+    public static final int sCoordinateDBTypeWGS84 = 0;
+    public static final int sCoordinateDBTypeNAD83 = 1;
+    public static final int sCoordinateDBTypeUTM   = 2;
+    public static final int sCoordinateDBTypeSPCS  = 3;
+
     public static final String sCoordinateTypeClassWGS84 = "Prism4DCoordinateWGS84";
     public static final String sCoordinateTypeClassNAD83 = "Prism4DCoordinateNAD83";
     public static final String sCoordinateTypeClassUTM   = "Prism4DCoordinateUTM";
@@ -36,6 +42,7 @@ public abstract class Prism4DCoordinate {
     protected int mProjectID; //May or may not describe a point
     protected int mPointID;   //These will be null if not describing a point
 
+    protected boolean      mValidCoordinate = true;
 
     /***********************************************************/
     /*****    Static methods                             *******/
@@ -104,6 +111,10 @@ public abstract class Prism4DCoordinate {
     public void setPointID(int pointID) { mPointID = pointID; }
 
 
+    public void    setValidCoordinate(boolean validCoordinate){ this.mValidCoordinate = validCoordinate;}
+    public boolean isValidCoordinate() {
+        return mValidCoordinate;
+    }
 
 
     /***********************************************************/

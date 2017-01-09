@@ -74,61 +74,11 @@ public class Prism4DCoordinateManager {
     //******************  CREATE *******************************************
 
 
-    //This routine not only adds to the in memory list, but also to the DB
-    //If the coordinate is NOT already in memory on the point, it is added, else it is updated
-    //It is added/updated in the DB regardless
-    public boolean add(Prism4DProject project, Prism4DPoint point, Prism4DCoordinate coordinate){
-
-        boolean returnCode = false;
-        if ((project == null) || (point == null) || (coordinate == null)) return returnCode;
-
-        Prism4DCoordinate pointCoordinate = point.getCoordinate();
-        //bail if the coordinate is not fully created
-        if (pointCoordinate.getCoordinateID() == 0) return returnCode;
-        
-        if (( pointCoordinate.getCoordinateID() == point.getHasACoordinateID())){
-                //The coordinate already exists, update it rather than add it
-            // TODO: 11/26/2016 Need to write update routine
-            returnCode = addToPoint (point, coordinate, true);
-        } else {
-            returnCode = addToPoint(point, coordinate, true);
-
-        }
-        return returnCode;
-
-    }//end public add()
-
-
-    //The routine that actually adds the instance to in memory list and
-    // potentially (third boolean parameter) to the DB
-    public boolean addToPoint(Prism4DPoint point, Prism4DCoordinate coordinate, boolean addToDBToo){
-        //pointID on point must match the point on the coordinate
-        if (point.getPointID() != coordinate.getPointID()) return false;
-        point.setCoordinate(coordinate);
-
-        if (addToDBToo){
-            Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            if (!databaseManager.addCoordinate(coordinate)){
-                return false;
-            }
-        }
-        return true;
-
-    }//end of addToPoint
 
 
 
     //******************  READ *******************************************
 
-
-
-    //Returns null if it's not in the DB
-    public Prism4DCoordinate getCoordinateFromDB (int coordinateID, int projectID){
-        if (coordinateID == 0) return null;
-        //Ignore the in memory list, just go straight to the DB
-        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-        return databaseManager.getCoordinateFromDB(coordinateID, projectID);
-    }
 
 
     //******************  UPDATE *******************************************
@@ -149,44 +99,74 @@ public class Prism4DCoordinateManager {
     /********************************************/
 
     //returns the ContentValues object needed to add/update the COORDINATE to/in the DB
-    public ContentValues getCoordinateCV(Prism4DCoordinate coordinate){
+    public ContentValues getCVFromCoordinate(Prism4DCoordinate coordinate){
         //convert the Prism4DCoordinate object into a ContentValues object containing a coordinate
         ContentValues cvCoordinate = new ContentValues();
         //put(columnName, value);
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_ID,       coordinate.getCoordinateID());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_PROJECT_ID,  coordinate.getProjectID());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_POINT_ID,     coordinate.getPointID());
+
         CharSequence coordinateType = coordinate.getCoordinateType();
-        cvCoordinate.put(Prism4DSqliteOpenHelper.PROJECT_COORDINATE_TYPE, coordinateType.toString());
+        if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84)){
+            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_TYPE,
+                             Prism4DCoordinate.sCoordinateDBTypeWGS84);
+
+        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83)){
+            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_TYPE,
+                             Prism4DCoordinate.sCoordinateDBTypeNAD83);
+
+        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM)){
+            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_TYPE,
+                             Prism4DCoordinate.sCoordinateDBTypeUTM);
+
+        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS)){
+            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_TYPE,
+                             Prism4DCoordinate.sCoordinateDBTypeSPCS);
+        } else {
+            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_TYPE,
+                             Prism4DCoordinate.sCoordinateDBTypeUnknown);
+        }
+
+        int valCoord = 0; //false
+        boolean validCoordinate = coordinate.isValidCoordinate();
+        if (validCoordinate)valCoord = 1;//true;
+
+        cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_VALID_COORD, valCoord);
+
 
         //The rest of the attributes depend upon the specific subtype
 
         if ((coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84))||
             (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83))    ){
+
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_TIME,
                                             ((Prism4DCoordinateLL)coordinate).getTime());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitude());
+ /*
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_DEGREE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeDegree());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_MINUTE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeMinute());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_SECOND,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeSecond());
+   */
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitude());
+/*
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_DEGREE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeDegree());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_MINUTE,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeMinute());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_SECOND,
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeSecond());
+ */
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_ELEVATION,
                                             ((Prism4DCoordinateLL)coordinate).getElevation());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_GEOID,
                                             ((Prism4DCoordinateLL)coordinate).getGeoid());
-            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_VALID_COORDINATE,
-                                            ((Prism4DCoordinateLL)coordinate).isValidCoordinate());
+
 
         } else {
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_EN_EASTING,
@@ -207,8 +187,7 @@ public class Prism4DCoordinateManager {
                                             ((Prism4DCoordinateEN)coordinate).getConvergence());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_EN_SCALE,
                                             ((Prism4DCoordinateEN)coordinate).getScale());
-            cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_EN_VALID_COORDINATE,
-                                            ((Prism4DCoordinateEN)coordinate).isValidCoordinate());
+
         }
         return cvCoordinate;
     }
@@ -230,33 +209,38 @@ public class Prism4DCoordinateManager {
 
         cursor.moveToPosition(position);
 
-        CharSequence coordinateType = cursor.getString(
+        int coordinateType = cursor.getInt(
                                     cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_TYPE));
-        if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84)) {
+
+        if (coordinateType == Prism4DCoordinate.sCoordinateDBTypeWGS84) {
             Prism4DCoordinateWGS84 coordinate = new Prism4DCoordinateWGS84();
             coordinate = (Prism4DCoordinateWGS84) getLLCoordinateFromCursor(coordinate, cursor);
+
             coordinate.setCoordinateType();
             return coordinate;
 
-        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83)) {
+        } else if (coordinateType == Prism4DCoordinate.sCoordinateDBTypeNAD83) {
                 Prism4DCoordinateNAD83 coordinate = new Prism4DCoordinateNAD83();
                 getLLCoordinateFromCursor( coordinate, cursor);
                 coordinate = (Prism4DCoordinateNAD83) getLLCoordinateFromCursor(coordinate, cursor);
+
             coordinate.setCoordinateType();
             return coordinate;
 
 
-        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM)) {
+        } else if (coordinateType == Prism4DCoordinate.sCoordinateDBTypeUTM) {
             Prism4DCoordinateUTM coordinate = new Prism4DCoordinateUTM();
             getENCoordinateFromCursor( coordinate, cursor);
             coordinate = (Prism4DCoordinateUTM)getENCoordinateFromCursor(coordinate, cursor);
+
             coordinate.setCoordinateType();
             return coordinate;
 
-        } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS)) {
+        } else if (coordinateType == Prism4DCoordinate.sCoordinateDBTypeSPCS) {
             Prism4DCoordinateSPCS coordinate = new Prism4DCoordinateSPCS();
             getENCoordinateFromCursor( coordinate, cursor);
             coordinate = (Prism4DCoordinateSPCS) getENCoordinateFromCursor(coordinate, cursor);
+
             coordinate.setCoordinateType();
             return coordinate;
 
@@ -266,58 +250,57 @@ public class Prism4DCoordinateManager {
 
     private Prism4DCoordinateLL getLLCoordinateFromCursor(Prism4DCoordinateLL coordinate,
                                                            Cursor cursor){
-        coordinate.setCoordinateID(
-                cursor.getInt  (
+        coordinate.setCoordinateID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_ID)));
-        coordinate.setProjectID(
-                cursor.getInt  (
+        coordinate.setProjectID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_PROJECT_ID)));
-        coordinate.setPointID(
-                cursor.getInt  (
+        coordinate.setPointID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_POINT_ID)));
 
-        coordinate.setLatitude(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE)));
-        coordinate.setLatitudeDegree(
-                cursor.getInt(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_DEGREE)));
-        coordinate.setLatitudeMinute(
-                cursor.getInt(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_MINUTE)));
-        coordinate.setLatitudeSecond(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_SECOND)));
+        //type is set in calling routine
 
-
-        coordinate.setLongitude(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE)));
-        coordinate.setLongitudeDegree(
-                cursor.getInt(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_DEGREE)));
-        coordinate.setLongitudeMinute(
-                cursor.getInt(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_MINUTE)));
-        coordinate.setLongitudeSecond(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_SECOND)));
-
-
-        coordinate.setElevation(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_ELEVATION)));
-        coordinate.setGeoid(
-                cursor.getDouble(
-                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_GEOID)));
 
         int valid = cursor.getInt(
-                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_VALID_COORDINATE));
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_VALID_COORD));
         if (valid == 0) {
             coordinate.setValidCoordinate(false);
         }else{
             coordinate.setValidCoordinate(true);
         }
+
+
+        coordinate.setTime(cursor.getLong (
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_TIME)));
+
+        coordinate.setLatitude(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE)));
+  /*
+        coordinate.setLatitudeDegree(cursor.getInt(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_DEGREE)));
+        coordinate.setLatitudeMinute(cursor.getInt(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_MINUTE)));
+        coordinate.setLatitudeSecond(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LATITUDE_SECOND)));
+*/
+
+        coordinate.setLongitude(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE)));
+ /*
+        coordinate.setLongitudeDegree(cursor.getInt(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_DEGREE)));
+        coordinate.setLongitudeMinute(cursor.getInt(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_MINUTE)));
+        coordinate.setLongitudeSecond(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_SECOND)));
+*/
+
+        coordinate.setElevation(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_ELEVATION)));
+        coordinate.setGeoid(cursor.getDouble(
+                        cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_GEOID)));
+
+        //Degrees, minutes, seconds are not stored in the DB
+        coordinate.convertDDToDMS();
 
         return coordinate;
     }
@@ -326,28 +309,33 @@ public class Prism4DCoordinateManager {
 
     private Prism4DCoordinateEN getENCoordinateFromCursor(Prism4DCoordinateEN coordinate,
                                                           Cursor cursor){
-        coordinate.setCoordinateID(
-                cursor.getInt  (
+        coordinate.setCoordinateID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_ID)));
-        coordinate.setProjectID(
-                cursor.getInt  (
+        coordinate.setProjectID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_PROJECT_ID)));
-        coordinate.setPointID(
-                cursor.getInt  (
+        coordinate.setPointID(cursor.getInt  (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_POINT_ID)));
 
-        coordinate.setEasting(
-                cursor.getDouble(
+        //type set in caller of this routine
+
+
+        int valid = cursor.getInt(
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_VALID_COORD));
+        if (valid == 0) {
+            coordinate.setValidCoordinate(false);
+        }else{
+            coordinate.setValidCoordinate(true);
+        }
+
+
+        coordinate.setEasting(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_EASTING)));
-        coordinate.setNorthing(
-                cursor.getDouble(
+        coordinate.setNorthing(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_NORTHING)));
-        coordinate.setElevation(
-                cursor.getDouble(
+        coordinate.setElevation(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_ELEVATION)));
 
-        coordinate.setZone(
-                cursor.getInt(
+        coordinate.setZone(cursor.getInt(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_ZONE)));
 
 
@@ -360,24 +348,13 @@ public class Prism4DCoordinateManager {
         coordinate.setHemisphere(hemisphere.charAt(0)  ) ;
 
 
-        coordinate.setDatum(
-                cursor.getString(
+        coordinate.setDatum(cursor.getString(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_DATUM)));
-        coordinate.setConvergence(
-                cursor.getDouble(
+        coordinate.setConvergence(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_CONVERGENCE)));
-        coordinate.setScale(
-                cursor.getDouble(
+        coordinate.setScale(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_ELEVATION)));
 
-
-        int valid = cursor.getInt(
-                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_VALID_COORDINATE));
-        if (valid == 0) {
-            coordinate.setValidCoordinate(false);
-        }else{
-            coordinate.setValidCoordinate(true);
-        }
 
         return coordinate;
     }

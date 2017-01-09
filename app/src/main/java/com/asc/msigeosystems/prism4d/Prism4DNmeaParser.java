@@ -20,6 +20,17 @@ public class Prism4DNmeaParser {
         public boolean parse(String [] tokens, Prism4DNmea nemaInfo);
     }
 
+    private static Prism4DNmeaParser ourInstance ;
+
+    public static Prism4DNmeaParser getInstance() {
+        if (ourInstance == null){
+            ourInstance = new Prism4DNmeaParser();
+        }
+        return ourInstance;
+    }
+
+
+
     // utils
 
     //Latitude arrives with format DDMM.MMM... with variable number of decimals

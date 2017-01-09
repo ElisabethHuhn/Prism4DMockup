@@ -712,15 +712,26 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 5/11/16
      */
     public void switchToProjectEditScreen(){
-        //create the path for Edit
-        Prism4DPath path = new Prism4DPath(Prism4DPath.sEditTag);
 
-        Fragment fragment = MainPrism4DProjectsListFragment.newInstance(path);
-        String tag        = sProjectEditTag;
-        int subTitle      = R.string.action_edit;
+        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
 
-        switchScreen(fragment, tag);
-        switchSubtitle(subTitle);
+        Prism4DProject project = constantsAndUtilities.getOpenProject();
+
+        if (project != null) {
+            //if a project is open, assume that is the one the user wants to edit
+            switchToProjectEditScreen(project);
+        } else {
+
+            //create the path for Edit
+            Prism4DPath path = new Prism4DPath(Prism4DPath.sEditTag);
+
+            Fragment fragment = MainPrism4DProjectsListFragment.newInstance(path);
+            String tag = sProjectEditTag;
+            int subTitle = R.string.action_edit;
+
+            switchScreen(fragment, tag);
+            switchSubtitle(subTitle);
+        }
 
     }
 
@@ -886,7 +897,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                                          Prism4DPath pointPath){
 
 
-        Fragment fragment =  MainPrism4DPointsListFragment.newInstance(projectID,
+        Fragment fragment =  MainPrism4DPointListFragment.newInstance(projectID,
                                                                        pointPath);
         switchScreen(fragment, getPointTag(pointPath));
     }
@@ -900,7 +911,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
                                          Prism4DPath    pointPath){
 
 
-        Fragment fragment =  MainPrism4DPointsListFragment.newInstance(project.getProjectID(),
+        Fragment fragment =  MainPrism4DPointListFragment.newInstance(project.getProjectID(),
                                                                        pointPath);
 
         switchScreen(fragment, getPointTag(pointPath));
@@ -972,7 +983,7 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      */
     public void switchToCollectPointsScreen(){
 
-        Fragment fragment = new MainPrism4DPointsCollectFragment();
+        Fragment fragment = new MainPrism4DPointCollectFragment();
         String tag        = sCollectPointsTag;
 
         switchScreen(fragment, tag);

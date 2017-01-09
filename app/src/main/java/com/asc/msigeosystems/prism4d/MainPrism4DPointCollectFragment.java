@@ -6,7 +6,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-
 import android.graphics.Color;
 import android.location.GpsSatellite;
 import android.location.GpsStatus;
@@ -30,6 +29,8 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.LinearLayout;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -46,6 +47,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.maps.model.Polyline;
 import com.google.android.gms.maps.model.PolylineOptions;
+import com.google.maps.android.SphericalUtil;
 
 import java.io.File;
 import java.io.IOException;
@@ -63,7 +65,7 @@ import static android.provider.CalendarContract.CalendarCache.URI;
  * when the user is making point measurements in the field
  * Created by Elisabeth Huhn on 4/13/2016.
  */
-public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMapReadyCallback,
+public class MainPrism4DPointCollectFragment extends Fragment implements //OnMapReadyCallback,
                                                                           GpsStatus.Listener,
                                                                           LocationListener,
                                                                           GpsStatus.NmeaListener {
@@ -71,6 +73,12 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     //DEFINE constants / literals
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
     public static final int MY_PERMISSIONS_REQUEST_SAVE_PICTURES = 2;
+
+    private static final int OFFSET_NEXT_ONLY  = 0;
+    private static final int OFFSET_ALL_FUTURE = 1;
+    private static final int OFFSET_ID_CONSTANT = 100;
+
+
 
 
 
@@ -136,39 +144,58 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     /****     variables for processing      ****/
     /*******************************************/
 
+    /****************************************************************/
+    /****     variables to be saved on configuration change      ****/
+    /****************************************************************/
+
     //Screen Focus
     private double mLatitudeScreenFocus;
     private double mLongitudeScreenFocus;
 
+    //Reconfiguration in the middle of camera or notes is problematic
 
-    //Offset Positions
-    // if the isOffsetResetAfterOnePoint flag is true, apply it once, then reset offsets to zero
-    // if false, just keep applying the offset
-    private boolean isOffsetResetAfterOnePoint = false;
-    //if false, the first dialog was cancled
-    private boolean isOffsetCancle = true;
-    private double mOffsetLatitude   = 0d;
-    private double mOffsetLongitude  = 0d;
-    private double mOffsetElevation  = 0d;
+    //set by determineFocus()
+    //the first step of picture or notes
+    private boolean isFocusOnPoint = false; //if false, focus on the project
+    private Marker mFocusMarker;
 
-
+    //Can not take pictures or record notes while the meaning is in progress HOWEVER
+    //The following variables are used in the communication
+    // of one part of the picture/notes process to the next
     //Camera
-     String mCurrentPhotoPath = "";
+    private String mCurrentPhotoPath = "";
+    private String mCurrentPhotoFileName = "";
+    private String mCurrentPhotoTimestamp = "";
 
     //Notes
-    private CharSequence mPointNotes = "";
+    private CharSequence mNotes = "";
+
+
+
+
+    //Offset Positions
+    //Offsets are defined by the user, then used on subsequent point creation events. Meaned or not
+    private double mOffsetDistance   = 0d;
+    private double mOffsetHeading    = 0d;
+    private double mOffsetElevation  = 0d;
+    //The id of the radio button serves as the
+    // flag for how many points the offset is to be applied to
+    private int    mOffsetCheckedID  = OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT;
 
 
     //variables needed to keep track of location
     private LocationManager     mLocationManager;
-    private Location            mCurLocation;
+    //private Location            mCurLocation; //unused because we get data from nmea
     private Prism4DNmea         mNmeaData;     //latest nmea sentence received
-    private Prism4DNmeaParser   mNmeaParser = new Prism4DNmeaParser();
+
+    //needs to be removed,
+    // but have to figure out how to get this info from NMEA rather than the LocationManager
     private GpsStatus           mGpsStatus = null;
 
 
 
     //variables for the meaning process
+    //Meaning MUST continue through reconfiguration, but intermediate points will be lost
     private boolean isMeanInProgress = false;
     private boolean isFirstPointInMean = false;
     private boolean isLastPointInMean = false;
@@ -177,6 +204,9 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     private int     mRawReadings;
 
     private ArrayList<Prism4DCoordinateWGS84> mMeanCoordinateList;
+
+
+
 
     //Quality fields to be added to the new point
     private double       mHdop = 0d;
@@ -189,39 +219,70 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
 
 
 
+    //variables for the map
+
+
+    // TODO: 1/8/2017 Think about maintaining a list of points, rather than a list of markers
+    //then use the "add all points" routine to recreate the map
+
+
+    //Markers that are actually on the map
+    private ArrayList<Marker> mMarkers     = new ArrayList<>();
+    //Markers that are within the zoom boundaries
+    private ArrayList<Marker> mZoomMarkers = new ArrayList<>();
+
+    //only used at very beginning of app to mark end of initialization
+    private boolean      isMapInitialized = false;
+    //indicates whether map should be automatically resized when a point is added
+    private boolean      isAutoResizeOn = true;
+
+
+
+
+    /******************************************************************/
+    /****     variables to be ignored on configuration change      ****/
+    /******************************************************************/
     //Test Data
     private int                     mTestDataCounter = 0;
     private Prism4DTestLocationData mTestData;
     private int                     mTestDataMax = 13;
 
 
-    //variables for the map
 
+
+
+
+
+    //Map data that doesn't need to survive a configuration change
+
+    //The map will need to be reinitialized after each reconfiguration change
     private MapView      mMapView;
     private GoogleMap    mMap;
-    private float        mMapZoom;
-    private LatLng       mLastPoint;
-    private int          mPointsPlotted;
+
     private Marker       mLastMarkerAdded;
-    //only used at very beginning of app to mark end of initialization
-    private boolean      isMapCentered = false;
-    //indicates whether map should be automatically resized when a point is added
-    private boolean      isAutoResizeOn = true;
 
-    private PolylineOptions mLineContainer;
-    private Polyline     mPointsLine;
-
+    //buildNewZoom(markerList, doZoom) will rebuild these from mZoomMarkers
+    //boolean doZoom controls whether the map is actually updated
     private LatLngBounds.Builder mZoomBuilder;
     private LatLngBounds         mZoomBounds;
 
 
+    //redrawLineBetweenMarkers() recreates these variables
+    // and draws the marker line from points in mMarkers
+    private Polyline     mPointsLine;
+    private PolylineOptions mLineOptions;
+
+
+
+    //this recreates itself if it becomes null on configuration change
+    private Prism4DNmeaParser   mNmeaParser = new Prism4DNmeaParser();
 
 
 
     /**********************************************************************/
     /*                Constructor                                         */
     /**********************************************************************/
-    public MainPrism4DPointsCollectFragment() {
+    public MainPrism4DPointCollectFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -245,8 +306,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         //Wire up the other UI widgets so they can handle events later
         wireWidgets(v);
 
-        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
-        CharSequence projectName = constantsAndUtilities.getOpenProject().getProjectName();
+        CharSequence projectName = getOpenProject().getProjectName();
 
         //Inform the user of the name of the open project
         mCurrentProjectField.setText("Current File: "+projectName);
@@ -462,7 +522,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     // called when the listener is notified with a location update from the GPS
     @Override
     public void onLocationChanged(Location loc) {
-        mCurLocation = new Location(loc); // copy location
+        //mCurLocation = new Location(loc); // copy location
     }
 
 
@@ -478,6 +538,10 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
 
          try {
             //create an object with all the fields from the string
+             if (mNmeaParser == null){
+                 Prism4DNmeaParser nmeaParser = Prism4DNmeaParser.getInstance();
+             }
+
              nmeaData = mNmeaParser.parse(nmea);
              if (nmeaData == null)return;
 
@@ -509,9 +573,9 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                         mFixedReadings++;
                         return;
                     }
-                    if (!isMapCentered){
+                    if (!isMapInitialized){
                         centerMap(nmeaData);
-                        isMapCentered = true;
+                        isMapInitialized = true;
                     }
                     //So now, store the sentence
                     mNmeaData = nmeaData;
@@ -553,9 +617,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         if (type == null)return null;
 
         //project has to be open
-        Prism4DConstantsAndUtilities constantsAndUtilities =
-                                                Prism4DConstantsAndUtilities.getInstance();
-        int openProjectID = constantsAndUtilities.getOpenProjectID();
+        int openProjectID = getOpenProjectID();
         if (openProjectID == 0) return null;
 
         int coordinateType = Prism4DCoordinate.getCoordinateTypeFromProjectID(openProjectID);
@@ -595,8 +657,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             }
 
 
-            int precisionDigits = constantsAndUtilities
-                                            .getOpenProject().getSettings().getLocationPrecision();
+            int precisionDigits = getOpenProject().getSettings().getLocationPrecision();
 
             BigDecimal bdTemp = new BigDecimal(nLat).setScale(precisionDigits,RoundingMode.HALF_UP);
             nLat = bdTemp.doubleValue();
@@ -701,9 +762,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         }
 
         //Check if this is the last point to be meaned
-        Prism4DConstantsAndUtilities constantsAndUtilities =
-                                                        Prism4DConstantsAndUtilities.getInstance();
-        Prism4DProject project = constantsAndUtilities.getOpenProject();
+        Prism4DProject project = getOpenProject();
         int lastPoint = project.getSettings().getMeaningNumber();
         if (lastPoint <= mMeanCoordinateList.size())isLastPointInMean = true;
 
@@ -786,7 +845,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     //***********************************************************//
 
     private void initializeMaps(Bundle savedInstanceState, View v){
-        //Full fragment initialization was this:
+        // TODO: 12/27/2016 Figure out how to dynamically resize the map view 
 
         // Gets the MapView from the XML layout and creates it
         mMapView = (MapView) v.findViewById(R.id.map_view);
@@ -851,51 +910,37 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             }
         });
 
-        //use the drag events for remove and / or edit the points
-        mMap.setOnMarkerDragListener(new GoogleMap.OnMarkerDragListener() {
-
-            @Override
-            public void onMarkerDragStart(Marker marker) {
-
-            }
-
-            @Override
-            public void onMarkerDragEnd(Marker marker) {
-                // TODO Auto-generated method stub
-
-            }
-
-            @Override
-            public void onMarkerDrag(Marker marker) {
-                // TODO Auto-generated method stub
-
-            }
-        });
 
         mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener()
         {
 
             @Override
-            public boolean onMarkerClick(Marker marker){
-            Toast.makeText(getActivity(), "Marker Touched",Toast.LENGTH_SHORT).show();
+            public boolean onMarkerClick(Marker marker) {
+                Toast.makeText(getActivity(), "Marker Touched", Toast.LENGTH_SHORT).show();
 
-            Prism4DConstantsAndUtilities constantsAndUtilities =
-                                                        Prism4DConstantsAndUtilities.getInstance();
-            Prism4DProject openProject = constantsAndUtilities.getOpenProject();
-
-            Prism4DCoordinateTag pointMarker = (Prism4DCoordinateTag)marker.getTag();
-            int pointID = pointMarker.getPointID();
-            Prism4DPoint point = openProject.getPoint(pointID);
-            if(point == null){
-                Toast.makeText(getActivity(),R.string.no_point_at_marker,Toast.LENGTH_SHORT).show();
-            } else {
-                askRemoveEditPoint(openProject, point, marker);
+                Prism4DCoordinateTag pointMarker = (Prism4DCoordinateTag) marker.getTag();
+                int pointID = pointMarker.getPointID();
+                Prism4DPoint point = getOpenProject().getPoint(pointID);
+                if (point == null) {
+                    Toast.makeText(getActivity(),
+                                   R.string.no_point_at_marker,
+                                   Toast.LENGTH_SHORT).show();
+                } else {
+                    if (!isMeanInProgress) {
+                        askMarker(point, marker);
+                    }
+                }
+                return false;//true suppresses default marker behavior, false tells system to respond to event also
             }
-            return false;//true suppresses default marker behavior, false tells system to respond to event also
-        }
+        });
 
-    });
-}
+        if (mMarkers == null){
+            mMarkers = new ArrayList<>();
+        }
+        if (mZoomMarkers == null){
+            mZoomMarkers = new ArrayList<>();
+        }
+    }
 
 
 
@@ -924,7 +969,20 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     }
 
     private void wireWidgets(View v){
-        //Current Postion Block of fields and buttons
+        //We need permissions to take pictures with the camera then store the images
+        if (ContextCompat.checkSelfPermission
+                (getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+
+            //used to identify the request in onRequestPermissionsResult()
+            int requestCode = MY_PERMISSIONS_REQUEST_CAMERA;
+            ActivityCompat.requestPermissions(getActivity(),
+                                              new String[] {Manifest.permission.CAMERA,
+                                                       Manifest.permission.WRITE_EXTERNAL_STORAGE },
+                                              requestCode);
+        }
+
+
+        //Current Position Block of fields and buttons
         mCurrentPositionButton = (Button) v.findViewById(R.id.currentPositionButton);
         mCurrentPositionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -978,10 +1036,9 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                         R.string.offset_position_label,
                         Toast.LENGTH_SHORT).show();
 
-                askApplyOffset();
-
-                
-
+                if (!isMeanInProgress) {
+                    askOffsetPosition();
+                }
             }
         });
 
@@ -1001,8 +1058,6 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                     //cancle any process in progress
                     handleCancelMeaning();
                 }
-
-
             }
         });
 
@@ -1028,14 +1083,14 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             @Override
             public void onClick(View v) {
 
-                int mapType = mMap.getMapType();
-                if (mapType == GoogleMap.MAP_TYPE_TERRAIN){
-                    mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
-                } else {
-                    mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                if (!isMeanInProgress) {
+                    int mapType = mMap.getMapType();
+                    if (mapType == GoogleMap.MAP_TYPE_TERRAIN) {
+                        mMap.setMapType(GoogleMap.MAP_TYPE_NONE);
+                    } else {
+                        mMap.setMapType(GoogleMap.MAP_TYPE_TERRAIN);
+                    }
                 }
-
-
             }
         });
 
@@ -1045,48 +1100,12 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             @Override
             public void onClick(View v){
 
-                PackageManager packageManager = getActivity().getPackageManager();
-                boolean hasCamera =
-                        packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
-
-                //In order to take pictures, we must both have a camera and 
-                // Permission to take pictures
-                if (!hasCamera) {
-                    Toast.makeText(getActivity(),
-                            R.string.no_camera_on_this_device,
-                            Toast.LENGTH_SHORT).show();
-                } else if (
-                        ContextCompat.checkSelfPermission(getActivity(),
-                                Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-                    Toast.makeText(getActivity(),
-                            R.string.need_permission_to_take_pictures,
-                            Toast.LENGTH_SHORT).show();
-
-                } else {
-                    /*
-
-                    Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-                    if (takePictureIntent.resolveActivity(packageManager) != null) {
-                        startActivityForResult(takePictureIntent, REQUEST_CODE_IMAGE_CAPTURE);
-                    }
-                    */
-                    //Send off an intent to the camera
-                    dispatchTakePictureIntent();
+                if (!isMeanInProgress) {
+                    handleTakePicture();
                 }
+
             }
         });
-        if (ContextCompat.checkSelfPermission
-                (getActivity(), Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
-            //mPictureButton.setEnabled(false);
-            //used to identify the request in onRequestPermissionsResult()
-
-            int requestCode = MY_PERMISSIONS_REQUEST_CAMERA;
-            ActivityCompat.requestPermissions
-                    (getActivity(),
-                     new String[] {Manifest.permission.CAMERA,
-                                   Manifest.permission.WRITE_EXTERNAL_STORAGE },
-                     requestCode);
-        }
 
 
         //notes Button
@@ -1100,7 +1119,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                         Toast.LENGTH_SHORT).show();
 
                 if (!isMeanInProgress) {
-                    getNotesText();
+                    handleNotes();
                 }
 
             }
@@ -1123,7 +1142,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             }
         });
 
-        //ZOOMOUT Button
+        //ZOOM OUT Button
         mZoomOutButton = (ImageButton) v.findViewById(R.id.zoomOutButton);
         mZoomOutButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -1148,7 +1167,9 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                 Toast.makeText(getActivity(),
                         R.string.zoom_ext_button_label,
                         Toast.LENGTH_SHORT).show();
-                zoomToFit();
+
+                boolean doZoom = true;
+                buildNewZoom(mZoomMarkers, doZoom);
                 isAutoResizeOn = true;
 
             }
@@ -1185,10 +1206,14 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                 if (isMeanInProgress){
                     isMeanInProgress = false;
                     handleCancelMeaning();
+                    //for now, just put up a toast that the button was pressed
+                    Toast.makeText(getActivity(),
+                            R.string.meaning_terminated,
+                            Toast.LENGTH_SHORT).show();
                 } else {
                     //for now, just put up a toast that the button was pressed
                     Toast.makeText(getActivity(),
-                            R.string.no_save,
+                            R.string.exit_without_save,
                             Toast.LENGTH_SHORT).show();
                     //Switch the fragment to the previous fragment.
                     // But the switching happens on the container Activity
@@ -1248,8 +1273,60 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             if (resultCode == Activity.RESULT_OK) {
                 //Ths picture has been successfully taken
                 //record the picture in on the point or the project
-                String temp = mCurrentPhotoPath;
+
+
+                //String temp = mCurrentPhotoPath;
+                //Add the picture to the gallery so the user can see it there
                 galleryAddPic();
+
+                Prism4DProject openProject = getOpenProject();
+
+                //create the picture object, The null is for a point ID
+                Prism4DPicture picture = new Prism4DPicture(mCurrentPhotoTimestamp,
+                        openProject,
+                        null);
+
+                picture.setPathName(mCurrentPhotoPath);
+                picture.setFileName(mCurrentPhotoFileName);
+
+                Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+                //The focus flags tell us where to put the picture
+                if (isFocusOnPoint) {
+
+                    Prism4DPoint point = getPointFromFocus(openProject);
+                    if (point == null){
+                        tellUserNoPoint();
+                        startGps();
+                        return ;
+                    }
+
+                    //add the point id to the picture
+                    picture.setPointID(point.getPointID());
+
+                    //update the point in the DB
+
+                    //No need for a cascading update, only update the picture and the point
+                    if (!projectManager.addPictureToDB(picture)){
+                        Toast.makeText(getActivity(),
+                            R.string.error_adding_picture_to_db,Toast.LENGTH_SHORT).show();
+                    } else {
+                        //add the picture to the point
+                        point.addPicture(picture);
+                    }
+
+                } else {
+
+                    //No need for a cascading update of the project
+                    // and ALLLLL of its subordinate objects.
+                    // Just update the project and the picture in the DB
+                    if (!projectManager.addPictureToDB(picture)){
+                        Toast.makeText(getActivity(),
+                                R.string.error_adding_picture_to_db,Toast.LENGTH_SHORT).show();
+                    } else {
+                        //put the picture on the open project
+                        openProject.addPicture(picture);
+                    }
+                }
                 startGps();
 
 
@@ -1270,6 +1347,30 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                 */
             }
         }
+    }
+
+    private Prism4DPoint getPointFromFocus(Prism4DProject openProject){
+        //put the picture on the point of the marker with current focus
+        Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag) mFocusMarker.getTag();
+        //The following check was done when the picture was started
+        //but it never hurts to check again
+        if ((coordinateTag == null) || (coordinateTag.getPointID() < 1)) {
+
+            return null;
+        }
+        //find the point object the marker stands for
+        Prism4DPoint point = openProject.getPoint(coordinateTag.getPointID());
+
+
+        return point;
+
+    }
+
+    private void tellUserNoPoint(){
+        Toast.makeText(getActivity(),
+                R.string.point_not_created_at_marker_yet,
+                Toast.LENGTH_SHORT).show();
+
     }
 
     private void dispatchTakePictureIntent() {
@@ -1311,10 +1412,8 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         // Create an image file name
         String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
 
-        Prism4DConstantsAndUtilities constantsAndUtilities =
-                                                        Prism4DConstantsAndUtilities.getInstance();
-        Prism4DProject project = constantsAndUtilities.getOpenProject();
-        String imageFileName = project.getProjectName() + timeStamp + "_";
+        Prism4DProject project = getOpenProject();
+        String imageFileName = project.getProjectName() + "_" + timeStamp + "_";
         /*
         //getExternalStoragePublicDirectory() //accessible to all apps and the user
         //with the DIRECTORY_PICTURES argument
@@ -1349,7 +1448,9 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         );
 
         // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoFileName = imageFileName + " ";//won't store in DB without a space at the end
         mCurrentPhotoPath = imageFile.getAbsolutePath();
+        mCurrentPhotoTimestamp = timeStamp;
         return imageFile;
     }
 
@@ -1397,7 +1498,6 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         //set the time
         mMeanTime = 0;
 
-
         //dump any old contents from past meaning processes
         if ((mMeanCoordinateList == null) || (mMeanCoordinateList.size() > 0)){
             mMeanCoordinateList = new ArrayList<>();
@@ -1416,6 +1516,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         mMeanTime          = 0;
 
         mMeanCoordinateList = null;
+        mMarkers.remove(mLastMarkerAdded);
         mLastMarkerAdded.remove();
     }
 
@@ -1444,17 +1545,14 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
 
         //step 1 create point from the open project
         //get the open project
-        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
-        Prism4DProject project = constantsAndUtilities.getOpenProject();
+        Prism4DProject project = getOpenProject();
         Prism4DPoint point = createPoint(project);
-        
 
         //Update the UI with the point id
         mPointIDField.setText(String.valueOf(point.getPointID()));
         //update the meaning coordinate with the point id
         //if locationCoordinate is null, we'll make one for the marker info window soon
         if (locationCoordinate != null)locationCoordinate.setPointID(point.getPointID());
-
 
 
         //step 2 create the WSG coordinate
@@ -1470,6 +1568,35 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
             wgs84Coordinate = getWgsCoordinateFromMean(locationCoordinate);
         }
 
+        //step 2.5 Add the offset position to the location
+
+        if ((mOffsetDistance  != 0) ||
+            (mOffsetHeading   != 0) ||
+            (mOffsetElevation != 0)) {
+
+            //calculate the location using the offset
+            LatLng fromLocation = new LatLng(wgs84Coordinate.getLatitude(), wgs84Coordinate.getLongitude());
+            LatLng toLocation = SphericalUtil.computeOffset(fromLocation, mOffsetDistance, mOffsetHeading);
+
+            //update the coordinaate
+            wgs84Coordinate.setLatitude(toLocation.latitude);
+            wgs84Coordinate.setLongitude(toLocation.longitude);
+            double newElevation = wgs84Coordinate.getElevation() + mOffsetElevation;
+            wgs84Coordinate.setElevation(newElevation);
+
+            //record the offset itself
+            point.setOffsetDistance(mOffsetDistance);
+            point.setOffsetHeading(mOffsetHeading);
+            point.setOffsetElevation(mOffsetElevation);
+
+            //then reset the offsets if it was for a single point
+            if (mOffsetCheckedID == (OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT)) {
+                //reset the offset constants as they have now been applied to a point
+                mOffsetDistance  = 0;
+                mOffsetHeading   = 0;
+                mOffsetElevation = 0;
+            }
+        }
 
         //step 3 determine which kind of coordinate, create it, add to point:
         createCoordinateFromWSG(project, point, wgs84Coordinate);
@@ -1478,7 +1605,23 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         //Step 4 add the point to the project
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
         boolean addToDBToo = true;
-        pointManager.addToProject(project, point, addToDBToo);
+        if (!pointManager.addToProject(project, point, addToDBToo)){
+            Toast.makeText(getActivity(),
+                            getString(R.string.error_adding_point),
+                            Toast.LENGTH_SHORT).show();
+
+            //remove the point from the project
+            if (!project.removePoint(point)){
+                Toast.makeText(getActivity(),
+                        getString(R.string.error_removing_point),
+                        Toast.LENGTH_SHORT).show();
+            }
+
+            //get rid of marker
+            if (mLastMarkerAdded != null){
+                mLastMarkerAdded.remove();
+            }
+        }
 
 
         //step 5 change the final location and color of the marker
@@ -1556,9 +1699,19 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         isAutoResizeOn = false;
     }
 
-    private void handleOffsetPosition() {
-        //ignore the event if meaning is in process
-        if (isMeanInProgress) return;
+
+
+    private void handleNotes(){
+        if (!determineFocus())return;
+
+        if (isFocusOnPoint){
+            Prism4DPoint point = getPointFromFocus(getOpenProject());
+            mNotes = point.getPointNotes();
+        } else {
+            mNotes = getOpenProject().getProjectDescription();
+        }
+
+        getNotesText();
     }
 
 
@@ -1575,18 +1728,19 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         //step 7 change screen focus to last point's location
 
 
-        mLineContainer = null; //clear any old lines
+        mLineOptions = null; //clear any old lines
         mZoomBounds    = null;
         mZoomBuilder   = null;
-        mPointsPlotted = 0;
+
         isAutoResizeOn = true;
         //clear the map of old markers
         mMap.clear();
+        mMarkers.clear();
+        mZoomMarkers.clear();
 
         //step 1 Get the open project
         //get the open project
-        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
-        Prism4DProject project = constantsAndUtilities.getOpenProject();
+        Prism4DProject project = getOpenProject();
 
         ArrayList<Prism4DPoint> points = project.getPoints();
         int last = points.size();
@@ -1597,7 +1751,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         LatLng       markerLocation = null;
         Prism4DCoordinateWGS84 coordinateWGS84;
         Prism4DCoordinateTag   coordinateTag;
-        for (position = 0; position <= last; position++){
+        for (position = 0; position < last; position++){
             point = points.get(position);
             //step 3 Create a Marker
             coordinateWGS84 = makeNewMarkerFromPoint(project, point);
@@ -1620,6 +1774,70 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     }
 
 
+    private void handleTakePicture(){
+
+        //focus must be valid to take a picture
+        if (!determineFocus()) return;
+
+
+        PackageManager packageManager = getActivity().getPackageManager();
+        boolean hasCamera =
+                packageManager.hasSystemFeature(PackageManager.FEATURE_CAMERA_ANY);
+
+        //In order to take pictures, we must both have a camera and
+        // Permission to take pictures
+        if (!hasCamera) {
+            Toast.makeText(getActivity(),
+                    R.string.no_camera_on_this_device,
+                    Toast.LENGTH_SHORT).show();
+        } else if (
+                ContextCompat.checkSelfPermission(getActivity(),
+                        Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED) {
+            Toast.makeText(getActivity(),
+                    R.string.need_permission_to_take_pictures,
+                    Toast.LENGTH_SHORT).show();
+
+        } else {
+
+            //Send off an intent to the camera
+            dispatchTakePictureIntent();
+        }
+    }
+
+    private boolean determineFocus(){
+
+        //What object the picture is to be associated with depends upon the screen focus
+        if ((mLatitudeScreenFocus == 0) || (mLongitudeScreenFocus == 0)){
+            Toast.makeText(getActivity(),
+                    R.string.invalid_screen_focus_for_picture,
+                    Toast.LENGTH_SHORT).show();
+            return false;
+        }
+
+        //see if screen focus is near a marker
+        isFocusOnPoint = true;
+        mFocusMarker = getMarkerByFocus();
+
+        if (mFocusMarker == null){
+            //we aren't near a point marker, assign the picture to the open project
+            isFocusOnPoint = false;
+        } else {
+            //Focus is on a marker,
+            // but the point must be associated with the marker before we can take a picture
+            Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag)mFocusMarker.getTag();
+            //if point id > 1, the point has not yet been created
+            if ((coordinateTag == null) || (coordinateTag.getPointID() < 1)){
+                Toast.makeText(getActivity(),
+                        R.string.point_not_created_at_marker_yet,
+                        Toast.LENGTH_SHORT).show();
+                return false;
+            }
+            isFocusOnPoint = true;
+        }
+
+        return true;
+
+    }
 
     /************************************************************/
     /******     AlertDialog Utilities                      ******/
@@ -1632,7 +1850,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
 
         // Set up the input
         final EditText input = new EditText(getActivity());
-        input.setText(String.valueOf(mPointNotes));
+        input.setText(String.valueOf(mNotes));
         // Specify the type of input expected
         input.setInputType(InputType.TYPE_CLASS_TEXT );
         builder.setView(input);
@@ -1641,7 +1859,8 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                mPointNotes = input.getText().toString();
+                mNotes = input.getText().toString();
+                storeNotesOnPointOrProject(mNotes);
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
@@ -1655,48 +1874,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     }
 
 
-    private void askApplyOffset(){
-        AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.apply_offset));
-        builder.setIcon(R.drawable.ground_station_icon);
-
-        // Set up the buttons
-        builder.setPositiveButton("Next Point", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //offsets will be set to zero after applied to a single point
-                isOffsetResetAfterOnePoint = true;
-                isOffsetCancle = false;
-                getOffsetPosition();
-            }
-        });
-
-        builder.setNegativeButton("All Future Points", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //offsets are not reset to zero, they are just applied
-                isOffsetResetAfterOnePoint = false;
-                isOffsetCancle = false;
-                getOffsetPosition();
-            }
-        });
-
-        builder.setNeutralButton("Cancle", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton){
-                isOffsetCancle = true;
-                isOffsetResetAfterOnePoint = false;
-                mOffsetLatitude = 0d;
-                mOffsetLongitude = 0d;
-                mOffsetElevation = 0d;
-                dialog.cancel();
-            }
-        });
-
-        builder.show();
-    }
-
-    private void getOffsetPosition(){
+    private void askOffsetPosition(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.enter_offsets));
         builder.setIcon(R.drawable.ground_station_icon);
@@ -1705,28 +1883,56 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         layout.setOrientation(LinearLayout.VERTICAL);
 
         // Set up the input
-        //Latitude
-        final EditText latitude = new EditText(getActivity());
-        latitude.setInputType(InputType.TYPE_CLASS_NUMBER |
+
+        //Radio button for which points to apply to: next/all future buttons
+        final RadioButton[] radioButtons = new RadioButton[2];
+        RadioGroup radioGroup = new RadioGroup(getActivity()); //create the RadioGroup
+        radioGroup.setOrientation(RadioGroup.HORIZONTAL);//or RadioGroup.VERTICAL
+
+        radioButtons[0] = new RadioButton(getActivity());
+        radioButtons[0].setId(OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT);
+        radioGroup.addView(radioButtons[0]);
+        radioButtons[0].setText(getString(R.string.next_point));
+        radioButtons[0].setSelected(true);
+        mOffsetCheckedID = OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT;
+        radioButtons[1] = new RadioButton(getActivity());
+        radioButtons[1].setId(OFFSET_ALL_FUTURE + OFFSET_ID_CONSTANT);
+        radioGroup.addView(radioButtons[1]);
+        radioButtons[1].setText(getString(R.string.all_future_points));
+
+        layout.addView(radioGroup);
+
+
+
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                mOffsetCheckedID = radioGroup.getCheckedRadioButtonId();
+            }
+        });
+
+        //Distance
+        final EditText distance = new EditText(getActivity());
+        distance.setInputType(InputType.TYPE_CLASS_NUMBER |
                               InputType.TYPE_NUMBER_FLAG_DECIMAL |
                               InputType.TYPE_NUMBER_FLAG_SIGNED);
-        latitude.setHint(R.string.latitude_input_label);
-        layout.addView(latitude);
+        distance.setHint(R.string.offset_distance_meters);
+        layout.addView(distance);
 
-        //longitude
-        final EditText longitude = new EditText(getActivity());
-        longitude.setInputType(InputType.TYPE_CLASS_NUMBER |
+        //Heading
+        final EditText heading = new EditText(getActivity());
+        heading.setInputType(InputType.TYPE_CLASS_NUMBER |
                                InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                InputType.TYPE_NUMBER_FLAG_SIGNED);
-        longitude.setHint(R.string.longitude_input_label);
-        layout.addView(longitude);
+        heading.setHint(R.string.offset_heading);
+        layout.addView(heading);
 
         //elevation
         final EditText elevation = new EditText(getActivity());
         elevation.setInputType(InputType.TYPE_CLASS_NUMBER |
                                InputType.TYPE_NUMBER_FLAG_DECIMAL |
                                InputType.TYPE_NUMBER_FLAG_SIGNED);
-        elevation.setHint(R.string.elevation_input_label);
+        elevation.setHint(R.string.offset_elevation);
         layout.addView(elevation);
 
         builder.setView(layout);
@@ -1736,17 +1942,30 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                mOffsetLatitude  = Double.valueOf(latitude.getText().toString());
-                mOffsetLongitude = Double.valueOf(longitude.getText().toString());
-                mOffsetElevation = Double.valueOf(elevation.getText().toString());
+                String distanceValue  = distance.getText().toString();
+                String headingValue   = heading.getText().toString();
+                String elevationValue = elevation.getText().toString();
+                if (distanceValue.isEmpty()){
+                    mOffsetDistance = 0;
+                } else {
+                    mOffsetDistance = Double.valueOf(distanceValue);
+                }
+                if (headingValue.isEmpty()){
+                    mOffsetHeading = 0;
+                } else {
+                    mOffsetHeading = Double.valueOf(headingValue);
+                }
+                if (elevationValue.isEmpty()){
+                    mOffsetElevation = 0;
+                }else {
+                    mOffsetElevation = Double.valueOf(elevationValue);
+                }
             }
         });
         builder.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                mOffsetLatitude  = 0d;
-                mOffsetLongitude = 0d;
-                mOffsetElevation = 0d;
+                dialog.cancel();
             }
         });
 
@@ -1754,59 +1973,138 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
     }
 
 
-
-    private void askRemoveEditPoint(Prism4DProject project, Prism4DPoint point, final Marker marker){
+    private void askMarker(Prism4DPoint point, final Marker marker){
         // TODO: 12/25/2016 There must be a better way to pass arguments to the handler routines
-        final Prism4DProject openProject       = project;
         final Prism4DPoint   openPoint         = point;
-        final Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
         final Marker         mapMarker         = marker;
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle(getString(R.string.point_actions));
+        builder.setTitle("Prism4D Collect Points Marker Options");
         builder.setIcon(R.drawable.ground_station_icon);
+        builder.setItems(new CharSequence[] {
+                        getString(R.string.marker_edit_point),
+                        getString(R.string.marker_remove_point),
+                        getString(R.string.marker_remove_marker),
+                        getString(R.string.marker_exclude_point),
+                        getString(R.string.marker_set_focus),
+                        getString(R.string.cancel)                },
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        // The 'which' argument contains the index position
+                        // of the selected item
+                        switch (which) {
+                            case 0:
+                                Toast.makeText(getActivity(),
+                                                getString(R.string.marker_edit_point),
+                                                Toast.LENGTH_SHORT).show();
+                                //Switch to the Edit Point Fragment
+                                Prism4DPath pointPath  = new Prism4DPath(Prism4DPath.sEditFromMaps);
+                                ((MainPrism4DActivity)getActivity())
+                                        .switchToEditPointScreen(getOpenProjectID(),
+                                                                 pointPath,
+                                                                 openPoint);
+                                break;
+                            case 1:
+                                Toast.makeText(getActivity(),
+                                                getString(R.string.marker_remove_point),
+                                                Toast.LENGTH_SHORT).show();
+                                //Delete the point from the project and from the DB
+                                Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+                                pointManager.removePoint(getOpenProjectID(), openPoint);
 
-        // Set up the buttons
-        builder.setPositiveButton("Edit", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //move the marker back to its location.
-                Prism4DCoordinateTag tagCoordinate = (Prism4DCoordinateTag)marker.getTag();
-                LatLng latLng = new LatLng(tagCoordinate.getLatitude(), tagCoordinate.getLongitude());
-                marker.setPosition(latLng);
-
-                //Switch to the Edit Point Fragment
-                Prism4DPath pointPath  = new Prism4DPath(Prism4DPath.sEditFromMaps);
-                ((MainPrism4DActivity)getActivity())
-                        .switchToEditPointScreen(openProject.getProjectID(), pointPath, openPoint);
-            }
-        });
-
-        builder.setNegativeButton("Remove", new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton) {
-                //Delete the point from the project and from the DB
-                pointManager.removePoint(openProject.getProjectID(), openPoint);
-
-                //remove the marker
-                mapMarker.remove();
-
-            }
-        });
-
-        builder.setNeutralButton("Exclude (From Zoom)", new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int whichButton){
-                //exclude point from zoom
-            }
-        });
-
-        builder.show();
+                                //remove the marker
+                                mapMarker.remove();
+                                // TODO: 1/8/2017 redraw the map after point/marker is removed?
+                                //redraw the map?
+                                break;
+                            case 2:
+                                Toast.makeText(getActivity(),
+                                        getString(R.string.marker_remove_marker),
+                                        Toast.LENGTH_SHORT).show();
+                                mapMarker.remove();
+                                break;
+                            case 3:
+                                Toast.makeText(getActivity(),
+                                        getString(R.string.marker_exclude_point),
+                                        Toast.LENGTH_SHORT).show();
+                                mZoomMarkers.remove(mapMarker);
+                                break;
+                            case 4:
+                                Toast.makeText(getActivity(),
+                                                getString(R.string.marker_set_focus),
+                                                Toast.LENGTH_SHORT).show();
+                                LatLng mapPosition = mapMarker.getPosition();
+                                setFocus(mapPosition);
+                                break;
+                            case 5:
+                                Toast.makeText(getActivity(),
+                                                getString(R.string.cancel),
+                                                Toast.LENGTH_SHORT).show();
+                                dialog.cancel();
+                                break;
+                        }
+                    }
+                });
+        builder.create().show();
     }
 
 
 
 
+    private void storeNotesOnPointOrProject(CharSequence notes){
+
+        Prism4DProject openProject = getOpenProject();
+
+        //The focus flags tell us where to put the picture
+        if (isFocusOnPoint) {
+            //put the picture on the point of the marker with current focus
+            Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag) mFocusMarker.getTag();
+            //The following check was done when the picture was started
+            //but it never hurts to check again
+            if (coordinateTag == null){
+                tellUserNoPoint();
+                startGps();
+                return;
+            }
+            int pointID = coordinateTag.getPointID();
+            if (pointID < 1) {
+                tellUserNoPoint();
+                startGps();
+                return;
+            }
+            //find the point object the marker stands for
+            Prism4DPoint point = openProject.getPoint(coordinateTag.getPointID());
+
+            if (point == null){
+                tellUserNoPoint();
+                startGps();
+                return;
+            }
+
+            //add the notes to the point
+
+            point.setPointNotes(notes);
+
+            //update the point in the DB
+            Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+
+            //No need for a cascading update, only update the picture and the point
+            pointManager.updateSinglePointInDB(point);
+
+        } else {
+            //put the notes on the open project
+            openProject.setProjectDescription(mNotes);
+            Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+
+            //No need for a cascading update of the project
+            // and ALLLLL of its subordinate objects.
+            // Just update the project and the picture in the DB
+            projectManager.updateSingleProjectInDB(openProject);
+        }
+        startGps();
+
+
+    }
 
     /************************************************************/
     /****** Utilities used by Button Handlers              ******/
@@ -1818,7 +2116,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         Prism4DPoint point = new Prism4DPoint();
         point.setForProjectID(project.getProjectID());
         point.setPointID(project.getNextPointID());
-        point.setPointNotes(mPointNotes);
+        point.setPointNotes(mNotes);
         point.setPointFeatureCode(mCurrentFunctionCodeField.getText());
 
         //update the quality fields
@@ -1841,20 +2139,25 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         CharSequence coordinateType = project.getProjectCoordinateType();
 
         if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeWGS84)){
+            //put the point ID on the coordinate
+            wsg84Coordinate.setPointID(point.getPointID());
 
             //put the new coordinate on the point
             point.setHasACoordinateID(wsg84Coordinate.getCoordinateID());
             point.setCoordinate(wsg84Coordinate);
         } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeNAD83)){
             Prism4DCoordinateNAD83 newNad83Coordinate = new Prism4DCoordinateNAD83(wsg84Coordinate);
+            newNad83Coordinate.setPointID(point.getPointID());
             point.setCoordinate(newNad83Coordinate);
             point.setHasACoordinateID(newNad83Coordinate.getCoordinateID());
         } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeUTM)){
             Prism4DCoordinateUTM newUtmCoordinate = new Prism4DCoordinateUTM(wsg84Coordinate);
+            newUtmCoordinate.setPointID(point.getPointID());
             point.setCoordinate(newUtmCoordinate);
             point.setHasACoordinateID(newUtmCoordinate.getCoordinateID());
         } else if (coordinateType.equals(Prism4DCoordinate.sCoordinateTypeSPCS)){
             Prism4DCoordinateSPCS newSpcsCoordinate = new Prism4DCoordinateSPCS(wsg84Coordinate);
+            newSpcsCoordinate.setPointID(point.getPointID());
             point.setCoordinate(newSpcsCoordinate);
             point.setHasACoordinateID(newSpcsCoordinate.getCoordinateID());
         } else {
@@ -1951,7 +2254,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         int forceZoomAfter = 2;
 
         //only zoom after the first couple of points have been plotted
-        if (mPointsPlotted > forceZoomAfter) {
+        if (mMarkers.size() > forceZoomAfter) {
             CameraUpdate cu = CameraUpdateFactory.newLatLngBounds(mZoomBounds, markerPadding);
             mMap.animateCamera(cu);
         }
@@ -1976,10 +2279,7 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         wgsCoordinate.setElevation(nmeaData.getOrthometricElevation());
         wgsCoordinate.setGeoid(nmeaData.getGeoid());
 
-        Prism4DConstantsAndUtilities constantsAndUtilities =
-                                                        Prism4DConstantsAndUtilities.getInstance();
-
-        wgsCoordinate.setProjectID(constantsAndUtilities.getOpenProjectID());
+        wgsCoordinate.setProjectID(getOpenProjectID());
         wgsCoordinate.setTime(System.currentTimeMillis());
         return wgsCoordinate;
     }
@@ -1995,15 +2295,13 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         wgs84Coordinate.setElevation(meanCoordinate.getElevation());
         wgs84Coordinate.setGeoid    (meanCoordinate.getGeoid());
 
-        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
-        wgs84Coordinate.setProjectID(constantsAndUtilities.getOpenProjectID());
+        wgs84Coordinate.setProjectID(getOpenProjectID());
         wgs84Coordinate.setTime(System.currentTimeMillis());
         return wgs84Coordinate;
     }
 
 
     private Prism4DNmea getNmeaFromTestData(){
-        // TODO: 12/12/2016 This routine will have to be replaced with real data
 
         //Step 1 - Get Test data object
         Prism4DTestLocationDataManager testLocationDataManager =
@@ -2044,19 +2342,6 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
         nmeaData.setOrthometricElevation(wgsCoordinate.getElevation());
         nmeaData.setGeoid    (wgsCoordinate.getGeoid());
         nmeaData.setSatellites(7);
-
-        // TODO: 12/10/2016 get rid of these debug statements
-        //double check conversion to northing/easting
-        Prism4DCoordinateUTM utmCoordinate = new Prism4DCoordinateUTM(wgsCoordinate);
-        double tempTestNorthing = mTestData.getNorthing();
-        double tempUTMNorthing  = utmCoordinate.getNorthing();
-        double tempTestEasting  = mTestData.getEasting();
-        double tempUTMEasting   = utmCoordinate.getEasting();
-
-        //check the different values of elevation
-        double tempElevation    = mTestData.getElevation();
-        tempElevation           = wgsCoordinate.getElevation();
-        tempElevation           = utmCoordinate.getElevation();
 
         return nmeaData;
     }
@@ -2104,15 +2389,44 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                                                                  .icon(
                                                 BitmapDescriptorFactory.defaultMarker(markerColor));
         mLastMarkerAdded = mMap.addMarker(newPointMarkerOptions);
+        mMarkers.add(mLastMarkerAdded);
+        mZoomMarkers.add(mLastMarkerAdded);
 
         //CameraUpdate zoom=CameraUpdateFactory.zoomTo(15);
         //get zoom level from the mpa
-        mMapZoom = mMap.getCameraPosition().zoom;
+        float mapZoom = mMap.getCameraPosition().zoom;
 
-        CameraUpdate myZoom = CameraUpdateFactory.newLatLngZoom(newPoint, mMapZoom);
+        CameraUpdate myZoom = CameraUpdateFactory.newLatLngZoom(newPoint, mapZoom);
         mMap.animateCamera(myZoom);
 
         return newPoint;
+    }
+
+    private Marker getMarkerByFocus(){
+        int last = mMarkers.size();
+        LatLng focusLocation = getFocusLatLng();
+        double distanceToMarker;
+        Marker marker;
+        for (int position = 0; position < last; position++){
+            marker = mMarkers.get(position);
+            distanceToMarker = SphericalUtil.computeDistanceBetween(marker.getPosition(), focusLocation);
+
+            if( distanceToMarker < getProximity() ) { // distance depends upon zoom level
+                return marker;
+            }
+        }
+        return null;
+    }
+
+
+    private LatLng getFocusLatLng(){
+        return new LatLng(mLatitudeScreenFocus, mLongitudeScreenFocus);
+    }
+
+    private double getProximity(){
+        // TODO: 12/28/2016 calculate proximity based on zoom level
+        // TODO: 1/8/2017 what do we do if there is more than one marker within the proximity???
+        return 50d;
     }
 
     private Prism4DCoordinateWGS84 makeNewMarkerFromPoint(Prism4DProject project, Prism4DPoint point){
@@ -2148,6 +2462,8 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
                                                                  .icon(
                                            BitmapDescriptorFactory.defaultMarker(markerColorFinal));
         mLastMarkerAdded = mMap.addMarker(newPointMarkerOptions);
+        mMarkers.add(mLastMarkerAdded);
+        mZoomMarkers.add(mLastMarkerAdded);
 
         return coordinateWGS84;
     }
@@ -2174,27 +2490,80 @@ public class MainPrism4DPointsCollectFragment extends Fragment implements //OnMa
 
     private void addPointToLine(LatLng newPoint){
         //add the new point to the line
-        if (mLineContainer == null){
-            mLineContainer = new PolylineOptions();
+        if (mLineOptions == null){
+            mLineOptions = new PolylineOptions();
         }
-        mLineContainer.add(newPoint).add(newPoint).width(25).color(Color.BLUE).geodesic(true);
-        mPointsLine = mMap.addPolyline(mLineContainer);
+        mLineOptions.add(newPoint).width(25).color(Color.BLUE).geodesic(true);
+        mPointsLine = mMap.addPolyline(mLineOptions);
         //The way to find out how many points we've processed so far
         //mPointsLine.getPoints().size();
 
         //now update the zoom boundary around the set of points
         if (mZoomBuilder == null){
             mZoomBuilder = new LatLngBounds.Builder();
-            mPointsPlotted = 0;
         }
+
         mZoomBuilder = mZoomBuilder.include(newPoint);
         //update the zoom to fit bounds
         mZoomBounds = mZoomBuilder.build();
-        mPointsPlotted++;
+
 
         if (isAutoResizeOn) {
             zoomToFit();
         }
+    }
+
+    private void redrawLineBetweenMarkers(ArrayList<Marker> lineMarkers, boolean doMapDraw){
+        //build the mLineOptions from scratch
+        mLineOptions = new PolylineOptions();
+
+        int last = lineMarkers.size();
+        int position = 0;
+        Marker lineMarker;
+        LatLng location;
+        while (position < last){
+            lineMarker = lineMarkers.get(position);
+            location = lineMarker.getPosition();
+            mLineOptions.add(location).width(25).color(Color.BLUE).geodesic(true);
+        }
+        if (doMapDraw) mPointsLine = mMap.addPolyline(mLineOptions);
+    }
+
+    private void buildNewZoom(ArrayList<Marker> zoomMarkers, boolean doZoom){
+        //now update the zoom boundary around the set of points
+        if (mZoomBuilder == null){
+            mZoomBuilder = new LatLngBounds.Builder();
+        }
+
+
+        int last = zoomMarkers.size();
+        int position = 0;
+        Marker zoomMarker;
+        while (position < last){
+            zoomMarker = zoomMarkers.get(position);
+            mZoomBuilder = mZoomBuilder.include(zoomMarker.getPosition());
+        }
+
+        //update the zoom to fit bounds
+        mZoomBounds = mZoomBuilder.build();
+
+        if (doZoom) zoomToFit();
+    }
+
+
+    /*******************************************************/
+    /***********          Utilities          ***************/
+    /*******************************************************/
+
+    private Prism4DProject getOpenProject(){
+        Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+        return constantsAndUtilities.getOpenProject();
+
+    }
+
+    private int getOpenProjectID(){
+        return getOpenProject().getProjectID();
     }
 }
 

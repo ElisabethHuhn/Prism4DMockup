@@ -52,13 +52,15 @@ public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
     protected double mElevation; //Orthometric Elevation in Meters
     protected double mGeoid;     //Mean Sea Level in Meters
 
-    protected boolean mValidCoordinate = true;
 
 
     /*****************************************************/
     /********    Static Conversion Utilities     *********/
     /*****************************************************/
 
+
+
+    //Conversion for UI fields
     //last parameter indicates whether latitude (true) or longitude (false)
     public static boolean convertDDtoDMS(Context  context,
                                          EditText tudeDDInput,
@@ -250,10 +252,6 @@ public abstract class Prism4DCoordinateLL extends Prism4DCoordinate {
     public double getGeoidFeet() { return Prism4DConstantsAndUtilities.convertMetersToFeet(mGeoid);}
     public void setGeoid(double geoid) { mGeoid = geoid;  }
 
-    public void    setValidCoordinate(boolean validCoordinate){ this.mValidCoordinate = validCoordinate;}
-    public boolean isValidCoordinate() {
-        return mValidCoordinate;
-    }
 
     /********
      *

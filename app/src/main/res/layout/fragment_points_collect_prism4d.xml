@@ -232,7 +232,7 @@
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorRedButton"
+                    android:background="@color/colorYellowButton"
                     />
 
                 </LinearLayout>
@@ -331,7 +331,7 @@
                     <com.google.android.gms.maps.MapView
                         android:id            = "@+id/map_view"
                         android:layout_width  = "match_parent"
-                        android:layout_height = "300dp"
+                        android:layout_height = "350dp"
                         android:layout_weight = "20"
                         android:contentDescription="@string/drawing_pad_content_description"
                         />

@@ -40,6 +40,7 @@
                         android:text="@string/point_screen_label"
                         android:layout_height="wrap_content"
                         android:layout_width="wrap_content"
+                        android:layout_gravity="center"
 
                         android:gravity="center_horizontal"
 
@@ -556,6 +557,126 @@
 
                 </TableRow>
 
+
+                <!-- Row: Offset Distance -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointOffDistInput"
+                        android:text="@string/point_offset_distance_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointOffDistInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+                <!-- Row: Offset Heading -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointOffHeadInput"
+                        android:text="@string/point_offset_heading_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointOffHeadInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+                <!-- Row: Offset Elevation -->
+                <TableRow
+
+                    android:layout_height="wrap_content"
+                    android:layout_width="match_parent"
+                    android:layout_gravity="center_horizontal"
+                    android:paddingTop="10dp"
+                    >
+                    <TextView
+                        android:labelFor="@+id/pointOffEleInput"
+                        android:text="@string/point_offset_elevation_label"
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="25"
+                        android:gravity="end"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorScreenBackground"
+                        />
+                    <EditText
+                        android:id="@id/pointOffEleInput"
+
+                        android:layout_height="wrap_content"
+                        android:layout_width="0dp"
+                        android:layout_weight="75"
+
+                        android:inputType="text"
+                        android:imeOptions="flagNoExtractUi"
+                        android:layout_marginEnd="16dp"
+
+                        android:enabled="false"
+
+                        android:textColor="@color/colorTextBlack"
+                        android:background="@color/colorGray"
+                        />
+
+
+                </TableRow>
+
+
+
             </TableLayout>
 
             <!-- Container for Coordinates -->
@@ -585,6 +706,22 @@
                 <!-- Actual Coordinate Widgets will be placed here programmatically -->
 
             </LinearLayout>
+
+
+            <!-- Pictures -->
+            <!-- Row : Project Pictures -->
+            <LinearLayout
+
+                android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:paddingTop="10dp"
+                >
+
+                <!-- Pictures list -->
+                <include android:id="@+id/picturesList" layout="@layout/element_picture_list"/>
+            </LinearLayout>
+
+
 
 
         </LinearLayout>

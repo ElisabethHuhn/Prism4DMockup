@@ -1,11 +1,16 @@
 package com.asc.msigeosystems.prism4d;
 
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
@@ -14,13 +19,16 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The Update Project Fragment
@@ -31,6 +39,8 @@ import java.util.Date;
  */
 public class MainPrism4DProjectEditFragment extends    Fragment
                                             implements AdapterView.OnItemSelectedListener{
+
+    private static final String TAG = "EDIT_PROJECT_FRAGMENT";
 
     /**
      * Create variables for all the widgets
@@ -62,6 +72,8 @@ public class MainPrism4DProjectEditFragment extends    Fragment
     private Button mProjectSaveChangesButton;
     private Button mProjectExitButton;
 
+    private ImageView mPictureImage ;
+
 
     /***********************************************************/
     /******  Coordinate types for Spinner Widgets     **********/
@@ -71,6 +83,17 @@ public class MainPrism4DProjectEditFragment extends    Fragment
 
     private String   mSelectedCoordinateType;
     private int      mSelectedCoordinateTypePosition;
+
+
+    /***********************************************************/
+    /******         Recycler View Widgets             **********/
+    /***********************************************************/
+    private List<Prism4DPicture> mPictureList = new ArrayList<>();
+    private RecyclerView               mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Prism4DPictureAdapter      mAdapter;
+
+
 
     /***********************************************************************/
     /**********   Member Variables  ****************************************/
@@ -144,6 +167,8 @@ public class MainPrism4DProjectEditFragment extends    Fragment
         wireWidgets(v);
 
         wireCoordinateSpinner(v);
+
+        initializeRecyclerView(v);
 
 
         //If we had any arguments passed, update the screen with them
@@ -274,7 +299,11 @@ public class MainPrism4DProjectEditFragment extends    Fragment
 
         //List Points Button
         mProjectListPointsButton = (Button) v.findViewById(R.id.projectListPointsButton);
-        if (mProjectPath.equals(Prism4DPath.sCreateTag)){
+        //in order to view the points of this project,
+        // the project must already exist, and actually have points
+        boolean hasPoints = false;
+        if (mProjectBeingMaintained.getSize() > 0)hasPoints = true;
+        if ((mProjectPath.equals(Prism4DPath.sCreateTag)) || (!hasPoints) ){
             mProjectListPointsButton.setEnabled(false);
             mProjectListPointsButton.setTextColor(Color.GRAY);
         } else {
@@ -328,6 +357,11 @@ public class MainPrism4DProjectEditFragment extends    Fragment
             @Override
             public void onClick(View v){
 
+               //regardless of whether they actually exit, hide the keyboard
+                Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+                constantsAndUtilities.hideKeyboard(getActivity());
+
                 //If the project changed, ask before exiting
                 if (mProjectChanged) {
                     areYouSureExit();
@@ -336,6 +370,8 @@ public class MainPrism4DProjectEditFragment extends    Fragment
                 }
             }
         });
+
+        mPictureImage = (ImageView) v.findViewById(R.id.pictureImage);
     }
 
 
@@ -368,7 +404,8 @@ public class MainPrism4DProjectEditFragment extends    Fragment
         //attach the listener to the spinner
         mSpinner.setOnItemSelectedListener(this);
 
-        int temp = mProjectBeingMaintained.getPoints().size();
+        //The size of a project is it's number of points
+        int temp = mProjectBeingMaintained.getSize();
         if (temp > 0){
             //can't change the coordinate type if any points are on the project
             mSpinner.setEnabled(false);
@@ -380,6 +417,74 @@ public class MainPrism4DProjectEditFragment extends    Fragment
         //mPointCoordinateTypePrompt = (TextView) v.findViewById(R.id.coordinate_prompt);
 
     }
+
+    private void initializeRecyclerView(View v){
+
+       /*
+         * The steps for doing recycler view in onCreateView() of a fragment are:
+         * 1) inflate the .xml
+         *
+         * the special recycler view stuff is:
+         * 2) get and store a reference to the recycler view widget that you created in xml
+         * 3) create and assign a layout manager to the recycler view
+         * 4) assure that there is data for the recycler view to show.
+         * 5) use the data to create and set an adapter in the recycler view
+         * 6) create and set an item animator (if desired)
+         * 7) create and set a line item decorator
+         * 8) add event listeners to the recycler view
+         *
+         * 9) return the view
+         */
+        v.setTag(TAG);
+
+        //2) find and remember the RecyclerView
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.pictureList);
+
+
+        // The RecyclerView.LayoutManager defines how elements are laid out.
+        //3) create and assign a layout manager to the recycler view
+        mLayoutManager  = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //4) create some dummy data and tell the adapter about it
+        //  this is done in the singleton container
+
+        //      get our singleton list container
+        Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
+        //Get this projects points
+        mPictureList = mProjectBeingMaintained.getPictures();
+
+
+        //5) Use the data to Create and set out points Adapter
+        mAdapter = new Prism4DPictureAdapter(mPictureList);
+        mRecyclerView.setAdapter(mAdapter);
+
+        //6) create and set the itemAnimator
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        //7) create and add the item decorator
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                getActivity(), LinearLayoutManager.VERTICAL));
+
+
+        //8) add event listeners to the recycler view
+        mRecyclerView.addOnItemTouchListener(
+                new MainPrism4DPointListFragment.RecyclerTouchListener(getActivity(),
+                                                                        mRecyclerView,
+                                                new MainPrism4DPointListFragment.ClickListener() {
+
+                    @Override
+                    public void onClick(View view, int position) {
+                        onSelectPicture(position);
+                    }
+
+                    @Override
+                    public void onLongClick(View view, int position) {
+                        //for now, ignore the long click
+                    }
+                }));
+    }
+
 
 
     private void initializeUI() {
@@ -452,6 +557,27 @@ public class MainPrism4DProjectEditFragment extends    Fragment
     /***********************************************************/
     /*****     Respond to UI events                      *******/
     /***********************************************************/
+
+    private void onSelectPicture(int position){
+        //Toast.makeText(getActivity(), "Picture Selected", Toast.LENGTH_SHORT).show();
+
+        Prism4DPicture picture = mAdapter.getPicture(position);
+        String pathToPicture = picture.getPathName();
+        Bitmap bitmap = BitmapFactory.decodeFile(pathToPicture);
+
+        if (bitmap != null) {
+            mPictureImage.setImageBitmap(bitmap);
+
+            //for some reason, showing the image blanks out the recycler view, so force a redraw
+            mRecyclerView.getRecycledViewPool().clear();
+            //mAdapter.notifyDataSetChanged();
+            mRecyclerView.invalidate();
+        } else {
+            String msg = getString(R.string.missing_picture_file)+ " " + pathToPicture;
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        }
+
+    }
 
 
     /*********************************************/
@@ -529,9 +655,11 @@ public class MainPrism4DProjectEditFragment extends    Fragment
                 projectManager.add(mProjectBeingMaintained);
                 //change the path to edit
                 mProjectPath = Prism4DPath.sEditTag;
-                //enable the list points button
-                mProjectListPointsButton.setEnabled(true);
-                mProjectListPointsButton.setTextColor(Color.BLACK);
+                //enable the list points button if there are any points
+                if (mProjectBeingMaintained.getSize() > 0) {
+                    mProjectListPointsButton.setEnabled(true);
+                    mProjectListPointsButton.setTextColor(Color.BLACK);
+                }
 
             }
 
@@ -596,7 +724,9 @@ public class MainPrism4DProjectEditFragment extends    Fragment
         //The date fields are not modifiable from this screen
         //Set the coordinate type
         if (mSelectedCoordinateType == null){
+            //must declare the type of coordinates in order to create the project
             project.setProjectCoordinateType("");
+            returnCode = false;
         }else{
             project.setProjectCoordinateType(mSelectedCoordinateType);
         }

@@ -1,17 +1,17 @@
 package com.asc.msigeosystems.prism4d;
 
-import android.Manifest;
+import android.app.Activity;
 import android.content.Context;
-import android.content.pm.PackageManager;
-import android.location.LocationManager;
 import android.support.v4.content.ContextCompat;
+import android.view.View;
+import android.view.Window;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.ArrayList;
 
 /**
  * Created by Elisabeth Huhn on 6/13/2016.
@@ -29,6 +29,9 @@ public class Prism4DConstantsAndUtilities {
     public static final int sMicrometerDigitsOfPrecision = 6;
     public static final int sNanometerDigitsOfPrecision = 9;
     public static final int sPicometerDigitsOfPrecision = 12;
+
+    public static final double sEquatorialRadiusA = 6378137.0; //equatorial radius in meters
+    public static final double sPolarRadiusB      = 6356752.314245; //polar semi axis
 
     public static final double sGravitationalConstant = 3.986004418e14; // cubic meters/square seconds
     public static final double sMeanAngularVelocity   = 7.292115e-5;    // rads / s
@@ -166,7 +169,9 @@ public class Prism4DConstantsAndUtilities {
     }
 
 
-    public static boolean convertMetersToFeet(Context context, EditText metersWidget, EditText feetWidget){
+    public static boolean convertMetersToFeet(Context context,
+                                              EditText metersWidget,
+                                              EditText feetWidget){
         double meters, feet;
         String meterString, feetString;
 
@@ -196,7 +201,9 @@ public class Prism4DConstantsAndUtilities {
 
     }
 
-    public static boolean convertFeetToMeters(Context context, EditText metersWidget, EditText feetWidget){
+    public static boolean convertFeetToMeters(Context context,
+                                              EditText metersWidget,
+                                              EditText feetWidget){
         double meters, feet;
         String meterString, feetString;
 
@@ -227,6 +234,62 @@ public class Prism4DConstantsAndUtilities {
 
         return true;
     }
+
+
+    public static void hideKeyboard(Activity activity) {
+        if (activity != null) {
+            Window window = activity.getWindow();
+            if (window != null) {
+                View v = window.getCurrentFocus();
+                if (v != null) {
+                    InputMethodManager imm = (InputMethodManager) activity.
+                                                    getSystemService(Context.INPUT_METHOD_SERVICE);
+                    if (imm!=null){
+                        imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+                    }
+                }
+            }
+        }
+    }
+
+
+    public static double radiusAtLatitude(double latitude) {
+        //latitude in radians
+        double latRad = latitude * Math.PI / 180.;
+        double equRSqr = sEquatorialRadiusA * sEquatorialRadiusA;
+        double polRSqr = sPolarRadiusB * sPolarRadiusB;
+        double cosLat = Math.cos(latRad);
+        double cosLatSqu = cosLat * cosLat;
+        double numerator = ((equRSqr * cosLat) * (equRSqr * cosLat)) +
+                ((polRSqr * cosLat) * (polRSqr * cosLat));
+        double denominator = ((sEquatorialRadiusA * cosLat) * (sEquatorialRadiusA * cosLat)) +
+                ((sPolarRadiusB * cosLat) * (sPolarRadiusB * cosLat));
+
+        double radius = numerator / denominator;
+        return radius;
+    }
+
+    public static double circumferenceAtLatitude (double latitude){
+        double radius = radiusAtLatitude(latitude);
+        double circumfrence = 2 * Math.PI * radius;
+        return circumfrence;
+    }
+
+    public static double getMetersPerPixel(double latitude, float zoom){
+        double metersPerPixelZoomZero  = 156543.03392; //by definition
+        double metersPerPixel = metersPerPixelZoomZero *
+                                Math.cos(latitude * Math.PI / 180) / Math.pow(2, zoom);
+
+        return metersPerPixel;
+    }
+
+    public static double getFeetPerPixel(double latitude, float zoom){
+        double feetPerPixel = convertMetersToFeet(getMetersPerPixel(latitude, zoom));
+
+        return feetPerPixel;
+    }
+
+
 
 
 

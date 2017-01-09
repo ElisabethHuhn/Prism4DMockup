@@ -28,7 +28,7 @@ import static com.asc.msigeosystems.prism4d.Prism4DPath.sDeleteTag;
  * for the user to see points of a given project
  * Created by Elisabeth Huhn on 5/8/2016.
  */
-public class MainPrism4DPointsListFragment extends Fragment {
+public class MainPrism4DPointListFragment extends Fragment {
 
     private static final String TAG = "LIST_POINTS_FRAGMENT";
     /**
@@ -64,7 +64,7 @@ public class MainPrism4DPointsListFragment extends Fragment {
     //                     Constructor                        //
     /**********************************************************/
 
-    public MainPrism4DPointsListFragment() {
+    public MainPrism4DPointListFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
     }
@@ -74,15 +74,15 @@ public class MainPrism4DPointsListFragment extends Fragment {
     /**********************************************************/
 
 
-    public static MainPrism4DPointsListFragment newInstance(int         projectID,
-                                                            Prism4DPath pointPath){
+    public static MainPrism4DPointListFragment newInstance(int         projectID,
+                                                           Prism4DPath pointPath){
 
         Bundle args = new Bundle();
         //don't need the entire project object, just it's id
         args.putInt         (Prism4DProject.sProjectIDTag,    projectID);
         Prism4DPath.putPathInArguments(args, pointPath);
 
-        MainPrism4DPointsListFragment fragment = new MainPrism4DPointsListFragment();
+        MainPrism4DPointListFragment fragment = new MainPrism4DPointListFragment();
 
         fragment.setArguments(args);
         return fragment;
@@ -372,11 +372,11 @@ public class MainPrism4DPointsListFragment extends Fragment {
     public static class RecyclerTouchListener implements RecyclerView.OnItemTouchListener {
 
         private GestureDetector gestureDetector;
-        private MainPrism4DPointsListFragment.ClickListener clickListener;
+        private MainPrism4DPointListFragment.ClickListener clickListener;
 
         public RecyclerTouchListener(Context context,
                                      final RecyclerView recyclerView,
-                                     final MainPrism4DPointsListFragment.ClickListener
+                                     final MainPrism4DPointListFragment.ClickListener
                                              clickListener) {
 
             this.clickListener = clickListener;

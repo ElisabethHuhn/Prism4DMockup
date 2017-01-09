@@ -114,6 +114,7 @@ public class Prism4DGlobalDataManager {
                 mGlobalDataList.add(globalData);
 
                 //and put it in the DB
+                // TODO: 1/4/2017 need to check for error returnCode
                 databaseManager.addGlobalData(globalData);
             }
         }

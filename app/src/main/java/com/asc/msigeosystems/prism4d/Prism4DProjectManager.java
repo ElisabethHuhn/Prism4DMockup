@@ -12,7 +12,7 @@ import java.util.Date;
 /**
  * Created by Elisabeth Huhn on 5/18/2016.
  *
- * This manager hides the fact that the Project objects are mirrored in a DB
+ * This manager hides the fact that the Picture objects are mirrored in a DB
  * If a Project is not found in memory, the DB is queried for it.
  * If a Project is added to memory,     it will also be added to the DB
  * If a Project is updated in memory,   it is also updated in teh DB
@@ -76,9 +76,9 @@ public class Prism4DProjectManager {
 
 
     //This routine not only adds to the in memory list, but also to the DB
-    //If the project is NOT already in memory list, it is added, else it is updated
-    //It is added/updated in the DB regardless
-    public void add(Prism4DProject newProject){
+    //If the project is NOT already in memory list, it is added to memory as well as the DB
+    //else, error is returned
+    public boolean add(Prism4DProject newProject){
 
         if (mProjectList == null){
             mProjectList = new ArrayList<>();
@@ -89,13 +89,17 @@ public class Prism4DProjectManager {
         if (position == PROJECT_NOT_FOUND) {
             addProject (newProject, true);
         } else {
-            updateProject (newProject, position, true);
+           updateProject(newProject, position);
         }
+        return true;
 
     }//end public add()
 
+
+
+
     //This routine ONLY adds to in memory list. It's coming from the DB
-    public void addFromDB(Prism4DProject newProject){
+    public boolean addFromDB(Prism4DProject newProject){
         //determine if list exists yet
         if (mProjectList == null){
             mProjectList = new ArrayList<>();
@@ -107,10 +111,11 @@ public class Prism4DProjectManager {
             addProject (newProject, false);
             //Need to check if any points exist in the DB belonging to this project
             Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-            pointManager.getPointsFromDB(newProject);
+            pointManager.getPointsForProjectFromDB(newProject);
         } else {
-            updateProject (newProject, position, false);
+            return  false;
         }
+        return true;
     }//end public addFromDB()
 
 
@@ -125,6 +130,7 @@ public class Prism4DProjectManager {
         if (addToDBToo){
 
             //add project to DB
+            //The DBManager takes care of ProjectSettings and Pictures as well as the project
             Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
             if (!databaseManager.addProject(newProject)) return false;
         }
@@ -142,8 +148,33 @@ public class Prism4DProjectManager {
 
         }
 
+        //deal with any pictures on the project
+
         return true;
     }
+
+
+
+    //Updates the Project Object in the DB and the Picture Object in the DB
+    //Assumes all subordinate objects are correct, and don't need updating
+    public boolean addPictureToDB(Prism4DPicture picture){
+
+        int projectID = picture.getProjectID();
+        if (projectID < 1){
+            return false;
+        }
+
+        //Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        //Prism4DProject project = projectManager.getProject(projectID);
+        //not necessary to update the project,
+        // as the picture relationship isn't stored on the project in the DB
+        //databaseManager.updateProjectOnly(project);
+
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        return databaseManager.addPicture(picture);
+
+    }
+
 
 
     //******************  READ *******************************************
@@ -177,7 +208,7 @@ public class Prism4DProjectManager {
 
                 //and go get the points for this person
                 Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-                pointManager.getPointsFromDB(project);
+                pointManager.getPointsForProjectFromDB(project);
             }
             return project;
         }
@@ -234,38 +265,55 @@ public class Prism4DProjectManager {
 
 
 
-    private void updateProject(Prism4DProject fromProject, int atPosition, boolean addToDBToo){
-        boolean assignNextID = false;
-        //deep copies the project settings as well as the project
-        Prism4DProject toProject = deepCopyProject(fromProject, assignNextID);
+    //replace the project in memory at position, and update the DB version of this project
+    private void updateProject(Prism4DProject project, int position){
+        //replace the project at position in mProjectList
+        mProjectList.remove(position);
+        mProjectList.add(position, project);
 
-        // TODO: 12/25/2016 have to remove the points and coordinates as well
-        removeProject(atPosition);
-       // mProjectList.remove(atPosition);
-        mProjectList.add(atPosition, toProject);
-
-        if (addToDBToo) {
-            // update the project adn project Settinsg already in the DB
-            Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
-            databaseManager.updateProject(fromProject);
-
-            //also have to deal with any Points on the project
-            //add any points to the DB
-            //The ASSUMPTION is that if it didn't exist in memory, it doesn't exist in the DB
-            //This is perhaps a risky assumption.......
-            // TODO: 11/2/2016 Determine if add project assumption is too risky
-
-            ArrayList<Prism4DPoint> points = fromProject.getPoints();
-            if (points != null){
-                for (int position = 0; position < points.size(); position++) {
-                    databaseManager.updatePoint(points.get(position));
-                }
-
-            }
-
-        }
+        updateProjectInDB(project);
     }
 
+
+    //Assume project in memory is fully updated, so need to reflect those changes in DB
+    //this is a fully cascade update from Project on down
+    // through all subordinate objects: points, coordinates, pictures, etc
+    public void updateProjectInDB(Prism4DProject project){
+
+        // update the project and all subordinate objects in the DB
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        databaseManager.updateProject(project);
+
+    }
+
+    //Updates the Project Object in the DB and the Picture Object in the DB
+    //Assumes all subordinate objects are correct, and don't need updating
+    public boolean updateSinglePictureInDB(Prism4DPicture picture){
+
+        int projectID = picture.getProjectID();
+        if (projectID < 1){
+            return false;
+        }
+
+        //Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        //Prism4DProject project = projectManager.getProject(projectID);
+        //not necessary to update the project,
+        // as the picture relationship isn't stored on the project in the DB
+        //databaseManager.updateProjectOnly(project);
+
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        if (databaseManager.updatePicture(picture) < 1) return false;
+        return true;
+    }
+
+    //Updates the Project Object in the DB and the Picture Object in the DB
+    //Assumes all subordinate objects are correct, and don't need updating
+    public void updateSingleProjectInDB(Prism4DProject project){
+
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        databaseManager.updateProjectOnly(project);
+
+    }
 
 
     //******************  DELETE *******************************************
@@ -283,11 +331,17 @@ public class Prism4DProjectManager {
         }
         Prism4DProject project = mProjectList.get(position);
         //get rid of all project objects in the DB
-        removeProjectFromDB(project.getProjectID());
+        removeProjectFromDB(project);
 
+        //Garbage collection would probably do this, but.... do it anyway
         //Clear all points from memory
         ArrayList<Prism4DPoint> points = project.getPoints();
         points.clear();
+
+        //Garbage collection would probably do this, but.... do it anyway
+        //Clear all pictures from memory
+        ArrayList<Prism4DPicture> pictures = project.getPictures();
+        pictures.clear();
 
         //remove the project itself from management
         mProjectList.remove(position);
@@ -296,18 +350,72 @@ public class Prism4DProjectManager {
 
 
     //Returns null if it's not in the DB
-    public void removeProjectFromDB (int projectID){
+    public void removeProjectFromDB (Prism4DProject project){
+        int projectID = project.getProjectID();
 
-        //first remove the coordinates and the points
+        //remove any pictures on points of the project
+        removePicturesFromProjectPoints(project);
+
+        //remove the coordinates and the points themselves
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-        pointManager.removeProjectPointsFromDB(projectID);
+        pointManager.removeProjectPointsFromDB(project);
 
-        //then remove project settings
+        //remove any and all Pictures from the project (this will also remove point pictures)
         Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        databaseManager.removeProjectPictures(projectID);
+
+        //remove project settings
         databaseManager.removeProjectSettings(projectID);
 
         //finally, remove the project itself
         databaseManager.removeProject(projectID);
+    }
+
+    public void removeProjectPicture(String pictureID, Prism4DProject project){
+
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+
+        //remove the picture from the DB
+        databaseManager.removeProjectPicture(pictureID, project.getProjectID());
+    }
+
+    public void removePointPicture(String pictureID, int projectID, Prism4DPoint point){
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+
+        //remove the picture from the DB
+        databaseManager.removePointPicture(pictureID, projectID, point.getPointID());
+    }
+
+    private void removePicturesFromProjectPoints(Prism4DProject project){
+
+        ArrayList<Prism4DPoint>   points   = project.getPoints();
+         Prism4DPoint              point;
+        int last;
+        int position;
+        if (points != null){
+            last = points.size();
+            position = 0;
+            while (position < last){
+                point = points.get(position);
+                removePicturesFromPoint(point);
+                position++;
+            }
+        }
+
+    }
+
+    public void removePicturesFromPoint(Prism4DPoint point){
+        Prism4DDatabaseManager databaseManager = Prism4DDatabaseManager.getInstance();
+        ArrayList<Prism4DPicture> pictures = null;
+
+        pictures = point.getPictures();
+        if (pictures != null) {
+            //from the DB
+            databaseManager.removePicturesFromPoint(point);
+            //from the Point Object
+            pictures.clear();
+        }
+
     }
 
 
@@ -349,7 +457,7 @@ public class Prism4DProjectManager {
         //    the pointsList on the project
         //The return value is not what is important here, it's the side effect of reading
         //    all the points in from the DB and adding them to memory
-        int numbPoints = pointManager.getPointsFromDB(toProject);
+        int numbPoints = pointManager.getPointsForProjectFromDB(toProject);
 
         //change the pointIDs and the projectID's on the points of the project
         Prism4DPoint toPoint;
@@ -378,6 +486,29 @@ public class Prism4DProjectManager {
             toPoint.setHasACoordinateID(toCoordinateID);
 
         }
+        
+        //Picture ID's are the timestamp of when they were taken, so will not change
+        //The project they are in makes the ID unique, so update the picture's project ID
+        //iterate through the picture list, changing the project IDs
+        ArrayList<Prism4DPicture> toPictureList   = toProject.getPictures();
+        Prism4DPicture toPicture;
+        last = toPictureList.size();
+        for (int position = 0; position < last; position++) {
+
+            //set the forProjectID on the picture to the new projectID
+            toPicture = toPictureList.get(position);
+            toPicture.setProjectID(toProjectID);
+            
+            //leave the PictureID alone, it is the timestamp of when the picture was taken
+            
+            //add the new picture to the list on the project AND to the db
+            // TODO: 12/29/2016 make sure the project has already added pictures in the getP'rojectFromDB() 
+            //pictureManager.addToProject(toProject, toPicture, true);
+            
+        }
+
+
+
         return toProject;
     }
 
@@ -481,6 +612,31 @@ public class Prism4DProjectManager {
     }
 
 
+
+    //returns the ContentValues object needed to add/update the Picture to/in the DB
+    public ContentValues getCVFromPicture(Prism4DPicture picture){
+        //convert the Prism4DPicture object into a ContentValues object containing a picture
+        ContentValues cvPicture = new ContentValues();
+        //put(columnName, value);
+        cvPicture.put(Prism4DSqliteOpenHelper.PICTURE_ID,picture.getPictureID());
+        cvPicture.put(Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID,picture.getProjectID());
+        //CONVERT the dates to strings in the DB.
+        // They will be converted back to milliseconds in memory
+        cvPicture.put(Prism4DSqliteOpenHelper.PICTURE_POINT_ID,picture.getPointID());
+
+        String temp = picture.getPathName();
+        String pathName = temp.replace(' ','<');//can not have blanks in the string or worn't store in DB
+        temp = picture.getFileName();
+        String fileName = temp.replace(' ','<');
+        cvPicture.put(Prism4DSqliteOpenHelper.PICTURE_PATH_NAME,pathName);
+        cvPicture.put(Prism4DSqliteOpenHelper.PICTURE_FILE_NAME,fileName);
+
+        return cvPicture;
+    }
+
+
+
+
     //returns the Prism4DProject characterized by the position within the Cursor
     //returns null if the position is larger than the size of the Cursor
     //NOTE    this routine does NOT add the project to the list maintained by this ProjectManager
@@ -515,7 +671,7 @@ public class Prism4DProjectManager {
     }
 
     //totally analogous to same function for project.
-    // Whenever project is fetched frmo DB, so is Project Settings
+    // Whenever project is fetched from DB, so is Project Settings
     public Prism4DProjectSettings getProjectSettingsFromCursor(Cursor cursor, int position){
 
         int last = cursor.getCount();
@@ -608,9 +764,43 @@ public class Prism4DProjectManager {
     }
 
 
+    //totally analogous to same function for project.
+    // Whenever project is fetched from DB, so are any pictures associated with the project
+    public Prism4DPicture getPictureFromCursor(Cursor cursor, int position){
+
+        int last = cursor.getCount();
+        if (position >= last) return null;
+
+        //filled with defaults, no ID is assigned
+        Prism4DPicture picture = new Prism4DPicture();
+
+        cursor.moveToPosition(position);
+        picture.setPictureID(
+                cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PICTURE_ID)));
+        picture.setProjectID(
+                cursor.getInt  (cursor.getColumnIndex(Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID)));
+        picture.setPointID(
+                cursor.getInt   (cursor.getColumnIndex(Prism4DSqliteOpenHelper.PICTURE_POINT_ID)));
+
+        String temp = cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PICTURE_PATH_NAME));
+        String pathName = temp.replace('<', ' ');
+        picture.setPathName(pathName);
+
+        temp = cursor.getString(cursor.getColumnIndex(Prism4DSqliteOpenHelper.PICTURE_FILE_NAME));
+        String fileName = temp.replace('<',' ');
+        picture.setFileName(fileName);
+
+        return picture;
+    }
 
     /********************************************/
     /********* General Utility Methods      *****/
+    /********************************************/
+
+
+
+    /********************************************/
+    /********* Picture Methods              *****/
     /********************************************/
 
 

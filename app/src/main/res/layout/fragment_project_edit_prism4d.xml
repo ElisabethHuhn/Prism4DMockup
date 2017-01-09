@@ -279,6 +279,19 @@
 
         </TableRow>
 
+        <!-- Row : Project Pictures List and image -->
+        <TableRow
+
+            android:layout_height="wrap_content"
+            android:layout_width="match_parent"
+            android:paddingTop="10dp"
+            >
+
+            <!-- Pictures list and image -->
+            <include android:id="@+id/picturesList" layout="@layout/element_picture_list"/>
+        </TableRow>
+
+
 
         <!-- Row : View Existing Projects, Settings Button -->
         <TableRow
@@ -398,7 +411,11 @@
 
         </TableRow>
 
+
+
     </TableLayout>
+
+
 
 </ScrollView>
 

@@ -21,15 +21,24 @@
     <string name="collect_project_must_be_open">Project must be Open to collect points</string>
 
 
+    <!-- Errors displayed to the user  -->
+    <string name="coordinate_not_valid"        >Coordinate not valid, point not saved</string>
+    <string name="error_adding_point"          >Could not add point to DB</string>
+
+
     <!-- Exceptions -->
     <string name="database_context_exception">Can\'t create database without a context</string>
     <string name="database_access_exception1">Attempt to access the database before it has been initialized</string>
     <string name="database_access_exception2">Attempt to access the database before it has been opened</string>
-    <string name="project_missing_exception">Something is wrong, project does not exist</string>
-    <string name="no_projects">No projects defined</string>
-    <string name="no_points">No points defined</string>
-    <string name="date_hint">Must use proper date input</string>
-    <string name="test_data_invalid">Test Data Not Valid</string>
+    <string name="project_missing_exception" >Something is wrong, project does not exist</string>
+    <string name="no_projects"               >No projects defined</string>
+    <string name="no_pictures"               >No pictures defined</string>
+    <string name="no_points"                 >No points defined</string>
+    <string name="date_hint"                 >Must use proper date input</string>
+    <string name="test_data_invalid"         >Test Data Not Valid</string>
+    <string name="error_adding_picture_to_db">Error adding picture to DB, picture not saved</string>
+    <string name="error_removing_point"      >Error removing point from project</string>
+    <string name="missing_picture_file"      >Missing Picture File: </string>
 
     <!-- ORDER of screens is: -->
     <!-- Menu     -->
@@ -124,7 +133,6 @@
     <string name="longitude_out_of_range">Longitude out of range</string>
     <string name="coordinate_invalid">Coordinate out of range</string>
     <string name="coordinate_try_again">Coordinates not valid, please input again</string>
-    <string name="coordinate_not_valid">Coordinate not valid</string>
 
 
     <!-- Button Labels -->
@@ -166,15 +174,13 @@
     <string name="delete_path_2"> is Deleted</string>
 
 
-    <string name="project_changed_sure_question"
-        >Project has changed, User will be asked: Are you sure you want to exit without saving?</string>
-    <string name="project_unchanged">Project unchanged, exit without saving</string>
-    <string name="settings_stored">Settings Stored</string>
-    <string name="no_save">Exit Without Saving</string>
-    <string name="save_contents">Data Saved Before Exit</string>
-    <string name="save_new_point">New Point saved to Permanent Storage</string>
+    <string name="project_unchanged"  >Project unchanged, exit without saving</string>
+    <string name="settings_stored"    >Settings Stored</string>
+    <string name="exit_without_save"  >Exit Without Saving</string>
+    <string name="save_contents"      >Data Saved Before Exit</string>
+    <string name="save_new_point"     >New Point saved to Permanent Storage</string>
     <string name="save_existing_point">Existing Point updated in Permanent Storage</string>
-    <string name="save_copied_point">Copied Point saved to Permanent Storage</string>
+    <string name="save_copied_point"  >Copied Point saved to Permanent Storage</string>
 
 
     <!--      NEW SCREEN                  -->
@@ -244,19 +250,20 @@
 
     <!--      NEW SCREEN                        -->
     <!-- Maintain/List Points Screen Strings -->
-    <string name="point_screen_label">Point Attributes</string>
-    <string name="point_project_id_label">Project ID: </string>
-    <string name="point_project_name">Project Name:</string>
-    <string name="point_screen_id_label">Point ID: </string>
-    <string name="point_easting_label">Easting: </string>
-    <string name="point_northing_label">Northing: </string>
-    <string name="point_elevation_label">Elevation: </string>
+    <string name="point_screen_label"      >All Point Attributes MUST have a value</string>
+    <string name="point_project_id_label"  >Project ID: </string>
+    <string name="point_project_name"      >Project Name:</string>
+    <string name="point_screen_id_label"   >Point ID: </string>
+    <string name="point_easting_label"     >Easting: </string>
+    <string name="point_northing_label"    >Northing: </string>
+    <string name="point_elevation_label"   >Elevation: </string>
     <string name="point_feature_code_label">Feature Code: </string>
-    <string name="point_notes_label">Notes: </string>
-    <string name="unk_coord_type">Unknown Coordinate Type</string>
+    <string name="point_notes_label"       >Notes: </string>
+    <string name="point_offset_distance_label"   >Offset Distance: </string>
+    <string name="point_offset_heading_label"    >Offset Heading: </string>
+    <string name="point_offset_elevation_label"  >Offset Elevation: </string>
+    <string name="unk_coord_type"          >Unknown Coordinate Type</string>
 
-    <string name="dummy_project_description">No permanent storage of Projects yet, so couldn\'t lookup the real project</string>
-    <string name="dummy_project_name">Dummy Name no Lookup</string>
     <string name="unknown_process">UNKNOWN process</string>
 
     <string name="cant_view_projects">Can not view projects on create path</string>
@@ -318,7 +325,7 @@
     <string name="offset_position_label"  >Offset Position</string>
     <string name="ave_position_label"     >Average Position</string>
     <string name="show_all_points_label"  >Show All Points</string>
-    <string name="enter_notes"            >Enter Notes for Point</string>
+    <string name="enter_notes"            >Enter Notes</string>
 
     <!-- Information Window on markers for collect points -->
     <string name="iwcp_number_raw"        ># Raw Readings: </string>
@@ -344,7 +351,20 @@
     <string name="iwcp_feature_code_label">FC</string>
     <string name="iwcp_notes_label"       >Notes</string>
 
-    <string name="point_actions"          >Actions on this Point:</string>
+    <string name="marker_actions"         >Marker Actions Available:</string>
+    <string name="marker_edit_point"      >Edit Point</string>
+    <string name="marker_remove_point"    >Remove Point</string>
+    <string name="marker_remove_marker"   >Remove Marker</string>
+    <string name="marker_exclude_point"   >Exclude Point</string>
+    <string name="marker_set_focus"       >Set Focus</string>
+    <string name="next_point"             >Next Point Only</string>
+    <string name="all_future_points"      >All Future Points</string>
+    <string name="offset_distance_meters" >Offset distance in meters:</string>
+    <string name="offset_distance_feet"   >Offset distance in feet:</string>
+    <string name="offset_heading"         >Offset Heading (degrees clockwise from N):</string>
+    <string name="offset_elevation"       >Offset Elevation:</string>
+
+
     <string name="gps_not_running"        >GPS not running</string>
     <string name="map_touched"            >Map touched at </string>
     <string name="no_point_at_marker"     >No Point saved at marker</string>
@@ -361,10 +381,14 @@
     <string name="collect_points_test_marker"       >Marker Number </string>
     <string name="collect_points_provisional_marker">Provisional Marker</string>
     <string name="collect_points_destroy_error">Error attempting to destroy mapsView, ignored</string>
-    <string name="no_camera_on_this_device"     >No camera on this device</string>
+    <string name="no_camera_on_this_device"        >No camera on this device</string>
     <string name="need_permission_to_take_pictures">Need permission to take pictures</string>
     <string name="try_camera_again"                >Try Camera Again</string>
-    <string name="unable_to_create_picture_file">Unable to create picture file</string>
+    <string name="unable_to_create_picture_file"   >Unable to create picture file</string>
+    <string name="picture_filename"                >Picture Filename</string>
+    <string name="invalid_screen_focus_for_picture">Must be focused on a point, or somewhere on map</string>
+    <string name="point_not_created_at_marker_yet" >Point not created yet</string>
+    <string name="meaning_terminated"       >Meaning process terminated, point not created</string>
 
 
     <!--      NEW SCREEN                  -->
@@ -656,17 +680,20 @@
     <string name="elevation_input_label">Enter Elevation decimal number</string>
 
     <!-- Prompts -->
-    <string name="gps_wgs84_prompt">Current GPS Position: WGS84</string>
+    <string name="gps_wgs84_prompt" >Current GPS Position: WGS84</string>
     <string name="mean_wgs84_prompt">Meaned GPS Position: WGS84</string>
-    <string name="wgs84_prompt">WGS84 Coordinate</string>
-    <string name="nad83_prompt">NAD83 Coordinate</string>
-    <string name="spc_prompt">SPSC: State Plane Coordinate</string>
-    <string name="utm_prompt">UTM: Universal Transverse Mercator Coordinate</string>
-    <string name="null_prompt">Please select Coordinate Type</string>
+    <string name="wgs84_prompt"     >WGS84 Coordinate</string>
+    <string name="nad83_prompt"     >NAD83 Coordinate</string>
+    <string name="spc_prompt"       >SPSC: State Plane Coordinate</string>
+    <string name="utm_prompt"       >UTM: Universal Transverse Mercator Coordinate</string>
+    <string name="null_prompt"      >Please select Coordinate Type</string>
     <string name="unrecognized_coordinate">Unrecognized Coordinate Type</string>
-    <string name="enter_coordinate_type">Select Coordinate Type for this point</string>
-    <string name="coordinate_type">Coordinate Type </string>
-    <string name="zero_decimal_string">0.0</string>
+    <string name="enter_coordinate_type"  >Select Coordinate Type for this point</string>
+    <string name="coordinate_type"        >Coordinate Type </string>
+    <string name="zero_decimal_string"    >0.0</string>
+    <string name="default_latband"        >A</string>
+    <string name="default_zone"           >0</string>
+    <string name="default_hemisphere"     >N</string>
 
     <string name="mean_start_time_label">Start time:</string>
     <string name="mean_end_time_label">End time:</string>

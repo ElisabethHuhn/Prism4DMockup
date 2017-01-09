@@ -2,6 +2,8 @@ package com.asc.msigeosystems.prism4d;
 
 import android.os.Bundle;
 
+import java.util.ArrayList;
+
 /**
  * Created by Elisabeth Huhn on 5/15/2016.
  *
@@ -49,13 +51,21 @@ public class Prism4DPoint {
 
     private int          mPointID;
     private int          mForProjectID;
+
+    //Actual location of point is given by Coordinate
     private int          mHasACoordinateID;
+    private Prism4DCoordinate mCoordinate;
+
+    //The original offset. The Coordinate has this offset calculated into it
+    private double       mOffsetDistance;
+    private double       mOffsetHeading;
+    private double       mOffsetElevation;
 
     private CharSequence mPointFeatureCode;
     private CharSequence mPointNotes;
 
-    //Actual location of point is given by Coordinate
-    private Prism4DCoordinate mCoordinate;
+
+    private ArrayList<Prism4DPicture> mPictures;
 
     //Quality fields
     private double      mHdop;
@@ -118,22 +128,6 @@ public class Prism4DPoint {
     }
 
 
-    //Convert point to comma delimited file for exchange
-    public String convertToCDF() {
-        return String.valueOf(this.getPointID()) + ", " +
-                this.getPointFeatureCode()       + ", " +
-                this.getPointNotes()             + ", " +
-                this.getHdop()                   + ", " +
-                this.getVdop()                   + ", " +
-                this.getTdop()                   + ", " +
-                this.getPdop()                   + ", " +
-                this.getHrms()                   + ", " +
-                this.getVrms()                   + ", " +
-                //todo 12/13/2016 have to add in coordinates here
-                "plus coordinate positions "      +
-                System.getProperty("line.separator");
-    }
-
     /*************************************/
     /*         CONSTRUCTORS              */
 
@@ -183,69 +177,80 @@ public class Prism4DPoint {
     public int getHasACoordinateID()                    {return mHasACoordinateID; }
     public void setHasACoordinateID(int isACoordinateID) { mHasACoordinateID = isACoordinateID; }
 
+    public Prism4DCoordinate getCoordinate()                { return mCoordinate;  }
+    public void setCoordinate(Prism4DCoordinate coordinate) { mCoordinate = coordinate; }
+
+
+    public double getOffsetDistance() {  return mOffsetDistance;   }
+    public void setOffsetDistance(double offsetDistance) {  mOffsetDistance = offsetDistance; }
+
+    public double getOffsetHeading() {   return mOffsetHeading;}
+    public void setOffsetHeading(double offsetHeading) { mOffsetHeading = offsetHeading;   }
+
+    public double getOffsetElevation() {  return mOffsetElevation;  }
+    public void setOffsetElevation(double offsetElevation) { mOffsetElevation = offsetElevation; }
+
+
     public CharSequence getPointFeatureCode() { return mPointFeatureCode;  }
     public void setPointFeatureCode(CharSequence description) { mPointFeatureCode = description;  }
 
     public CharSequence getPointNotes() {  return mPointNotes;   }
     public void setPointNotes(CharSequence notes) { mPointNotes = notes;   }
 
-    public Prism4DCoordinate getCoordinate()                { return mCoordinate;  }
-    public void setCoordinate(Prism4DCoordinate coordinate) { mCoordinate = coordinate; }
-
     public double getHdop() {
         return mHdop;
     }
-
-    public void setHdop(double hdop) {
+    public void   setHdop(double hdop) {
         mHdop = hdop;
     }
 
     public double getVdop() {
         return mVdop;
     }
-
-    public void setVdop(double vdop) {
+    public void   setVdop(double vdop) {
         mVdop = vdop;
     }
 
     public double getTdop() {
         return mTdop;
     }
-
-    public void setTdop(double tdop) {
+    public void   setTdop(double tdop) {
         mTdop = tdop;
     }
 
     public double getPdop() {
         return mPdop;
     }
-
-    public void setPdop(double pdop) {
+    public void   setPdop(double pdop) {
         mPdop = pdop;
     }
 
     public double getGdop() {
         return mGdop;
     }
-
-    public void setGdop(double gdop) {
+    public void   setGdop(double gdop) {
         mGdop = gdop;
     }
 
     public double getHrms() {
         return mHrms;
     }
-
-    public void setHrms(double hrms) {
+    public void   setHrms(double hrms) {
         mHrms = hrms;
     }
 
     public double getVrms() {
         return mVrms;
     }
-
-    public void setVrms(double vrms) {
+    public void   setVrms(double vrms) {
         mVrms = vrms;
+    }
+
+    public ArrayList<Prism4DPicture> getPictures()                   {   return mPictures; }
+    public void   setPictures(ArrayList<Prism4DPicture> pictures) {  mPictures = pictures; }
+
+    public boolean addPicture(Prism4DPicture picture){
+        return getPictures().add(picture);
     }
 
     /*****************************************************/
@@ -256,10 +261,16 @@ public class Prism4DPoint {
         this.mForProjectID     = 0;
         this.mPointID          = 0;
         this.mHasACoordinateID = 0;
+        this.mCoordinate       = null;
+
+        this.mOffsetDistance   = 0;
+        this.mOffsetHeading    = 0;
+        this.mOffsetElevation  = 0;
+
         this.mPointFeatureCode = "";
         this.mPointNotes       = "";
 
-        this.mCoordinate       = null;
+          this.mPictures         = new ArrayList<>();
         this.mHdop = 0d;
         this.mVdop = 0d;
         this.mTdop = 0d;
@@ -269,5 +280,26 @@ public class Prism4DPoint {
         this.mVrms = 0d;
 
     }
+
+
+    //Convert point to comma delimited file for exchange
+    public String convertToCDF() {
+        return String.valueOf(this.getPointID()) + ", " +
+                this.getPointFeatureCode()       + ", " +
+                this.getPointNotes()             + ", " +
+                this.getHdop()                   + ", " +
+                this.getVdop()                   + ", " +
+                this.getTdop()                   + ", " +
+                this.getPdop()                   + ", " +
+                this.getHrms()                   + ", " +
+                this.getVrms()                   + ", " +
+                this.getOffsetDistance()         + ", " +
+                this.getOffsetHeading()          + ", " +
+                this.getOffsetElevation()        + ", " +
+                //todo 12/13/2016 have to add in coordinates here
+                "plus coordinate positions "      +
+                System.getProperty("line.separator");
+    }
+
 
 }

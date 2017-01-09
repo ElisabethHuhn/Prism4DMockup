@@ -1,5 +1,6 @@
 package com.asc.msigeosystems.prism4d.database;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -9,6 +10,7 @@ import com.asc.msigeosystems.prism4d.Prism4DCoordinate;
 import com.asc.msigeosystems.prism4d.Prism4DCoordinateManager;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalData;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalDataManager;
+import com.asc.msigeosystems.prism4d.Prism4DPicture;
 import com.asc.msigeosystems.prism4d.Prism4DPoint;
 import com.asc.msigeosystems.prism4d.Prism4DPointManager;
 import com.asc.msigeosystems.prism4d.Prism4DProject;
@@ -27,6 +29,7 @@ import java.util.ArrayList;
  */
 public class Prism4DDatabaseManager {
     private static final String TAG = "Prism4DDatabaseManager";
+    private static final long   sERROR_CODE = -1;
 
 
     /************************************************/
@@ -110,7 +113,8 @@ public class Prism4DDatabaseManager {
      * USAGE
      * Prism4DDatabaseManager.initializeInstance(getApplicationContext());
      */
-    public static synchronized Prism4DDatabaseManager initializeInstance(Context context) throws RuntimeException {
+    public static synchronized Prism4DDatabaseManager initializeInstance(Context context)
+                                                            throws RuntimeException {
         if (sManagerInstance == null){
                 try {
                 //Note the hard coded strings here.
@@ -166,7 +170,8 @@ public class Prism4DDatabaseManager {
     }
 
     //If we do happen to have a context, we can initialize
-    public static synchronized Prism4DDatabaseManager getInstance(Context context) throws RuntimeException {
+    public static synchronized Prism4DDatabaseManager getInstance(Context context)
+                                                            throws RuntimeException {
         //The reason we can't just initialize it now is because we need a context to initialize
         if (sManagerInstance == null)  {
             if (context == null)throw new RuntimeException(sNotInitializedException);
@@ -195,18 +200,23 @@ public class Prism4DDatabaseManager {
 
     //*********************************** CREATE ********************************
     public boolean addProject(Prism4DProject project){
+        boolean returnCode = true;
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        mDatabaseHelper.add(mDatabase,                               //database to add to
+        long addCode = mDatabaseHelper.add(mDatabase,                //database to add to
                             Prism4DSqliteOpenHelper.TABLE_PROJECT,   //table to add to
                             null,                                    //nullColumnHack
                             projectManager.getCVFromProject(project));  //Content Values of the object to add
+        if (addCode == sERROR_CODE)returnCode = false;
 
-        addProjectSettings(project);
+        returnCode = returnCode & addProjectSettingsToDB(project);
 
-        return true;
+        returnCode = returnCode & addProjectPicturesToDB(project);
+
+        return returnCode;
     }
 
-    public boolean addProjectSettings(Prism4DProject project){
+    public boolean addProjectSettingsToDB(Prism4DProject project){
+
         Prism4DProjectSettings projectSettings = project.getSettings();
         if (projectSettings == null){
             //Settings had not yet been created. Do so now, with default values
@@ -216,14 +226,13 @@ public class Prism4DDatabaseManager {
         }
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         //store the settings in the DB with the project
-        mDatabaseHelper.add(mDatabase,
-                Prism4DSqliteOpenHelper.TABLE_PROJECT_SETTINGS,
-                null,
-                projectManager.getCVFromProjectSettings(project));
-
+        long addCode = mDatabaseHelper.add(mDatabase,
+                                            Prism4DSqliteOpenHelper.TABLE_PROJECT_SETTINGS,
+                                            null,
+                                            projectManager.getCVFromProjectSettings(project));
+        if (addCode == sERROR_CODE)return false;
         return true;
     }
-
 
     //*********************************** READ ********************************
     /********************************
@@ -258,9 +267,14 @@ public class Prism4DDatabaseManager {
             project = projectManager.getProjectFromCursor(cursor, position);
             if (project != null) {
                 // TODO: 12/21/2016 Need to let someone know that something is wrong here if null
+                //Add the DB project to memory
                 projectManager.addFromDB(project);
-                //read settings object from the DB and put in the new project object
+
+                //add DB settings object to the new (in memory) project object
                 project.setSettings(getProjectSettings(project.getProjectID()));
+
+                //get pictures for this project and add to the project
+                project.setPictures(getProjectPicturesFromDB(project));
             }
        
             position++;
@@ -284,9 +298,13 @@ public class Prism4DDatabaseManager {
         //get the first row in the cursor
         int position = 0;//so we don't have a magic number in the last parameter
         Prism4DProject project = projectManager.getProjectFromCursor(cursor, position);
+        cursor.close();
 
         //read settings object from the DB and put in the new project object
         project.setSettings(getProjectSettings(projectID));
+
+        //get pictures for this project and add to the project
+        project.setPictures(getProjectPicturesFromDB(project));
 
         return project;
     }
@@ -304,14 +322,31 @@ public class Prism4DDatabaseManager {
         //create a project object from the Cursor object
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         int position = 0;
-        return projectManager.getProjectSettingsFromCursor(cursor, position);
+
+        Prism4DProjectSettings projectSettings =
+                                    projectManager.getProjectSettingsFromCursor(cursor, position);
+        cursor.close();
+        return projectSettings;
 
     }
 
     //*********************************** UPDATE ********************************
 
-    public  int updateProject(int  projectID) {
+    public  int updateProjectOnly(Prism4DProject project) {
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        int                   projectID      = project.getProjectID();
 
+        int returnCodeP = mDatabaseHelper.update(mDatabase,
+                                                 Prism4DSqliteOpenHelper.TABLE_PROJECT,
+                                                 projectManager.getCVFromProject(project),
+                                                 getProjectWhereClause(projectID),
+                                                 null);  //values that replace ? in where clause
+        //No cascading updates as in updateProject()
+
+        return (returnCodeP);
+    }
+
+    public  int updateProject(int  projectID) {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         Prism4DProject        project        = projectManager.getProject(projectID);
 
@@ -321,7 +356,7 @@ public class Prism4DDatabaseManager {
 
     public  int updateProject(Prism4DProject project) {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
-        int             projectID      = project.getProjectID();
+        int                   projectID      = project.getProjectID();
 
         int returnCodeP = mDatabaseHelper.update(mDatabase,
                                                 Prism4DSqliteOpenHelper.TABLE_PROJECT,
@@ -330,7 +365,12 @@ public class Prism4DDatabaseManager {
                                                 null);  //values that replace ? in where clause
         int returnCodePS = updateProjectSettings(project);
 
-        return (returnCodeP & returnCodePS);
+        int returnCodePic = updateProjectPictures(project);
+
+        //updates the points and the pictures on the points
+        int returnCodePts = updateProjectPoints(project);
+
+        return (returnCodeP + returnCodePS + returnCodePic + returnCodePts);
     }
 
 
@@ -344,6 +384,32 @@ public class Prism4DDatabaseManager {
                                         getProjectSettingsWhereClause(projectID),
                                         null);  //values that replace ? in where clause
 
+    }
+
+    public  int updateProjectPictures(Prism4DProject project) {
+        ArrayList<Prism4DPicture> pictures = project.getPictures();
+        int returnCode = updatePictures(pictures);
+
+        return returnCode;
+    }
+
+
+    public  int updateProjectPoints(Prism4DProject project) {
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        int                   projectID      = project.getProjectID();
+
+        Prism4DPoint point;
+        ArrayList<Prism4DPoint> points = project.getPoints();
+        int last = points.size();
+        int position = 0;
+        int returnCode = 0;
+
+        while (position < last){
+            point = points.get(position);
+
+            returnCode = returnCode + updatePoint(point);
+        }
+        return returnCode;
     }
 
 
@@ -394,21 +460,31 @@ public class Prism4DDatabaseManager {
     //public int getPointCount() {}
 
     //******************************    Create    ***********************
-    public void addPoint(Prism4DPoint point){
+    public boolean addPoint(Prism4DPoint point){
+        boolean returnCode = true;
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-        mDatabaseHelper.add(mDatabase,
-                            Prism4DSqliteOpenHelper.TABLE_POINT,
-                            null,
-                            pointManager.getPointCV(point));
+        long addCode = mDatabaseHelper.add(mDatabase,
+                                                Prism4DSqliteOpenHelper.TABLE_POINT,
+                                                null,
+                                                pointManager.getCVFromPoint(point));
+
+        if (addCode == sERROR_CODE)returnCode = false;
+
+        Prism4DCoordinate coordinate = (Prism4DCoordinate)point.getCoordinate();
+        if (!addCoordinate(coordinate))returnCode = false;
+
+
+        if (!addPointPicturesToDB(point)) returnCode = false;
+        return returnCode;
     }
 
 
     //***********************  Read **********************************
     //Reads the Points in from the DB,
     //     and adds them to the project instance passed as an argument
-    //does NOT add these points to the in memory data structures
+
     //Returns the number of points read in
-    public int getAllPointsFromDB(Prism4DProject project) {
+    public int getPointsForProjectFromDB(Prism4DProject project) {
         //Do not go to the ProjectManager for the project, as we may be doing a deep copy
         int projectID = project.getProjectID();
         if (projectID == 0) return 0;
@@ -426,118 +502,111 @@ public class Prism4DDatabaseManager {
 
         //need the pointManager to convert a point in the Cursor to a point object
         Prism4DPointManager      pointManager      = Prism4DPointManager.getInstance();
-        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
 
         //iterate over all the rows in the cursor
         Prism4DPoint point;
         int last = cursor.getCount();
-        for (int position = 0; position < last; position++) {
+        int position = 0;
+        while (position < last){
             point = pointManager.getPointFromCursor(cursor, position);
             //add the point to the project
             pointsList.add(point);
 
             //get the coordinate
             int coordinateID = point.getHasACoordinateID();
-            //and set it on the point
-            point.setCoordinate(coordinateManager.getCoordinateFromDB(coordinateID, projectID));
+            if (coordinateID > 0) {
+                //and set it on the point
+                point.setCoordinate(getCoordinateFromDB(coordinateID, projectID));
+            }
 
+            //Get the pictures for this point
+            point.setPictures(getPointPicturesFromDB(point));
+
+            position++;
         }
         //put these point instances on the project
         project.setPoints(pointsList);
         cursor.close();
+
         return last;
     }
 
-
-
-
-    //Reads the Points into memory
-    //Returns the number of points read in
-    public int getAllPoints(int projectID){
-        if (projectID == 0) return 0;
-
-        Cursor cursor = mDatabaseHelper.getObject(  mDatabase,
-                                                Prism4DSqliteOpenHelper.TABLE_POINT,
-                                                null,    //get the whole point
-                                                getPointWhereClause(projectID), //Only points in this project
-                                                null, null, null, null);
-
-        //get the point row from the DB
-        /********************************
-         Cursor query (String table, //Table Name
-         String[] columns,   //Columns to return, null for all columns
-         String where_clause,
-         String[] selectionArgs, //replaces ? in the where_clause with these arguments
-         String groupBy, //null meanas no grouping
-         String having,   //row grouping
-         String orderBy)  //null means the default sort order
-         *********************************/
-
-        //create a point object from the Cursor object
-        Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-
-        int position = 0;
-        int last = cursor.getCount();
-        Prism4DPoint point;
-        while (position < last) {
-            //translate the cursor into a point object
-            //but only if the point belongs to the right project
-            point = pointManager.getPointFromCursor(cursor, position);
-            //add the point object to the point manager's list (which is on the project)
-            if (point != null) {
-                if (!pointManager.addFromDB(point)) {
-                    throw new RuntimeException("Can't add point from DB");
-                }
-            }
-            position++;
-        }
-        cursor.close();
-        return last;
-
-    }
-
-    //NOTE this routine does NOT add the point to the Project where
-    public Prism4DPoint getPoint(int pointID, int projectID){
-
-        //get the point row from the DB
-        Cursor cursor = mDatabaseHelper.getObject(
-                mDatabase,     //the db to access
-                Prism4DSqliteOpenHelper.TABLE_POINT,  //table name
-                null,          //get the whole point
-                getPointWhereClause(pointID, projectID), //where clause
-                null, null, null, null);//args, group, row grouping, order
-
-
-/********************************
- Cursor query (String table, //Table Name
- String[] columns,   //Columns to return, null for all columns
- String where_clause,
- String[] selectionArgs, //replaces ? in the where_clause with these arguments
- String groupBy, //null meanas no grouping
- String having,   //row grouping
- String orderBy)  //null means the default sort order
- *********************************/
-
-        //create a point object from the Cursor object
-        Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-        return pointManager.getPointFromCursor(cursor, 0);//get the first row in the cursor
-    }
 
 
 
     //********************************    Update   *************************
 
     public  int updatePoint(Prism4DPoint point) {
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject        project        = projectManager.getProject(point.getForProjectID());
+        int returnCode = 0;
+
+        //cascade the update to pictures on teh point
+        if (updatePointPictures(point) < 1) return returnCode;
+
+        //cascade the update to coordinates on the point
+        Prism4DCoordinate coordinate = point.getCoordinate();
+        if (coordinate != null){
+            if (updateCoordinate(coordinate) < 1)return returnCode;
+        }
+
+        //then update the point itself
+        Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+
+        returnCode = mDatabaseHelper.update(
+                                    mDatabase,
+                                    Prism4DSqliteOpenHelper.TABLE_POINT,
+                                    pointManager.getCVFromPoint(point),
+                                    getPointWhereClause(point.getPointID(), point.getForProjectID()),
+                                    null);  //values that replace ? in where clause
+
+        return returnCode;
+    }
+
+
+    //Just updates the point, no subordinate objects
+    public  int updatePointOnly(Prism4DPoint point) {
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
 
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
 
-        return mDatabaseHelper.update(mDatabase,
+        return mDatabaseHelper.update(
+                                mDatabase,
                                 Prism4DSqliteOpenHelper.TABLE_POINT,
-                                pointManager.getPointCV(point),
+                                pointManager.getCVFromPoint(point),
                                 getPointWhereClause(point.getPointID(), point.getForProjectID()),
                                 null);  //values that replace ? in where clause
 
     }
+
+
+
+
+
+    public  int updatePointPictures(Prism4DPoint point) {
+
+        ArrayList<Prism4DPicture> pictures = point.getPictures();
+        int returnCode = updatePictures(pictures);
+
+         return returnCode;
+    }
+
+    private int updatePictures(ArrayList<Prism4DPicture> pictures){
+
+        Prism4DPicture picture;
+
+        int last       = pictures.size();
+        int position   = 0;
+        int returnCode = 0;
+
+        while (position < last){
+            picture = pictures.get(position);
+            returnCode = returnCode + updatePicture(picture);
+        }
+        return returnCode;
+
+    }
+
 
 
 
@@ -610,11 +679,14 @@ public class Prism4DDatabaseManager {
         String table = getCoordinateTypeTable(project);
 
         Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+        ContentValues cv = coordinateManager.getCVFromCoordinate(coordinate);
 
-        mDatabaseHelper.add(mDatabase,
-                            table,
-                            null,
-                            coordinateManager.getCoordinateCV(coordinate));
+        long returncode = mDatabaseHelper.add(mDatabase,
+                                              table,
+                                              null,
+                                              cv);
+
+        if (returncode == sERROR_CODE)return false;
         return true;
     }
 
@@ -629,15 +701,20 @@ public class Prism4DDatabaseManager {
         String table = getCoordinateTypeTable(projectID);
 
         //get the coordinate row from the DB
-        Cursor cursor = mDatabaseHelper.getObject(  mDatabase,     //the db to access
-                                                    table,  //table name
-                                                    null,          //get the whole coordinate
-                                                    getCoordinateWhereClause(coordinateID, projectID), //where clause
-                                                    null, null, null, null);//args, group, row grouping, order
+        Cursor cursor = mDatabaseHelper.getObject(
+                                mDatabase,     //the db to access
+                                table,  //table name
+                                null,          //get the whole coordinate
+                                getCoordinateWhereClause(coordinateID, projectID), //where clause
+                                null, null, null, null);//args, group, row grouping, order
 
         //create a coordinate object from the Cursor object
         Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
-        return coordinateManager.getCoordinateFromCursor(cursor, 0);//get the first row in the cursor
+
+        //get the first row in the cursor
+        Prism4DCoordinate coordinate =  coordinateManager.getCoordinateFromCursor(cursor, 0);
+        cursor.close();
+        return coordinate;
     }
 
 
@@ -655,7 +732,7 @@ public class Prism4DDatabaseManager {
 
         return mDatabaseHelper.update(  mDatabase,
                                         table,
-                                        coordinateManager.getCoordinateCV(coordinate),
+                                        coordinateManager.getCVFromCoordinate(coordinate),
                                         getCoordinateWhereClause(coordinate.getCoordinateID(), projectID),
                                         null);  //values that replace ? in where clause
 
@@ -732,18 +809,235 @@ public class Prism4DDatabaseManager {
 
 
 
+    /************************************************/
+    /*         Picture CRUD methods             */
+    /************************************************/
+
+    //*********************    Create    ***********************
+
+
+    public boolean addProjectPicturesToDB(Prism4DProject project){
+        ArrayList<Prism4DPicture> pictures = project.getPictures();
+        if (pictures == null){
+            pictures = new ArrayList<Prism4DPicture>();
+            project.setPictures(pictures);
+        }
+
+        return addPicturesToDB(pictures);
+    }
+
+
+    public boolean addPointPicturesToDB(Prism4DPoint point){
+        ArrayList<Prism4DPicture> pictures = point.getPictures();
+        if (pictures == null){
+            pictures = new ArrayList<Prism4DPicture>();
+            point.setPictures(pictures);
+        }
+
+        return addPicturesToDB(pictures);
+    }
+
+
+    public boolean addPicturesToDB(ArrayList<Prism4DPicture> pictures){
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+
+        int position = 0;
+        int last = pictures.size();
+        Prism4DPicture picture;
+        boolean returnCode = true;
+        while (position < last) {
+            picture = pictures.get(position);
+            returnCode = returnCode & addPicture(picture);
+            position++;
+        }
+        return returnCode;
+    }
+
+    public boolean addPicture(Prism4DPicture picture){
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        long ret =  mDatabaseHelper.add(mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                                        null,
+                                        projectManager.getCVFromPicture(picture));
+        if (ret == sERROR_CODE)return false;
+
+        return true;
+    }
+
+
+
+    //***********************  Read **********************************
+
+
+    //return the pictures for this project (that are currently in the DB)
+    public ArrayList<Prism4DPicture> getProjectPicturesFromDB(Prism4DProject project){
+        if (project == null)return null;
+        String whereClause = getPictureWhereClause(project.getProjectID());
+        return getPicturesFromDB(whereClause);
+
+    }
+
+
+    //return the pictures for this point (that are currently in the DB)
+    public ArrayList<Prism4DPicture> getPointPicturesFromDB (Prism4DPoint point){
+        if (point == null)return null;
+        String whereClause = getPictureWhereClause(point.getForProjectID(), point.getPointID());
+        return getPicturesFromDB(whereClause);
+
+    }
+
+    //actually get the pictures from the DB, regardless of where they are to be stored
+    public ArrayList<Prism4DPicture> getPicturesFromDB (String whereClause){
+
+        //get the pictures for this project from the DB
+        Cursor cursor = mDatabaseHelper.getObject(
+                                        mDatabase,     //the db to access
+                                        Prism4DSqliteOpenHelper.TABLE_PICTURE,  //table name
+                                        null,          //get the whole picture
+                                        whereClause, //where clause
+                                        null, null, null, null);//args, group, row grouping, order
+
+        //create the picture objects from the Cursor object
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+
+        //and store the pictures in a list
+        ArrayList<Prism4DPicture> pictures = new ArrayList<>();
+
+        int position = 0;
+        int last = cursor.getCount();
+        Prism4DPicture picture;
+        while (position < last) {
+            picture = projectManager.getPictureFromCursor(cursor, position);
+            pictures.add(picture);
+            position++;
+        }
+        cursor.close();
+
+        return pictures;
+
+    }
+
+    //***********************  Update   *************************
+
+
+    public  int updatePicture(Prism4DPicture picture) {
+
+        int returnCode = 0;
+        //pictures are managed by the project manager
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+
+        returnCode = mDatabaseHelper.update(mDatabase,
+                Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                projectManager.getCVFromPicture(picture),
+                getPictureWhereClause(picture.getPictureID().toString(), picture.getProjectID()),
+                null);  //values that replace ? in where clause
+
+        return returnCode;
+    }
+
+
+
+
+    //********************     Delete    ***************************
+
+    //The return code indicates how many rows affected
+    //Removes all pictures, both at the project level and the point level
+    public int removeProjectPictures(int projectID){
+
+        return mDatabaseHelper.remove(  mDatabase,
+                Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                getPictureWhereClause(projectID),
+                null);  //values that replace ? in where clause
+    }
+
+
+    //The return code indicates how many rows affected
+    public int removePicturesFromPoint(Prism4DPoint point){
+        String whereClause = getPictureWhereClause(point.getForProjectID(), point.getPointID());
+
+        return mDatabaseHelper.remove(  mDatabase,
+                Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                whereClause,
+                null);  //values that replace ? in where clause
+    }
+
+
+    //The return code indicates how many rows affected
+    //Removes only one picture from the project level
+    public int removeProjectPicture(String pictureID, int projectID){
+
+        return mDatabaseHelper.remove(  mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                                        getPictureWhereClause(pictureID, projectID),
+                                        null);  //values that replace ? in where clause
+    }
+
+
+    //The return code indicates how many rows affected
+    //Removes only one picture from the project level
+    public int removePointPicture(String pictureID, int projectID, int pointID){
+        String whereClause = getPictureWhereClause(pictureID, projectID, pointID);
+
+        return mDatabaseHelper.remove(  mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_PICTURE,
+                                        whereClause,
+                                        null);  //values that replace ? in where clause
+    }
+
+
+
+    /************************************************/
+    /*        Picture specific CRUD  utility         */
+    /************************************************/
+
+    //This only gets the one picture related to this project
+    private String getPictureWhereClause(String pictureID, int projectID){
+        return
+         Prism4DSqliteOpenHelper.PICTURE_ID         + " = '" + pictureID               + "' AND " +
+         Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID + " = '" + String.valueOf(projectID) + "'";
+
+    }
+
+    //This only gets the one picture from the point
+    private String getPictureWhereClause(String pictureID, int projectID, int pointID){
+        return
+          Prism4DSqliteOpenHelper.PICTURE_ID         + " = '" + pictureID                 + "' AND " +
+          Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID + " = '" + String.valueOf(projectID) + "' AND " +
+          Prism4DSqliteOpenHelper.PICTURE_POINT_ID   + " = '" + String.valueOf(pointID) + "' " ;
+
+    }
+
+
+    //This gets all the pictures related to this project
+    private String getPictureWhereClause(int projectID) {
+        return
+            Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID + " = '" + String.valueOf(projectID) + "'";
+    }
+
+
+    //This gets all pictures on this point of this project
+    private String getPictureWhereClause(int projectID, int pointID){
+        return
+         Prism4DSqliteOpenHelper.PICTURE_PROJECT_ID + " = '" + String.valueOf(projectID) + "' AND "+
+         Prism4DSqliteOpenHelper.PICTURE_POINT_ID   + " = '" + String.valueOf(pointID)   + "' ";
+
+    }
+
+
 
     /************************************************/
     /*         Global Data CRUD methods             */
     /************************************************/
 
     //******************************    Create    ***********************
-    public void addGlobalData(Prism4DGlobalData globalData){
+    public boolean addGlobalData(Prism4DGlobalData globalData){
         Prism4DGlobalDataManager globalDataManager = Prism4DGlobalDataManager.getInstance();
-        mDatabaseHelper.add(mDatabase,                         //database to add to
+        long returnCode = mDatabaseHelper.add(mDatabase,        //database to add to
                 Prism4DSqliteOpenHelper.TABLE_GLOBAL_DATA,     //table to add to
                 null,                                          //nullColumnHack
                 globalDataManager.getGlobalDataCV(globalData));//Content Values of the object to add
+        if (returnCode == sERROR_CODE)return false;
+        return true;
     }
 
 

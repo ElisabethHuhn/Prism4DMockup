@@ -206,7 +206,7 @@ public class MainPrism4DTopProjectFragment extends Fragment {
                 Prism4DProject openProject = constantsAndUtilities.getOpenProject();
                 if (openProject != null){
                     myActivity.switchToListPointsScreen(openProject,
-                            new Prism4DPath(Prism4DPath.sShowTag));
+                            new Prism4DPath(Prism4DPath.sEditTag));
                 }
 
                 Toast.makeText(getActivity(),

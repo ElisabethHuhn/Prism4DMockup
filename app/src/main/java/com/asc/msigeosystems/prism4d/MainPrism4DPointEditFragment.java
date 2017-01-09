@@ -1,12 +1,16 @@
 package com.asc.msigeosystems.prism4d;
 
-import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -14,15 +18,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
 
-import java.math.BigDecimal;
-import java.math.RoundingMode;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * The Maintain Point Fragment
@@ -32,6 +37,7 @@ import java.util.Date;
  */
 public class MainPrism4DPointEditFragment extends Fragment  {
 
+    private static final String TAG = "EDIT_POINT_FRAGMENT";
 
     /**
      * Create variables for all the widgets
@@ -54,6 +60,9 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     private EditText mPointPdopInput;
     private EditText mPointHrmsInput;
     private EditText mPointVrmsInput;
+    private EditText mPointOffsetDistInput;
+    private EditText mPointOffsetHeadInput;
+    private EditText mPointOffsetEleInput;
 
 
     private TextView mPointCoordinateTypeLabel;
@@ -136,6 +145,17 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     private Button mPointExitButton;
     private Button mPointViewExistingButton;
     private Button mPointSaveChangesButton;
+
+
+    /***********************************************************/
+    /******         Recycler View Widgets             **********/
+    /***********************************************************/
+    private List<Prism4DPicture> mPictureList = new ArrayList<>();
+    private RecyclerView               mRecyclerView;
+    private RecyclerView.LayoutManager mLayoutManager;
+    private Prism4DPictureAdapter      mAdapter;
+
+    private ImageView mPictureImage;
 
 
 
@@ -260,6 +280,8 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         }
 
         initializeUI();
+
+        initializeRecyclerView(v);
 
         if (mCoordinateWidgetType == Prism4DCoordinate.sLLWidgets){
             saveLLFieldsAsOldValues();
@@ -405,6 +427,43 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         });
 
 
+
+        //Point Offset Distance
+        mPointOffsetDistInput = (EditText) v.findViewById(R.id.pointOffDistInput);
+        mPointOffsetDistInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Offset Heading
+        mPointOffsetHeadInput = (EditText) v.findViewById(R.id.pointOffHeadInput);
+        mPointOffsetHeadInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Offset Distance
+        mPointOffsetEleInput = (EditText) v.findViewById(R.id.pointOffEleInput);
+        mPointOffsetEleInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
         //Coordinate type
         mPointCoordinateTypeLabel = (TextView)v.findViewById(R.id.coordinate_label);
 
@@ -414,6 +473,11 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         mPointExitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                //hide the keyboard if it is visable
+                Prism4DConstantsAndUtilities constantsAndUtilities =
+                                                        Prism4DConstantsAndUtilities.getInstance();
+                constantsAndUtilities.hideKeyboard(getActivity());
+
                 if (mPointPath.equals(Prism4DPath.sEditFromMaps)){
                     //pop back to the Collect Points Screen
                     ((MainPrism4DActivity)getActivity()).
@@ -453,9 +517,20 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         mPointSaveChangesButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
+                //ignore the return code. If successful, the save path is consumed, otherwise not
                 onSave();
             }
         });
+        mPointSaveChangesButton.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus) {
+                if(hasFocus) {
+                    int temp = 0;//something for the debugger to land on
+                }
+            }
+        });
+
+        mPictureImage = (ImageView) v.findViewById(R.id.pictureImage);
 
 
     }
@@ -531,19 +606,25 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Degree just lost focus,
                     //has the value changed?
-                    String temp = mPointLatitudeDInput.getText().toString();
-                    if (!temp.equals(mPointLatitudeDOld)){
+                    String tempD = mPointLatitudeDInput.getText().toString();
+                    String tempM = mPointLatitudeMInput.getText().toString();
+                    String tempS = mPointLatitudeSInput.getText().toString();
+                    if (!tempD.equals(mPointLatitudeDOld)){
                         setPointChangedFlags();
-                        // so convert Latitude DMS to DD
-                        boolean isLatitude = true;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLatitudeDDInput,
-                                                            mPointLatitudeDInput,
-                                                            mPointLatitudeMInput,
-                                                            mPointLatitudeSInput,
-                                                            isLatitude);
-                        mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
-                        mPointLatitudeDOld = temp;
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())){
+                            // so convert Latitude DMS to DD
+                            boolean isLatitude = true;
+                            Prism4DCoordinateLL.convertDMStoDD( getActivity(),
+                                    mPointLatitudeDDInput,
+                                    mPointLatitudeDInput,
+                                    mPointLatitudeMInput,
+                                    mPointLatitudeSInput,
+                                    isLatitude);
+                            mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
+                            mPointLatitudeDOld = tempD;
+                        }
+
                     }
 
                 }
@@ -554,19 +635,24 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Minute just lost focus,
                     //has the value changed?
-                    String temp = mPointLatitudeMInput.getText().toString();
-                    if (!temp.equals(mPointLatitudeMOld)){
+                    String tempD = mPointLatitudeDInput.getText().toString();
+                    String tempM = mPointLatitudeMInput.getText().toString();
+                    String tempS = mPointLatitudeSInput.getText().toString();
+                    if (!tempM.equals(mPointLatitudeMOld)){
                         setPointChangedFlags();
-                        // so convert Latitude DMS to DD
-                        boolean isLatitude = true;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLatitudeDDInput,
-                                                            mPointLatitudeDInput,
-                                                            mPointLatitudeMInput,
-                                                            mPointLatitudeSInput,
-                                                            isLatitude);
-                        mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
-                        mPointLatitudeMOld = temp;
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())) {
+                            // so convert Latitude DMS to DD
+                            boolean isLatitude = true;
+                            Prism4DCoordinateLL.convertDMStoDD(getActivity(),
+                                    mPointLatitudeDDInput,
+                                    mPointLatitudeDInput,
+                                    mPointLatitudeMInput,
+                                    mPointLatitudeSInput,
+                                    isLatitude);
+                            mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
+                            mPointLatitudeMOld = tempM;
+                        }
                     }
 
                 }
@@ -577,19 +663,24 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Seconds just lost focus,
                     //has the value changed?
-                    String temp = mPointLatitudeSInput.getText().toString();
-                    if (!temp.equals(mPointLatitudeSOld)){
+                    String tempD = mPointLatitudeDInput.getText().toString();
+                    String tempM = mPointLatitudeMInput.getText().toString();
+                    String tempS = mPointLatitudeSInput.getText().toString();
+                    if (!tempS.equals(mPointLatitudeSOld)){
                         setPointChangedFlags();
-                        // so convert Latitude DMS to DD
-                        boolean isLatitude = true;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLatitudeDDInput,
-                                                            mPointLatitudeDInput,
-                                                            mPointLatitudeMInput,
-                                                            mPointLatitudeSInput,
-                                                            isLatitude);
-                        mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
-                        mPointLatitudeSOld = temp;
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())) {
+                            // so convert Latitude DMS to DD
+                            boolean isLatitude = true;
+                            Prism4DCoordinateLL.convertDMStoDD(getActivity(),
+                                    mPointLatitudeDDInput,
+                                    mPointLatitudeDInput,
+                                    mPointLatitudeMInput,
+                                    mPointLatitudeSInput,
+                                    isLatitude);
+                            mPointLatitudeDDOld = mPointLatitudeDDInput.getText().toString();
+                            mPointLatitudeSOld = tempS;
+                        }
                     }
 
                 }
@@ -667,19 +758,24 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Degree just lost focus,
                     //has the value changed?
-                    String temp = mPointLongitudeDInput.getText().toString();
-                    if (!temp.equals(mPointLongitudeDOld)){
+                    String tempD = mPointLongitudeDInput.getText().toString();
+                    String tempM = mPointLongitudeMInput.getText().toString();
+                    String tempS = mPointLongitudeSInput.getText().toString();
+                    if (!tempD.equals(mPointLongitudeDOld)){
                         setPointChangedFlags();
-                        // so convert Longitude DMS to DD
-                        boolean isLatitude = false;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLongitudeDDInput,
-                                                            mPointLongitudeDInput,
-                                                            mPointLongitudeMInput,
-                                                            mPointLongitudeSInput,
-                                                            isLatitude);
-                        mPointLongitudeDOld = temp;
-                        mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())) {
+                            // so convert Longitude DMS to DD
+                            boolean isLatitude = false;
+                            Prism4DCoordinateLL.convertDMStoDD(getActivity(),
+                                    mPointLongitudeDDInput,
+                                    mPointLongitudeDInput,
+                                    mPointLongitudeMInput,
+                                    mPointLongitudeSInput,
+                                    isLatitude);
+                            mPointLongitudeDOld = tempD;
+                            mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        }
                     }
 
                 }
@@ -692,19 +788,24 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Minute just lost focus,
                     //has the value changed?
-                    String temp = mPointLongitudeMInput.getText().toString();
-                    if (!temp.equals(mPointLongitudeMOld)){
+                    String tempD = mPointLongitudeDInput.getText().toString();
+                    String tempM = mPointLongitudeMInput.getText().toString();
+                    String tempS = mPointLongitudeSInput.getText().toString();
+                    if (!tempM.equals(mPointLongitudeMOld)){
                         setPointChangedFlags();
-                        // so convert Longitude DMS to DD
-                        boolean isLatitude = false;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLongitudeDDInput,
-                                                            mPointLongitudeDInput,
-                                                            mPointLongitudeMInput,
-                                                            mPointLongitudeSInput,
-                                                            isLatitude);
-                        mPointLongitudeMOld = temp;
-                        mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())) {
+                            // so convert Longitude DMS to DD
+                            boolean isLatitude = false;
+                            Prism4DCoordinateLL.convertDMStoDD(getActivity(),
+                                    mPointLongitudeDDInput,
+                                    mPointLongitudeDInput,
+                                    mPointLongitudeMInput,
+                                    mPointLongitudeSInput,
+                                    isLatitude);
+                            mPointLongitudeMOld = tempM;
+                            mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        }
                     }
 
                 }
@@ -717,19 +818,24 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                 if(!hasFocus) {
                     //Second just lost focus,
                     //has the value changed?
-                    String temp = mPointLongitudeSInput.getText().toString();
-                    if (!temp.equals(mPointLongitudeSOld)){
+                    String tempD = mPointLongitudeDInput.getText().toString();
+                    String tempM = mPointLongitudeMInput.getText().toString();
+                    String tempS = mPointLongitudeSInput.getText().toString();
+                    if (!tempS.equals(mPointLongitudeSOld)){
                         setPointChangedFlags();
-                        // so convert Longitude DMS to DD
-                        boolean isLatitude = false;
-                        Prism4DCoordinateLL.convertDMStoDD( getActivity(),
-                                                            mPointLongitudeDDInput,
-                                                            mPointLongitudeDInput,
-                                                            mPointLongitudeMInput,
-                                                            mPointLongitudeSInput,
-                                                            isLatitude);
-                        mPointLongitudeSOld = temp;
-                        mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        //only convert if all three fields have values
+                        if ((!tempD.isEmpty()) && (!tempM.isEmpty()) && (!tempS.isEmpty())) {
+                            // so convert Longitude DMS to DD
+                            boolean isLatitude = false;
+                            Prism4DCoordinateLL.convertDMStoDD(getActivity(),
+                                    mPointLongitudeDDInput,
+                                    mPointLongitudeDInput,
+                                    mPointLongitudeMInput,
+                                    mPointLongitudeSInput,
+                                    isLatitude);
+                            mPointLongitudeSOld = tempS;
+                            mPointLongitudeDDOld = mPointLongitudeDDInput.getText().toString();
+                        }
                     }
 
                 }
@@ -1110,6 +1216,73 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     }
 
 
+    private void initializeRecyclerView(View v){
+
+       /*
+         * The steps for doing recycler view in onCreateView() of a fragment are:
+         * 1) inflate the .xml
+         *
+         * the special recycler view stuff is:
+         * 2) get and store a reference to the recycler view widget that you created in xml
+         * 3) create and assign a layout manager to the recycler view
+         * 4) assure that there is data for the recycler view to show.
+         * 5) use the data to create and set an adapter in the recycler view
+         * 6) create and set an item animator (if desired)
+         * 7) create and set a line item decorator
+         * 8) add event listeners to the recycler view
+         *
+         * 9) return the view
+         */
+        v.setTag(TAG);
+
+        //2) find and remember the RecyclerView
+        mRecyclerView = (RecyclerView) v.findViewById(R.id.pictureList);
+
+
+        // The RecyclerView.LayoutManager defines how elements are laid out.
+        //3) create and assign a layout manager to the recycler view
+        mLayoutManager  = new LinearLayoutManager(getActivity());
+        mRecyclerView.setLayoutManager(mLayoutManager);
+
+        //4) create some dummy data and tell the adapter about it
+        //  this is done in the singleton container
+
+        //      get our singleton list container
+        Prism4DPointManager pointsManager = Prism4DPointManager.getInstance();
+        //Get this projects points
+        mPictureList = mPointBeingMaintained.getPictures();
+
+
+        //5) Use the data to Create and set out points Adapter
+        mAdapter = new Prism4DPictureAdapter(mPictureList);
+        mRecyclerView.setAdapter(mAdapter);
+
+        //6) create and set the itemAnimator
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
+
+        //7) create and add the item decorator
+        mRecyclerView.addItemDecoration(new DividerItemDecoration(
+                getActivity(), LinearLayoutManager.VERTICAL));
+
+
+        //8) add event listeners to the recycler view
+        mRecyclerView.addOnItemTouchListener(
+                new MainPrism4DPointListFragment.RecyclerTouchListener(getActivity(),
+                        mRecyclerView,
+                        new MainPrism4DPointListFragment.ClickListener() {
+
+                            @Override
+                            public void onClick(View view, int position) {
+                                onSelectPicture(view, position);
+                            }
+
+                            @Override
+                            public void onLongClick(View view, int position) {
+                                //for now, ignore the long click
+                            }
+                        }));
+    }
+
 
     private int getCoordinateTypeFromProject() {
         //show the data that came out of the input arguments bundle
@@ -1133,6 +1306,8 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
     private void initializeUI() {
         //show the data that came out of the input arguments bundle
+
+        //Project ID
         int projectID = mPointBeingMaintained.getForProjectID();
         mPointProjectIDInput.setText(String.valueOf(projectID));
         mPointIDInput.setText       (String.valueOf (mPointBeingMaintained.getPointID()));
@@ -1142,12 +1317,14 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         Prism4DProject project = projectManager.getProject(projectID);
         mPointProjectNameInput.setText(project.getProjectName());
 
+        //point ID
         if (mPointBeingMaintained.getPointID() != 0){
             mPointFeatureCodeInput.setText(mPointBeingMaintained.getPointFeatureCode());
             mPointNotesInput.setText(mPointBeingMaintained.getPointNotes());
         }
 
 
+        //Coordinate Type
         CharSequence coordinateType = project.getProjectCoordinateType();
         String msg = getString(R.string.coordinate_type) + " " + coordinateType ;
 
@@ -1170,6 +1347,11 @@ public class MainPrism4DPointEditFragment extends Fragment  {
             msg = getString(R.string.unk_coord_type);
         }
         mPointCoordinateTypeLabel.setText(msg);
+
+        //Offsets
+        mPointOffsetDistInput.setText(String.valueOf(mPointBeingMaintained.getOffsetDistance()));
+        mPointOffsetHeadInput.setText(String.valueOf(mPointBeingMaintained.getOffsetHeading()));
+        mPointOffsetEleInput .setText(String.valueOf(mPointBeingMaintained.getOffsetElevation()));
     }
 
     private void saveLLFieldsAsOldValues(){
@@ -1309,12 +1491,38 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     /***********************************************************/
 
 
+    /***********************************************************/
+    /********  Called from RecyclerView Listeners    ***********/
+    /***********************************************************/
+
+
+    private void onSelectPicture(View view, int position){
+        //Toast.makeText(getActivity(), "Picture Selected", Toast.LENGTH_SHORT).show();
+        Prism4DPicture picture = mAdapter.getPicture(position);
+        String pathToPicture = picture.getPathName();
+        Bitmap bitmap = BitmapFactory.decodeFile(pathToPicture);
+
+        if (bitmap != null) {
+            mPictureImage.setImageBitmap(bitmap);
+
+            //for some reason, showing the image blanks out the recycler view, so force a redraw
+            mRecyclerView.getRecycledViewPool().clear();
+            //mAdapter.notifyDataSetChanged();
+            mRecyclerView.invalidate();
+        } else {
+            String msg = getString(R.string.missing_picture_file)+ " " + pathToPicture;
+            Toast.makeText(getActivity(), msg, Toast.LENGTH_SHORT).show();
+        }
+
+    }
+
 
     /***********************************************************/
     /**********     Called from Button Listeners     ***********/
     /***********************************************************/
 
-    private void onSave(){
+    private boolean onSave(){
+        boolean returnCode = true;
 
         //The point must have been changed for this button to work
         if (mPointChanged) {
@@ -1322,20 +1530,23 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
             //What happens here depends upon the path
             if (mPointPath.equals(Prism4DPath.sCreateTag)){
-                addNewPoint();
+                returnCode = addNewPoint();
 
             } else if (mPointPath.equals(Prism4DPath.sEditTag)){
 
-                updatePointFromUI(mPointBeingMaintained);
+                returnCode = updatePointFromUI(mPointBeingMaintained);
 
-                //update the stored point
-                Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
-                pointManager.update(mPointBeingMaintained.getForProjectID(), mPointBeingMaintained);
+                if (returnCode) {
+                    //update the stored point
+                    Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
+                    pointManager.updatePoint(mPointBeingMaintained);
+                }
             }
             //all other paths do nothing
 
-            setPointSavedFlags();
+            if (returnCode) setPointSavedFlags();
         }
+        return returnCode;
 
     }
 
@@ -1347,18 +1558,31 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         projectID = mPointBeingMaintained.getForProjectID();
         Prism4DProject project = projectManager.getProject(projectID);
-        pointID = project.getNextPointID();
+        //pointID = project.getNextPointID();
+        pointID = project.getPotentialNextPointID();
         mPointBeingMaintained.setPointID(pointID);
 
+        returnCode = updatePointFromUI(mPointBeingMaintained);
 
-        updatePointFromUI(mPointBeingMaintained);
+        if (!returnCode){
+            //The coordinate is invalid, or something else is wrong
+            //user is informed in updatePointFromUI
+              mPointBeingMaintained.setPointID(0);//reset the point ID to not yet created
+            //NOTE that we are still on the create path
+            return false;
+        }
+
         //and update the screen with the new ID
         initializeUI();
 
         //now add the point to memory and db
         Prism4DPointManager pointManager = Prism4DPointManager.getInstance();
         boolean addToDBToo = true;
-        pointManager.addToProject(project, mPointBeingMaintained, addToDBToo);
+        if (!pointManager.addToProject(project, mPointBeingMaintained, addToDBToo)){
+            Toast.makeText(getActivity(),
+                            getString(R.string.error_adding_point),
+                            Toast.LENGTH_SHORT).show();
+        }
 
         //from now on we are editing the point, not creating it
         mPointPath = Prism4DPath.sEditTag;
@@ -1371,126 +1595,164 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     }
 
 
-    private void updatePointFromUI(Prism4DPoint point){
+    //returns false if there are any errors in the point
+    private boolean updatePointFromUI(Prism4DPoint point){
         int pointID = point.getPointID();
         int projectID = point.getForProjectID();
+        boolean returnCode = true;
 
         //Create a coordinate of the proper type with the attributes from the screen
         CharSequence coordType = getFullCoordTypeFromProject();
         if (coordType.equals(Prism4DCoordinate.sCoordinateTypeWGS84)){
 
             Prism4DCoordinateWGS84 newCoordinate = new Prism4DCoordinateWGS84();
-            updateLLCoordinateFromUI(point, newCoordinate);
+            returnCode = updateLLCoordinateFromUI(point, newCoordinate);
         } else if (coordType.equals(Prism4DCoordinate.sCoordinateTypeNAD83)){
             Prism4DCoordinateNAD83 newCoordinate = new Prism4DCoordinateNAD83();
-            updateLLCoordinateFromUI(point, newCoordinate);
+           returnCode = updateLLCoordinateFromUI(point, newCoordinate);
 
         } else if (coordType.equals(Prism4DCoordinate.sCoordinateTypeUTM)) {
             Prism4DCoordinateUTM newCoordinate = new Prism4DCoordinateUTM();
-            updateENCoordinateFromUI(point, newCoordinate);
+            returnCode = updateENCoordinateFromUI(point, newCoordinate);
 
         } else { //Prism4DCoordinate.sCoordinateTypeClassSPCS
             Prism4DCoordinateSPCS newCoordinate = new Prism4DCoordinateSPCS();
-            updateENCoordinateFromUI(point, newCoordinate);
+            returnCode = updateENCoordinateFromUI(point, newCoordinate);
         }
 
-        point.setPointFeatureCode(mPointFeatureCodeInput.getText().toString().trim());
-        point.setPointNotes(mPointNotesInput.getText().toString().trim());
+        if (returnCode) {
+            point.setPointFeatureCode(mPointFeatureCodeInput.getText().toString().trim());
+            point.setPointNotes(mPointNotesInput.getText().toString().trim());
+            return true;
+        }else{
+            //Coordinate not valid
+            Toast.makeText(getActivity(),
+                    getString(R.string.coordinate_not_valid),
+                    Toast.LENGTH_SHORT).show();
+
+            return returnCode;
+        }
 
     }
 
 
-    private void updateLLCoordinateFromUI(Prism4DPoint point, Prism4DCoordinateLL coordinate){
+    //returns false if the coordinate is not valid
+    private boolean updateLLCoordinateFromUI(Prism4DPoint point, Prism4DCoordinateLL coordinate){
         int pointID = point.getPointID();
         int projectID = point.getForProjectID();
 
-        String latString, longString, eleString, geoidString;
-        latString   = mPointLatitudeDDInput.getText().toString().trim();
-        longString  = mPointLongitudeDDInput.getText().toString().trim();
-        eleString   = mPointElevationMetersInput.getText().toString().trim();
-        geoidString = mPointGeoidMetersInput.getText().toString().trim();
+
+        String latString   = mPointLatitudeDDInput.getText().toString().trim();
+        String longString  = mPointLongitudeDDInput.getText().toString().trim();
+        String eleString   = mPointElevationMetersInput.getText().toString().trim();
+        String geoidString = mPointGeoidMetersInput.getText().toString().trim();
+
+        String dLatString  = mPointLatitudeDInput.getText().toString().trim();
+        String mLatString  = mPointLatitudeMInput.getText().toString().trim();
+        String sLatString  = mPointLatitudeSInput.getText().toString().trim();
+
+        String dLngString  = mPointLongitudeDInput.getText().toString().trim();
+        String mLngString  = mPointLongitudeMInput.getText().toString().trim();
+        String sLngString  = mPointLongitudeSInput.getText().toString().trim();
+ /*
+        if (dString.isEmpty())dString = getString(R.string.zero_decimal_string);
+        if (mString.isEmpty())mString = getString(R.string.zero_decimal_string);
+        if (sString.isEmpty())sString = getString(R.string.zero_decimal_string);
+        if (dString.isEmpty())dString = getString(R.string.zero_decimal_string);
+        if (mString.isEmpty())mString = getString(R.string.zero_decimal_string);
+        if (sString.isEmpty())sString = getString(R.string.zero_decimal_string);
+*/
+
+        //if (eleString.isEmpty())eleString = getString(R.string.zero_decimal_string);
+        //if (geoidString.isEmpty())geoidString = getString(R.string.zero_decimal_string);
+
         //The values on the screen must be valid to make a coordinate
-        if ((projectID !=0)     && (pointID != 0)       &&
-            (latString != null) && (longString != null) &&
-            (eleString != null) && (geoidString != null)) {
+         if ((projectID !=0)         && (pointID != 0)           &&
+            (!latString.isEmpty())  && (!longString.isEmpty())  &&
+            (!eleString.isEmpty())  && (!geoidString.isEmpty()) &&
+            (!dLatString.isEmpty()) && (!mLatString.isEmpty())  &&
+            (!sLatString.isEmpty()) && (!dLngString.isEmpty())  &&
+            (!mLngString.isEmpty()) && (!mLngString.isEmpty())  ) {
 
-            coordinate.setProjectID(projectID);
-            coordinate.setPointID(pointID);
-            coordinate.setTime(new Date().getTime());
+             coordinate.setProjectID(projectID);
+             coordinate.setPointID(pointID);
+             coordinate.setTime(new Date().getTime());
 
-            coordinate.setLatitude(Double.parseDouble(latString));
-            coordinate.setLatitudeDegree(Integer.parseInt(mPointLatitudeDInput.getText().toString().trim()));
-            coordinate.setLatitudeMinute(Integer.parseInt(mPointLatitudeMInput.getText().toString().trim()));
-            coordinate.setLatitudeSecond(Double.parseDouble(mPointLatitudeSInput.getText().toString().trim()));
 
-            coordinate.setLongitude(Double.parseDouble(longString));
-            coordinate.setLongitudeDegree(Integer.parseInt(mPointLongitudeDInput.getText().toString().trim()));
-            coordinate.setLongitudeMinute(Integer.parseInt(mPointLongitudeMInput.getText().toString().trim()));
-            coordinate.setLongitudeSecond(Double.parseDouble(mPointLongitudeSInput.getText().toString().trim()));
+             //Latitude
+            coordinate.setLatitude      (Double.parseDouble(latString));
+            coordinate.setLatitudeDegree(Integer.parseInt(dLatString));
+            coordinate.setLatitudeMinute(Integer.parseInt(mLatString));
+            coordinate.setLatitudeSecond(Double.parseDouble(sLatString));
+
+            //Longitude
+            coordinate.setLongitude      (Double.parseDouble(longString));
+            coordinate.setLongitudeDegree(Integer.parseInt(dLngString));
+            coordinate.setLongitudeMinute(Integer.parseInt(mLngString));
+            coordinate.setLongitudeSecond(Double.parseDouble(sLngString));
 
             coordinate.setElevation(Double.parseDouble(eleString));
             coordinate.setGeoid(Double.parseDouble(geoidString));
 
             mPointBeingMaintained.setHasACoordinateID(coordinate.getCoordinateID());
             mPointBeingMaintained.setCoordinate(coordinate);
+            return true;
         }else {
-            //Coordinate not valid
-            mPointBeingMaintained.setHasACoordinateID(0);
-            mPointBeingMaintained.setCoordinate(null);
+
+            return false;
         }
     }
 
-    private void updateENCoordinateFromUI(Prism4DPoint point, Prism4DCoordinateEN coordinate){
+    private boolean updateENCoordinateFromUI(Prism4DPoint point, Prism4DCoordinateEN coordinate){
         int pointID = point.getPointID();
         int projectID = point.getForProjectID();
 
-        String eastString, northString, eleString;
+        String eastString        = mPointEastingMetersInput.getText().toString().trim();
+        String northString       = mPointNorthingMetersInput.getText().toString().trim();
+        String eleString         = mPointENElevationMetersInput.getText().toString().trim();
+        String zoneString        = mPointZoneInput.getText().toString().trim();
+        String latBandString     = mPointLatbandInput.getText().toString().trim();
+        String hemisphereString  = mPointHemisphereInput.getText().toString().trim();
+        String datumString       = mPointDatumInput.getText().toString().trim();
+        String convergenceString = mPointConvergenceInput.getText().toString().trim();
+        String scaleString       = mPointScaleFactorInput.getText().toString().trim();
 
-        eastString  = mPointEastingMetersInput.getText().toString().trim();
-        northString = mPointNorthingMetersInput.getText().toString().trim();
-        eleString = mPointENElevationMetersInput.getText().toString().trim();
+ /*
+            if (zoneString.equals("")) zoneString = getString(R.string.default_zone);
+            if (latBandString.equals(""))latBandString = getString(R.string.default_latband);
+            if (hemisphere.equals(""))hemisphere = getString(R.string.default_hemisphere);
+            if (convergence.equals(""))convergence=getString(R.string.zero_decimal_string);
+            if (scale.equals(""))scale = getString(R.string.zero_decimal_string);
 
-        coordinate.setProjectID(projectID);
-        coordinate.setPointID(pointID);
+  */
 
-        if ((projectID !=0)      && (pointID != 0)        &&
-            (eastString != null) && (northString != null) &&
-            (eleString != null) ) {
+        if ((projectID !=0)                && (pointID != 0)                &&
+            (!eastString.isEmpty())        && (!northString.isEmpty())      &&
+            (!eleString.isEmpty())         && (!zoneString.isEmpty()        &&
+            (!latBandString.isEmpty())     && (!hemisphereString.isEmpty()) &&
+            (!convergenceString.isEmpty()) && (!scaleString.isEmpty())      )) {
 
-            coordinate.setEasting(Double.parseDouble(eastString));
-            coordinate.setNorthing(Double.parseDouble(northString));
+            coordinate.setProjectID(projectID);
+            coordinate.setPointID(pointID);
+
+            coordinate.setEasting  (Double.parseDouble(eastString));
+            coordinate.setNorthing (Double.parseDouble(northString));
             coordinate.setElevation(Double.parseDouble(eleString));
 
-            String zoneString = mPointZoneInput.getText().toString().trim();
-            if (zoneString.equals("")) zoneString = "0";
             coordinate.setZone(Integer.parseInt(zoneString));
-
-            String latBandString = mPointLatbandInput.getText().toString().trim();
-            if (latBandString.equals(""))latBandString = "A";
             coordinate.setLatBand((latBandString.charAt(0)));
-
-            String hemisphere = mPointHemisphereInput.getText().toString().trim();
-            if (hemisphere.equals(""))hemisphere = "N";
-            coordinate.setHemisphere((hemisphere).charAt(0));
-
-            coordinate.setDatum(mPointDatumInput.getText().toString().trim());
-
-            String convergence = mPointConvergenceInput.getText().toString().trim();
-            if (convergence.equals(""))convergence="0.0";
-            coordinate.setConvergence(Double.parseDouble(convergence));
-
-            String scale = mPointScaleFactorInput.getText().toString().trim();
-            if (scale.equals(""))scale = "0.0";
-            coordinate.setScale(Double.parseDouble(scale));
-
+            coordinate.setHemisphere((hemisphereString).charAt(0));
+            coordinate.setDatum(datumString);
+            coordinate.setConvergence(Double.parseDouble(convergenceString));
+            coordinate.setScale(Double.parseDouble(scaleString));
             coordinate.setValidCoordinate(true);
 
             mPointBeingMaintained.setHasACoordinateID(coordinate.getCoordinateID());
             mPointBeingMaintained.setCoordinate(coordinate);
+            return true;
         }else {
             //Coordinate not valid
-            mPointBeingMaintained.setHasACoordinateID(0);
-            mPointBeingMaintained.setCoordinate(null);
+            return false;
         }
     }
 
