@@ -47,6 +47,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String TABLE_POINT =            "Point";
     public static final String TABLE_COORDINATE_EN =    "CoordinateEN";
     public static final String TABLE_COORDINATE_LL =    "CoordinateLL";
+    public static final String TABLE_COORDINATE_MEAN  = "CoordinateMean";
     public static final String TABLE_PICTURE =          "Picture";
     public static final String TABLE_GLOBAL_DATA   =    "GlobalData";
 
@@ -156,6 +157,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String POINT_OFFSET_DISTANCE =  "point_offset_distance";
     public static final String POINT_OFFSET_HEADING =  "point_offset_heading";
     public static final String POINT_OFFSET_ELEVATION =  "point_offset_elevation";
+    public static final String POINT_HEIGHT         =  "point_height";
     public static final String POINT_FEATURE_CODE   = "point_feature_code";
     public static final String POINT_NOTES          = "point_notes";
     public static final String POINT_HDOP           = "point_hdop";
@@ -177,6 +179,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             POINT_OFFSET_DISTANCE   + " REAL, "    +
             POINT_OFFSET_HEADING    + " REAL, "    +
             POINT_OFFSET_ELEVATION  + " REAL, "    +
+            POINT_HEIGHT            + " REAL, "    +
             POINT_FEATURE_CODE      + " TEXT, "    +
             POINT_NOTES             + " TEXT, "    +
             POINT_HDOP              + " REAL, "    +
@@ -210,7 +213,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_EN_SCALE      = "coord_en_scale";
 
 
-    //create project table
+    //create  table
     private static final String CREATE_TABLE_COORDINATE_EN = "CREATE TABLE " +
             TABLE_COORDINATE_EN             + "("            +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -257,7 +260,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_LL_GEOID             = "coord_ll_geoid";
 
 
-    //create project table
+    //create  table
     private static final String CREATE_TABLE_COORDINATE_LL = "CREATE TABLE " +
             TABLE_COORDINATE_LL             + "("          +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -286,10 +289,69 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
 
     /*****************************************************/
+    /********   Mean Coordinates       *******************/
+    /*****************************************************/
+
+    //column names
+    public static final String COORDINATE_MEAN_ID            = "coord_id";
+    public static final String COORDINATE_MEAN_PROJECT_ID    = "coord_project_id";
+    public static final String COORDINATE_MEAN_POINT_ID      = "coord_point_id";
+    public static final String COORDINATE_MEAN_TYPE          = "coord_type";
+    public static final String COORDINATE_MEAN_VALID_COORD   = "coord_valid_coord";//BOOLEAN  no-0/1-yes
+    public static final String COORDINATE_MEAN_RAW           = "coord_mean_easting";
+    public static final String COORDINATE_MEAN_MEANED        = "coord_mean_northing";
+    public static final String COORDINATE_MEAN_FIXED         = "coord_mean_elevation";
+    public static final String COORDINATE_MEAN_LATITUDE            = "coord_mean_lat";
+    public static final String COORDINATE_MEAN_LATITUDE_STD        = "coord_mean_lat_std";
+    //public static final String COORDINATE_MEAN_LATITUDE_DEGREE   = "coord_mean_lat_degree";
+    //public static final String COORDINATE_MEAN_LATITUDE_MINUTE   = "coord_mean_lat_minute";
+    //public static final String COORDINATE_MEAN_LATITUDE_SECOND   = "coord_mean_lat_second";
+    public static final String COORDINATE_MEAN_LONGITUDE           = "coord_mean_lng";
+    public static final String COORDINATE_MEAN_LONGITUDE_STD       = "coord_mean_lng_std";
+    //public static final String COORDINATE_MEAN_LONGITUDE_DEGREE  = "coord_mean_lng_degree";
+    //public static final String COORDINATE_MEAN_LONGITUDE_MINUTE  = "coord_mean_lng_minute";
+    //public static final String COORDINATE_MEAN_LONGITUDE_SECOND  = "coord_mean_lng_second";
+    public static final String COORDINATE_MEAN_ELEVATION           = "coord_mean_elev" ;
+    public static final String COORDINATE_MEAN_ELEVATION_STD       = "coord_mean_elev_std" ;
+    public static final String COORDINATE_MEAN_GEOID               = "coord_mean_geoid";
+    public static final String COORDINATE_MEAN_HRMS                = "coord_mean_hrms";
+    public static final String COORDINATE_MEAN_VRMS                = "coord_mean_vrms";
+    public static final String COORDINATE_MEAN_SATELLITES          = "coord_mean_sat";
+
+
+
+    //create  table
+    private static final String CREATE_TABLE_COORDINATE_MEAN = "CREATE TABLE " +
+            TABLE_COORDINATE_MEAN                + "("            +
+            KEY_ID                               + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
+            COORDINATE_MEAN_ID                   + " INTEGER, "   +
+            COORDINATE_MEAN_PROJECT_ID           + " INTEGER, "   +
+            COORDINATE_MEAN_POINT_ID             + " INTEGER, "   +
+            COORDINATE_MEAN_TYPE                 + " INTEGER, "   +
+            COORDINATE_MEAN_VALID_COORD          + " INTEGER, "   +
+            COORDINATE_MEAN_RAW                  + " INTEGER, "   +
+            COORDINATE_MEAN_MEANED               + " INTEGER, "   +
+            COORDINATE_MEAN_FIXED                + " INTEGER, "   +
+            COORDINATE_MEAN_LATITUDE             + " REAL, "      +
+            COORDINATE_MEAN_LATITUDE_STD         + " REAL, "      +
+            COORDINATE_MEAN_LONGITUDE            + " REAL, "      +
+            COORDINATE_MEAN_LONGITUDE_STD        + " REAL, "      +
+            COORDINATE_MEAN_ELEVATION            + " REAL, "      +
+            COORDINATE_MEAN_ELEVATION_STD        + " REAL, "      +
+            COORDINATE_MEAN_GEOID                + " REAL, "      +
+            COORDINATE_MEAN_HRMS                 + " REAL, "      +
+            COORDINATE_MEAN_VRMS                 + " REAL, "      +
+            COORDINATE_MEAN_SATELLITES           + " INTEGER, "   +
+            KEY_CREATED_AT                       + " DATETIME"  + ")";
+
+
+
+
+    /*****************************************************/
     /************ Picture File   *************************/
     /*****************************************************/
 
-    //Project Column Names
+    // Column Names
     public static final String PICTURE_ID =         "pict_id";
     public static final String PICTURE_PROJECT_ID = "pict_project_id";
     public static final String PICTURE_POINT_ID =   "pict_point_id";
@@ -297,7 +359,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String PICTURE_FILE_NAME =  "pict_file_name";
 
 
-    //create project table
+    //create  table
     //NOTE: Dates are stored as long, NOT as a Date.
     //      The conversion is done when CV is created and when Cursor is translated
     private static final String CREATE_TABLE_PICTURE = "CREATE TABLE " +
@@ -326,7 +388,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String GLOBAL_DATA_ID              = "global_data_id";
     public static final String GLOBAL_DATA_NEXT_PROJECT_ID = "global_data_next_project_id";
 
-    //create project table
+    //create  table
     private static final String CREATE_TABLE_GLOBAL_DATA = "CREATE TABLE " +
             TABLE_GLOBAL_DATA               + "("          +
             KEY_ID                          + " INTEGER PRIMARY KEY AUTOINCREMENT, " +
@@ -387,6 +449,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
 
         db.execSQL(CREATE_TABLE_COORDINATE_LL);
         db.execSQL(CREATE_TABLE_COORDINATE_EN);
+        db.execSQL(CREATE_TABLE_COORDINATE_MEAN);
         db.execSQL(CREATE_TABLE_PICTURE);
         db.execSQL(CREATE_TABLE_GLOBAL_DATA);
     }

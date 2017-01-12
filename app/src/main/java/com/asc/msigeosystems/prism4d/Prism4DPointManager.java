@@ -375,6 +375,7 @@ public class Prism4DPointManager {
         toPoint.setOffsetDistance  (fromPoint.getOffsetDistance());
         toPoint.setOffsetHeading   (fromPoint.getOffsetDistance());
         toPoint.setOffsetElevation (fromPoint.getOffsetDistance());
+        toPoint.setHeight          (fromPoint.getHeight());
         toPoint.setPointFeatureCode(fromPoint.getPointFeatureCode());
         toPoint.setPointNotes      (fromPoint.getPointNotes());
         toPoint.setPictures        (fromPoint.getPictures());
@@ -400,6 +401,7 @@ public class Prism4DPointManager {
         values.put(Prism4DSqliteOpenHelper.POINT_OFFSET_DISTANCE,  point.getOffsetDistance());
         values.put(Prism4DSqliteOpenHelper.POINT_OFFSET_HEADING,   point.getOffsetHeading());
         values.put(Prism4DSqliteOpenHelper.POINT_OFFSET_ELEVATION, point.getOffsetElevation());
+        values.put(Prism4DSqliteOpenHelper.POINT_HEIGHT,           point.getHeight());
         values.put(Prism4DSqliteOpenHelper.POINT_FEATURE_CODE,     point.getPointFeatureCode().toString());
         values.put(Prism4DSqliteOpenHelper.POINT_NOTES,            point.getPointNotes().toString());
         values.put(Prism4DSqliteOpenHelper.POINT_HDOP ,            point.getHdop());
@@ -443,6 +445,9 @@ public class Prism4DPointManager {
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_OFFSET_HEADING)));
         point.setOffsetElevation (cursor.getDouble(
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_OFFSET_ELEVATION)));
+
+        point.setHeight          (cursor.getDouble(
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_HEIGHT)));
 
         point.setPointFeatureCode(cursor.getString(
                                   cursor.getColumnIndex(Prism4DSqliteOpenHelper.POINT_FEATURE_CODE)));

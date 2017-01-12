@@ -35,8 +35,8 @@ public class Prism4DInfoWindowAdapter implements InfoWindowAdapter {
     public View getInfoContents(Marker marker) {
         CharSequence msg;
         TextView     iwTextField;
-        Prism4DCoordinateTag meanCoordinate = (Prism4DCoordinateTag) marker.getTag();
-        if (meanCoordinate == null)meanCoordinate = new Prism4DCoordinateTag();
+        Prism4DCoordinateMean meanCoordinate = (Prism4DCoordinateMean) marker.getTag();
+        if (meanCoordinate == null)meanCoordinate = new Prism4DCoordinateMean();
 
         //project has to be open
         Prism4DConstantsAndUtilities constantsAndUtilities =

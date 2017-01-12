@@ -63,6 +63,7 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     private EditText mPointOffsetDistInput;
     private EditText mPointOffsetHeadInput;
     private EditText mPointOffsetEleInput;
+    private EditText mPointHeightInput;
 
 
     private TextView mPointCoordinateTypeLabel;
@@ -452,9 +453,21 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         });
 
 
-        //Point Offset Distance
+        //Point Offset Elevation
         mPointOffsetEleInput = (EditText) v.findViewById(R.id.pointOffEleInput);
         mPointOffsetEleInput.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+
+                setPointChangedFlags();
+                return false;
+            }
+        });
+
+
+        //Point Height
+        mPointHeightInput = (EditText) v.findViewById(R.id.pointHeightInput);
+        mPointHeightInput.setOnTouchListener(new View.OnTouchListener() {
             @Override
             public boolean onTouch(View v, MotionEvent event) {
 
@@ -1352,6 +1365,9 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         mPointOffsetDistInput.setText(String.valueOf(mPointBeingMaintained.getOffsetDistance()));
         mPointOffsetHeadInput.setText(String.valueOf(mPointBeingMaintained.getOffsetHeading()));
         mPointOffsetEleInput .setText(String.valueOf(mPointBeingMaintained.getOffsetElevation()));
+
+        //Height
+        mPointHeightInput.setText(String.valueOf(mPointBeingMaintained.getHeight()));
     }
 
     private void saveLLFieldsAsOldValues(){
@@ -1558,7 +1574,8 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         projectID = mPointBeingMaintained.getForProjectID();
         Prism4DProject project = projectManager.getProject(projectID);
-        //pointID = project.getNextPointID();
+
+        //Notice that this is the potential next id. The ID is not incremented yet
         pointID = project.getPotentialNextPointID();
         mPointBeingMaintained.setPointID(pointID);
 
@@ -1597,8 +1614,7 @@ public class MainPrism4DPointEditFragment extends Fragment  {
 
     //returns false if there are any errors in the point
     private boolean updatePointFromUI(Prism4DPoint point){
-        int pointID = point.getPointID();
-        int projectID = point.getForProjectID();
+
         boolean returnCode = true;
 
         //Create a coordinate of the proper type with the attributes from the screen
@@ -1623,8 +1639,11 @@ public class MainPrism4DPointEditFragment extends Fragment  {
         if (returnCode) {
             point.setPointFeatureCode(mPointFeatureCodeInput.getText().toString().trim());
             point.setPointNotes(mPointNotesInput.getText().toString().trim());
+
+            //There are several fields that can not be updated from this screen
+            // TODO: 1/12/2017 Height, quality, offset fields should perhaps be written to the point object
             return true;
-        }else{
+        } else {
             //Coordinate not valid
             Toast.makeText(getActivity(),
                     getString(R.string.coordinate_not_valid),

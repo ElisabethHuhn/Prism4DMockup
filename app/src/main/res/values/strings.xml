@@ -262,6 +262,7 @@
     <string name="point_offset_distance_label"   >Offset Distance: </string>
     <string name="point_offset_heading_label"    >Offset Heading: </string>
     <string name="point_offset_elevation_label"  >Offset Elevation: </string>
+    <string name="point_height_label"            >Height: </string>
     <string name="unk_coord_type"          >Unknown Coordinate Type</string>
 
     <string name="unknown_process">UNKNOWN process</string>
@@ -368,7 +369,7 @@
     <string name="gps_not_running"        >GPS not running</string>
     <string name="map_touched"            >Map touched at </string>
     <string name="no_point_at_marker"     >No Point saved at marker</string>
-    <string name="apply_offset"           >Apply Offset to:</string>
+    <string name="offsets_reset"           >Offset values reset to zero</string>
     <string name="enter_offsets"          >Enter Offset Position:</string>
 
     <!-- Content Descriptions for images -->

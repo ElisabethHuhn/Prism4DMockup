@@ -352,6 +352,7 @@ public class Prism4DProjectManager {
     //Returns null if it's not in the DB
     public void removeProjectFromDB (Prism4DProject project){
         int projectID = project.getProjectID();
+        // TODO: 1/10/2017 remove any coordinateMean objects from the DB 
 
         //remove any pictures on points of the project
         removePicturesFromProjectPoints(project);

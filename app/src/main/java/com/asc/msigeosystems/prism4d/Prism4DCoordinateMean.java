@@ -12,12 +12,19 @@ package com.asc.msigeosystems.prism4d;
  */
 
 
-public class Prism4DCoordinateTag {
+public class Prism4DCoordinateMean {
     //
 
     /*****************************************************/
     /********    Attributes                      *********/
     /*****************************************************/
+
+    //ID is necessary for the DB
+    private int mCoordinateID;
+
+    //Project of the meaning process
+    private int mProjectID;
+    private int mPointID;
 
     //total number of readings since meaning started
     private int mRawReadings;
@@ -28,7 +35,6 @@ public class Prism4DCoordinateTag {
     //number of fixed readings
     private int mFixedReadings;
 
-    private int    mPointID;
 
     //Latitude in DD and DMS formats
     private double mLatitude;
@@ -64,13 +70,23 @@ public class Prism4DCoordinateTag {
     /*****************************************************/
 
 
-
-
-    /********
+     /********
      *
      * Setters and Getters
      *
      **********/
+
+    public int getCoordinateID() {  return mCoordinateID; }
+    public void setCoordinateID(int coordinateID) {  mCoordinateID = coordinateID; }
+
+
+    public int getProjectID()                              { return mProjectID;  }
+    public void setProjectID(int projectID)                { mProjectID = projectID; }
+
+    public int  getPointID()                               { return mPointID; }
+    public void setPointID(int pointID)                    {  mPointID = pointID; }
+
+
     public int getRawReadings()                           {return mRawReadings;}
     public void   setRawReadings(int size)                 {mRawReadings = size;}
 
@@ -79,9 +95,6 @@ public class Prism4DCoordinateTag {
 
     public int getFixedReadings()                          { return mFixedReadings; }
     public void   setFixedReadings(int fixedReadings)      {  mFixedReadings = fixedReadings; }
-
-     public int  getPointID()                               { return mPointID; }
-    public void setPointID(int pointID)                    {  mPointID = pointID; }
 
     public double getLatitude()                            { return mLatitude;        }
     public void   setLatitude(double latitude)             { mLatitude = latitude; }
@@ -179,7 +192,7 @@ public class Prism4DCoordinateTag {
     /*                                                            */
     /**************************************************************/
     /**************************************************************/
-    public Prism4DCoordinateTag() {
+    public Prism4DCoordinateMean() {
         //set all variables to their defaults
         initializeDefaultVariables();
     }

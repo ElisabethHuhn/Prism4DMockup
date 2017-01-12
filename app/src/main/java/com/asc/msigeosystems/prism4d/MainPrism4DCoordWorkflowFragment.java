@@ -666,9 +666,9 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
 
     private void updateMeanedWGS(){
         int size= mMeanWgs84List.size();
-        Prism4DCoordinateTag meanCoordinate     = new Prism4DCoordinateTag();
-        Prism4DCoordinateTag residuals          = new Prism4DCoordinateTag();
-        Prism4DCoordinateTag sigma              = new Prism4DCoordinateTag();
+        Prism4DCoordinateMean meanCoordinate     = new Prism4DCoordinateMean();
+        Prism4DCoordinateMean residuals          = new Prism4DCoordinateMean();
+        Prism4DCoordinateMean sigma              = new Prism4DCoordinateMean();
         double tempMeanD;
         int    meanTempI;
 
@@ -810,7 +810,7 @@ public class MainPrism4DCoordWorkflowFragment extends Fragment implements GpsSta
     }
 
 
-    private void updateUIWithMean(Prism4DCoordinateTag meanCoordinate,
+    private void updateUIWithMean(Prism4DCoordinateMean meanCoordinate,
                                   int                         size){
 
         //show the mean and standard deviation on the screen

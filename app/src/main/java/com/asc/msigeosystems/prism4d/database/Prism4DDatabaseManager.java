@@ -8,6 +8,7 @@ import android.util.Log;
 
 import com.asc.msigeosystems.prism4d.Prism4DCoordinate;
 import com.asc.msigeosystems.prism4d.Prism4DCoordinateManager;
+import com.asc.msigeosystems.prism4d.Prism4DCoordinateMean;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalData;
 import com.asc.msigeosystems.prism4d.Prism4DGlobalDataManager;
 import com.asc.msigeosystems.prism4d.Prism4DPicture;
@@ -662,7 +663,6 @@ public class Prism4DDatabaseManager {
 
 
     //Get count of coordinates
-    //// TODO: 11/1/2016 write this routine if it is needed
     //public int getCoordinateCount() {}
 
     //******************************    Create    ***********************
@@ -802,6 +802,170 @@ public class Prism4DDatabaseManager {
         Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
         Prism4DProject project = projectManager.getProject(projectID);
         return getCoordinateTypeTable(project);
+    }
+
+
+
+
+
+
+    /************************************************/
+    /*         CoordinateMean CRUD methods              */
+    /************************************************/
+
+
+
+    //Get count of coordinates
+
+    //public int getCoordinateMeanCount() {}
+
+    //******************************    Create    ***********************
+    public boolean addCoordinateMean(Prism4DCoordinateMean coordinate){
+        if (coordinate == null)return false;
+
+        int projectID = coordinate.getProjectID();
+        if (projectID == 0)return false;
+
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        Prism4DProject project = projectManager.getProject(projectID);
+        if (project == null)return false;
+
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+        ContentValues cv = coordinateManager.getCVFromCoordinateMean(coordinate);
+
+        long returncode = mDatabaseHelper.add(mDatabase,
+                Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,
+                null,
+                cv);
+
+        if (returncode == sERROR_CODE)return false;
+        return true;
+    }
+
+
+    //***********************  Read **********************************
+
+    //just returns the single coordinateMean object that corresponds to the coordinateID
+    public Prism4DCoordinateMean getCoordinateMeanFromDB(int coordinateID, int projectID){
+        if (coordinateID == 0) return null;
+        if (projectID == 0) return null;
+
+        //get the coordinate row from the DB
+        Cursor cursor = mDatabaseHelper.getObject(
+                mDatabase,     //the db to access
+                Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,  //table name
+                null,          //get the whole coordinate
+                getCoordinateWhereClause(coordinateID, projectID), //where clause
+                null, null, null, null);//args, group, row grouping, order
+
+        //create a coordinate object from the Cursor object
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        //get the first row in the cursor
+        Prism4DCoordinateMean coordinate =  coordinateManager.getCoordinateMeanFromCursor(cursor, 0);
+        cursor.close();
+        return coordinate;
+    }
+
+
+    //Get all the CoordinateMean objects for this project that are in the DB
+    public ArrayList<Prism4DCoordinateMean> getAllCoordinateMeanFromDB(int projectID){
+
+        if (projectID == 0) return null;
+
+        //get the coordinate row from the DB
+        Cursor cursor = mDatabaseHelper.getObject(
+                mDatabase,     //the db to access
+                Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,  //table name
+                null,          //get the whole coordinate
+                getCoordinateWhereClause(projectID), //where clause
+                null, null, null, null);//args, group, row grouping, order
+
+        //create a coordinate object from the Cursor object
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        Prism4DCoordinateMean coordinateMean;
+        ArrayList<Prism4DCoordinateMean> coordinateMeans = new ArrayList<>();
+
+        int position = 0;
+        int last = cursor.getCount();
+        Prism4DProject project;
+        while (position < last) {
+            coordinateMean = coordinateManager.getCoordinateMeanFromCursor(cursor, position);
+            if (coordinateMean != null) {
+                // TODO: 12/21/2016 Need to let someone know that something is wrong here if null
+                //Add the coordinateMean object to the list
+                coordinateMeans.add(coordinateMean);
+            }
+
+            position++;
+        }
+        cursor.close();
+        return coordinateMeans;
+
+    }
+
+
+
+    //********************************    Update   *************************
+
+    public  int updateCoordinateMean(Prism4DCoordinateMean coordinate) {
+
+        Prism4DCoordinateManager coordinateManager = Prism4DCoordinateManager.getInstance();
+
+        int projectID = coordinate.getProjectID();
+        if (projectID == 0) return 0;
+
+
+        return mDatabaseHelper.update(  mDatabase,
+                Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,
+                coordinateManager.getCVFromCoordinateMean(coordinate),
+                getCoordinateMeanWhereClause(coordinate.getCoordinateID(), projectID),
+                null);  //values that replace ? in where clause
+
+    }
+
+
+
+    //*********************************     Delete    ***************************
+    //The return code indicates how many rows affected
+    public int removeCoordinateMean(int coordinateID, int projectID){
+        if (coordinateID == 0) return 0;
+        if (projectID == 0) return 0;
+
+        return mDatabaseHelper.remove(  mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,
+                                        getCoordinateMeanWhereClause(coordinateID, projectID),
+                                        null);  //values that replace ? in where clause
+    }
+
+    //The return code indicates how many rows affected
+    public int removeProjectCoordinatesMean(int projectID){
+        if (projectID == 0) return 0;
+
+        return mDatabaseHelper.remove(  mDatabase,
+                                        Prism4DSqliteOpenHelper.TABLE_COORDINATE_MEAN,
+                                        getCoordinateMeanWhereClause(projectID),
+                                        null);  //values that replace ? in where clause
+    }
+
+
+    /************************************************/
+    /*        Coordinate specific CRUD  utility         */
+    /************************************************/
+    //This only gets the one coordinate related to this project
+    private String getCoordinateMeanWhereClause(int coordinateID, int projectID){
+        return Prism4DSqliteOpenHelper.COORDINATE_MEAN_ID + " = '" +
+                                                    String.valueOf(coordinateID)   + "' AND " +
+               Prism4DSqliteOpenHelper.COORDINATE_MEAN_PROJECT_ID + " = '" +
+                                                    String.valueOf(projectID)       + "'";
+
+    }
+
+    //This gets all the coordinates related to this project
+    private String getCoordinateMeanWhereClause(int projectID) {
+        return Prism4DSqliteOpenHelper.COORDINATE_MEAN_PROJECT_ID + " = '" +
+                                                    String.valueOf(projectID) + "'";
     }
 
 

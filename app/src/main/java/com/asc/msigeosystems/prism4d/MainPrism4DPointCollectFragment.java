@@ -154,10 +154,6 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
     //Reconfiguration in the middle of camera or notes is problematic
 
-    //set by determineFocus()
-    //the first step of picture or notes
-    private boolean isFocusOnPoint = false; //if false, focus on the project
-    private Marker mFocusMarker;
 
     //Can not take pictures or record notes while the meaning is in progress HOWEVER
     //The following variables are used in the communication
@@ -194,7 +190,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
 
 
-    //variables for the meaning process
+       //variables for the meaning process
     //Meaning MUST continue through reconfiguration, but intermediate points will be lost
     private boolean isMeanInProgress = false;
     private boolean isFirstPointInMean = false;
@@ -248,7 +244,10 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     private int                     mTestDataMax = 13;
 
 
-
+    //set by determineFocus()
+    //the first step of picture or notes
+    private boolean isFocusOnPoint = false; //if false, focus on the project
+    private Marker mFocusMarker;
 
 
 
@@ -735,14 +734,14 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     //adds marker if the first reading in mean
     //creates point if the last reading in mean
     private void updateMeanWithNmea(Prism4DNmea nmeaData){
-        //Add to the list of points being meaned.
+        //Add to the list of locations being meaned.
         Prism4DCoordinateWGS84 wgsCoordinate = getWgsFromNmea(nmeaData);
         if (wgsCoordinate == null) return;
 
         mMeanCoordinateList.add(wgsCoordinate);
 
         //calculate the mean using the coordinates in the list
-        Prism4DCoordinateTag meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
+        Prism4DCoordinateMean meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
         if (meanCoordinate != null) {
             meanCoordinate.setSatellites(nmeaData.getSatellites());
             meanCoordinate.setRawReadings  (mRawReadings);
@@ -918,7 +917,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             public boolean onMarkerClick(Marker marker) {
                 Toast.makeText(getActivity(), "Marker Touched", Toast.LENGTH_SHORT).show();
 
-                Prism4DCoordinateTag pointMarker = (Prism4DCoordinateTag) marker.getTag();
+                Prism4DCoordinateMean pointMarker = (Prism4DCoordinateMean) marker.getTag();
                 int pointID = pointMarker.getPointID();
                 Prism4DPoint point = getOpenProject().getPoint(pointID);
                 if (point == null) {
@@ -1015,7 +1014,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                         Toast.LENGTH_SHORT).show();
 
                 //This knows whether we are in the middle of meaning or just use current position
-                Prism4DCoordinateTag meanCoordinate =  null;
+                Prism4DCoordinateMean meanCoordinate =  null;
                 if (isMeanInProgress){
                     //calculate the mean using the coordinates in the list
                     meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
@@ -1037,7 +1036,18 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                         Toast.LENGTH_SHORT).show();
 
                 if (!isMeanInProgress) {
-                    askOffsetPosition();
+                    if ((mOffsetDistance != 0d) ||
+                        (mOffsetHeading != 0d)  ||
+                        (mOffsetElevation != 0d)){
+                        Toast.makeText(getActivity(),
+                                       R.string.offsets_reset,
+                                       Toast.LENGTH_SHORT).show();
+                        mOffsetDistance  = 0d;
+                        mOffsetHeading   = 0d;
+                        mOffsetElevation = 0d;
+                    } else {
+                        askOffsetPosition();
+                    }
                 }
             }
         });
@@ -1241,7 +1251,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
 
                 //This knows whether we are in the middle of meaning or just use current position
-                Prism4DCoordinateTag meanCoordinate =  null;
+                Prism4DCoordinateMean meanCoordinate =  null;
                 if (isMeanInProgress){
                     //calculate the mean using the coordinates in the list
                     meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
@@ -1351,7 +1361,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
     private Prism4DPoint getPointFromFocus(Prism4DProject openProject){
         //put the picture on the point of the marker with current focus
-        Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag) mFocusMarker.getTag();
+        Prism4DCoordinateMean coordinateTag = (Prism4DCoordinateMean) mFocusMarker.getTag();
         //The following check was done when the picture was started
         //but it never hurts to check again
         if ((coordinateTag == null) || (coordinateTag.getPointID() < 1)) {
@@ -1522,8 +1532,9 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
 
     //handler is smart enough to know whether mean or button press
+    //This is the only place where a point and it's coordinate is actually created
     private void handleStorePosition(Prism4DNmea nmeaData,
-                                     Prism4DCoordinateTag locationCoordinate){
+                                     Prism4DCoordinateMean locationCoordinate){
 
         if (nmeaData == null) return;
         setFocus(nmeaData);
@@ -1546,7 +1557,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         //step 1 create point from the open project
         //get the open project
         Prism4DProject project = getOpenProject();
-        Prism4DPoint point = createPoint(project);
+        Prism4DPoint point     = createPoint(project);
 
         //Update the UI with the point id
         mPointIDField.setText(String.valueOf(point.getPointID()));
@@ -1568,7 +1579,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             wgs84Coordinate = getWgsCoordinateFromMean(locationCoordinate);
         }
 
-        //step 2.5 Add the offset position to the location
+        //step 2.1 Add the offset position to the location
 
         if ((mOffsetDistance  != 0) ||
             (mOffsetHeading   != 0) ||
@@ -1596,6 +1607,13 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                 mOffsetHeading   = 0;
                 mOffsetElevation = 0;
             }
+        }
+
+        //Step 2.2 Alter Elevation if necessary with Height
+        double height = Double.valueOf(mCurrentHeightField.getText().toString());
+        if (height != 0d){
+            double elevation = wgs84Coordinate.getElevation();
+            wgs84Coordinate.setElevation(elevation - height);
         }
 
         //step 3 determine which kind of coordinate, create it, add to point:
@@ -1651,7 +1669,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         //pass the info for the window to the marker
         if (locationCoordinate == null){
             //we weren't meaning, so we need to create this information
-            locationCoordinate = new Prism4DCoordinateTag();
+            locationCoordinate = new Prism4DCoordinateMean();
             locationCoordinate.setPointID(point.getPointID());
             locationCoordinate.setMeanedReadings(1);//we are only dealing with a single point
             int fixed = 0;
@@ -1750,7 +1768,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         Prism4DPoint point;
         LatLng       markerLocation = null;
         Prism4DCoordinateWGS84 coordinateWGS84;
-        Prism4DCoordinateTag   coordinateTag;
+        Prism4DCoordinateMean coordinateTag;
         for (position = 0; position < last; position++){
             point = points.get(position);
             //step 3 Create a Marker
@@ -1824,7 +1842,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         } else {
             //Focus is on a marker,
             // but the point must be associated with the marker before we can take a picture
-            Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag)mFocusMarker.getTag();
+            Prism4DCoordinateMean coordinateTag = (Prism4DCoordinateMean)mFocusMarker.getTag();
             //if point id > 1, the point has not yet been created
             if ((coordinateTag == null) || (coordinateTag.getPointID() < 1)){
                 Toast.makeText(getActivity(),
@@ -1936,6 +1954,10 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         layout.addView(elevation);
 
         builder.setView(layout);
+
+        distance.setText(String.valueOf(mOffsetDistance));
+        heading.setText(String.valueOf(mOffsetHeading));
+        elevation.setText(String.valueOf(mOffsetElevation));
 
 
         // Set up the buttons
@@ -2058,7 +2080,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         //The focus flags tell us where to put the picture
         if (isFocusOnPoint) {
             //put the picture on the point of the marker with current focus
-            Prism4DCoordinateTag coordinateTag = (Prism4DCoordinateTag) mFocusMarker.getTag();
+            Prism4DCoordinateMean coordinateTag = (Prism4DCoordinateMean) mFocusMarker.getTag();
             //The following check was done when the picture was started
             //but it never hurts to check again
             if (coordinateTag == null){
@@ -2111,6 +2133,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     /************************************************************/
 
 
+    //This routine creates the point object, but not it's coordinate
     private Prism4DPoint createPoint(Prism4DProject project){
         //create the point
         Prism4DPoint point = new Prism4DPoint();
@@ -2166,11 +2189,11 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
     //called from the nmea event handler when mean is in progress
-    private Prism4DCoordinateTag calculateMeanWGS(
+    private Prism4DCoordinateMean calculateMeanWGS(
                                             ArrayList<Prism4DCoordinateWGS84> coordinateList){
 
-        Prism4DCoordinateTag meanCoordinate = new Prism4DCoordinateTag();
-        Prism4DCoordinateTag residuals      = new Prism4DCoordinateTag();
+        Prism4DCoordinateMean meanCoordinate = new Prism4DCoordinateMean();
+        Prism4DCoordinateMean residuals      = new Prism4DCoordinateMean();
         int size= coordinateList.size();
 
         double tempMeanD;
@@ -2286,7 +2309,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
 
     private Prism4DCoordinateWGS84 getWgsCoordinateFromMean(
-                                                  Prism4DCoordinateTag meanCoordinate){
+                                                  Prism4DCoordinateMean meanCoordinate){
 
         Prism4DCoordinateWGS84 wgs84Coordinate = new Prism4DCoordinateWGS84(
                                                                     meanCoordinate.getLatitude(),
@@ -2468,11 +2491,11 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         return coordinateWGS84;
     }
 
-    private Prism4DCoordinateTag createTag(Prism4DPoint point,
-                                           Prism4DCoordinateWGS84 coordinateWGS84){
-        Prism4DCoordinateTag coordinateTag;
+    private Prism4DCoordinateMean createTag(Prism4DPoint point,
+                                            Prism4DCoordinateWGS84 coordinateWGS84){
+        Prism4DCoordinateMean coordinateTag;
         //we weren't meaning, so we need to create this information
-        coordinateTag = new Prism4DCoordinateTag();
+        coordinateTag = new Prism4DCoordinateMean();
         coordinateTag.setPointID(point.getPointID());
         coordinateTag.setMeanedReadings(1);//we are only dealing with a single point
         coordinateTag.setFixedReadings(1);

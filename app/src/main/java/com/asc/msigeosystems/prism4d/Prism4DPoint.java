@@ -61,6 +61,9 @@ public class Prism4DPoint {
     private double       mOffsetHeading;
     private double       mOffsetElevation;
 
+    //Original height due to artificial means, e.g. tripod
+    private double       mHeight;
+
     private CharSequence mPointFeatureCode;
     private CharSequence mPointNotes;
 
@@ -191,6 +194,9 @@ public class Prism4DPoint {
     public void setOffsetElevation(double offsetElevation) { mOffsetElevation = offsetElevation; }
 
 
+    public double getHeight()              {  return mHeight; }
+    public void   setHeight(double height) { mHeight = height; }
+
     public CharSequence getPointFeatureCode() { return mPointFeatureCode;  }
     public void setPointFeatureCode(CharSequence description) { mPointFeatureCode = description;  }
 
@@ -263,9 +269,11 @@ public class Prism4DPoint {
         this.mHasACoordinateID = 0;
         this.mCoordinate       = null;
 
-        this.mOffsetDistance   = 0;
-        this.mOffsetHeading    = 0;
-        this.mOffsetElevation  = 0;
+        this.mOffsetDistance   = 0d;
+        this.mOffsetHeading    = 0d;
+        this.mOffsetElevation  = 0d;
+
+        this.mHeight           = 0d;
 
         this.mPointFeatureCode = "";
         this.mPointNotes       = "";
@@ -296,6 +304,7 @@ public class Prism4DPoint {
                 this.getOffsetDistance()         + ", " +
                 this.getOffsetHeading()          + ", " +
                 this.getOffsetElevation()        + ", " +
+                this.getHeight()                 + ", " +
                 //todo 12/13/2016 have to add in coordinates here
                 "plus coordinate positions "      +
                 System.getProperty("line.separator");
