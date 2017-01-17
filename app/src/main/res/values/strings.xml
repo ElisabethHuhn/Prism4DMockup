@@ -314,11 +314,12 @@
 
 
     <!-- Text View Labels (initial text displayed) -->
-    <string name="scale_factor_label"     >SF:  |___1,000 ft_____|</string>
+    <string name="scale_factor_prefix"    >SF: </string>
+    <string name="scale_factor_suffix"    > Meters per Inch</string>
     <string name="point_id_label"         >PT:</string>
-    <string name="current_northing_label" >N: 1,384,506.48</string>
-    <string name="current_easting_label"  >E: 2,302,844.75</string>
-    <string name="current_elevation_label">ELE:   1,683.08</string>
+    <string name="current_northing_label" >N: </string>
+    <string name="current_easting_label"  >E: </string>
+    <string name="current_elevation_label">ELE:</string>
     <string name="function_code_label"    >FC:</string>
     <string name="current_height_label"   >HT:</string>
     <string name="current_position_label" >Current Position</string>
@@ -358,6 +359,7 @@
     <string name="marker_remove_marker"   >Remove Marker</string>
     <string name="marker_exclude_point"   >Exclude Point</string>
     <string name="marker_set_focus"       >Set Focus</string>
+    <string name="marker_show_info"       >Show Info Window</string>
     <string name="next_point"             >Next Point Only</string>
     <string name="all_future_points"      >All Future Points</string>
     <string name="offset_distance_meters" >Offset distance in meters:</string>

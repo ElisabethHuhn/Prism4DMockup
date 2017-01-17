@@ -179,14 +179,14 @@ public class Prism4DCoordinateManager {
                                             ((Prism4DCoordinateLL)coordinate).getLatitudeSecond());
    */
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE,
-                                            ((Prism4DCoordinateLL)coordinate).getLatitude());
+                                            ((Prism4DCoordinateLL)coordinate).getLongitude());
 /*
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_DEGREE,
-                                            ((Prism4DCoordinateLL)coordinate).getLatitudeDegree());
+                                            ((Prism4DCoordinateLL)coordinate).getLongitudeDegree());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_MINUTE,
-                                            ((Prism4DCoordinateLL)coordinate).getLatitudeMinute());
+                                            ((Prism4DCoordinateLL)coordinate).getLongitudeMinute());
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_LONGITUDE_SECOND,
-                                            ((Prism4DCoordinateLL)coordinate).getLatitudeSecond());
+                                            ((Prism4DCoordinateLL)coordinate).getLongitudeSecond());
  */
             cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_LL_ELEVATION,
                                             ((Prism4DCoordinateLL)coordinate).getElevation());

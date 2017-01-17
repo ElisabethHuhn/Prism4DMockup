@@ -173,9 +173,6 @@ public class MainPrism4DPointEditFragment extends Fragment  {
     /**********  Lat/Long Coordinate Variables  ****************/
     /***********************************************************/
 
-    private Prism4DCoordinateWGS84 mCoordinateWGS84;
-
-
     /***********************************************************/
     /**********  E/N Coordinate Variables       ****************/
     /***********************************************************/
@@ -1166,9 +1163,6 @@ public class MainPrism4DPointEditFragment extends Fragment  {
                         Prism4DConstantsAndUtilities.convertFeetToMeters(getActivity(),
                                                                         mPointENElevationMetersInput,
                                                                          mPointENElevationFeetInput);
-
-
-
                         mPointENElevationFeetOld = temp;
                         mPointENElevationMetersOld = mPointElevationMetersInput.getText().toString();
                     }

@@ -12,6 +12,31 @@ public class Prism4DNmea {
     //Tags for fragment arguments
     public static final String sNmeaTag  = "NMEA";
 
+    /*
+    public static final String sNemaType           = "NMEA_TYPE";
+    public static final String sNmeaLatitude       = "NMEA_LATITUDE";
+    public static final String sNmeaLongitude      = "NMEA_LONGITUDE";
+    public static final String sNmeaElipElevation  = "NMEA_E_ELEVATION";
+    public static final String sNmeaGeoid          = "NMEA_GEOID";
+    public static final String sNmeaOrthoElevation = "NMEA_O_ELEVATION";
+    public static final String sNmeaLocalization   = "NMEA_LOCALIZATION";
+    public static final String sNmeaLocalNorthing       = "NMEA_LOC_NORTHING";
+    public static final String sNmeaLocalEasting        = "NMEA_LOC_EASTING";
+    public static final String sNmeaLocalElevation      = "NMEA_LOC_ELEVATION";
+    public static final String sNmeaSatelliteStatus     = "NMEA_SATELLITE_STATUS";
+    public static final String sNmeaSatellites      = "NMEA_SATELLITES";
+    public static final String sNmeaHdop            = "NMEA_HDOP";
+    public static final String sNmeaVdop            = "NMEA_VDOP";
+    public static final String sNmeaTdop            = "NMEA_TDOP";
+    public static final String sNmeaPdop            = "NMEA_PDOP";
+    public static final String sNmeaGdop            = "NMEA_GDOP";
+    public static final String sNmeaHrms            = "NMEA_HRMS";
+    public static final String sNmeaVrms            = "NMEA_VRMS";
+    public static final String sNmeaQuality         = "NMEA_QUALITY";
+    public static final String sNmeaFixed           = "NMEA_FIXED";
+*/
+
+
     private CharSequence  mNmeaSentence;
 
 
@@ -50,6 +75,18 @@ public class Prism4DNmea {
     public int    mQuality;
     public boolean mFixed;
 
+
+    /******************************* Static Methods *********************/
+
+    /* FOR NOW, JUST DUMP THE LATEST NMEA DATA BUNDLE
+    public static Bundle putNmeaInBundle(Bundle state, Prism4DNmea nmeaData) {
+
+
+        state.putCharSequence(sNemaType, nmeaData.getNmeaType());
+
+        return state;
+    }
+    */
 
     /*************************** Setters and Getters ********************/
 

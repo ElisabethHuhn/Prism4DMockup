@@ -29,7 +29,7 @@
 
                 >
 
-                <!-- position buttons and text views  -->
+                <!-- position buttons and fields  -->
                 <LinearLayout
                     android:id="@+id/current_position_container"
                     android:layout_width="0dp"
@@ -88,41 +88,113 @@
 
                     </LinearLayout>
                     <!-- Northing/Latitude  -->
-                    <TextView
-                        android:id="@+id/currentNorthingPositionField"
-                        android:text="@string/current_northing_label"
-                        android:freezesText="true"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:background="@color/colorWhite"
-                        android:paddingBottom="10dp"
-                        />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:id="@+id/currentNorthingPositionLabel"
+                            android:text="@string/current_northing_label"
+                            android:freezesText="true"
+
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="25"
+                            android:gravity="end"
+
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+                        <EditText
+                            android:id="@+id/currentNorthingPositionField"
+                            android:enabled="false"
+                            android:freezesText="true"
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="75"
+                            android:gravity="start"
+                            android:inputType="textCapCharacters"
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+
+                    </LinearLayout>
+
                     <!-- Easting/Longitude  -->
-                    <TextView
-                        android:id="@+id/currentEastingPositionField"
-                        android:text="@string/current_easting_label"
-                        android:freezesText="true"
-                        android:layout_height="match_parent"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:background="@color/colorWhite"
-                        android:paddingBottom="10dp"
-                        />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:id="@+id/currentEastingPositionLabel"
+                            android:text="@string/current_easting_label"
+                            android:freezesText="true"
+
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="25"
+                            android:gravity="end"
+
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+                        <EditText
+                            android:id="@+id/currentEastingPositionField"
+                            android:enabled="false"
+                            android:freezesText="true"
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="75"
+                            android:gravity="start"
+                            android:inputType="textCapCharacters"
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+
+                    </LinearLayout>
+
                     <!-- Elevation  -->
-                    <TextView
-                        android:id="@+id/currentElevationField"
-                        android:text="@string/current_elevation_label"
-                        android:freezesText="true"
+                    <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:gravity="center"
-                        android:textColor="@color/colorTextBlack"
-                        android:background="@color/colorWhite"
-                        android:paddingBottom="10dp"
-                        />
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        >
+                        <TextView
+                            android:id="@+id/currentElevationLabel"
+                            android:text="@string/current_elevation_label"
+                            android:freezesText="true"
+
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="25"
+                            android:gravity="end"
+
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+                        <EditText
+                            android:id="@+id/currentElevationField"
+                            android:enabled="false"
+                            android:freezesText="true"
+                            android:layout_height="match_parent"
+                            android:layout_width="0dp"
+                            android:layout_weight="75"
+                            android:gravity="start"
+                            android:inputType="textCapCharacters"
+                            android:textColor="@color/colorTextBlack"
+                            android:background="@color/colorWhite"
+                            android:paddingBottom="10dp"
+                            />
+
+                    </LinearLayout>
+
                     <!-- Feature Code  -->
                     <LinearLayout
                         android:layout_width="match_parent"
@@ -237,7 +309,7 @@
 
                 </LinearLayout>
 
-                <!-- Maps part of central screen -->
+                <!-- Maps Buttons and canvas -->
                 <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -255,6 +327,7 @@
 
                         >
                         <!-- Buttons defining drawing pad actions -->
+                        <!-- Zoom In -->
                         <ImageButton
                             android:id="@+id/zoomInButton"
                             android:layout_width="wrap_content"
@@ -264,6 +337,7 @@
                             android:layout_gravity="start"
                             />
 
+                        <!-- Zoom Out -->
                         <ImageButton
                             android:id="@+id/zoomOutButton"
                             android:layout_width="wrap_content"
@@ -273,6 +347,7 @@
 
                             />
 
+                        <!-- Zoom to fit -->
                         <ImageButton
                             android:id="@+id/zoomExtButton"
                             android:layout_width="wrap_content"
@@ -282,9 +357,10 @@
 
                             />
 
+                        <!-- Scale Factor -->
                         <TextView
                             android:id="@+id/scaleFactorField"
-                            android:text="@string/scale_factor_label"
+                            android:text="@string/scale_factor_prefix"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:gravity="end"
@@ -293,6 +369,7 @@
                             android:background="@color/colorWhite"
                             />
 
+                        <!-- Maps Background -->
                         <Button
                             style="?android:attr/buttonBarButtonStyle"
                             android:id="@+id/mapsButtonCollect"
@@ -304,6 +381,8 @@
                             android:layout_gravity="top"
                             android:drawableTop="@drawable/ic_maps25"
                             />
+
+                        <!-- Picture -->
                         <Button
                             style="?android:attr/buttonBarButtonStyle"
                             android:id="@+id/pictureButton"
@@ -314,6 +393,8 @@
                             android:textColor="@color/colorTextBlack"
                             android:drawableTop="@drawable/ic_camera25"
                             />
+
+                        <!-- Notes -->
                         <Button
                             style="?android:attr/buttonBarButtonStyle"
                             android:id="@+id/notesButton"
@@ -346,7 +427,7 @@
 
     </ScrollView>
 
-    <!-- The Footer will be as standard as possible -->
+    <!--  Footer  -->
     <include layout="@layout/element_footer_inclusion_prism4d"/>
 
 

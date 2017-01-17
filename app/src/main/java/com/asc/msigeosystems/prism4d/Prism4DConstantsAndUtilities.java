@@ -3,6 +3,7 @@ package com.asc.msigeosystems.prism4d;
 import android.app.Activity;
 import android.content.Context;
 import android.support.v4.content.ContextCompat;
+import android.util.DisplayMetrics;
 import android.view.View;
 import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
@@ -253,45 +254,81 @@ public class Prism4DConstantsAndUtilities {
     }
 
 
-    public static double radiusAtLatitude(double latitude) {
-        //latitude in radians
-        double latRad = latitude * Math.PI / 180.;
-        double equRSqr = sEquatorialRadiusA * sEquatorialRadiusA;
-        double polRSqr = sPolarRadiusB * sPolarRadiusB;
-        double cosLat = Math.cos(latRad);
-        double cosLatSqu = cosLat * cosLat;
-        double numerator = ((equRSqr * cosLat) * (equRSqr * cosLat)) +
-                ((polRSqr * cosLat) * (polRSqr * cosLat));
-        double denominator = ((sEquatorialRadiusA * cosLat) * (sEquatorialRadiusA * cosLat)) +
-                ((sPolarRadiusB * cosLat) * (sPolarRadiusB * cosLat));
 
-        double radius = numerator / denominator;
-        return radius;
+    //this tells you how many screen inches are in a meter displayed on the map
+    public static double getMetersPerScreenInch(double latitude, float zoomLevel){
+        return (160. * getMetersPerPixel(latitude, zoomLevel));
     }
 
-    public static double circumferenceAtLatitude (double latitude){
-        double radius = radiusAtLatitude(latitude);
+
+
+    //This is meters per dp, NOT physical pixel
+    //There are 160 dp in an inch, so 160 dpPerInch
+    //         mapMeters per screenInch = getMetersPerPixel() X PixelsPerInch
+    public static double getMetersPerPixel(double latitude, float zoomLevel){
+        return (getCircumferenceInMetersAtLatitude(latitude) /
+                getCircumferenceInPixelsAtLatitude(latitude, zoomLevel));
+        /*
+        double metersPerPixelZoomZero  = 156543.03392; //by definition
+        double metersPerPixel = metersPerPixelZoomZero *
+                                Math.cos(latitude * Math.PI / 180) / Math.pow(2, zoomLevel);
+
+        return metersPerPixel;
+        */
+    }
+
+
+    public static double getCircumferenceInMetersAtLatitude (double latitude){
+        double radius = getRadiusInMetersAtLatitude(latitude);
         double circumfrence = 2 * Math.PI * radius;
         return circumfrence;
     }
 
-    public static double getMetersPerPixel(double latitude, float zoom){
-        double metersPerPixelZoomZero  = 156543.03392; //by definition
-        double metersPerPixel = metersPerPixelZoomZero *
-                                Math.cos(latitude * Math.PI / 180) / Math.pow(2, zoom);
 
-        return metersPerPixel;
+    public static double getRadiusInMetersAtLatitude(double latitude) {
+        //latitude in radians
+        double latRad = latitude * Math.PI / 180.;
+        double equRSqr = sEquatorialRadiusA * sEquatorialRadiusA;//in meters
+        double polRSqr = sPolarRadiusB * sPolarRadiusB;
+        double cosLat = Math.cos(latRad);
+
+        double numerator = ((equRSqr * cosLat) * (equRSqr * cosLat)) +
+                           ((polRSqr * cosLat) * (polRSqr * cosLat));
+        double denominator = ((sEquatorialRadiusA * cosLat) * (sEquatorialRadiusA * cosLat)) +
+                             ((sPolarRadiusB      * cosLat) * (sPolarRadiusB      * cosLat));
+
+        double radius = Math.sqrt(numerator / denominator);
+        return radius;
     }
 
-    public static double getFeetPerPixel(double latitude, float zoom){
-        double feetPerPixel = convertMetersToFeet(getMetersPerPixel(latitude, zoom));
+    public static double getCircumferenceInPixelsAtLatitude (double latitude, float zoomLevel){
 
-        return feetPerPixel;
+        //at zoom level N, the circumference at the equator is approximately 256 * (2 to the N) dp
+        double nPlus8 = (double)zoomLevel + 8.;
+        double pixelsAtEquator = Math.pow(2, nPlus8);
+
+        //Unit at Latitude = (Cosine of Latitude in Radians) X (Unit at Equator)
+        double latRad = latitude * Math.PI / 180.;
+        return Math.cos(latRad) * pixelsAtEquator;
     }
 
 
 
+    public static double getFeetPerPixel(double latitude, float zoomLevel){
+        return convertMetersToFeet(getMetersPerPixel(latitude, zoomLevel));
+    }
 
+
+
+    private static int getPixelDensityHeight(Context context){
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return dm.heightPixels;
+
+    }
+    private static int getPixelDensityWidth(Context context){
+        DisplayMetrics dm = context.getResources().getDisplayMetrics();
+        return  dm.widthPixels;
+    }
 
     /************************************/
     /********* Constructors     *********/

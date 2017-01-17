@@ -111,8 +111,6 @@ public class MainPrism4DActivity extends AppCompatActivity {
     /***********************************************************************/
 
     //Variables that need to be saved/restored on re-configure
-    private String         mCurrentFragment;
-
 
 
 
@@ -130,6 +128,8 @@ public class MainPrism4DActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        if (savedInstanceState != null)restoreState(savedInstanceState);
 
 
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
@@ -164,21 +164,13 @@ public class MainPrism4DActivity extends AppCompatActivity {
 
         //initialize the database here for the whole application
         Prism4DDatabaseManager.initializeInstance(this);
+    }
 
-        //} //else {
-           /*
-           onRestoreInstanceState(savedInstanceState);
-            //We are returning from a reorientation, so do what is necessary to recreate
-           Fragment fragment =  fm.findFragmentByTag(mCurrentFragment);
-           if (!fragment.isInLayout()) {
-               //the fragment wasn't in the layout, so recreate it
-               fm.beginTransaction()
-                       .add(R.id.fragment_container, fragment, mCurrentFragment)
-                       .commit();
-           }
 
-       }
- */
+    private void restoreState(Bundle savedInstanceState){
+
+    }
+
 
 
 /****************** For now, comment out the floating action button
@@ -190,45 +182,72 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
 }
 });
  ****************/
+
+
+
+    public void onStart(){
+        super.onStart();
     }
 
-/*
+    public void onRestart(){
+        super.onRestart();
+    }
+
+    public void onResume(){
+        super.onResume();
+    }
+
+    public void onPause(){
+        super.onPause();
+    }
+
+    public void onStop(){
+        super.onStop();
+    }
+
+    public void onDestroy(){
+        super.onDestroy();
+    }
+
+
     @Override
     public void onSaveInstanceState(Bundle outState){
-        int openProjectID = getOpenProjectID();
+        super.onSaveInstanceState(outState);
 
-        //IT's ok if there is no project open. ID will be zero in that case
+        //Save the state of the Activity into the outState Bundle
+        //Save the open project ID
+        if (outState == null){
+            outState = new Bundle();
+        }
+        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
+        int openProjectID = constantsAndUtilities.getOpenProjectID();
         outState.putInt(sOpenProjectIDTag, openProjectID);
-
-        outState.putString(sCurrentFragmentTag, mCurrentFragment);
-
-
     }
 
 
     //called when restoring state.
     //only called if the bundle is not null
     public void onRestoreInstanceState(Bundle savedInstanceState){
-        if (savedInstanceState != null){
-            //if there is no project open, the ID will be zero
-            int openProjectID = savedInstanceState.getInt(sOpenProjectIDTag);
-            mOpenProjectID = openProjectID;
-            if (openProjectID != 0) {
-                Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        super.onRestoreInstanceState(savedInstanceState);
 
-                //getting a list of projects reads in  the DB
-                ArrayList<Prism4DProject> projectList = projectManager.getProjectList();
-                Prism4DProject openProject = projectManager.getProject(openProjectID);
-                setOpenProject(openProject);
-            }
-            mCurrentFragment = savedInstanceState.getString(sCurrentFragmentTag);
-        }
+        //Restore the state of the instance from the savedInstanceState Bundle
+        Prism4DConstantsAndUtilities constantsAndUtilities = Prism4DConstantsAndUtilities.getInstance();
+        int openProjectID = savedInstanceState.getInt(sOpenProjectIDTag);
+        Prism4DProjectManager projectManager = Prism4DProjectManager.getInstance();
+        //Getting this list reads it in from the DB if necessary
+        //ArrayList<Prism4DProject> projects = projectManager.getProjectList();
 
+        //If the project is not in memory, it will try to get it from the DB
+        Prism4DProject project = projectManager.getProject(openProjectID);
+        constantsAndUtilities.setOpenProject(project);
     }
 
 
-*/
 
+
+    /***********************************************************************/
+    /**********    Location Methods & Callbacks ****************************/
+    /***********************************************************************/
 
     private void GpsStuff() {
 
@@ -512,9 +531,6 @@ Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
      * EMH 4/20/16
      */
     private void switchScreen(Fragment toFragment, String tag) {
-
-        //save the current fragment tag
-        mCurrentFragment = tag;
 
         //Need the Fragment Manager to do the swap for us
         android.support.v4.app.FragmentManager fm = getSupportFragmentManager();
