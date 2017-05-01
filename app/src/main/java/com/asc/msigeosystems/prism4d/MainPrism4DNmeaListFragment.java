@@ -19,6 +19,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.asc.msigeosystems.prism4dmockup.R;
@@ -31,13 +33,20 @@ import java.util.List;
  * for the user to see the NMEA Sentences received from GPS
  * Created by Elisabeth Huhn on 5/8/2016.
  */
-public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.Listener, LocationListener, GpsStatus.NmeaListener{
+public class MainPrism4DNmeaListFragment extends Fragment implements //GpsStatus.Listener,
+                                                                     LocationListener,
+                                                                     GpsStatus.NmeaListener{
 
     private static final String TAG = "LIST_NMEA_FRAGMENT";
     /**
      * Create variables for all the widgets
      *  although in the mockup, most will be statically defined in the xml
      */
+    private Button              mGsaButton;
+    private Button              mGsvButton;
+    private Button              mGgaButton;
+    private Button              mGnsButton;
+    private TextView            mNmeaListSize;
 
     private List<Prism4DNmea>   mNmeaList = new ArrayList<>();
     private RecyclerView        mRecyclerView;
@@ -46,12 +55,13 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
 
 
     private LocationManager     mLocationManager;
-    private CharSequence        mNmeaSentence;
     private Prism4DNmea         mNmeaData;
     private Prism4DNmeaParser   mNmeaParser = new Prism4DNmeaParser();
 
     private Prism4DNmea         mSelectedNmea;
     private int                 mSelectedPosition;
+
+    private CharSequence        mNmeaSentenceType;
 
     Handler                     mHandler;
     long                        mClockSkew;
@@ -71,10 +81,12 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     public MainPrism4DNmeaListFragment() {
         //for now, we don't need to initialize anything when the fragment
         //  is first created
+        int temp = 0;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState){
+
         super.onCreate(savedInstanceState);
     }
 
@@ -86,36 +98,16 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
         View v = inflater.inflate(R.layout.fragment_nmea_list_prism4d, container, false);
         v.setTag(TAG);
 
+        initializeGPS();
+
         initializeRecyclerView(v);
 
-        //Now take care of the GPS Stuff
-        //GPS Stuff
-        /*
-        boolean gpsEnabled = mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        if (!gpsEnabled){
-            //Leave even though project has chaged
-            Toast.makeText(getActivity(),
-                    R.string.skyplot_gps_not_enabled,
-                    Toast.LENGTH_SHORT).show();
-        }
-        */
-        //Make sure we have the proper GPS permissions before starting
-        //If we don't currently have permission, bail
-        if ((ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) ||
-            (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED)){return v;}
+        wireWidgets(v);
 
-        mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
-
-        //but don't turn them on until onResume()
-        //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
-        //mLocationManager.addGpsStatusListener(this);
-        //mLocationManager.addNmeaListener(this);
-
-        //9) return the view
+         //9) return the view
         return v;
     }
+
 
     private void initializeRecyclerView(View v){
                 /*
@@ -182,6 +174,61 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
 
     }
 
+
+    private void wireWidgets(View v){
+        mNmeaListSize = (TextView) v.findViewById(R.id.nmeaSizeList) ;
+        //initialize the sentence type before any buttons are pressed
+        changeType(R.string.gns_sentence_label);
+
+        mGgaButton = (Button) v.findViewById(R.id.ggaButton);
+        mGgaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                changeType(R.string.gga_sentence_label);
+
+            }
+        });
+
+        mGsaButton = (Button) v.findViewById(R.id.gsaButton);
+        mGsaButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                changeType(R.string.gsa_sentence_label);
+            }
+        });
+
+        mGsvButton = (Button) v.findViewById(R.id.gsvButton);
+        mGsvButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                changeType(R.string.gsv_sentence_label);
+            }
+        });
+
+        mGnsButton = (Button) v.findViewById(R.id.gnsButton);
+        mGnsButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v){
+                changeType(R.string.gns_sentence_label);
+            }
+        });
+
+    }
+
+    private void changeType(int resourceString){
+        mNmeaSentenceType = getString(resourceString);
+
+        //clear the current contents of the list
+        Prism4DNmeaManager nmeaManager = Prism4DNmeaManager.getInstance();
+        nmeaManager.removeListContents();
+
+        mRecyclerView.getAdapter().notifyDataSetChanged();
+
+        mNmeaListSize.setText(String.valueOf( mRecyclerView.getAdapter().getItemCount()));
+
+    }
+
+
     /************************************************************************/
     //                Fragment Lifecycle Functions                          //
     /***********************************************************************/
@@ -191,22 +238,13 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     public void onResume() {
         super.onResume();
         setSubtitle();
-        //If we don't currently have permission, bail
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED){return;}
 
-        //ask the Location Manager to start sending us updates
-        mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
-        //mLocationManager.addGpsStatusListener(this);
-        mLocationManager.addNmeaListener(this);
-
-        setGpsStatus();
-    }
+        startGPS();
+      }
 
     @Override
     public void onStop(){
+
         super.onStop();
     }
 
@@ -214,16 +252,74 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     @Override
     public void onPause() {
         super.onPause();
-        //If we don't currently have permission, bail
-        if ((ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED) ||
-            (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
-                        != PackageManager.PERMISSION_GRANTED)){return;}
 
-        mLocationManager.removeGpsStatusListener(this);
-        //mLocationManager.removeUpdates(this);
+        stopGPS();
+    }
+
+    /************************************************************************/
+    //                       GPS Functions                                  //
+    /************************************************************************/
+
+    private void initializeGPS(){
+        if (mLocationManager == null) {
+            //Make sure we have the proper GPS permissions before starting
+            //If we don't currently have permission, bail
+            if ((ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_COARSE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED) ||
+                (ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_FINE_LOCATION)
+                    != PackageManager.PERMISSION_GRANTED)) {
+                return;
+            }
+
+            mLocationManager =
+                    (LocationManager) getActivity().getSystemService(Context.LOCATION_SERVICE);
+
+        }
+        //but don't turn them on until onResume()
+    }
+
+    private void startGPS(){
+
+        if (mLocationManager == null)initializeGPS();
+
+        //If we don't currently have permission, bail
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED ||
+            ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED){
+            return;
+        }
+
+        //Location Manager has to be receiving updates for us to receive NMEA sentences
+        mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
+        //mLocationManager.addGpsStatusListener(this);
+        mLocationManager.addNmeaListener(this);
+
+    }
+
+    private void stopGPS(){
+        if (mLocationManager == null)initializeGPS();
+
+        //If we don't currently have permission, bail
+        if ((ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_COARSE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED) ||
+            (ContextCompat.checkSelfPermission(getActivity(),
+                Manifest.permission.ACCESS_FINE_LOCATION)
+                != PackageManager.PERMISSION_GRANTED)){
+            return;
+        }
+
+        //Location Manager has to be receiving updates for us to receive NMEA sentences
+        mLocationManager.removeUpdates(this);
+        //mLocationManager.removeGpsStatusListener(this);
         mLocationManager.removeNmeaListener(this);
     }
+
 
 
     //*************** Listener Callback Routines *****************//
@@ -241,19 +337,28 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
         mNmeaData = mNmeaParser.parse(nmea);
         if (mNmeaData != null) {
 
-            mNmeaList.add(0, mNmeaData);
+             //Which fields have meaning depend upon the type of the sentence
+            String type = mNmeaData.getNmeaType().toString();
+            if (type == null)return ;
 
-            //mRecyclerView.getAdapter().notifyDataSetChanged();
-            //notify item inserted rather than data set changed
-            //why this makes a difference, I don't know. But the other doesn't scroll
+            if (type.contains(mNmeaSentenceType)){
+                mNmeaList.add(0, mNmeaData);//add new sentence at the top of the list
 
-            //end of list
-            mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
-            mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount());
+                  //mRecyclerView.getAdapter().notifyDataSetChanged();
+                //notify item inserted rather than data set changed
+                //why this makes a difference, I don't know. But the other doesn't scroll
 
-            //start of list
-            //mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
-            //mRecyclerView.smoothScrollToPosition(0);
+                //end of list
+                mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
+                //mRecyclerView.smoothScrollToPosition(mRecyclerView.getAdapter().getItemCount());
+
+
+                //start of list
+                //mRecyclerView.getAdapter().notifyItemInserted(mRecyclerView.getAdapter().getItemCount());
+                //mRecyclerView.smoothScrollToPosition(0);
+
+                mNmeaListSize.setText(String.valueOf( mRecyclerView.getAdapter().getItemCount()));
+            }
 
         }
 
@@ -268,14 +373,14 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     @Override
     public void onProviderDisabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
-            setGpsStatus();
+
         }
     }
 
     @Override
     public void onProviderEnabled(String provider) {
         if (LocationManager.GPS_PROVIDER.equals(provider)){
-            setGpsStatus();
+
         }
     }
 
@@ -284,7 +389,7 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
         if (!LocationManager.GPS_PROVIDER.equals(provider)){
             return;
         }
-        setGpsStatus();
+
     }
 
 
@@ -299,15 +404,20 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     //      GPS_EVENT_STOPPED,
     //      GPS_EVENT_FIRST_FIX ,
     //      GPS_EVENT_SATELLITE_STATUS
+    /*
     @Override
     public void onGpsStatusChanged(int state) {
-        setGpsStatus();
+
     }
+    */
+
+
 
     //OS calls this callback when the location has changed
     /**********************************************************************/
     /*           GPS Location Callback                                    */
     /**********************************************************************/
+
     @Override
     public void onLocationChanged(Location loc) {
 
@@ -320,13 +430,6 @@ public class MainPrism4DNmeaListFragment extends Fragment implements GpsStatus.L
     //*********************** GPS Utilities *************************//
 
 
-    //Update the UI with satellite status info from GPS
-    protected void setGpsStatus(){
-        if (mLocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)) {
-            //for now, do nothing
-            //but leave the if stmt so we can set breakpoint
-        }
-    }
 
     //inner  class that runs on another thread
     //every time it runs,

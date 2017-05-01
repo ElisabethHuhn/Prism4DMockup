@@ -202,6 +202,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_POINT_ID      = "coord_point_id";
     public static final String COORDINATE_TYPE          = "coord_type";
     public static final String COORDINATE_VALID_COORD   = "coord_valid_coord";//BOOLEAN  no-0/1-yes
+    public static final String COORDINATE_IS_FIXED      = "coord_is_fixed";   //0 = false, 1 = true
     public static final String COORDINATE_EN_EASTING    = "coord_en_easting";
     public static final String COORDINATE_EN_NORTHING   = "coord_en_northing";
     public static final String COORDINATE_EN_ELEVATION  = "coord_en_elevation";
@@ -222,6 +223,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_POINT_ID             + " INTEGER, "   +
             COORDINATE_TYPE                 + " INTEGER, "   +
             COORDINATE_VALID_COORD          + " INTEGER, "   +
+            COORDINATE_IS_FIXED             + " INTEGER, "   + //0 = FALSE, 1 = TRUE
             COORDINATE_EN_EASTING           + " REAL, "      +
             COORDINATE_EN_NORTHING          + " REAL, "      +
             COORDINATE_EN_ELEVATION         + " REAL, "      +
@@ -246,6 +248,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     //public static final String COORDINATE_POINT_ID           = "coord_point_id";
     //public static final String COORDINATE_TYPE               = "coord_type";
     //public static final String COORDINATE_VALID_COORD        = "coord_valid_coord";//BOOLEAN  no-0/1-yes
+    //public static final String COORDINATE_IS_FIXED             = "coord_is_fixed";   //0=false, 1=true
 
     public static final String COORDINATE_LL_TIME              = "coord_ll_time";
     public static final String COORDINATE_LL_LATITUDE          = "coord_ll_latitude";
@@ -269,6 +272,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_POINT_ID             + " INTEGER, " +
             COORDINATE_TYPE                 + " INTEGER, " +
             COORDINATE_VALID_COORD          + " INTEGER, " +
+            COORDINATE_IS_FIXED             + " INTEGER, " +
 
             COORDINATE_LL_TIME              + " REAL, "    +
             COORDINATE_LL_LATITUDE          + " REAL, "    +
@@ -298,6 +302,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_MEAN_POINT_ID      = "coord_point_id";
     public static final String COORDINATE_MEAN_TYPE          = "coord_type";
     public static final String COORDINATE_MEAN_VALID_COORD   = "coord_valid_coord";//BOOLEAN  no-0/1-yes
+    public static final String COORDINATE_MEAN_IS_FIXED      = "coord_is_fixed";//0=false, 1=true
     public static final String COORDINATE_MEAN_RAW           = "coord_mean_easting";
     public static final String COORDINATE_MEAN_MEANED        = "coord_mean_northing";
     public static final String COORDINATE_MEAN_FIXED         = "coord_mean_elevation";
@@ -314,8 +319,6 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
     public static final String COORDINATE_MEAN_ELEVATION           = "coord_mean_elev" ;
     public static final String COORDINATE_MEAN_ELEVATION_STD       = "coord_mean_elev_std" ;
     public static final String COORDINATE_MEAN_GEOID               = "coord_mean_geoid";
-    public static final String COORDINATE_MEAN_HRMS                = "coord_mean_hrms";
-    public static final String COORDINATE_MEAN_VRMS                = "coord_mean_vrms";
     public static final String COORDINATE_MEAN_SATELLITES          = "coord_mean_sat";
 
 
@@ -329,6 +332,7 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_MEAN_POINT_ID             + " INTEGER, "   +
             COORDINATE_MEAN_TYPE                 + " INTEGER, "   +
             COORDINATE_MEAN_VALID_COORD          + " INTEGER, "   +
+            COORDINATE_MEAN_IS_FIXED             + " INTEGER, "   +
             COORDINATE_MEAN_RAW                  + " INTEGER, "   +
             COORDINATE_MEAN_MEANED               + " INTEGER, "   +
             COORDINATE_MEAN_FIXED                + " INTEGER, "   +
@@ -339,8 +343,6 @@ public class Prism4DSqliteOpenHelper extends SQLiteOpenHelper {
             COORDINATE_MEAN_ELEVATION            + " REAL, "      +
             COORDINATE_MEAN_ELEVATION_STD        + " REAL, "      +
             COORDINATE_MEAN_GEOID                + " REAL, "      +
-            COORDINATE_MEAN_HRMS                 + " REAL, "      +
-            COORDINATE_MEAN_VRMS                 + " REAL, "      +
             COORDINATE_MEAN_SATELLITES           + " INTEGER, "   +
             KEY_CREATED_AT                       + " DATETIME"  + ")";
 

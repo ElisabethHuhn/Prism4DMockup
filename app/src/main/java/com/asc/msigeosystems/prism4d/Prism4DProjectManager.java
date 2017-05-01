@@ -585,7 +585,7 @@ public class Prism4DProjectManager {
         cvProjectSettings.put(Prism4DSqliteOpenHelper.PROJECT_SETTINGS_STARTING_POINT_ID,
                                                     projectSettings.getStartingPointID().toString());
         temp = 0;//set default to no
-        if (projectSettings.isAlphanumeric())temp = 1;
+        if (projectSettings.isAlphanumericID())temp = 1;
         cvProjectSettings.put(Prism4DSqliteOpenHelper.PROJECT_SETTINGS_ALPHANUMERIC, temp);
 
         cvProjectSettings.put(Prism4DSqliteOpenHelper.PROJECT_SETTINGS_FEATURE_CODES,
@@ -730,7 +730,7 @@ public class Prism4DProjectManager {
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_SETTINGS_ALPHANUMERIC));
         tempBoolean = false;
         if (temp == 1)tempBoolean = true;
-        projectSettings.setAlphanumeric(tempBoolean);
+        projectSettings.setAlphanumericID(tempBoolean);
 
         projectSettings.setFeatureCodes (cursor.getString (
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.PROJECT_SETTINGS_FEATURE_CODES)));

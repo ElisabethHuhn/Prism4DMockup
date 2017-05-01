@@ -524,6 +524,8 @@ public class MainPrism4DProjectEditFragment extends    Fragment
             mSelectedCoordinateType = Prism4DCoordinate.sCoordinateTypeWGS84;
             mSelectedCoordinateTypePosition = 1;
             mSpinner.setSelection(1);
+
+            // TODO: 3/14/2017 Shouldn't the next two lines be outside the brackets??? 
             mProjectBeingMaintained.setProjectCoordinateType(mSelectedCoordinateType);
             setProjectChangedFlags();
         }
@@ -582,7 +584,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
 
     /*********************************************/
     /**********     Spinner Callbacks   **********/
-    /***********************************************************/
+    /*********************************************/
 
     public void onItemSelected(AdapterView<?> parent, View v, int position, long id) {
         mSelectedCoordinateTypePosition = position;
@@ -855,7 +857,7 @@ public class MainPrism4DProjectEditFragment extends    Fragment
 
 
     /************************************/
-    /***** List POints Button     *******/
+    /***** List Points Button     *******/
     /************************************/
     //Build and display the alert dialog
     private void areYouSureListPoints(){

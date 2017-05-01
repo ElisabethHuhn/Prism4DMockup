@@ -15,8 +15,6 @@ import com.asc.msigeosystems.prism4dmockup.R;
 
 import java.util.ArrayList;
 
-import static android.R.id.message;
-
 /**
  * The Project Fragment is the UI
  * when the user is creating / making changes to the project definition
@@ -177,6 +175,7 @@ public class MainPrism4DTopProjectFragment extends Fragment {
         //Control Button
         mControlButton = (Button) v.findViewById(R.id.row2Button3);
         mControlButton.setText(R.string.control_button_label);
+        mControlButton.setBackgroundResource(R.color.colorGray);
         mControlButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_116_controlfile, 0, 0);
         mControlButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -218,6 +217,7 @@ public class MainPrism4DTopProjectFragment extends Fragment {
         //Feature Codes Button
         mFeatureCodesButton = (Button) v.findViewById(R.id.row3Button2);
         mFeatureCodesButton.setText(R.string.feature_codes_button_label);
+        mFeatureCodesButton.setBackgroundResource(R.color.colorGray);
         mFeatureCodesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_118_fcfile, 0, 0);
         mFeatureCodesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -250,9 +250,6 @@ public class MainPrism4DTopProjectFragment extends Fragment {
             }
         });
 
-
-
-        //FOOTER WIDGETS
 
     }
 

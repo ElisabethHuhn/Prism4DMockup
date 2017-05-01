@@ -360,8 +360,10 @@
     <string name="marker_exclude_point"   >Exclude Point</string>
     <string name="marker_set_focus"       >Set Focus</string>
     <string name="marker_show_info"       >Show Info Window</string>
+    <string name="marker_hide_info"       >Hide Info Window</string>
     <string name="next_point"             >Next Point Only</string>
     <string name="all_future_points"      >All Future Points</string>
+    <string name="reset_offset"           >Reset Offset to zero</string>
     <string name="offset_distance_meters" >Offset distance in meters:</string>
     <string name="offset_distance_feet"   >Offset distance in feet:</string>
     <string name="offset_heading"         >Offset Heading (degrees clockwise from N):</string>
@@ -506,6 +508,10 @@
     <!-- Skyplot NMEA List:  -->
     <string name="skyplot_nmea_list_title">NMEA Sentences Received</string>
     <string name="skyplot_no_nema_found">No NMEA Sentences found</string>
+    <string name="gsa_sentence_label">GSA</string>
+    <string name="gsv_sentence_label">GSV</string>
+    <string name="gns_sentence_label">GNS</string>
+    <string name="gga_sentence_label">GGA</string>
 
 
     <!--      NEW SCREEN                  -->
@@ -527,7 +533,7 @@
     <!-- Settings Top Level Screen Strings -->
 
     <!-- Button Labels -->
-    <string name="setting_project_id">ID</string>
+    <string name="setting_project_id">Project ID</string>
     <string name="settings_project_name">Name</string>
     <string name="setting_units_button_label">Units</string>
     <string name="setting_formats_button_label">Formats</string>

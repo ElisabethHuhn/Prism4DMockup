@@ -190,6 +190,7 @@ public class MainPrism4DTopSettingsGeneralFragment extends Fragment {
 
         mCompassActivityButton = (Button) v.findViewById(R.id.row3Button1);
         mCompassActivityButton.setText("");
+        mCompassActivityButton.setBackgroundResource(R.color.colorGray);
         mCompassActivityButton.setFocusable(false);
         mCompassActivityButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_817_generalsettings, 0, 0);
         mCompassActivityButton.setOnClickListener(new View.OnClickListener() {
@@ -236,9 +237,6 @@ public class MainPrism4DTopSettingsGeneralFragment extends Fragment {
             }
         });
 
-
-
-        //FOOTER WIDGETS
 
     }
 }

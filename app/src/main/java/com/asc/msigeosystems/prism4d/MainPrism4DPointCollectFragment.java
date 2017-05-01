@@ -65,21 +65,18 @@ import static android.provider.CalendarContract.CalendarCache.URI;
  * Created by Elisabeth Huhn on 4/13/2016.
  */
 public class MainPrism4DPointCollectFragment extends Fragment implements //OnMapReadyCallback,
-                                                                          GpsStatus.Listener,
-                                                                          LocationListener,
-                                                                          GpsStatus.NmeaListener {
+                                                                         //GpsStatus.Listener,
+                                                                         LocationListener,
+                                                                         GpsStatus.NmeaListener {
 
     //DEFINE constants / literals
     public static final int MY_PERMISSIONS_REQUEST_CAMERA = 1;
-    public static final int MY_PERMISSIONS_REQUEST_SAVE_PICTURES = 2;
+    //public static final int MY_PERMISSIONS_REQUEST_SAVE_PICTURES = 2;
 
     private static final int OFFSET_NEXT_ONLY  = 0;
     private static final int OFFSET_ALL_FUTURE = 1;
+    private static final int OFFSET_RESET      = 2;
     private static final int OFFSET_ID_CONSTANT = 100;
-
-
-
-
 
     static final boolean  DEBUG = false;
 
@@ -89,6 +86,49 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
     //return codes from intents
     private static final int REQUEST_CODE_IMAGE_CAPTURE = 1;
+
+    //State Keys
+    //Focus Variables
+    private static final String FOCUS_LATITUDE = "FocusLat";
+    private static final String FOCUS_LONGITUDE = "FocusLng";
+
+    //Photo variables
+    private static final String PHOTO_PATH = "FotoPath";
+    private static final String PHOTO_FILE = "FotoFile";
+    private static final String PHOTO_TIME = "FotoTime";
+    private static final String NOTES_TEXT = "NotesText";
+
+    //Offset Variables
+    private static final String OFFSET_HEADING = "OffsetHeading";
+    private static final String OFFSET_DISTANCE = "OffsetDistance";
+    private static final String OFFSET_ELEVATION = "OffsetElev";
+    private static final String OFFSET_CHECKED_ID = "OffsetID";
+
+    //Meaning Variables
+    //Flags 0 = false, 1 = true
+    private static final String IS_MEANING = "IsMeaning";
+    private static final String IS_FIRST   = "IsFirst";
+    private static final String IS_LAST    = "IsLast";
+    private static final String MEAN_TIME  = "MeanTime";
+    private static final String FIXED_READING = "FixedReading";
+    private static final String RAW_READING = "RawReading";
+
+    //Quality Variables
+    private static final String IN_FIX     = "InFix";
+    private static final String HDOP_VALUE = "HdopVal";
+    private static final String VDOP_VALUE = "VdopVal";
+    private static final String TDOP_VALUE = "TdopVal";
+    private static final String PDOP_VALUE = "PdopVal";
+    private static final String HRMS_VALUE = "HrmsVal";
+    private static final String VRMS_VALUE = "VrmsVal";
+
+    //Maps variables
+    private static final String IS_MAP_INIT = "IsMapInit";
+    private static final String IS_AUTO_RESIZE = "IsaUTOResize";
+
+
+
+
 
     /*******************************************/
     /****     variables for UI widgets      ****/
@@ -111,7 +151,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     private EditText mCurrentNorthingPositionField;
     private TextView mCurrentEastingPositionLabel;
     private EditText mCurrentEastingPositionField;
-    private TextView mCurrentElevationLabel;
+    //private TextView mCurrentElevationLabel;
     private EditText mCurrentElevationField;
     private EditText mCurrentFeatureCodeField;
     private EditText mCurrentHeightField;
@@ -119,7 +159,6 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     private Button   mOffsetPositionButton;
     private Button   mAveragePositionButton;
     private Button   mShowAllPointsButton;
-
 
     //footer
     //footer left button
@@ -237,10 +276,13 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
     //variables needed to keep track of location
     //Set by calling initializeGPS()
+    //If the code finds a void LocationManager, it is simply reInitialized
     private LocationManager mLocationManager;
+
+
     //needs to be removed,
     // but have to figure out how to get this info from NMEA rather than the LocationManager
-    private GpsStatus           mGpsStatus = null;
+    //private GpsStatus           mGpsStatus = null;
 
     //Test Data
     private int                     mTestDataCounter = 0;
@@ -320,6 +362,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         setSubtitle();
 
         initializeTestData();
+
+        setRetainInstance(true);
         return v;
     }
 
@@ -343,7 +387,16 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         setSubtitle();
 
         startGps();
+
+
+        if ((mLatitudeScreenFocus != 0) || (mLongitudeScreenFocus != 0)){
+            handleCurrentPosition();
+            //redrawMapMarkers(mMarkers, true);
+        }
+
      }
+
+
 
 
     //Ask for location events to stop
@@ -355,7 +408,11 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         }
         super.onPause();
 
+
+
         stopGps();
+
+
     }
 
     @Override
@@ -397,6 +454,84 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             mMapView.onSaveInstanceState(outState);
         }
         super.onSaveInstanceState(outState);
+        //saveState(outState);
+    }
+
+    private void saveState(Bundle outState){
+        //save focus variables
+        outState.putDouble(FOCUS_LATITUDE,  mLatitudeScreenFocus);
+        outState.putDouble(FOCUS_LONGITUDE, mLongitudeScreenFocus);
+
+        //Camera Variables
+        outState.putCharSequence(PHOTO_PATH, mCurrentPhotoPath);
+        outState.putCharSequence(PHOTO_FILE, mCurrentPhotoFileName);
+        outState.putCharSequence(PHOTO_TIME, mCurrentPhotoTimestamp);
+
+        //Notes Variables
+        outState.putCharSequence(NOTES_TEXT, mNotes);
+
+        //Offset variables
+        outState.putDouble(OFFSET_DISTANCE,   mOffsetDistance);
+        outState.putDouble(OFFSET_HEADING,    mOffsetHeading);
+        outState.putDouble(OFFSET_ELEVATION,  mOffsetElevation);
+        outState.putInt   (OFFSET_CHECKED_ID, mOffsetCheckedID);
+
+        //Meaning Variables
+        //0 = false, 1 = true
+        int tempBoolean = 0; //default = false
+        if (isMeanInProgress)tempBoolean = 1;
+        outState.putInt(IS_MEANING, tempBoolean);
+
+        tempBoolean = 0;
+        if (isFirstPointInMean)tempBoolean = 1;
+        outState.putInt(IS_FIRST, tempBoolean);
+
+        tempBoolean = 0;
+        if (isLastPointInMean) tempBoolean = 1;
+        outState.putInt(IS_LAST, tempBoolean);
+
+        outState.putDouble(MEAN_TIME,  mMeanTime);
+        outState.putInt(FIXED_READING, mFixedReadings);
+        outState.putInt(RAW_READING, mRawReadings);
+
+
+
+        //Quality Variables
+        outState.putInt(IN_FIX, mInFix);
+        outState.putDouble(HDOP_VALUE, mHdop);
+        outState.putDouble(VDOP_VALUE, mVdop);
+        outState.putDouble(TDOP_VALUE, mTdop);
+        outState.putDouble(PDOP_VALUE, mPdop);
+        outState.putDouble(HRMS_VALUE, mHrms);
+        outState.putDouble(VRMS_VALUE, mVrms);
+
+
+        //Map Variables
+        //0 = false, 1 = true
+        tempBoolean = 0;
+        if (isMapInitialized)tempBoolean = 1;
+        outState.putInt(IS_MAP_INIT, tempBoolean);
+
+        tempBoolean = 0;
+        if (isAutoResizeOn)tempBoolean = 1;
+        outState.putInt(IS_AUTO_RESIZE, tempBoolean);
+
+
+
+
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
+            if (grantResults.length > 0 &&
+                    grantResults[0] == PackageManager.PERMISSION_GRANTED &&
+                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                mPictureButton.setEnabled(true);
+                Toast.makeText(getActivity(),R.string.try_camera_again,Toast.LENGTH_SHORT).show();
+            }
+        }
     }
 
 
@@ -408,14 +543,18 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
         //Make sure we have the proper GPS permissions before starting
         //If we don't currently have permission, bail
-        if ((ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_COARSE_LOCATION)
+        if ((ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) ||
-            (ContextCompat.checkSelfPermission(getActivity(),Manifest.permission.ACCESS_FINE_LOCATION)
+            (ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED)){return;}
 
-        mLocationManager = (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
+        mLocationManager =
+                        (LocationManager)getActivity().getSystemService(Context.LOCATION_SERVICE);
 
         //but don't turn them on until onResume()
+        //Location Manager has to be receiving updates for us to receive NMEA updates
         //mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
         //mLocationManager.addGpsStatusListener(this);
         //mLocationManager.addNmeaListener(this);
@@ -423,13 +562,16 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
     private void startGps(){
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+            ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){return;}
 
         //ask the Location Manager to start sending us updates
         if (mLocationManager == null)initializeGPS();
+        //location manager has to be receiving updates for us to receive NMEA sentences
         mLocationManager.requestLocationUpdates("gps", 0, 0.0f, this);
         //mLocationManager.addGpsStatusListener(this);
         mLocationManager.addNmeaListener(this);
@@ -438,13 +580,16 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
     private void stopGps() {
-        if (ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_COARSE_LOCATION)
+        if (ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_COARSE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED ||
-            ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.ACCESS_FINE_LOCATION)
+            ContextCompat.checkSelfPermission(getActivity(),
+                                                        Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED){return;}
 
         if (mLocationManager == null)return;
-        
+
+        //Location manager has to be receiving updates for us to receive NMEA sentences
         mLocationManager.removeUpdates(this);
         //mLocationManager.removeGpsStatusListener(this);
         mLocationManager.removeNmeaListener(this);
@@ -475,11 +620,12 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
      * the client should call getGpsStatus(GpsStatus)
      * to get additional status information.
      */
+    /*
     @Override
     public void onGpsStatusChanged(int eventType) {
 
     }
-
+*/
 
 
     //******************************************************************//
@@ -597,10 +743,9 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
 
-    //******************** Callback Utilities ********************//
-    //        Called by OS when a Listener condition is met       //
     //************************************************************//
-
+    //******************** Nmea Utilities ********************//
+    //************************************************************//
 
     //only returns non-null value if it's a sentence we are interested in
     // TODO: 12/24/2016 Need to add in other types of coordinates besides WGS and UTM
@@ -689,7 +834,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             mCurrentEastingPositionField .setText(Double.toString(eLong));
 
             //mSatellitesOutput.setText(Integer.toString(nmeaData.getSatellites()));
-            mHdopField                   .setText("HDop: "+Double.toString(nmeaData.getHdop()));
+            // TODO: 1/19/2017 May be a point in the future where we want this field 
+            //mHdopField                   .setText("HDop: "+Double.toString(nmeaData.getHdop()));
             mHdop = nmeaData.getHdop();
             mCurrentElevationField       .setText(Double.toString(ele));
 
@@ -769,12 +915,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         mMeanCoordinateList.add(wgsCoordinate);
 
         //calculate the mean using the coordinates in the list
-        Prism4DCoordinateMean meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
-        if (meanCoordinate != null) {
-            meanCoordinate.setSatellites(nmeaData.getSatellites());
-            meanCoordinate.setRawReadings  (mRawReadings);
-            meanCoordinate.setFixedReadings(mFixedReadings);
-        }
+        Prism4DCoordinateMean meanCoordinate = calculateMeanWGS(mNmeaData,mMeanCoordinateList);
+
 
         //Assume the marker is the most recent
         // TODO: 12/12/2016 is marker assumption valid
@@ -930,19 +1072,6 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         mTestDataCounter = 0;
     }
 
-
-    @Override
-    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
-        if (requestCode == MY_PERMISSIONS_REQUEST_CAMERA) {
-            if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED &&
-                    grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                mPictureButton.setEnabled(true);
-                Toast.makeText(getActivity(),R.string.try_camera_again,Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-
     private void wireWidgets(View v){
         //We need permissions to take pictures with the camera then store the images
         if (ContextCompat.checkSelfPermission
@@ -976,7 +1105,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         mCurrentNorthingPositionField = (EditText)v.findViewById(R.id.currentNorthingPositionField);
         mCurrentEastingPositionLabel  = (TextView)v.findViewById(R.id.currentEastingPositionLabel);
         mCurrentEastingPositionField  = (EditText)v.findViewById(R.id.currentEastingPositionField);
-        mCurrentElevationLabel        = (TextView)v.findViewById(R.id.currentElevationLabel);
+        //mCurrentElevationLabel        = (TextView)v.findViewById(R.id.currentElevationLabel);
         mCurrentElevationField        = (EditText)v.findViewById(R.id.currentElevationField);
 
         mCurrentFeatureCodeField      = (EditText)v.findViewById(R.id.currentFeatureCodeField);
@@ -998,7 +1127,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                 Prism4DCoordinateMean meanCoordinate =  null;
                 if (isMeanInProgress){
                     //calculate the mean using the coordinates in the list
-                    meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
+                    // TODO: 1/21/2017 does this result in the last point being used twice???
+                    meanCoordinate = calculateMeanWGS(mNmeaData,mMeanCoordinateList);
                 }
                 handleStorePosition(mNmeaData, meanCoordinate);
 
@@ -1237,8 +1367,9 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                 //This knows whether we are in the middle of meaning or just use current position
                 Prism4DCoordinateMean meanCoordinate =  null;
                 if (isMeanInProgress){
+                    // TODO: 1/21/2017 Are we using the last point twice in the mean???
                     //calculate the mean using the coordinates in the list
-                    meanCoordinate = calculateMeanWGS(mMeanCoordinateList);
+                    meanCoordinate = calculateMeanWGS(mNmeaData, mMeanCoordinateList);
                 }
                 setFocus(mNmeaData);
 
@@ -1258,7 +1389,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
     /************************************************************/
-    /****** Call backs for Activities started with intents ******/
+    /******      Utilities and Call backs for pictures     ******/
     /************************************************************/
     //The place where intents return to this fragment
     @Override
@@ -1452,6 +1583,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
         //set screen focus to this location
         setFocus(mNmeaData);
+        //This sets PointID as a side effect
+        getMarkerByFocus();
 
         //update screen with the nmea data
         updateNmeaUI(mNmeaData);
@@ -1471,6 +1604,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         isLastPointInMean  = false;
         mRawReadings       = 0;
         mFixedReadings     = 0;
+
 
         //set the time
         mMeanTime = 0;
@@ -1727,7 +1861,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             mNotes = getOpenProject().getProjectDescription();
         }
 
-        getNotesText();
+        askNotesText();
     }
 
 
@@ -1835,7 +1969,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     /******     AlertDialog Utilities                      ******/
     /************************************************************/
 
-    private void getNotesText(){
+    private void askNotesText(){
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(getString(R.string.enter_notes));
         builder.setIcon(R.drawable.ground_station_icon);
@@ -1877,20 +2011,26 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         // Set up the input
 
         //Radio button for which points to apply to: next/all future buttons
-        final RadioButton[] radioButtons = new RadioButton[2];
+        final RadioButton[] radioButtons = new RadioButton[3];
         RadioGroup radioGroup = new RadioGroup(getActivity()); //create the RadioGroup
         radioGroup.setOrientation(RadioGroup.HORIZONTAL);//or RadioGroup.VERTICAL
 
-        radioButtons[0] = new RadioButton(getActivity());
-        radioButtons[0].setId(OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT);
-        radioGroup.addView(radioButtons[0]);
-        radioButtons[0].setText(getString(R.string.next_point));
-        radioButtons[0].setSelected(true);
+        radioButtons[OFFSET_NEXT_ONLY] = new RadioButton(getActivity());
+        radioButtons[OFFSET_NEXT_ONLY].setId(OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT);
+        radioGroup.addView(radioButtons[OFFSET_NEXT_ONLY]);
+        radioButtons[OFFSET_NEXT_ONLY].setText(getString(R.string.next_point));
+        radioButtons[OFFSET_NEXT_ONLY].setSelected(true);
         mOffsetCheckedID = OFFSET_NEXT_ONLY + OFFSET_ID_CONSTANT;
-        radioButtons[1] = new RadioButton(getActivity());
-        radioButtons[1].setId(OFFSET_ALL_FUTURE + OFFSET_ID_CONSTANT);
-        radioGroup.addView(radioButtons[1]);
-        radioButtons[1].setText(getString(R.string.all_future_points));
+
+        radioButtons[OFFSET_ALL_FUTURE] = new RadioButton(getActivity());
+        radioButtons[OFFSET_ALL_FUTURE].setId(OFFSET_ALL_FUTURE + OFFSET_ID_CONSTANT);
+        radioGroup.addView(radioButtons[OFFSET_ALL_FUTURE]);
+        radioButtons[OFFSET_ALL_FUTURE].setText(getString(R.string.all_future_points));
+
+        radioButtons[OFFSET_RESET] = new RadioButton(getActivity());
+        radioButtons[OFFSET_RESET].setId(OFFSET_RESET + OFFSET_ID_CONSTANT);
+        radioGroup.addView(radioButtons[OFFSET_RESET]);
+        radioButtons[OFFSET_RESET].setText(getString(R.string.reset_offset));
 
         layout.addView(radioGroup);
 
@@ -1965,23 +2105,30 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int whichButton) {
-                String distanceValue  = distance.getText().toString();
-                String headingValue   = heading.getText().toString();
-                String elevationValue = elevation.getText().toString();
-                if (distanceValue.isEmpty()){
-                    mOffsetDistance = 0;
+                if (radioButtons[OFFSET_RESET].isChecked()){
+                    //reset all offsets to zero
+                    mOffsetDistance  = 0d;
+                    mOffsetHeading   = 0d;
+                    mOffsetElevation = 0d;
                 } else {
-                    mOffsetDistance = Double.valueOf(distanceValue);
-                }
-                if (headingValue.isEmpty()){
-                    mOffsetHeading = 0;
-                } else {
-                    mOffsetHeading = Double.valueOf(headingValue);
-                }
-                if (elevationValue.isEmpty()){
-                    mOffsetElevation = 0;
-                }else {
-                    mOffsetElevation = Double.valueOf(elevationValue);
+                    String distanceValue = distance.getText().toString();
+                    String headingValue = heading.getText().toString();
+                    String elevationValue = elevation.getText().toString();
+                    if (distanceValue.isEmpty()) {
+                        mOffsetDistance = 0;
+                    } else {
+                        mOffsetDistance = Double.valueOf(distanceValue);
+                    }
+                    if (headingValue.isEmpty()) {
+                        mOffsetHeading = 0;
+                    } else {
+                        mOffsetHeading = Double.valueOf(headingValue);
+                    }
+                    if (elevationValue.isEmpty()) {
+                        mOffsetElevation = 0;
+                    } else {
+                        mOffsetElevation = Double.valueOf(elevationValue);
+                    }
                 }
             }
         });
@@ -2010,7 +2157,8 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                         getString(R.string.marker_remove_marker),
                         getString(R.string.marker_exclude_point),
                         getString(R.string.marker_set_focus),
-                        getString(R.string.marker_show_info)      },
+                        getString(R.string.marker_show_info),
+                        getString(R.string.marker_hide_info) },
                 new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
                         // The 'which' argument contains the index position
@@ -2059,7 +2207,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                                                 Toast.LENGTH_SHORT).show();
                                 LatLng mapPosition = mapMarker.getPosition();
                                 setFocus(mapPosition);
-                                Marker focusMarker = getMarkerByFocus();
+                                mFocusMarker = getMarkerByFocus();
 
                                 break;
                             case 5:
@@ -2067,6 +2215,12 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
                                                 getString(R.string.marker_show_info),
                                                 Toast.LENGTH_SHORT).show();
                                 dialog.cancel();
+                                break;
+                            case 6:
+                                Toast.makeText(getActivity(),
+                                               R.string.marker_hide_info,
+                                               Toast.LENGTH_SHORT ).show();
+                                mapMarker.hideInfoWindow();
                                 break;
                         }
                     }
@@ -2079,9 +2233,9 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
 
         Prism4DProject openProject = getOpenProject();
 
-        //The focus flags tell us where to put the picture
+        //The focus flags tell us where to put the notes
         if (isFocusOnPoint) {
-            //put the picture on the point of the marker with current focus
+            //put the notes on the point of the marker with current focus
             Prism4DCoordinateMean coordinateTag = (Prism4DCoordinateMean) mFocusMarker.getTag();
             //The following check was done when the picture was started
             //but it never hurts to check again
@@ -2190,14 +2344,23 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     }
 
     //called from the nmea event handler when mean is in progress
-    private Prism4DCoordinateMean calculateMeanWGS(
+    private Prism4DCoordinateMean calculateMeanWGS(Prism4DNmea nmeaData,
                                             ArrayList<Prism4DCoordinateWGS84> coordinateList){
 
+        //A mean coordinate for this NMEA reading
         Prism4DCoordinateMean meanCoordinate = new Prism4DCoordinateMean();
+        // TODO: 1/21/2017 update the meanCoordinate with quality / fixed data from the nmeaData
+
+        //A mean coordinate for the Standard Deviation/RMS
         Prism4DCoordinateMean residuals      = new Prism4DCoordinateMean();
         int size= coordinateList.size();
 
         double tempMeanD;
+
+        //update the mean coordinate with satellites and readings numbers
+        meanCoordinate.setSatellites(nmeaData.getSatellites());
+        meanCoordinate.setRawReadings  (mRawReadings);
+        meanCoordinate.setFixedReadings(mFixedReadings);
 
         meanCoordinate.setMeanedReadings(size);
 
@@ -2426,12 +2589,6 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         return makeNewMarkerFromLatLng(newPoint, markerName, markerColor);
     }
 
-     private double getProximity(){
-        // TODO: 12/28/2016 calculate proximity based on zoom level
-        // TODO: 1/8/2017 what do we do if there is more than one marker within the proximity???
-        return 50d;
-    }
-
     private Prism4DCoordinateWGS84 makeNewMarkerFromPoint(Prism4DProject project, Prism4DPoint point){
 
         Prism4DCoordinateWGS84 coordinateWGS84;
@@ -2469,6 +2626,12 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         mZoomMarkers.add(mLastMarkerAdded);
 
         return coordinateWGS84;
+    }
+
+    private double getProximity(){
+        // TODO: 12/28/2016 calculate proximity based on zoom level
+        // TODO: 1/8/2017 what do we do if there is more than one marker within the proximity???
+        return 50d;
     }
 
     private Prism4DCoordinateMean createTag(Prism4DPoint point,
@@ -2516,7 +2679,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         }
     }
 
-    private void redrawLineBetweenMarkers(ArrayList<Marker> lineMarkers, boolean doMapDraw){
+    private void redrawMapMarkers(ArrayList<Marker> lineMarkers, boolean doMapDraw){
         //build the mLineOptions from scratch
         mLineOptions = new PolylineOptions();
 
@@ -2526,8 +2689,10 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
         LatLng location;
         while (position < last){
             lineMarker = lineMarkers.get(position);
+            lineMarker.setVisible(true);
             location = lineMarker.getPosition();
             mLineOptions.add(location).width(25).color(Color.BLUE).geodesic(true);
+            position++;
         }
         if (doMapDraw) mPointsLine = mMap.addPolyline(mLineOptions);
     }
@@ -2657,10 +2822,7 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
             return null;
         }
         //find the point object the marker stands for
-        Prism4DPoint point = openProject.getPoint(coordinateTag.getPointID());
-
-
-        return point;
+        return openProject.getPoint(coordinateTag.getPointID());
 
     }
 
@@ -2668,8 +2830,6 @@ public class MainPrism4DPointCollectFragment extends Fragment implements //OnMap
     /*******************************************************/
     /***********       Project  Utilities    ***************/
     /*******************************************************/
-
-
 
     private Prism4DProject getOpenProject(){
         Prism4DConstantsAndUtilities constantsAndUtilities =

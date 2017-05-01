@@ -83,6 +83,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Equipment Button
         mEquipmentButton = (Button) v.findViewById(R.id.row1Button1);
         mEquipmentButton.setText(R.string.config_equipment_button_label);
+        mEquipmentButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mEquipmentButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_711_equipment, 0, 0);
         mEquipmentButton.setOnClickListener(new View.OnClickListener() {
@@ -120,6 +121,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Corrections Button
         mCorrectionsButton = (Button) v.findViewById(R.id.row1Button3);
         mCorrectionsButton.setText(R.string.config_corrections_label);
+        mCorrectionsButton.setBackgroundResource(R.color.colorGray);
         mCorrectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_713_corrections, 0, 0);
         mCorrectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -136,6 +138,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Peripherals Button
         mPeripheralsButton = (Button) v.findViewById(R.id.row2Button1);
         mPeripheralsButton.setText(R.string.config_peripherals_button_label);
+        mPeripheralsButton.setBackgroundResource(R.color.colorGray);
         mPeripheralsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_714_peripherals, 0, 0);
         mPeripheralsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -151,6 +154,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Calibrations Button
         mCalibrationsButton = (Button) v.findViewById(R.id.row2Button2);
         mCalibrationsButton.setText(R.string.config_calibrations_button_label);
+        mCalibrationsButton.setBackgroundResource(R.color.colorGray);
         mCalibrationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_715_calibrations, 0, 0);
         mCalibrationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -167,6 +171,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Log Raw Data Button
         mLogRawDataButton = (Button) v.findViewById(R.id.row2Button3);
         mLogRawDataButton.setText(R.string.config_log_raw_button_label);
+        mLogRawDataButton.setBackgroundResource(R.color.colorGray);
         mLogRawDataButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_716_rawdata, 0, 0);
         mLogRawDataButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -183,6 +188,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
             //General Button
         mGeneralButton = (Button) v.findViewById(R.id.row3Button1);
         mGeneralButton.setText(R.string.config_general_button_label);
+        mGeneralButton.setBackgroundResource(R.color.colorGray);
         mGeneralButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_717_generalconfig, 0, 0);
         mGeneralButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -199,6 +205,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Utilities Button
         mUtilitiesButton = (Button) v.findViewById(R.id.row3Button2);
         mUtilitiesButton.setText(R.string.config_utilities_button_label);
+        mUtilitiesButton.setBackgroundResource(R.color.colorGray);
         mUtilitiesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_718_utilities, 0, 0);
         mUtilitiesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -215,6 +222,7 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
         //Save Button
         mSaveProfileButton = (Button) v.findViewById(R.id.row3Button3);
         mSaveProfileButton.setText(R.string.save_profile_button_label);
+        mSaveProfileButton.setBackgroundResource(R.color.colorGray);
         mSaveProfileButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_719_saveprofile, 0, 0);
         mSaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,15 +235,6 @@ public class MainPrism4DTopConfigurationsFragment extends Fragment {
 
             }
         });
-
-
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are NOT enabled on the collect screen
-        //so we can ignore the footer for now
 
     }
 }

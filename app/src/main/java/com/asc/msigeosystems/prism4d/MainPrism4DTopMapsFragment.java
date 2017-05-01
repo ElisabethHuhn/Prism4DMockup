@@ -85,6 +85,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Google Maps Button
         mGoogleMapsButton = (Button) v.findViewById(R.id.row1Button1);
         mGoogleMapsButton.setText(R.string.google_maps_button_label);
+        mGoogleMapsButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mGoogleMapsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_511_googlemaps, 0, 0);
         mGoogleMapsButton.setOnClickListener(new View.OnClickListener() {
@@ -101,6 +102,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Google Earth Button
         mEarthButton = (Button) v.findViewById(R.id.row1Button2);
         mEarthButton.setText(R.string.earth_button_label);
+        mEarthButton.setBackgroundResource(R.color.colorGray);
         mEarthButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_512_googleearth, 0, 0);
         mEarthButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -116,6 +118,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Custom Maps Button
         mCustomMapsButton = (Button) v.findViewById(R.id.row1Button3);
         mCustomMapsButton.setText(R.string.custom_maps_button_label);
+        mCustomMapsButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mCustomMapsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_513_custommaps, 0, 0);
         mCustomMapsButton.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +136,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Layers Button
         mLayersButton = (Button) v.findViewById(R.id.row2Button1);
         mLayersButton.setText(R.string.layers_button_label);
+        mLayersButton.setBackgroundResource(R.color.colorGray);
         mLayersButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_514_maplayers, 0, 0);
         mLayersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -150,6 +154,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Markers Button
         mMarkersButton = (Button) v.findViewById(R.id.row2Button2);
         mMarkersButton.setText(R.string.markers_button_label);
+        mMarkersButton.setBackgroundResource(R.color.colorGray);
         mMarkersButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_515_mapmarkers, 0, 0);
         mMarkersButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -165,6 +170,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Polylines Button
         mPolylinesButton = (Button) v.findViewById(R.id.row2Button3);
         mPolylinesButton.setText(R.string.polylines_button_label);
+        mPolylinesButton.setBackgroundResource(R.color.colorGray);
         mPolylinesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_516_polylines, 0, 0);
         mPolylinesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -181,6 +187,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //tracks Button
         mTracksButton = (Button) v.findViewById(R.id.row3Button1);
         mTracksButton.setText(R.string.track_button_label);
+        mTracksButton.setBackgroundResource(R.color.colorGray);
         mTracksButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_517_maptracks, 0, 0);
         mTracksButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -197,6 +204,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Background Button
         mBackgroundButton = (Button) v.findViewById(R.id.row3Button2);
         mBackgroundButton.setText(R.string.background_button_label);
+        mBackgroundButton.setBackgroundResource(R.color.colorGray);
         mBackgroundButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_518_backgroundmaps, 0, 0);
         mBackgroundButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -214,6 +222,7 @@ public class MainPrism4DTopMapsFragment extends Fragment {
         //Save Button
         mSaveProfileButton = (Button) v.findViewById(R.id.row3Button3);
         mSaveProfileButton.setText(R.string.save_profile_button_label);
+        mSaveProfileButton.setBackgroundResource(R.color.colorGray);
         mSaveProfileButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_519_saveviews, 0, 0);
         mSaveProfileButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -227,13 +236,6 @@ public class MainPrism4DTopMapsFragment extends Fragment {
 
             }
         });
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are desabled on this screen
-        //      so do nothing in the footer
 
 
     }

@@ -89,6 +89,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Units Button for global settings
         mUnitsButton = (Button) v.findViewById(R.id.row1Button1);
         mUnitsButton.setText(R.string.setting_units_button_label);
+        mUnitsButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mUnitsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_811_units, 0, 0);
         mUnitsButton.setOnClickListener(new View.OnClickListener() {
@@ -115,6 +116,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Formats Button
         mFormatsButton = (Button) v.findViewById(R.id.row1Button2);
         mFormatsButton.setText(R.string.setting_formats_button_label);
+        mFormatsButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mFormatsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_812_formats, 0, 0);
         mFormatsButton.setOnClickListener(new View.OnClickListener() {
@@ -140,6 +142,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Tolerances
         mTolerancesButton = (Button) v.findViewById(R.id.row1Button3);
         mTolerancesButton.setText(R.string.setting_tolerances_button_label);
+        mTolerancesButton.setBackgroundResource(R.color.colorGray);
         mTolerancesButton.setEnabled(true);
         mTolerancesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_813_tolerances, 0, 0);
         mTolerancesButton.setOnClickListener(new View.OnClickListener() {
@@ -157,6 +160,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Datums
         mDatumsButton = (Button) v.findViewById(R.id.row2Button1);
         mDatumsButton.setText(R.string.setting_datums_button_label);
+        mDatumsButton.setBackgroundResource(R.color.colorGray);
         mDatumsButton.setEnabled(true);
         mDatumsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_814_datums, 0, 0);
         mDatumsButton.setOnClickListener(new View.OnClickListener() {
@@ -173,7 +177,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Projections
         mProjectionsButton = (Button) v.findViewById(R.id.row2Button2);
         mProjectionsButton.setText(R.string.setting_projections_button_label);
-
+        mProjectionsButton.setBackgroundResource(R.color.colorGray);
         mProjectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_815_projections, 0, 0);
         mProjectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -190,7 +194,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Geod
         mGeoidButton = (Button) v.findViewById(R.id.row2Button3);
         mGeoidButton.setText(R.string.setting_geoid_models_button_label);
-
+        mGeoidButton.setBackgroundResource(R.color.colorGray);
         mGeoidButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_816_geoidmodels, 0, 0);
         mGeoidButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -225,7 +229,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Localizations
         mLocalizationsButton = (Button) v.findViewById(R.id.row3Button2);
         mLocalizationsButton.setText(R.string.setting_localizations_button_label);
-
+        mLocalizationsButton.setBackgroundResource(R.color.colorGray);
         mLocalizationsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_818_localizations, 0, 0);
         mLocalizationsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,7 +246,7 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
         //Survey Styles
         mSurveyStylesButton = (Button) v.findViewById(R.id.row3Button3);
         mSurveyStylesButton.setText(R.string.setting_survey_styles_button_label);
-
+        mSurveyStylesButton.setBackgroundResource(R.color.colorGray);
         mSurveyStylesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_819_surveystyles, 0, 0);
         mSurveyStylesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -255,15 +259,6 @@ public class MainPrism4DTopSettingsFragment extends Fragment {
 
             }
         });
-
-
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are NOT enabled on the collect screen
-        //so we can ignore the footer for now
 
     }
 }

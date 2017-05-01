@@ -14,7 +14,7 @@ public abstract class Prism4DCoordinate {
     public static final String sCoordinateTypeWGS84 = "WGS84 G1762";
     public static final String sCoordinateTypeNAD83 = "NAD83 2011";
     public static final String sCoordinateTypeUTM   = "UTM";
-    public static final String sCoordinateTypeSPCS  = "SPCS";
+    public static final String sCoordinateTypeSPCS  = "US State Plane Coordinates";
 
     public static final int sCoordinateDBTypeUnknown = -1;
     public static final int sCoordinateDBTypeWGS84 = 0;
@@ -43,6 +43,7 @@ public abstract class Prism4DCoordinate {
     protected int mPointID;   //These will be null if not describing a point
 
     protected boolean      mValidCoordinate = true;
+    protected boolean      mIsFixed         = true;
 
     /***********************************************************/
     /*****    Static methods                             *******/
@@ -115,6 +116,9 @@ public abstract class Prism4DCoordinate {
     public boolean isValidCoordinate() {
         return mValidCoordinate;
     }
+
+    public void    setIsFixed(boolean isFixed){this.mIsFixed = isFixed;}
+    public boolean isFixed()                  {return mIsFixed;}
 
 
     /***********************************************************/

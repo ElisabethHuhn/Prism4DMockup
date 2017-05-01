@@ -1,7 +1,7 @@
 
 
 
-    <!-- The Footer will be as standard as possible -->
+    <!-- The Footer to collect points -->
     <!-- Three top level footer areas: Esc/info table/Enter -->
     <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
@@ -96,7 +96,39 @@
                     android:layout_weight="1" />
             </TableRow>
 
-            <!-- Row 3 with 2 columns for HDOP and HRMS -->
+            <!-- Row 3 with 2 columns for PDOP and (blank) -->
+            <TableRow
+                android:layout_height="0dp"
+                android:layout_width="match_parent"
+                android:gravity="center_horizontal"
+                android:layout_gravity="bottom"
+                android:layout_weight="1">
+
+                <TextView
+                    android:id="@+id/pdop_field"
+                    android:text="@string/pdop_label"
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="#cac9c9"
+                    android:textColor="#000000"
+                    />
+                <TextView
+                    android:id="@+id/tdop_field"
+                    android:text=""
+                    android:layout_height="wrap_content"
+                    android:layout_width="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    android:background="#dcdcdc"
+                    android:textColor="#000000"
+                    />
+            </TableRow>
+
+            <!-- Row 4 with 2 columns for HDOP and HRMS -->
             <TableRow
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
@@ -127,7 +159,7 @@
                     />
             </TableRow>
 
-            <!-- Row 4 with 5 columns for VDOP, VRMS -->
+            <!-- Row 5 with 5 columns for VDOP, VRMS -->
             <TableRow
                 android:layout_height="0dp"
                 android:layout_width="match_parent"
@@ -159,40 +191,7 @@
                     />
             </TableRow>
 
-            <!-- Row 5 with 2 columns for PDOP and GDOP-->
-            <!-- no room for TDOP -->
-            <TableRow
-                android:layout_height="0dp"
-                android:layout_width="match_parent"
-                android:gravity="center_horizontal"
-                android:layout_gravity="bottom"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/pdop_field"
-                    android:text="@string/pdop_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-
-                    android:background="#cac9c9"
-                    android:textColor="#000000"
-                    />
-                <TextView
-                    android:id="@+id/tdop_field"
-                    android:text="@string/tdop_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-
-                    android:background="#dcdcdc"
-                    android:textColor="#000000"
-                    />
-            </TableRow>
-
-        </TableLayout>
+            </TableLayout>
 
         <Button
             style="?android:attr/buttonBarButtonStyle"

@@ -136,7 +136,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //QC Position Button
         mQcPositionButton = (Button) v.findViewById(R.id.row1Button3);
         mQcPositionButton.setText(R.string.skyplot_qc_position_button_label);
-
+        mQcPositionButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mQcPositionButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_613_qcpositions, 0, 0);
         mQcPositionButton.setOnClickListener(new View.OnClickListener() {
@@ -158,7 +158,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //Accelerometer Button
         mAccelerometerButton = (Button) v.findViewById(R.id.row2Button1);
         mAccelerometerButton.setText(R.string.skyplot_accelerometer_button_label);
-        //mAccelerometerButton.setText(R.string.skyplot_nmea_fragment);
+        mAccelerometerButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mAccelerometerButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_614_accelerometer, 0, 0);
         mAccelerometerButton.setOnClickListener(new View.OnClickListener() {
@@ -168,12 +168,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_accelerometer_button_label,
                         Toast.LENGTH_SHORT).show();
-                /*
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToGpsNmeaScreen();
-                }
-                */
+
 
             }
         });
@@ -202,7 +197,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //Geocashing Button
         mGeocashingButton = (Button) v.findViewById(R.id.row2Button3);
         mGeocashingButton.setText(R.string.skyplot_geocasching_button_label);
-        //mGeocashingButton.setText(R.string.skyplot_list_nmea);
+        mGeocashingButton.setBackgroundResource(R.color.colorGray);
         mGeocashingButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_616_geocaching, 0, 0);
         mGeocashingButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -212,12 +207,6 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
                 Toast.makeText(getActivity(),
                         R.string.skyplot_geocasching_button_label,
                         Toast.LENGTH_SHORT).show();
-                /*
-                MainPrism4DActivity myActivity = (MainPrism4DActivity) getActivity();
-                if (myActivity != null) {
-                    myActivity.switchToListNmeaScreen();
-                }
-*/
 
             }
         });
@@ -226,6 +215,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //Waypoints Button
         mWaypointsButton = (Button) v.findViewById(R.id.row3Button1);
         mWaypointsButton.setText(R.string.skyplot_waypoints_button_label);
+        mWaypointsButton.setBackgroundResource(R.color.colorGray);
         mWaypointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_617_waypoints, 0, 0);
         mWaypointsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -242,6 +232,7 @@ public class MainPrism4DTopSkyplotsFragment extends Fragment {
         //Navigate Button
         mNavigateButton = (Button) v.findViewById(R.id.row3Button2);
         mNavigateButton.setText(R.string.skyplot_navigate_button_label);
+        mNavigateButton.setBackgroundResource(R.color.colorGray);
         mNavigateButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_618_navigate, 0, 0);
         mNavigateButton.setOnClickListener(new View.OnClickListener() {
             @Override

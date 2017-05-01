@@ -9,20 +9,11 @@
     android:background= "@color/colorScreenBackground"
 
     >
-    <!-- This layout is for creating a new project -->
+
     <!--  -->
 
-
-        <!-- with layout_width = 0dp, ignore the content width, for horiz orient   -->
-        <!-- with layout_height = 0dp, ignore the content height, vert orient      -->
-        <!-- with layout_weight = 1, distribute width/height between views equally -->
-        <!-- with gravity = center, center text within button                   -->
-        <!-- with layout_gravity=start, place button on left of the row         -->
-        <!-- with background, set button color to gray, grayer, grayest         -->
-        <!-- with paddingStart, set some space between this button and the next -->
-
-        <!-- Container for entire screen -->
-        <TableLayout
+    <!-- Container for entire screen -->
+    <TableLayout
             xmlns:android="http://schemas.android.com/apk/res/android"
 
             android:layout_width="match_parent"
@@ -102,113 +93,109 @@
 
             </TableRow>
 
-            <!-- Row Distance Units -->
-            <TableRow
-                android:layout_height= "wrap_content"
-                android:layout_width=  "match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop=    "10dp"
-                >
-                <TextView
-                    android:labelFor="@+id/distanceUnitsInput"
-                    android:text=    "@string/distance_units_label"
 
-                    android:layout_height="wrap_content"
-                    android:layout_width= "0dp"
-                    android:layout_weight="25"
-                    android:gravity=      "end"
+        <!-- Row : Distance Units -->
+        <TableRow
 
-                    android:textColor= "@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <EditText
-                    android:id="@id/distanceUnitsInput"
+            android:layout_height="wrap_content"
+            android:layout_width ="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"
+            >
+            <TextView
+                android:labelFor="@+id/distance_units_spinner"
+                android:text="@string/distance_units_label"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="25"
+                android:gravity="end"
 
-                    android:layout_height="wrap_content"
-                    android:layout_width= "0dp"
-                    android:layout_weight="75"
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorScreenBackground"
+                />
 
-                    android:inputType=       "text"
-                    android:layout_marginEnd="16dp"
+            <!--  Spinner to indicate distance units (feet/meters) -->
+            <Spinner
+                android:id            = "@id/distance_units_spinner"
+                android:layout_width  = "0dp"
+                android:layout_height = "wrap_content"
+                android:layout_weight="75"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorWhite"
+                />
 
-                    android:textColor= "@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
-
-
-            </TableRow>
-
-            <!-- Row  Decimal Display -->
-            <TableRow
-                android:layout_height= "wrap_content"
-                android:layout_width=  "match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop=    "10dp"
-                >
+        </TableRow>
 
 
-                <TextView
-                    android:labelFor="@+id/decimalDisplayInput"
-                    android:text=    "@string/decimal_display_label"
+        <!-- Row : Decimal Display  -->
+        <TableRow
 
-                    android:layout_height="wrap_content"
-                    android:layout_width= "0dp"
-                    android:layout_weight="25"
-                    android:gravity=      "end"
+            android:layout_height="wrap_content"
+            android:layout_width ="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"
+            >
+            <TextView
+                android:labelFor="@+id/decimal_display_spinner"
+                android:text="@string/decimal_display_label"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="25"
+                android:gravity="end"
 
-                    android:textColor=  "@color/colorTextBlack"
-                    android:background= "@color/colorScreenBackground"
-                    />
-                <EditText
-                    android:id="@id/decimalDisplayInput"
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorScreenBackground"
+                />
 
-                    android:layout_height="wrap_content"
-                    android:layout_width= "0dp"
-                    android:layout_weight="75"
+            <!--  Spinner to indicate distance units (feet/meters) -->
+            <Spinner
+                android:id            = "@id/decimal_display_spinner"
+                android:layout_width  = "0dp"
+                android:layout_height = "wrap_content"
+                android:layout_weight="75"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorWhite"
+                />
 
-                    android:inputType=        "text"
-                    android:layout_marginEnd="16dp"
-
-                    android:textColor= "@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
-
-            </TableRow>
-
-            <!-- Row : Angle Units -->
-            <TableRow
-                android:layout_height= "wrap_content"
-                android:layout_width=  "match_parent"
-                android:layout_gravity="center_horizontal"
-                android:paddingTop=    "10dp"
-                >
-                <TextView
-                    android:labelFor="@+id/angleUnitsInput"
-                    android:text="@string/angle_units_label"
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="25"
-                    android:gravity="end"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorScreenBackground"
-                    />
-                <EditText
-                    android:id="@id/angleUnitsInput"
-
-                    android:layout_height="wrap_content"
-                    android:layout_width="0dp"
-                    android:layout_weight="75"
-
-                    android:inputType="text"
-                    android:layout_marginEnd="16dp"
-
-                    android:textColor="@color/colorTextBlack"
-                    android:background="@color/colorWhite"
-                    />
+        </TableRow>
 
 
-            </TableRow>
+        <!-- Row : Angle Units -->
+        <TableRow
+
+            android:layout_height="wrap_content"
+            android:layout_width ="match_parent"
+            android:layout_gravity="center_horizontal"
+            android:paddingTop="10dp"
+            >
+            <TextView
+                android:labelFor="@+id/angle_units_spinner"
+                android:text="@string/angle_units_label"
+                android:layout_height="wrap_content"
+                android:layout_width="0dp"
+                android:layout_weight="25"
+                android:gravity="end"
+
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorScreenBackground"
+                />
+
+
+            <Spinner
+                android:id            = "@id/angle_units_spinner"
+                android:layout_width  = "0dp"
+                android:layout_height = "wrap_content"
+                android:layout_weight="75"
+                android:layout_marginEnd="16dp"
+                android:textColor="@color/colorTextBlack"
+                android:background="@color/colorWhite"
+                />
+
+        </TableRow>
+
+
 
             <!-- Row : Angle Display -->
             <TableRow

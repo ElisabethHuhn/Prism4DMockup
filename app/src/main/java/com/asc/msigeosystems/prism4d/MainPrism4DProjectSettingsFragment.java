@@ -5,11 +5,25 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.asc.msigeosystems.prism4dmockup.R;
+
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIAngleDisplayDD;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIAngleDisplayDM;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIAngleDisplayDMS;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIAngleDisplayGONS;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIAngleDisplayMils;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIDecimalDisplayCommas;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIDecimalDisplayNoCommas;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIDistanceIntFeet;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIDistanceMeters;
+import static com.asc.msigeosystems.prism4d.Prism4DProjectSettings.sUIDistanceUSFeet;
 
 /**
  * The Project Settings Fragment is the UI
@@ -50,13 +64,27 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
     private Button mResetButton;
     private Button mExitButton;
 
+    //Arrays for enumerated types
+    private CharSequence[] mDistanceTypes =
+                            new CharSequence[]{sUIDistanceMeters, sUIDistanceUSFeet, sUIDistanceIntFeet};
+    private CharSequence[] mDecimalDisplayTypes =
+                            new CharSequence[] {sUIDecimalDisplayCommas, sUIDecimalDisplayNoCommas};
+    /*
+    private CharSequence[] mAngleUnitTypes =
+                            new CharSequence[] {sUIAngleUnitsDeg, sUIAngleUnitsRad};
+                            */
+    private CharSequence[] mAngleDisplayTypes =
+                            new CharSequence[]{sUIAngleDisplayDD, sUIAngleDisplayDM,
+                                               sUIAngleDisplayDMS, sUIAngleDisplayGONS,
+                                               sUIAngleDisplayMils};
 
-
+    ;
+/*
     //these same values are set in setDefaults()
-    private CharSequence mDistanceUnits     = "US Survey Feet";
-    private CharSequence mDecimalDisplay    = "123,456,789.00";
-    private CharSequence mAngleUnits        = "Degrees";
-    private CharSequence mAngleDisplay      = "123 45' 11";
+    private int mDistanceUnits     = sDBDistanceMeters;
+    private int mDecimalDisplay    = sDBDecimalDisplayCommas;
+    private int mAngleUnits        = sDBAngleUnitsDeg;
+    private int mAngleDisplay      = sDBAngleDisplayDD;
     private CharSequence mGridDirection     = "North Azimuth";
     private double       mScaleFactor       = .99982410;
     private CharSequence mSeaLevel          = "Off";
@@ -71,6 +99,13 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
     private CharSequence mFeatureCodes      = "RHM2";
     private CharSequence mFCControlFile     = "CP2";
     private CharSequence mFCTimeStamp       = "NO";
+*/
+    private Prism4DProjectSettings mPSBeingMaintained;
+
+    private Spinner      mSpinnerDistUnits;
+    private Spinner      mSpinnerDecDisplay;
+    //private Spinner      mSpinnerAngleUnits;
+    private Spinner      mSpinnerAngleDisplay;
 
 
     private Prism4DProject mProject;
@@ -107,6 +142,10 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
         mProject = Prism4DProject.getProjectFromArguments(getArguments());
         Prism4DPath path = Prism4DPath.getPathFromArguments(getArguments());
         mProjectPath = path.getPath();
+
+        if (mPSBeingMaintained == null){
+            mPSBeingMaintained = new Prism4DProjectSettings(); //filled with default values
+        }
     }
 
 
@@ -121,8 +160,8 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
         //Wire up the UI widgets so they can handle events later
         wireWidgets(v);
 
-        //Set the titlebar subtitle
-        ((MainPrism4DActivity) getActivity()).switchSubtitle(getString(R.string.subtitle_project_settings));
+        wireSpinners(v);
+
 
         //Initialize the fields with the defaults
         //set and display default values
@@ -153,14 +192,9 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
         //Project Name
         mProjectNameOutput = (TextView) v.findViewById(R.id.projectNameOutput);
 
-        //Distance Units
-        mDistanceUnitsInput = (EditText) v.findViewById(R.id.distanceUnitsInput);
-
-        //DecimalDisplay
-        mDecimalDisplayInput = (EditText) v.findViewById(R.id.decimalDisplayInput);
 
         //AngleUnits
-        mAngleUnitsInput = (EditText) v.findViewById(R.id.angleUnitsInput);
+        //mAngleUnitsInput = (EditText) v.findViewById(R.id.angleUnitsInput);
 
         //AngleDisplay
         mAngleDisplayInput = (EditText) v.findViewById(R.id.angleDisplayInput);
@@ -236,50 +270,128 @@ public class MainPrism4DProjectSettingsFragment extends Fragment {
 
     }
 
+
+
+    private void wireSpinners(View v){
+
+        //defaults are already set in mPSBeingMaintained;
+
+        //initialize the spinner
+        mSpinnerDistUnits = (Spinner) v.findViewById(R.id.distance_units_spinner);
+
+        // Create an ArrayAdapter using the Activities context AND
+        // the string array and a default spinner layout
+        ArrayAdapter<CharSequence> distUnitsAdapter = new ArrayAdapter<CharSequence>(getActivity(),
+                                                            android.R.layout.simple_spinner_item,
+                                                            mDistanceTypes);
+
+        // Specify the layout to use when the list of choices appears
+        distUnitsAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+        // Apply the adapter to the spinner
+        mSpinnerDistUnits.setAdapter(distUnitsAdapter);
+
+        //Set the value of the spinner to the value in the object being maintained
+        mSpinnerDistUnits.setSelection(mPSBeingMaintained.getDistanceUnits());
+
+        //attach the listener to the spinner
+        mSpinnerDistUnits.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                mPSBeingMaintained.setDistanceUnits(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+
+
+        mSpinnerDecDisplay = (Spinner) v.findViewById(R.id.decimal_display_spinner);
+        ArrayAdapter<CharSequence> decDispAdapter = new ArrayAdapter<CharSequence>(getActivity(),
+                                                            android.R.layout.simple_spinner_item,
+                                                            mDecimalDisplayTypes);
+        decDispAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerDecDisplay.setAdapter(decDispAdapter);
+        mSpinnerDecDisplay.setSelection(mPSBeingMaintained.getDecimalDisplay());
+        mSpinnerDecDisplay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                mPSBeingMaintained.setDecimalDisplay(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+
+
+
+        mSpinnerAngleDisplay = (Spinner) v.findViewById(R.id.angle_units_spinner);
+        ArrayAdapter<CharSequence> angDispAdapter = new ArrayAdapter<CharSequence>(getActivity(),
+                                                            android.R.layout.simple_spinner_item,
+                                                            mAngleDisplayTypes);
+        angDispAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        mSpinnerAngleDisplay.setAdapter(angDispAdapter);
+        mSpinnerAngleDisplay.setSelection(mPSBeingMaintained.getAngleDisplay());
+        mSpinnerAngleDisplay.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int position, long id) {
+                mPSBeingMaintained.setAngleDisplay(position);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+
+            }
+        });
+
+    }
+
+
+
+
     private void setDefaults() {
 
-        //Restore default values
-        mDistanceUnits     = "US Survey Feet";
-        mDecimalDisplay    = "123,456,789.00";
-        mAngleUnits        = "Degrees";
-        mAngleDisplay      = "123 45' 11";
-        mGridDirection     = "North Azimuth";
-        mScaleFactor       = .99982410;
-        mSeaLevel          = "Off";
-        mRefraction        = "Off";
-        mDatum             = "NAD 1983 (2011)";
-        mProjection        = "US State Plane Coordinates";
-        mZone              = "Georgia West (1002)";
-        mCoordinateDisplay = "North, East";
-        mGeoidModel        = "GEOID99";
-        mStartingPointID   = "1001";
-        mAlphanumeric      = "Off";
-        mFeatureCodes      = "RHM2";
-        mFCControlFile     = "CP2";
-        mFCTimeStamp       = "NO";
-
+        mPSBeingMaintained.setDefaults();
         //display the new defaults
+        initializeUI();
+    }
+
+    private void initializeUI() {
+
         mProjectIDOutput.     setText(String.valueOf(mProject.getProjectID()));
         mProjectNameOutput.   setText(String.valueOf(mProject.getProjectName()));
-        mDistanceUnitsInput.  setText(mDistanceUnits);
-        mDecimalDisplayInput. setText(mDecimalDisplay);
-        mAngleUnitsInput.     setText(mAngleUnits);
-        mAngleDisplayInput.   setText(mAngleDisplay);
-        mGridDirectionInput.  setText(mGridDirection);
-        mScaleFactorInput.    setText(String.valueOf(mScaleFactor));
-        mSeaLevelInput.       setText(mSeaLevel);
-        mRefractionInput.     setText(mRefraction);
-        mDatumInput.          setText(mDatum);
-        mProjectionInput.     setText(mProjection);
-        mZoneInput.           setText(mZone);
-        mCoordinateDisplayInput.setText(mCoordinateDisplay);
-        mGeoidModelInput.     setText(mGeoidModel);
-        mStartingPointIDInput.setText(mStartingPointID);
-        mAlphanumericInput.   setText(mAlphanumeric);
-        mFeatureCodesInput.   setText(mFeatureCodes);
-        mFCControlFileInput.  setText(mFCControlFile);
-        mFCTimeStampInput.    setText(mFCTimeStamp);
 
+        mSpinnerDistUnits.setSelection(mPSBeingMaintained.getDistanceUnits());
+        mSpinnerDecDisplay.setSelection(mPSBeingMaintained.getDecimalDisplay());
+        mSpinnerAngleDisplay.setSelection(mPSBeingMaintained.getAngleDisplay());
+
+
+  /*
+        mAngleDisplayInput.   setText(mPSBeingMaintained.getAngleDisplay());
+        mGridDirectionInput.  setText(mPSBeingMaintained.getGridDirection());
+        mScaleFactorInput.    setText(String.valueOf(mPSBeingMaintained.getScaleFactor()));
+
+        mSeaLevelInput.       setText(mPSBeingMaintained.getSeaLevel());
+        mRefractionInput.     setText(mPSBeingMaintained.getRefraction());
+        mDatumInput.          setText(mPSBeingMaintained.getDatum());
+        mProjectionInput.     setText(mPSBeingMaintained.getProjection());
+        mZoneInput.           setText(mPSBeingMaintained.getZone());
+        mCoordinateDisplayInput.setText(mPSBeingMaintained.getCoordinateDisplay());
+        mGeoidModelInput.     setText(mPSBeingMaintained.getGeoidModel());
+        mStartingPointIDInput.setText(mPSBeingMaintained.getStartingPointID());
+        mAlphanumericInput.   setText(mPSBeingMaintained.isAlphanumericID());
+        mFeatureCodesInput.   setText(mPSBeingMaintained.getFeatureCodes());
+        mFCControlFileInput.  setText(mPSBeingMaintained.getFCControlFile());
+        mFCTimeStampInput.    setText(mPSBeingMaintained.getFCTimeStamp());
+*/
 
     }
 }

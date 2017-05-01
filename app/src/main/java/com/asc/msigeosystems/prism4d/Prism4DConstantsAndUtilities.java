@@ -27,6 +27,7 @@ public class Prism4DConstantsAndUtilities {
      * Static constants
      *
      **********/
+    public static final int sHundredthsDigitsOfPrecision = 2;
     public static final int sMicrometerDigitsOfPrecision = 6;
     public static final int sNanometerDigitsOfPrecision = 9;
     public static final int sPicometerDigitsOfPrecision = 12;

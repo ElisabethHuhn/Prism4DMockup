@@ -88,6 +88,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Stake Points Button
         mPointsButton = (Button) v.findViewById(R.id.row1Button1);
         mPointsButton.setText(R.string.stakeout_points_button_label);
+        mPointsButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mPointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_311_sopoints, 0, 0);
         mPointsButton.setOnClickListener(new View.OnClickListener() {
@@ -107,6 +108,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Measure Lines Button
         mLinesButton = (Button) v.findViewById(R.id.row1Button2);
         mLinesButton.setText(R.string.stakeout_lines_button_label);
+        mLinesButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mLinesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_312_solines, 0, 0);
         mLinesButton.setOnClickListener(new View.OnClickListener() {
@@ -124,6 +126,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Arcs Button
         mArcButton = (Button) v.findViewById(R.id.row1Button3);
         mArcButton.setText(R.string.stakeout_arcs_button_label);
+        mArcButton.setBackgroundResource(R.color.colorGray);
         mArcButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_313_socurves, 0, 0);
         mArcButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -140,6 +143,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Offset Button
         mOffsetsButton = (Button) v.findViewById(R.id.row2Button1);
         mOffsetsButton.setText(R.string.stakeout_offset_button_label);
+        mOffsetsButton.setBackgroundResource(R.color.colorGray);
         mOffsetsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_314_sooffsets, 0, 0);
         mOffsetsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -155,6 +159,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Grids
         mGridsButton = (Button) v.findViewById(R.id.row2Button2);
         mGridsButton.setText(R.string.stakeout_grids_button_label);
+        mGridsButton.setBackgroundResource(R.color.colorGray);
         mGridsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_315_sogrids, 0, 0);
         mGridsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -171,6 +176,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //DTMs Button
         mDTMsButton = (Button) v.findViewById(R.id.row2Button3);
         mDTMsButton.setText(R.string.stakeout_dtms_button_label);
+        mDTMsButton.setBackgroundResource(R.color.colorGray);
         mDTMsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_316_sodtms, 0, 0);
         mDTMsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -187,6 +193,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Allignment Button
         mAllignmentsButton = (Button) v.findViewById(R.id.row3Button1);
         mAllignmentsButton.setText(R.string.stakeout_alignments_button_label);
+        mAllignmentsButton.setBackgroundResource(R.color.colorGray);
         mAllignmentsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_317_soalignments, 0, 0);
         mAllignmentsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -203,6 +210,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Sections Button
         mSectionsButton = (Button) v.findViewById(R.id.row3Button2);
         mSectionsButton.setText(R.string.stakeout_sections_button_label);
+        mSectionsButton.setBackgroundResource(R.color.colorGray);
         mSectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_318_sosections, 0, 0);
         mSectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -221,6 +229,7 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
         //Stakeout Report Button
         mReportButton = (Button) v.findViewById(R.id.row3Button3);
         mReportButton.setText(R.string.stakeout_report_button_label);
+        mReportButton.setBackgroundResource(R.color.colorGray);
         mReportButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_319_soreports, 0, 0);
         mReportButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -233,13 +242,6 @@ public class MainPrism4DTopStakeoutFragment extends Fragment {
 
             }
         });
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are NOT enabled on the collect screen
-        //so we can ignore the footer for now
 
     }
 }

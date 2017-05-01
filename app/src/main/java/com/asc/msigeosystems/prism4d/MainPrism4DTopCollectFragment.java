@@ -135,6 +135,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Measure Lines Button
         mLinesButton = (Button) v.findViewById(R.id.row1Button2);
         mLinesButton.setText(R.string.collect_lines_button_label);
+        mLinesButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mLinesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_212_dclines, 0, 0);
         mLinesButton.setOnClickListener(new View.OnClickListener() {
@@ -152,6 +153,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Measure Areas Button
         mAreasButton = (Button) v.findViewById(R.id.row1Button3);
         mAreasButton.setText(R.string.collect_areas_button_label);
+        mAreasButton.setBackgroundResource(R.color.colorGray);
         mAreasButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_213_dcareas, 0, 0);
         mAreasButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -168,6 +170,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Autostore Button
         mAutoStoreButton = (Button) v.findViewById(R.id.row2Button1);
         mAutoStoreButton.setText(R.string.autostore_button_label);
+        mAutoStoreButton.setBackgroundResource(R.color.colorGray);
         mAutoStoreButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_214_dcauto, 0, 0);
         mAutoStoreButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -184,6 +187,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Traverse Button
         mTraverseButton = (Button) v.findViewById(R.id.row2Button2);
         mTraverseButton.setText(R.string.traverse_button_label);
+        mTraverseButton.setBackgroundResource(R.color.colorGray);
         mTraverseButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_215_dctraverse, 0, 0);
         mTraverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,6 +204,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Resection Button
         mResectionButton = (Button) v.findViewById(R.id.row2Button3);
         mResectionButton.setText(R.string.resection_button_label);
+        mResectionButton.setBackgroundResource(R.color.colorGray);
         mResectionButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_216_dcresection, 0, 0);
         mResectionButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -216,6 +221,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Monitor Button
         mMonitorButton = (Button) v.findViewById(R.id.row3Button1);
         mMonitorButton.setText(R.string.monitor_button_label);
+        mMonitorButton.setBackgroundResource(R.color.colorGray);
         mMonitorButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_217_dcmonitor, 0, 0);
         mMonitorButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -232,6 +238,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Scan Button
         mScanButton = (Button) v.findViewById(R.id.row3Button2);
         mScanButton.setText(R.string.scan_button_label);
+        mScanButton.setBackgroundResource(R.color.colorGray);
         mScanButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_218_dcscan, 0, 0);
         mScanButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -248,6 +255,7 @@ public class MainPrism4DTopCollectFragment extends Fragment {
         //Level Button
         mLevelButton = (Button) v.findViewById(R.id.row3Button3);
         mLevelButton.setText(R.string.level_button_label);
+        mLevelButton.setBackgroundResource(R.color.colorGray);
         mLevelButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_219_dclevel, 0, 0);
         mLevelButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -260,17 +268,6 @@ public class MainPrism4DTopCollectFragment extends Fragment {
 
             }
         });
-
-
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are NOT enabled on the collect screen
-        //so we can ignore the footer for now
-
-
 
     }
 }

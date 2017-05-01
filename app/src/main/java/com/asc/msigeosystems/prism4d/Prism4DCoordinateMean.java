@@ -29,10 +29,11 @@ public class Prism4DCoordinateMean {
     //total number of readings since meaning started
     private int mRawReadings;
 
-    //number of readings that have been included in the mean
+    //number of readings that have been used in the mean
     private int mMeanedReadings;
 
-    //number of fixed readings
+    //number of the readings included in the mean that are of quality fixed
+    // (per Project Settings Quality definition)
     private int mFixedReadings;
 
 
@@ -56,12 +57,10 @@ public class Prism4DCoordinateMean {
 
     private double mGeoid;     //Mean Sea Level in Meters
 
-    private double mHrms;
-    private double mVrms;
-
     private int    mSatellites; //Number of satellites in the fix
 
     private boolean mValidCoordinate = true;
+    private boolean mIsFixed = true;
     private boolean mType = true; //true = Easting/Northing, false = Latitude/Longitude
 
 
@@ -137,11 +136,12 @@ public class Prism4DCoordinateMean {
     public double getGeoidFeet() { return Prism4DConstantsAndUtilities.convertMetersToFeet(mGeoid);}
     public void   setGeoid(double geoid)                   { mGeoid = geoid;  }
 
-    public double getHrms()                                {return mHrms; }
-    public   void setHrms(double hrms)                     { mHrms = hrms; }
+    //RMS is just another term for Std Deviation
+    public double getHrms()                                {return mLongitudeStdDev; }
+    public   void setHrms(double hrms)                     { mLongitudeStdDev = hrms; }
 
-    public double getVrms()                                { return mVrms; }
-    public void   setVrms(double vrms)                     { mVrms = vrms; }
+    public double getVrms()                                { return mLatitudeStdDev; }
+    public void   setVrms(double vrms)                     { mLatitudeStdDev = vrms; }
 
     public int getSatellites()                             {  return mSatellites; }
     public void setSatellites(int satellites)              { mSatellites = satellites; }
@@ -162,6 +162,9 @@ public class Prism4DCoordinateMean {
     public boolean isValidCoordinate() {
         return mValidCoordinate;
     }
+
+    public void    setIsFixed (boolean isFixed){this.mIsFixed = isFixed;}
+    public boolean isFixed()                   {return mIsFixed;}
 
     //type = true if Easting/Northing and = false if Latitude / Longitude
     public static final boolean EASTING_NORTHING   = true;
@@ -226,9 +229,6 @@ public class Prism4DCoordinateMean {
         mElevation       = 0d; //Orthometric Elevation in Meters
         mElevationStdDev = 0d;
         mGeoid           = 0d;     //Mean Sea Level in Meters
-
-        mHrms            = 0d;
-        mVrms            = 0d;
 
         mValidCoordinate = false;
     }

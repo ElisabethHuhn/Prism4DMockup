@@ -295,6 +295,15 @@ public class Prism4DCoordinateManager {
         }
 
 
+        int isFixed = cursor.getInt(
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_IS_FIXED));
+        if (isFixed == 0) {
+            coordinate.setIsFixed(false);
+        }else{
+            coordinate.setIsFixed(true);
+        }
+
+
         coordinate.setTime(cursor.getLong (
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_LL_TIME)));
 
@@ -353,6 +362,14 @@ public class Prism4DCoordinateManager {
             coordinate.setValidCoordinate(true);
         }
 
+        int isFixed = cursor.getInt(
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_IS_FIXED));
+        if (isFixed == 0) {
+            coordinate.setIsFixed(false);
+        }else{
+            coordinate.setIsFixed(true);
+        }
+
 
         coordinate.setEasting(cursor.getDouble(
                         cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_EN_EASTING)));
@@ -403,11 +420,16 @@ public class Prism4DCoordinateManager {
         if (eastingNorthing)coorTyp = 1;//true; Easting/Northing
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_TYPE, coorTyp);
 
-        //are teh latitude longitude values valid on Earth?
+        //are the latitude longitude values valid on Earth?
         int valCoord = 0; //false
         boolean validCoordinate = coordinate.isValidCoordinate();
         if (validCoordinate)valCoord = 1;//true;
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_VALID_COORD, valCoord);
+
+        int isFixedInt = 0; //false
+        boolean isFixed = coordinate.isFixed();
+        if (isFixed)isFixedInt = 1;//true;
+        cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_IS_FIXED, isFixedInt);
 
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_RAW,coordinate.getRawReadings());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_MEANED,coordinate.getMeanedReadings());
@@ -420,8 +442,6 @@ public class Prism4DCoordinateManager {
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_ELEVATION,coordinate.getElevation());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_ELEVATION_STD,coordinate.getElevationStdDev());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_GEOID,coordinate.getGeoid());
-        cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_HRMS,coordinate.getHrms());
-        cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_VRMS,coordinate.getVrms());
         cvCoordinate.put(Prism4DSqliteOpenHelper.COORDINATE_MEAN_SATELLITES,coordinate.getSatellites());
 
 
@@ -464,6 +484,13 @@ public class Prism4DCoordinateManager {
             coordinate.setValidCoordinate(true);
         }
 
+        int isFixed = cursor.getInt(
+                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_IS_FIXED));
+        if (isFixed == 0) {
+            coordinate.setIsFixed(false);
+        }else{
+            coordinate.setIsFixed(true);
+        }
 
         coordinate.setRawReadings(cursor.getInt (
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_RAW)));
@@ -482,7 +509,8 @@ public class Prism4DCoordinateManager {
 
 
         //convert DD to DMS by creating a new coordinateWGS
-        Prism4DCoordinateWGS84 coordinateWGS84 = new Prism4DCoordinateWGS84(coordinate.getLatitude(), coordinate.getLongitude());
+        Prism4DCoordinateWGS84 coordinateWGS84 =
+                new Prism4DCoordinateWGS84(coordinate.getLatitude(), coordinate.getLongitude());
         coordinate.setLatitudeDegree(coordinateWGS84.getLatitudeDegree());
         coordinate.setLatitudeMinute(coordinateWGS84.getLatitudeMinute());
         coordinate.setLatitudeSecond(coordinateWGS84.getLatitudeSecond());
@@ -507,10 +535,6 @@ public class Prism4DCoordinateManager {
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_GEOID)));
 
 
-        coordinate.setHrms(cursor.getDouble(
-                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_HRMS)));
-        coordinate.setVrms(cursor.getDouble(
-                cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_VRMS)));
         coordinate.setSatellites(cursor.getInt(
                 cursor.getColumnIndex(Prism4DSqliteOpenHelper.COORDINATE_MEAN_SATELLITES)));
 

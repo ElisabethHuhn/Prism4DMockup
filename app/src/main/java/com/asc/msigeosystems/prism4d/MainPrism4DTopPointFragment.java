@@ -148,6 +148,7 @@ public class MainPrism4DTopPointFragment extends Fragment {
         //copy Button
         mCopyButton = (Button) v.findViewById(R.id.row1Button3);
         mCopyButton.setText(R.string.copy_button_label);
+        mCopyButton.setBackgroundResource(R.color.colorGray);
         mCopyButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_001_folders, 0, 0);
         mCopyButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -163,9 +164,8 @@ public class MainPrism4DTopPointFragment extends Fragment {
 
         //Edit Button
         mEditButton = (Button) v.findViewById(R.id.row2Button1);
-        //edit is disabled, so disable the button.
-
         mEditButton.setText(R.string.edit_button_label);
+        mEditButton.setBackgroundResource(R.color.colorGray);
         mEditButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_001_folders, 0, 0);
         mEditButton.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -39,7 +39,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
 
     private Button mAreasButton;
     private Button mMapCheckButton;
-    private Button mTButton;
+    private Button mTranslateButton;
 
 
 
@@ -86,6 +86,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Key in points Button
         mPointsButton = (Button) v.findViewById(R.id.row1Button1);
         mPointsButton.setText(R.string.cogo_points_button_label);
+        mPointsButton.setBackgroundResource(R.color.colorWhite);
         //the order of images here is left, top, right, bottom
         mPointsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_411_keyinput, 0, 0);
         mPointsButton.setOnClickListener(new View.OnClickListener() {
@@ -111,6 +112,8 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Inverse Button
         mInverseButton = (Button) v.findViewById(R.id.row1Button2);
         mInverseButton.setText(R.string.cogo_inverse_button_label);
+        mInverseButton.setBackgroundResource(R.color.colorGray);
+
         mInverseButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_412_inverse, 0, 0);
         mInverseButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -127,6 +130,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Intersections Button
         mIntersectionsButton = (Button) v.findViewById(R.id.row1Button3);
         mIntersectionsButton.setText(R.string.cogo_intersections_button_label);
+        mIntersectionsButton.setBackgroundResource(R.color.colorGray);
         mIntersectionsButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_413_intersections, 0, 0);
         mIntersectionsButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,6 +147,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Triangles Button
         mTrianglesButton = (Button) v.findViewById(R.id.row2Button1);
         mTrianglesButton.setText(R.string.cogo_triangles_button_label);
+        mTrianglesButton.setBackgroundResource(R.color.colorGray);
         mTrianglesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_414_triangles, 0, 0);
         mTrianglesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -159,6 +164,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Curves Button
         mCurvesButton = (Button) v.findViewById(R.id.row2Button2);
         mCurvesButton.setText(R.string.cogo_curves_button_label);
+        mCurvesButton.setBackgroundResource(R.color.colorGray);
         mCurvesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_415_curves, 0, 0);
         mCurvesButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -175,6 +181,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Areas Button
         mAreasButton = (Button) v.findViewById(R.id.row2Button3);
         mAreasButton.setText(R.string.cogo_areas_button_label);
+        mAreasButton.setBackgroundResource(R.color.colorGray);
         mAreasButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_416_areas, 0, 0);
         mAreasButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -192,6 +199,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //coordinates Button
         mCoordinatesButton = (Button) v.findViewById(R.id.row3Button1);
         mCoordinatesButton.setText(R.string.cogo_coordinates_button_label);
+        mCoordinatesButton.setBackgroundResource(R.color.colorGray);
         //the order of images here is left, top, right, bottom
         mCoordinatesButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_417_coordinates, 0, 0);
         mCoordinatesButton.setOnClickListener(new View.OnClickListener() {
@@ -208,6 +216,7 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         //Map Check Button
         mMapCheckButton = (Button) v.findViewById(R.id.row3Button2);
         mMapCheckButton.setText(R.string.cogo_map_check_button_label);
+        mMapCheckButton.setBackgroundResource(R.color.colorGray);
         //mMapCheckButton.setText(R.string.cogo_workflow_button_label);
         mMapCheckButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_418_mapcheck, 0, 0);
         mMapCheckButton.setOnClickListener(new View.OnClickListener() {
@@ -226,10 +235,11 @@ public class MainPrism4DTopCogoFragment extends Fragment {
         });
 
         //T Button
-        mTButton = (Button) v.findViewById(R.id.row3Button3);
-        mTButton.setText(R.string.cogo_convert_button_label);
-        mTButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_419_translate, 0, 0);
-        mTButton.setOnClickListener(new View.OnClickListener() {
+        mTranslateButton = (Button) v.findViewById(R.id.row3Button3);
+        mTranslateButton.setText(R.string.cogo_convert_button_label);
+        mTranslateButton.setBackgroundResource(R.color.colorGray);
+        mTranslateButton.setCompoundDrawablesWithIntrinsicBounds(0, R.drawable.ic_419_translate, 0, 0);
+        mTranslateButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v){
 
@@ -243,14 +253,6 @@ public class MainPrism4DTopCogoFragment extends Fragment {
 
             }
         });
-
-
-
-        //FOOTER WIDGETS
-
-        //  Esc and Enter buttons are desabled on this screen
-        //      so do nothing in the footer
-
 
     }
 }

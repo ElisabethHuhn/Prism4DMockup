@@ -36,6 +36,8 @@ public class Prism4DNmeaManager {
         return sNmeaList;
     }
 
+    public void removeListContents() { sNmeaList.clear();}
+
     public void add(Prism4DNmea newNmea){
         sNmeaList.add(newNmea);
     }
